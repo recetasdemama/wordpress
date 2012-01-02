@@ -1,236 +1,194 @@
 <?php
 /**
- * Dependencies API: Styles functions
+ * BackPress styles procedural API.
  *
- * @since 2.6.0
- *
- * @package WordPress
- * @subpackage Dependencies
+ * @package BackPress
+ * @since r79
  */
 
 /**
- * Initialize $wp_styles if it has not been set.
+ * Display styles that are in the queue or part of $handles.
  *
- * @global WP_Styles $wp_styles
+ * @since r79
+ * @uses do_action() Calls 'wp_print_styles' hook.
+ * @global object $wp_styles The WP_Styles object for printing styles.
  *
- * @since 4.2.0
- *
- * @return WP_Styles WP_Styles instance.
- */
-function wp_styles() {
-	global $wp_styles;
-	if ( ! ( $wp_styles instanceof WP_Styles ) ) {
-		$wp_styles = new WP_Styles();
-	}
-	return $wp_styles;
-}
-
-/**
- * Display styles that are in the $handles queue.
- *
- * Passing an empty array to $handles prints the queue,
- * passing an array with one string prints that style,
- * and passing an array of strings prints those styles.
- *
- * @global WP_Styles $wp_styles The WP_Styles object for printing styles.
- *
- * @since 2.6.0
- *
- * @param string|bool|array $handles Styles to be printed. Default 'false'.
- * @return array On success, a processed array of WP_Dependencies items; otherwise, an empty array.
- */
-function wp_print_styles( $handles = false ) {
-	if ( '' === $handles ) { // for wp_head
-		$handles = false;
-	}
-	/**
-	 * Fires before styles in the $handles queue are printed.
-	 *
-	 * @since 2.6.0
-	 */
-	if ( ! $handles ) {
-		do_action( 'wp_print_styles' );
-	}
-
-	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
-
-	global $wp_styles;
-	if ( ! ( $wp_styles instanceof WP_Styles ) ) {
-		if ( ! $handles ) {
-			return array(); // No need to instantiate if nothing is there.
-		}
-	}
-
-	return wp_styles()->do_items( $handles );
-}
-
-/**
- * Add extra CSS styles to a registered stylesheet.
- *
- * Styles will only be added if the stylesheet is already in the queue.
- * Accepts a string $data containing the CSS. If two or more CSS code blocks
- * are added to the same stylesheet $handle, they will be printed in the order
- * they were added, i.e. the latter added styles can redeclare the previous.
- *
- * @see WP_Styles::add_inline_style()
- *
- * @since 3.3.0
- *
- * @param string $handle Name of the stylesheet to add the extra styles to.
- * @param string $data   String containing the CSS styles to be added.
+ * @param array|bool $handles Styles to be printed. An empty array prints the queue,
+ *  an array with one string prints that style, and an array of strings prints those styles.
  * @return bool True on success, false on failure.
  */
-function wp_add_inline_style( $handle, $data ) {
-	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
+function wp_print_styles( $handles = false ) {
+	if ( '' === $handles ) // for wp_head
+		$handles = false;
 
-	if ( false !== stripos( $data, '</style>' ) ) {
-		_doing_it_wrong(
-			__FUNCTION__,
-			sprintf(
-				/* translators: 1: <style>, 2: wp_add_inline_style() */
-				__( 'Do not pass %1$s tags to %2$s.' ),
-				'<code>&lt;style&gt;</code>',
-				'<code>wp_add_inline_style()</code>'
-			),
-			'3.7.0'
-		);
-		$data = trim( preg_replace( '#<style[^>]*>(.*)</style>#is', '$1', $data ) );
+	if ( ! $handles )
+		do_action( 'wp_print_styles' );
+
+	global $wp_styles;
+	if ( ! is_a( $wp_styles, 'WP_Styles' ) ) {
+		if ( ! did_action( 'init' ) )
+			_doing_it_wrong( __FUNCTION__, sprintf( __( 'Scripts and styles should not be registered or enqueued until the %1$s, %2$s, or %3$s hooks.' ),
+				'<code>wp_enqueue_scripts</code>', '<code>admin_enqueue_scripts</code>', '<code>init</code>' ), '3.3' );
+
+		if ( !$handles )
+			return array(); // No need to instantiate if nothing is there.
+		else
+			$wp_styles = new WP_Styles();
 	}
 
-	return wp_styles()->add_inline_style( $handle, $data );
+	return $wp_styles->do_items( $handles );
 }
 
 /**
- * Register a CSS stylesheet.
+ * Adds extra CSS.
  *
- * @see WP_Dependencies::add()
- * @link https://www.w3.org/TR/CSS2/media.html#media-types List of CSS media types.
+ * Works only if the stylesheet has already been added.
+ * Accepts a string $data containing the CSS. If two or more CSS code blocks are
+ * added to the same stylesheet $handle, they will be printed in the order
+ * they were added, i.e. the latter added styles can redeclare the previous.
  *
- * @since 2.6.0
- * @since 4.3.0 A return value was added.
+ * @since 3.3
+ * @see WP_Scripts::add_inline_style()
+ */
+function wp_add_inline_style( $handle, $data ) {
+	global $wp_styles;
+	if ( ! is_a( $wp_styles, 'WP_Styles' ) ) {
+		if ( ! did_action( 'init' ) )
+			_doing_it_wrong( __FUNCTION__, sprintf( __( 'Scripts and styles should not be registered or enqueued until the %1$s, %2$s, or %3$s hooks.' ),
+				'<code>wp_enqueue_scripts</code>', '<code>admin_enqueue_scripts</code>', '<code>init</code>' ), '3.3' );
+		$wp_styles = new WP_Styles();
+	}
+
+	return $wp_styles->add_inline_style( $handle, $data );
+}
+
+/**
+ * Register CSS style file.
  *
- * @param string           $handle Name of the stylesheet. Should be unique.
- * @param string|bool      $src    Full URL of the stylesheet, or path of the stylesheet relative to the WordPress root directory.
- *                                 If source is set to false, stylesheet is an alias of other stylesheets it depends on.
- * @param array            $deps   Optional. An array of registered stylesheet handles this stylesheet depends on. Default empty array.
- * @param string|bool|null $ver    Optional. String specifying stylesheet version number, if it has one, which is added to the URL
- *                                 as a query string for cache busting purposes. If version is set to false, a version
- *                                 number is automatically added equal to current installed WordPress version.
- *                                 If set to null, no version is added.
- * @param string           $media  Optional. The media for which this stylesheet has been defined.
- *                                 Default 'all'. Accepts media types like 'all', 'print' and 'screen', or media queries like
- *                                 '(orientation: portrait)' and '(max-width: 640px)'.
- * @return bool Whether the style has been registered. True on success, false on failure.
+ * @since r79
+ * @see WP_Styles::add() For additional information.
+ * @global object $wp_styles The WP_Styles object for printing styles.
+ * @link http://www.w3.org/TR/CSS2/media.html#media-types List of CSS media types.
+ *
+ * @param string $handle Name of the stylesheet.
+ * @param string|bool $src Path to the stylesheet from the root directory of WordPress. Example: '/css/mystyle.css'.
+ * @param array $deps Array of handles of any stylesheet that this stylesheet depends on.
+ *  (Stylesheets that must be loaded before this stylesheet.) Pass an empty array if there are no dependencies.
+ * @param string|bool $ver String specifying the stylesheet version number. Set to NULL to disable.
+ *  Used to ensure that the correct version is sent to the client regardless of caching.
+ * @param string $media The media for which this stylesheet has been defined.
  */
 function wp_register_style( $handle, $src, $deps = array(), $ver = false, $media = 'all' ) {
-	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
+	global $wp_styles;
+	if ( ! is_a( $wp_styles, 'WP_Styles' ) ) {
+		if ( ! did_action( 'init' ) )
+			_doing_it_wrong( __FUNCTION__, sprintf( __( 'Scripts and styles should not be registered or enqueued until the %1$s, %2$s, or %3$s hooks.' ),
+				'<code>wp_enqueue_scripts</code>', '<code>admin_enqueue_scripts</code>', '<code>init</code>' ), '3.3' );
+		$wp_styles = new WP_Styles();
+	}
 
-	return wp_styles()->add( $handle, $src, $deps, $ver, $media );
+	$wp_styles->add( $handle, $src, $deps, $ver, $media );
 }
 
 /**
- * Remove a registered stylesheet.
+ * Remove a registered CSS file.
  *
- * @see WP_Dependencies::remove()
+ * @since r79
+ * @see WP_Styles::remove() For additional information.
+ * @global object $wp_styles The WP_Styles object for printing styles.
  *
- * @since 2.1.0
- *
- * @param string $handle Name of the stylesheet to be removed.
+ * @param string $handle Name of the stylesheet.
  */
 function wp_deregister_style( $handle ) {
-	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
+	global $wp_styles;
+	if ( ! is_a( $wp_styles, 'WP_Styles' ) ) {
+		if ( ! did_action( 'init' ) )
+			_doing_it_wrong( __FUNCTION__, sprintf( __( 'Scripts and styles should not be registered or enqueued until the %1$s, %2$s, or %3$s hooks.' ),
+				'<code>wp_enqueue_scripts</code>', '<code>admin_enqueue_scripts</code>', '<code>init</code>' ), '3.3' );
+		$wp_styles = new WP_Styles();
+	}
 
-	wp_styles()->remove( $handle );
+	$wp_styles->remove( $handle );
 }
 
 /**
- * Enqueue a CSS stylesheet.
+ * Enqueue a CSS style file.
  *
- * Registers the style if source provided (does NOT overwrite) and enqueues.
+ * Registers the style if src provided (does NOT overwrite) and enqueues.
  *
- * @see WP_Dependencies::add()
- * @see WP_Dependencies::enqueue()
- * @link https://www.w3.org/TR/CSS2/media.html#media-types List of CSS media types.
+ * @since r79
+ * @see WP_Styles::add(), WP_Styles::enqueue()
+ * @global object $wp_styles The WP_Styles object for printing styles.
+ * @link http://www.w3.org/TR/CSS2/media.html#media-types List of CSS media types.
  *
- * @since 2.6.0
- *
- * @param string           $handle Name of the stylesheet. Should be unique.
- * @param string           $src    Full URL of the stylesheet, or path of the stylesheet relative to the WordPress root directory.
- *                                 Default empty.
- * @param array            $deps   Optional. An array of registered stylesheet handles this stylesheet depends on. Default empty array.
- * @param string|bool|null $ver    Optional. String specifying stylesheet version number, if it has one, which is added to the URL
- *                                 as a query string for cache busting purposes. If version is set to false, a version
- *                                 number is automatically added equal to current installed WordPress version.
- *                                 If set to null, no version is added.
- * @param string           $media  Optional. The media for which this stylesheet has been defined.
- *                                 Default 'all'. Accepts media types like 'all', 'print' and 'screen', or media queries like
- *                                 '(orientation: portrait)' and '(max-width: 640px)'.
+ * @param string $handle Name of the stylesheet.
+ * @param string|bool $src Path to the stylesheet from the root directory of WordPress. Example: '/css/mystyle.css'.
+ * @param array $deps Array of handles (names) of any stylesheet that this stylesheet depends on.
+ *  (Stylesheets that must be loaded before this stylesheet.) Pass an empty array if there are no dependencies.
+ * @param string|bool $ver String specifying the stylesheet version number, if it has one. This parameter
+ *  is used to ensure that the correct version is sent to the client regardless of caching, and so should be included
+ *  if a version number is available and makes sense for the stylesheet.
+ * @param string $media The media for which this stylesheet has been defined.
  */
-function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
-	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
-
-	$wp_styles = wp_styles();
+function wp_enqueue_style( $handle, $src = false, $deps = array(), $ver = false, $media = 'all' ) {
+	global $wp_styles;
+	if ( ! is_a( $wp_styles, 'WP_Styles' ) ) {
+		if ( ! did_action( 'init' ) )
+			_doing_it_wrong( __FUNCTION__, sprintf( __( 'Scripts and styles should not be registered or enqueued until the %1$s, %2$s, or %3$s hooks.' ),
+				'<code>wp_enqueue_scripts</code>', '<code>admin_enqueue_scripts</code>', '<code>init</code>' ), '3.3' );
+		$wp_styles = new WP_Styles();
+	}
 
 	if ( $src ) {
-		$_handle = explode( '?', $handle );
+		$_handle = explode('?', $handle);
 		$wp_styles->add( $_handle[0], $src, $deps, $ver, $media );
 	}
 	$wp_styles->enqueue( $handle );
 }
 
 /**
- * Remove a previously enqueued CSS stylesheet.
+ * Remove an enqueued style.
  *
- * @see WP_Dependencies::dequeue()
- *
- * @since 3.1.0
- *
- * @param string $handle Name of the stylesheet to be removed.
+ * @since WP 3.1
+ * @see WP_Styles::dequeue() For parameter information.
  */
 function wp_dequeue_style( $handle ) {
-	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
+	global $wp_styles;
+	if ( ! is_a( $wp_styles, 'WP_Styles' ) ) {
+		if ( ! did_action( 'init' ) )
+			_doing_it_wrong( __FUNCTION__, sprintf( __( 'Scripts and styles should not be registered or enqueued until the %1$s, %2$s, or %3$s hooks.' ),
+				'<code>wp_enqueue_scripts</code>', '<code>admin_enqueue_scripts</code>', '<code>init</code>' ), '3.3' );
+		$wp_styles = new WP_Styles();
+	}
 
-	wp_styles()->dequeue( $handle );
+	$wp_styles->dequeue( $handle );
 }
 
 /**
- * Check whether a CSS stylesheet has been added to the queue.
+ * Check whether style has been added to WordPress Styles.
  *
- * @since 2.8.0
+ * The values for list defaults to 'queue', which is the same as wp_enqueue_style().
  *
- * @param string $handle Name of the stylesheet.
- * @param string $list   Optional. Status of the stylesheet to check. Default 'enqueued'.
- *                       Accepts 'enqueued', 'registered', 'queue', 'to_do', and 'done'.
- * @return bool Whether style is queued.
- */
-function wp_style_is( $handle, $list = 'enqueued' ) {
-	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__ );
-
-	return (bool) wp_styles()->query( $handle, $list );
-}
-
-/**
- * Add metadata to a CSS stylesheet.
- *
- * Works only if the stylesheet has already been added.
- *
- * Possible values for $key and $value:
- * 'conditional' string      Comments for IE 6, lte IE 7 etc.
- * 'rtl'         bool|string To declare an RTL stylesheet.
- * 'suffix'      string      Optional suffix, used in combination with RTL.
- * 'alt'         bool        For rel="alternate stylesheet".
- * 'title'       string      For preferred/alternate stylesheets.
- *
- * @see WP_Dependency::add_data()
- *
- * @since 3.6.0
+ * @since WP unknown; BP unknown
+ * @global object $wp_styles The WP_Styles object for printing styles.
  *
  * @param string $handle Name of the stylesheet.
- * @param string $key    Name of data point for which we're storing a value.
- *                       Accepts 'conditional', 'rtl' and 'suffix', 'alt' and 'title'.
- * @param mixed  $value  String containing the CSS data to be added.
+ * @param string $list Values are 'registered', 'done', 'queue' and 'to_do'.
  * @return bool True on success, false on failure.
  */
-function wp_style_add_data( $handle, $key, $value ) {
-	return wp_styles()->add_data( $handle, $key, $value );
+function wp_style_is( $handle, $list = 'queue' ) {
+	global $wp_styles;
+	if ( ! is_a( $wp_styles, 'WP_Styles' ) ) {
+		if ( ! did_action( 'init' ) )
+			_doing_it_wrong( __FUNCTION__, sprintf( __( 'Scripts and styles should not be registered or enqueued until the %1$s, %2$s, or %3$s hooks.' ),
+				'<code>wp_enqueue_scripts</code>', '<code>admin_enqueue_scripts</code>', '<code>init</code>' ), '3.3' );
+		$wp_styles = new WP_Styles();
+	}
+
+	$query = $wp_styles->query( $handle, $list );
+
+	if ( is_object( $query ) )
+		return true;
+
+	return $query;
 }
