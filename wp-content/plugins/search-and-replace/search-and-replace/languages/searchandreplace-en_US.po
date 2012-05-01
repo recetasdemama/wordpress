@@ -1,0 +1,276 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Search and Replace\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-03-30 12:18+0100\n"
+"PO-Revision-Date: 2008-03-30 12:23+0100\n"
+"Last-Translator: Frank Bueltge <frank@bueltge.de>\n"
+"Language-Team: Frank Bueltge <frank@bueltge.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: D:\\WP-Plugins\\searchandreplace\\trunk\\searchandreplace\\\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: searchandreplace.php:30
+#: searchandreplace.php:31
+msgid "Suchen &amp; Ersetzen"
+msgstr "Search &amp; Replace"
+
+#: searchandreplace.php:76
+msgid "<p><strong>Keine Aktion (Checkbox) gew&auml;hlt um zu ersetzen!</strong></p>"
+msgstr "<p><strong>Nothing (Checkbox) selected to modify!</strong></p>"
+
+#: searchandreplace.php:83
+msgid "Suche nach Beitr&auml;gen"
+msgstr "Looking @ post content"
+
+#: searchandreplace.php:92
+msgid "Suche nach GUID"
+msgstr "Looking @ GUID"
+
+#: searchandreplace.php:101
+msgid "Suche nach Titeln"
+msgstr "Looking @ post titles"
+
+#: searchandreplace.php:110
+msgid "Suche nach Ausz&uuml;gen"
+msgstr "Looking @ post excerpts"
+
+#: searchandreplace.php:119
+msgid "Suche nach Meta Daten"
+msgstr "Looking @ Meta Data"
+
+#: searchandreplace.php:128
+msgid "Suche nach Kommentarbetr&auml;gen"
+msgstr "Looking @ modifying comments text"
+
+#: searchandreplace.php:137
+msgid "Suche nach Kommentarautor"
+msgstr "Looking @ modifying comments author"
+
+#: searchandreplace.php:146
+msgid "Suche nach Kommentarautoren-E-Mails"
+msgstr "Looking @ modifying comments author e-mail"
+
+#: searchandreplace.php:155
+msgid "Suche nach Kommentarautor-URLs"
+msgstr "Looking @ modifying comments author URLs"
+
+#: searchandreplace.php:164
+msgid "Suche nach Kategorie-Beschreibungen"
+msgstr "Looking @ category description"
+
+#: searchandreplace.php:173
+msgid "Suche nach Tags"
+msgstr "Looking @ Tags"
+
+#: searchandreplace.php:187
+msgid "Suche nach User-ID"
+msgstr "Looking @ User-ID"
+
+#: searchandreplace.php:211
+msgid "Suche nach User Login"
+msgstr "Looking @ User Login"
+
+#: searchandreplace.php:244
+msgid "&raquo; Du musst Text spezifizieren, um Text zu ersetzen!"
+msgstr "&raquo; You must specify some text to replace!"
+
+#: searchandreplace.php:247
+msgid "&raquo; Versuche die Suche duchzuf&uuml;hren und zu ersetzen ..."
+msgstr "&raquo; Attempting to perform search and replace ..."
+
+#: searchandreplace.php:248
+msgid "Suche nach"
+msgstr "Search"
+
+#: searchandreplace.php:248
+msgid "und ersetze mit"
+msgstr "and replace with"
+
+#: searchandreplace.php:269
+msgid "Es gab eine St&ouml;rung!"
+msgstr "There was an error!"
+
+#: searchandreplace.php:272
+msgid "Erfolgreich durchgef&uuml;hrt!"
+msgstr "Completed successfully!"
+
+#: searchandreplace.php:276
+msgid "You do not have sufficient permissions to edit plugins for this blog."
+msgstr "You do not have sufficient permissions to edit plugins for this blog."
+
+#: searchandreplace.php:280
+msgid "Search &amp; Replace"
+msgstr "Search &amp; Replace"
+
+#: searchandreplace.php:281
+msgid "Hinweise Suchen &amp; Ersetzen"
+msgstr "Information Search &amp; Replace"
+
+#: searchandreplace.php:282
+msgid "Dieses Plugin arbeitet mit einer Standard SQL Abfrage und ver&auml;ndert deine Datenbank direkt!<br /><strong>Achtung: </strong>Du <strong>kannst nichts</strong> r&uuml;ckg&auml;ngig machen mit diesem Plugin. Wenn du dir nicht sicher bist, fertige eine Sicherung deiner Datenbank im Vorfeld an."
+msgstr "This plugin uses an standard SQL query so it modifies your database directly!<br /><strong>Attention: </strong>You <strong>cannot</strong> undo any changes made by this plugin. It is therefore advisable to backup your database before running this plugin."
+
+#: searchandreplace.php:283
+msgid "<strong>Aktiviere</strong> das Plugin <strong>nur</strong>, wenn es ben&ouml;tigt wird!"
+msgstr "<strong>Aktivate</strong> the plugin <strong>only</strong>, if you want to use it!"
+
+#: searchandreplace.php:284
+msgid "Die Textsuche ist sensitiv und besitzt keine passende Abstimmungsbef&auml;higung.<br />Du kannst folgende Eintr&auml;ge bearbeiten: Beitrag (content), Titel (titles), Auszug (excerpt), Kommentarbeitr&auml;ge (comment_content), Kommentarautor (comment_author), Kommentar-URL (comment_author_url), Kategorie-Beschreibung (description) und Tags/ Kategorie-Namen (name und slug).<br />Die Funktion arbeitet stringbasierend und kann somit auch HTML-Tags ersetzen."
+msgstr "Text search is case sensitive and has no pattern matching capabilites.<br />You can chose to modify post excerpts, comment authors and post and comment content, titles tags/categories and categrory-description.<br /> This replace function matchs raw text so it can be used to replace HTML tags too."
+
+#: searchandreplace.php:290
+msgid "Suche in"
+msgstr "search in"
+
+#: searchandreplace.php:295
+msgid "Beitr&auml;gen"
+msgstr "Content"
+
+#: searchandreplace.php:297
+msgid "(Feld: <code>post_content</code> Tabelle: <code>_posts</code>)"
+msgstr "(Field: <code>post_content</code> Table: <code>_posts</code>)"
+
+#: searchandreplace.php:300
+msgid "GUID"
+msgstr "GUID"
+
+#: searchandreplace.php:302
+msgid "(Feld: <code>guid</code> Tabelle: <code>_posts</code>)"
+msgstr "(Field: <code>guid</code> Table: <code>_posts</code>)"
+
+#: searchandreplace.php:305
+msgid "Titeln"
+msgstr "Titles"
+
+#: searchandreplace.php:307
+msgid "(Feld: <code>post_tilte</code> Tabelle: <code>_posts</code>)"
+msgstr "(Field: <code>post_tilte</code> Table: <code>_posts</code>)"
+
+#: searchandreplace.php:310
+msgid "Ausz&uuml;gen"
+msgstr "Excerpts"
+
+#: searchandreplace.php:312
+msgid "(Feld: <code>post_excerpt</code> Tabelle: <code>_posts</code>)"
+msgstr "(Field: <code>post_excerpt</code> Table: <code>_posts</code>)"
+
+#: searchandreplace.php:315
+msgid "Meta Daten"
+msgstr "Meta Data"
+
+#: searchandreplace.php:317
+msgid "(Feld: <code>meta_value</code> Tabelle: <code>_postmeta</code>)"
+msgstr "(Field: <code>meta_value</code> Table: <code>_postmeta</code>)"
+
+#: searchandreplace.php:320
+msgid "Kommentarbeitr&auml;gen"
+msgstr "Comments content"
+
+#: searchandreplace.php:322
+msgid "(Feld: <code>comment_content</code> Tabelle: <code>_comments</code>)"
+msgstr "(Field: <code>comment_content</code> Table: <code>_comments</code>)"
+
+#: searchandreplace.php:325
+msgid "Kommentarautoren"
+msgstr "Comments author"
+
+#: searchandreplace.php:327
+msgid "(Feld: <code>comment_author</code> Tabelle: <code>_comments</code>)"
+msgstr "(Field: <code>comment_author</code> Table: <code>_comments</code>)"
+
+#: searchandreplace.php:330
+msgid "Kommentarautoren-E-Mail"
+msgstr "Comments author e-mail"
+
+#: searchandreplace.php:332
+msgid "(Feld: <code>comment_author_email</code> Tabelle: <code>_comments</code>)"
+msgstr "(Field: <code>comment_author_email</code> Table: <code>_comments</code>)"
+
+#: searchandreplace.php:335
+msgid "Kommentarautoren-URLs"
+msgstr "Comments author URLs"
+
+#: searchandreplace.php:337
+msgid "(Feld: <code>comment_author_url</code> Tabelle: <code>_comments</code>)"
+msgstr "(Field: <code>comment_author_url</code> Table: <code>_comments</code>)"
+
+#: searchandreplace.php:341
+msgid "Kategorie-Beschreibung"
+msgstr "Category description"
+
+#: searchandreplace.php:343
+msgid "(Feld: <code>description</code> Tabelle: <code>_term_taxonomy</code>)"
+msgstr "(Field: <code>description</code> Table: <code>_term_taxonomy</code>)"
+
+#: searchandreplace.php:346
+msgid "Tags &amp; Kategorien"
+msgstr "Tags &amp; Categories"
+
+#: searchandreplace.php:348
+msgid "(Feld: <code>name</code> und <code>slug</code> Tabelle: <code>_terms</code>)"
+msgstr "(Field: <code>name</code> und <code>slug</code> Table: <code>_terms</code>)"
+
+#: searchandreplace.php:352
+msgid "User-ID"
+msgstr "User-ID"
+
+#: searchandreplace.php:354
+msgid "(Feld: <code>ID</code>, <code>user_id</code>, <code>post_author</code> und <code>link_owner</code> Tabelle: <code>_users</code>, <code>_usermeta</code>, <code>_posts</code> und <code>_links</code>)"
+msgstr "(Field: <code>ID</code>, <code>user_id</code>, <code>post_author</code> und <code>link_owner</code> Table: <code>_users</code>, <code>_usermeta</code>, <code>_posts</code> und <code>_links</code>)"
+
+#: searchandreplace.php:357
+msgid "User-Login"
+msgstr "User-Login"
+
+#: searchandreplace.php:359
+msgid "(Feld: <code>user_login</code> Tabelle: <code>_users</code>)"
+msgstr "(Field: <code>user_login</code> Table: <code>_users</code>)"
+
+#: searchandreplace.php:363
+msgid "Checkboxen markieren"
+msgstr "Checkboxes to assign"
+
+#: searchandreplace.php:363
+msgid "alle"
+msgstr "all"
+
+#: searchandreplace.php:363
+msgid "Checkboxen demarkieren"
+msgstr "Checkboxes to unmask"
+
+#: searchandreplace.php:363
+msgid "keine"
+msgstr "none"
+
+#: searchandreplace.php:370
+msgid "Ersetze"
+msgstr "Replace"
+
+#: searchandreplace.php:374
+msgid "mit"
+msgstr "with"
+
+#: searchandreplace.php:379
+msgid "Ausf&uuml;hren"
+msgstr "Go"
+
+#: searchandreplace.php:388
+msgid "Hinweise zum Plugin"
+msgstr "Information on the plugin"
+
+#: searchandreplace.php:389
+msgid "&quot;Search and Replace&quot; Originalplugin (en) ist von <a href='http://thedeadone.net/'>Mark Cunningham</a> und wurde erweitert (Kommentarbeitr&auml;ge, Kommentarautor) durch <a href='http://www.gonahkar.com'>Gonahkar</a>.<br />&quot;Suchen &amp; Ersetzen&quot; wurde erweitert und gepflegt in der aktuellen Version durch <a href='http://bueltge.de'>Frank Bueltge</a>."
+msgstr "&quot;Search and Replace&quot; originalplugin (en) created by <a href='http://thedeadone.net/'>Mark Cunningham</a> and provided (comments) by durch <a href='http://www.gonahkar.com'>Gonahkar</a>.<br />&quot;Search &amp; Replace&quot;, current version provided by <a href='http://bueltge.de'>Frank Bueltge</a>."
+
+#: searchandreplace.php:390
+msgid "Weitere Informationen: Besuche die <a href='http://bueltge.de/wp-suchen-und-ersetzen-de-plugin/114'>plugin homepage</a> f&uuml;r weitere Informationen oder nutze die letzte Version des Plugins."
+msgstr "Further information: Visit the <a href='http://bueltge.de/wp-suchen-und-ersetzen-de-plugin/114'>plugin homepage</a> for further information or to grab the latest version of this plugin."
+
+#: searchandreplace.php:390
+msgid "Du willst Danke sagen? Besuche meine <a href='http://bueltge.de/wunschliste'>Wunschliste</a>."
+msgstr "You want to thank me? Visit my <a href='http://bueltge.de/wunschliste'>wishlist</a>."
+
