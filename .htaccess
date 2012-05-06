@@ -3,10 +3,13 @@
 RewriteEngine On
 RewriteBase /
 RewriteRule ^index\.php$ - [L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.php [L]
+
+# uploaded files
+RewriteRule ^files/(.+) wp-includes/ms-files.php?file=$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+RewriteRule . index.php [L]
 </IfModule>
 # END WordPress
-
-Redirect 301 "/2007/08/salmorejo/<a href=" /2007/08/salmorejo/
