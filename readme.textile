@@ -2,7 +2,7 @@ h1. Wordpress
 
 WordPress is a free and open source blogging tool and a dynamic content management system (CMS) based on PHP and MySQL
 
-Recetas de Mamá is using WordPress for publishing superb recipes at www.recetasdemama.es.
+Recetas de Mamá is using WordPress for publishing superb recipes at http://www.recetasdemama.es.
 
 h2. Usage
 
@@ -39,6 +39,6 @@ mkdir -p wp-content/blogs.dir
 
 h2. License
 
-The license under which the WordPress software is released is the GPLv2 (or later) from the Free Software Foundation.
+The license under which the WordPress software is released is the GPLv2 (or later) from the Free Software Foundation. Find more information at http://wordpress.org/about/license/
 
-Additional code (plugins and themes) should include its own license and credit information
+Additional code (plugins and themes) should include their own license and credit information
