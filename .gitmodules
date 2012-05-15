@@ -7,3 +7,6 @@
 [submodule "wp-content/themes/the-bootstrap"]
 	path = wp-content/themes/the-bootstrap
 	url = git://github.com/obenland/the-bootstrap.git
+[submodule "wp-content/themes/roots"]
+	path = wp-content/themes/roots
+	url = git://github.com/retlehs/roots.git
