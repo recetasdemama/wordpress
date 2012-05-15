@@ -1,0 +1,44 @@
+h1. Wordpress
+
+WordPress is a free and open source blogging tool and a dynamic content management system (CMS) based on PHP and MySQL
+
+Recetas de Mamá is using WordPress for publishing superb recipes at http://www.recetasdemama.es.
+
+h2. Usage
+
+In order to publish a WordPress site using this repositoriy you may execute:
+
+<pre>
+git clone git://github.com/recetasdemama/wordpress.git
+git submodule update --init
+mkdir -p destination_path
+git archive --format=tar HEAD | (cd destination_path && tar xf -)
+git submodule foreach 'git archive --format=tar $sha1 | (cd destination_path/$path && tar xf -)'
+</pre>
+
+Next add your @wp-config.php@, create the proper MySQL table and set a web server.
+
+Now you have to create the config file and add the @uploads@ folder to @wp-content@
+  
+<pre>
+cp wp-config-sample.php wp-config.php
+mkdir -p wp-content/uploads/
+</pre>
+
+h2. Multisite
+
+There's a branch called 'multisite' for publishing several blogs with only one installation.
+
+The main difference with the master branch should be the @.htaccess@ file.
+
+If you're configuring a multisite environment you also need the @blogs.dir@ folder:
+
+<pre>
+mkdir -p wp-content/blogs.dir
+</pre>
+
+h2. License
+
+The license under which the WordPress software is released is the GPLv2 (or later) from the Free Software Foundation. Find more information at http://wordpress.org/about/license/
+
+Additional code (plugins and themes) should include their own license and credit information
