@@ -4,3 +4,6 @@
 [submodule "wp-content/plugins/recipress"]
 	path = wp-content/plugins/recipress
 	url = git://github.com/recetasdemama/recipress.git
+[submodule "wp-content/themes/the-bootstrap"]
+	path = wp-content/themes/the-bootstrap
+	url = git://github.com/obenland/the-bootstrap.git
