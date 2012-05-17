@@ -7,3 +7,6 @@
 [submodule "wp-content/themes/the-bootstrap"]
 	path = wp-content/themes/the-bootstrap
 	url = git://github.com/obenland/the-bootstrap.git
+[submodule "wp-content/themes/recetasdemama"]
+	path = wp-content/themes/recetasdemama
+	url = git://github.com/recetasdemama/recetasdemama-theme.git
