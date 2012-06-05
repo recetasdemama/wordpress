@@ -1,9 +1,6 @@
 [submodule "wp-content/plugins/vipers-video-quicktags"]
 	path = wp-content/plugins/vipers-video-quicktags
 	url = git://github.com/recetasdemama/vipers-video-quicktags.git
-[submodule "wp-content/plugins/recipress"]
-	path = wp-content/plugins/recipress
-	url = git://github.com/recetasdemama/recipress.git
 [submodule "wp-content/themes/the-bootstrap"]
 	path = wp-content/themes/the-bootstrap
 	url = git://github.com/obenland/the-bootstrap.git
