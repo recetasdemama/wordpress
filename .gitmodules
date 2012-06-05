@@ -7,3 +7,6 @@
 [submodule "wp-content/themes/recetasdemama"]
 	path = wp-content/themes/recetasdemama
 	url = git://github.com/recetasdemama/recetasdemama-theme.git
+[submodule "wp-content/plugins/recipress"]
+	path = wp-content/plugins/recipress
+	url = git://github.com/recetasdemama/recipress.git
