@@ -1,6 +1,6 @@
 <?php
 /*
-Private Only 2.5
+Private Only 2.5.1
 Need a WP expert? Hire me : studio[at]pixert.com
 */
 function po_login_settings_args() {

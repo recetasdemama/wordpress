@@ -1,6 +1,6 @@
 <?php
 /*
-Private Only 2.5
+Private Only 2.5.1
 Need a WP expert? Hire me : studio[at]pixert.com
 */
 ?>
@@ -15,7 +15,7 @@ Need a WP expert? Hire me : studio[at]pixert.com
 	<ul>
     
     <li>
-      <h4><?php _e('This is Private Only plugin for WordPress ver 2.0','private-only'); ?></h4>
+      <h4><?php _e('This is Private Only plugin for WordPress ver 2.5.1','private-only'); ?></h4>
       <p><?php _e('If you disable or enable feed, DO NOT FORGET TO REFRESH YOUR BROWSER CACHE AFTER ACTIVATE PRIVATE ONLY or DISABLE FEED','private-only'); ?></p>
     </li>    
         
@@ -73,10 +73,10 @@ Need a WP expert? Hire me : studio[at]pixert.com
 	<table class="form-table">
    		<tr>
             <th>
-            	<label for="<?php echo $data['po_logot']; ?>"><?php _e('Logo:','private-only'); ?></label> 
+            	<label for="<?php echo $data['po_logo']; ?>"><?php _e('Logo:','private-only'); ?></label> 
             </th>
             <td>
-               <input id="<?php echo $data['po_hlogo']; ?>" name="<?php echo $data['po_logo']; ?>" value="<?php echo $val['po_logo']; ?>" size="40" /><br />
+               <input id="<?php echo $data['po_logo']; ?>" name="<?php echo $data['po_logo']; ?>" value="<?php echo $val['po_logo']; ?>" size="40" /><br />
                 <?php _e('Upload an image with Media Library or FTP and put the full path here, http://yourdomainname.com/logo.jpg','private-on;y'); ?><br />
                 <?php _e('We do not provide upload tool here, because it is free for you upload it wherever you want to','private-only'); ?><br />
             </td>
