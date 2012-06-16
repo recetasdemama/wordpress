@@ -319,6 +319,14 @@ if (!function_exists('aioseop_filter_callback')) {
 		return '<li class="page_item page-item-'.$postID.$matches[2].'"><a href="'.$matches[3].'"'.$title_attrib.'>';
 	}
 }
+
+if ( !function_exists('aioseop_add_contactmethods' ) ) {
+	function aioseop_add_contactmethods( $contactmethods ) {
+		$contactmethods['googleplus'] = 'Google+';
+		return $contactmethods;
+	}
+}
+
 if (!function_exists('aioseop_meta_box_add')) {
 	function aioseop_meta_box_add() {
 			$mrt_aioseop_pts=get_post_types('','names'); 
