@@ -1,6 +1,6 @@
 <?php
 
-class More_Deprecated implements themecheck {
+class Constants implements themecheck {
 	protected $error = array();
 
 	function check( $php_files, $css_files, $other_files ) {
@@ -8,8 +8,10 @@ class More_Deprecated implements themecheck {
 		$ret = true;
 
 		$checks = array(
-			'get_bloginfo\(\s?("|\')home("|\')\s?\)' => 'home_url()',
-			'bloginfo\(\s?("|\')home("|\')\s?\)' => 'echo home_url()'
+			'STYLESHEETPATH' => 'get_stylesheet_directory()',
+			'TEMPLATEPATH' => 'get_template_directory()',
+			'PLUGINDIR' => 'WP_PLUGIN_DIR',
+			'MUPLUGINDIR' => 'WPMU_PLUGIN_DIR'
 			);
 
 		foreach ( $php_files as $php_key => $phpfile ) {
@@ -19,8 +21,7 @@ class More_Deprecated implements themecheck {
 					$filename = tc_filename( $php_key );
 					$error = ltrim( rtrim( $matches[0], '(' ) );
 					$grep = tc_grep( $error, $php_key );
-					$this->error[] = sprintf(__('<span class="tc-lead tc-required">REQUIRED</span>: <strong>%1$s</strong> was found in the file <strong>%2$s</strong>. Use <strong>%3$s</strong> instead.%4$s', 'themecheck'), $error, $filename, $check, $grep);
-					$ret = false;
+					$this->error[] = sprintf(__('<span class="tc-lead tc-recommended">RECOMMENDED</span>: <strong>%1$s</strong> was found in the file <strong>%2$s</strong>. Use <strong>%3$s</strong> instead.%4$s', 'themecheck'), $error, $filename, $check, $grep );
 				}
 			}
 		}
@@ -29,4 +30,4 @@ class More_Deprecated implements themecheck {
 
 	function getError() { return $this->error; }
 }
-$themechecks[] = new More_Deprecated;
+$themechecks[] = new Constants;
