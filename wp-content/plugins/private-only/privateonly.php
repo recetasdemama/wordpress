@@ -3,7 +3,7 @@
 Plugin Name: Private Only
 Plugin URI: http://www.pixert.com/
 Description: Redirects all non-logged in users to login form with custom login capability
-Version: 2.5
+Version: 2.5.1
 Author: Kate Mag (Pixel Insert)
 Author URI: http://www.pixert.com
 */
@@ -49,8 +49,8 @@ if ( is_admin() )
 	global $po_login;
 		echo '<!-- Private Only -->' . "\n\n";
 ?>
-<?php if ( $po_login[ 'use_wp_logo' ] == true ) {} else { ?> 
-<?php if ( $po_login[ 'po_logo' ] != '' ) { ?>
+<?php if (isset($po_login[ 'use_wp_logo' ]) && $po_login[ 'use_wp_logo' ] == true ) {} else { ?> 
+<?php if (isset($po_login[ 'po_logo' ]) && !empty($po_login[ 'po_logo']) ) { ?>
 <style>
 #login h1 a{ background: url(<?php echo $po_login[ 'po_logo' ]; ?>) no-repeat top center !important; }
 </style>
@@ -79,10 +79,10 @@ if ( is_admin() )
 function private_only () {
 	$settings = get_option( 'po_login_settings' );
 	/* New Feature, code added by Ivan Ricotti. Thanks */
-	if (is_page($settings['public_pages'])) {
+	if (!is_user_logged_in() && !is_feed() && isset($settings['public_pages']) && $settings['public_pages'] && is_page($settings['public_pages'])) {
 		return;
-	}
-	if (!is_user_logged_in() && !is_feed()) {
+	} 
+	if (!is_user_logged_in() && !is_feed() && (!is_page($settings['public_pages']) || empty($settings['public_pages']))) {
 		auth_redirect();
   } 
 }
@@ -96,13 +96,15 @@ $pagetitle = get_the_title($settings['public_pages']);
 $pagelink = get_permalink($settings['public_pages']);
 $message = '<p class="message">'.__('Only registered and logged in users are allowed to view this site. Please login now','private-only').'<br />';
 if (isset($settings['public_pages']) && $settings['public_pages']) {
-$message .= __('Visit our public page:','private-only') .'<a href='.$pagelink.'>'.$pagetitle.'</a></p>';
+$message .= __('Visit our public page:','private-only') .' <a href='.$pagelink.'>'.$pagetitle.'</a></p>';
+} else {
+$message .= '</p>';	
 }
 return $message;
 }
 add_filter('login_message', 'custom_login_message');
 function custom_register_message() {
-$message ='<p class="message">'.printf(__('Welcome,you need to be registered</a> to see content','private-only')).'</p><br />';
+$message ='<p class="message">'.printf(__('Welcome,you need to be registered to see content','private-only')).'</p><br />';
 return $message;
 }
 add_filter('register_message', 'custom_register_message');
