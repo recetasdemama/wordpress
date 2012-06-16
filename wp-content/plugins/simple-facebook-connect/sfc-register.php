@@ -26,7 +26,7 @@ function sfc_register_form() {
 	
 	$fields = json_encode( apply_filters('sfc_register_fields',array(
 		array('name'=>'name', 'view'=>'prefilled'),
-		array('name'=>'username', 'description'=>'Choose a username', 'type'=>'text'),
+		array('name'=>'username', 'description'=>__('Choose a username','sfc'), 'type'=>'text'),
 		array('name'=>'email'),
 		array('name'=>'captcha'),
 		)

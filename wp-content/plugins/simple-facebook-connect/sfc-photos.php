@@ -26,7 +26,7 @@ function media_sfc_photos_form($errors) {
 
 	if (!isset($user['user_id'])) {
 		?><p><?php _e("You don't appear to be logged into Facebook. Click the button below to login and grant photo access.",'sfc'); ?></p>
-		<fb:login-button v="2" scope="offline_access,user_photos" onlogin="location.reload();"><fb:intl><?php _e('Connect with Facebook', 'sfc'); ?></fb:intl></fb:login-button><?php
+		<fb:login-button v="2" scope="offline_access,user_photos" onlogin="location.reload();"><?php _e('Connect with Facebook', 'sfc'); ?></fb:login-button><?php
 	}
 	
 	if ( isset($_GET['send']) && !preg_match('/^[0-9]+$/i', $_GET['send'])) {
@@ -123,7 +123,7 @@ function media_sfc_photos_form($errors) {
 
 		if ( empty($albums['data']) ) {
 			?><p><?php _e('Either you have no photo albums on Facebook, or you have not granted the site permission to access them. Either way, click the button below to login and grant access.','sfc'); ?></p>
-			<fb:login-button v="2" scope="offline_access,user_photos" onlogin="location.reload();"><fb:intl><?php _e('Connect with Facebook', 'sfc'); ?></fb:intl></fb:login-button><?php
+			<fb:login-button v="2" scope="offline_access,user_photos" onlogin="location.reload();"><?php _e('Connect with Facebook', 'sfc'); ?></fb:login-button><?php
 		} else {
 
 			$albums = $albums['data'];

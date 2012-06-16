@@ -23,7 +23,7 @@ function sfc_login_profile_page($profile) {
 	$fbuid = get_user_meta($profile->ID, 'fbuid', true);
 	if (empty($fbuid)) {
 		?>
-			<td><p><fb:login-button scope="email" v="2" size="large" onlogin="sfc_login_update_fbuid(0);"><fb:intl><?php _e('Connect this WordPress account to Facebook', 'sfc'); ?></fb:intl></fb:login-button></p></td>
+			<td><p><fb:login-button scope="email" v="2" size="large" onlogin="sfc_login_update_fbuid(0);"><?php _e('Connect this WordPress account to Facebook', 'sfc'); ?></fb:login-button></p></td>
 		</tr>
 	</table>
 	<?php
