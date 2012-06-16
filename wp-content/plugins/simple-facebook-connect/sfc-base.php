@@ -488,8 +488,7 @@ include 'sfc-media.php';
 // add meta tags for *everything*
 add_action('wp_head','sfc_base_meta');
 function sfc_base_meta() {
-	global $post;
-	
+	$post='';
 	$fbmeta = array();
 	
 	$options = get_option('sfc_options');

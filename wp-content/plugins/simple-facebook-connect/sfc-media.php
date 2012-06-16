@@ -19,9 +19,9 @@ function sfc_media_handler($og, $post) {
 
 	// video handling
 	$vids = sfc_media_find_video($post, $content);
-	if (empty($vids)) return $og;
-	
-	$og = array_merge($og,$vids);
+
+	if ( !empty($vids) ) 
+		$og = array_merge($og,$vids);
 	
 	// image handling
 	$images = sfc_media_find_images($post, $content);
@@ -71,7 +71,7 @@ function sfc_media_find_images($post, $content='') {
 	// now search for images in the content itself
 	if ( preg_match_all('/<img\s+(.+?)>/i', $content, $matches) ) {
 		foreach($matches[1] as $match) {
-			foreach ( wp_kses_hair($match, array('http')) as $attr)
+			foreach ( wp_kses_hair($match, array('http','https')) as $attr)
 				$img[strtolower($attr['name'])] = $attr['value'];
 			if ( isset($img['src']) ) {
 				if ( !isset( $img['class'] ) || ( isset( $img['class'] ) && false === straipos( $img['class'], apply_filters( 'sfc_img_exclude', array( 'wp-smiley' ) ) ) ) ) { // ignore smilies
@@ -98,7 +98,7 @@ function sfc_media_find_video($post, $content='') {
 	if ( preg_match('/<iframe\s+(.+?)>/i', $content, $matches) ) {
 	
 		// parse out the params
-		foreach ( wp_kses_hair($matches[1], array('http')) as $attr) 
+		foreach ( wp_kses_hair($matches[1], array('http','https')) as $attr) 
 			$embed[strtolower($attr['name'])] = $attr['value'];
 		
 		if (!empty($embed['src'])) {
@@ -116,7 +116,8 @@ function sfc_media_find_video($post, $content='') {
 			else
 
 			// youtube iframes have srcs that start with http://www.youtube.com/embed/(id)
-			if ( preg_match('@http://[^/]*?youtube\.com/embed/([^?&#]+)@i', $embed['src'], $matches ) ) {	
+			if ( preg_match('@http[s]?://[^/]*?youtube\.com/embed/([^?&#]+)@i', $embed['src'], $matches ) 
+				&& $matches[1] != 'videoseries' ) {
 				// this is what youtube's own opengraph data looks like
 				$og['og:video'] = 'http://www.youtube.com/v/'.$matches[1].'?version=3&amp;autohide=1';
 				$og['og:video:height'] = 224;
@@ -226,13 +227,12 @@ function sfc_media_find_video($post, $content='') {
 		}
 	}
 	
-	else
-	
 	// TODO: This is crap and it rarely works. Think harder.
 	/*
 	// look for an embed to add with video_src (simple, just add first embed)
+	else
 	if ( preg_match('/<embed\s+(.+?)>/i', $content, $matches) ) {
-		foreach ( wp_kses_hair($matches[1], array('http')) as $attr) 
+		foreach ( wp_kses_hair($matches[1], array('http','https')) as $attr) 
 			$embed[strtolower($attr['name'])] = $attr['value'];
 	
 		$embed['src'] = preg_replace('/&.*$/','', $embed['src']);
@@ -267,6 +267,7 @@ width="410" height="341" id="veohFlashPlayerEmbed" name="veohFlashPlayerEmbed"><
 Dagli Brugsen Glud-Nørby opføres.</a> in <a href="http://www.veoh.com/browse/videos/category/entertainment">
 Entertainment</a>  |  View More <a href="http://www.veoh.com">Free Videos Online at Veoh.com</a></font>
 */
+
 	return $og;
 }
 

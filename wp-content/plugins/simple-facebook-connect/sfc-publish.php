@@ -61,7 +61,7 @@ function sfcPubToken() {
 	});
 }
 </script>
-<fb:login-button scope="offline_access,publish_stream,manage_pages" onlogin="sfcPubToken();"><fb:intl>Grant SFC Permissions</fb:intl></fb:login-button>
+<fb:login-button scope="offline_access,publish_stream,manage_pages" onlogin="sfcPubToken();">Grant SFC Permissions</fb:login-button>
 <?php
 }
 
@@ -194,7 +194,7 @@ FB.getLoginStatus(function(response) {
 	if (response.authResponse) {
 		sfcShowPubButtons();
 	} else {
-		jQuery('#sfc-publish-buttons').html('<fb:login-button v="2" scope="offline_access,publish_stream,manage_pages" onlogin="sfcShowPubButtons();"><fb:intl><?php echo addslashes(__('Connect with Facebook', 'sfc')); ?></fb:intl></fb:login-button>');
+		jQuery('#sfc-publish-buttons').html('<fb:login-button v="2" scope="offline_access,publish_stream,manage_pages" onlogin="sfcShowPubButtons();"><?php echo addslashes(__('Connect with Facebook', 'sfc')); ?></fb:login-button>');
 		FB.XFBML.parse();
 	}
 });
