@@ -23,6 +23,8 @@ foreach (glob(dirname(__FILE__). "/{$dir}/*.php") as $file) {
 	include $file;
 }
 
+do_action('themecheck_checks_loaded');
+
 function run_themechecks($php, $css, $other) {
 	global $themechecks;
 	$pass = true;
@@ -235,9 +237,11 @@ function get_theme_data_from_contents( $theme_data ) {
 	else
 		$tags = array();
 
-	$name = $theme = wp_kses( trim( $theme_name[1] ), $themes_allowed_tags );
-	$theme_uri = esc_url( trim( $theme_uri[1] ) );
-	$description = wp_kses( trim( $description[1] ), $themes_allowed_tags );
+	$theme = ( isset( $theme_name[1] ) ) ? wp_kses( trim( $theme_name[1] ), $themes_allowed_tags ) : '';
+
+	$theme_uri = ( isset( $theme_uri[1] ) ) ? esc_url( trim( $theme_uri[1] ) ) : '';
+
+	$description = ( isset( $description[1] ) ) ? wp_kses( trim( $description[1] ), $themes_allowed_tags ) : '';
 
 	if ( preg_match( '|Author:(.*)$|mi', $theme_data, $author_name ) ) {
 		if ( empty( $author_uri ) ) {
@@ -249,5 +253,58 @@ function get_theme_data_from_contents( $theme_data ) {
 		$author = __('Anonymous');
 	}
 
-	return array( 'Name' => $name, 'Title' => $theme, 'URI' => $theme_uri, 'Description' => $description, 'Author' => $author, 'Author_URI' => $author_uri, 'Version' => $version, 'Template' => $template, 'Status' => $status, 'Tags' => $tags );
+	return array( 'Name' => $theme, 'Title' => $theme, 'URI' => $theme_uri, 'Description' => $description, 'Author' => $author, 'Author_URI' => $author_uri, 'Version' => $version, 'Template' => $template, 'Status' => $status, 'Tags' => $tags );
+}
+
+/*
+ * 3.3/3.4 compat
+ *
+ */
+function tc_get_themes() {
+	
+	if ( ! class_exists( 'WP_Theme' ) )
+		return get_themes();
+
+	global $wp_themes;
+	if ( isset( $wp_themes ) )
+		return $wp_themes;
+
+	$themes = wp_get_themes();
+	$wp_themes = array();
+
+	foreach ( $themes as $theme ) {
+		$name = $theme->get('Name');
+		if ( isset( $wp_themes[ $name ] ) )
+			$wp_themes[ $name . '/' . $theme->get_stylesheet() ] = $theme;
+		else
+			$wp_themes[ $name ] = $theme;
+	}
+
+	return $wp_themes;	
+}
+
+function tc_get_theme_data( $theme_file ) {
+	
+	if ( ! class_exists( 'WP_Theme' ) )
+		return get_theme_data( $theme_file );
+
+	$theme = new WP_Theme( basename( dirname( $theme_file ) ), dirname( dirname( $theme_file ) ) );
+
+	$theme_data = array(
+		'Name' => $theme->get('Name'),
+		'URI' => $theme->display('ThemeURI', true, false),
+		'Description' => $theme->display('Description', true, false),
+		'Author' => $theme->display('Author', true, false),
+		'AuthorURI' => $theme->display('AuthorURI', true, false),
+		'Version' => $theme->get('Version'),
+		'Template' => $theme->get('Template'),
+		'Status' => $theme->get('Status'),
+		'Tags' => $theme->get('Tags'),
+		'Title' => $theme->get('Name'),
+		'AuthorName' => $theme->display('Author', false, false),
+		'License'	=> $theme->display( 'License', false, false),
+		'License URI'	=> $theme->display( 'License URI', false, false),
+		'Template Version'	=> $theme->display( 'Template Version', false, false)
+	);
+	return $theme_data;
 }
