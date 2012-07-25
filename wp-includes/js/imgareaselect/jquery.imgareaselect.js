@@ -1,8 +1,8 @@
 /*
  * imgAreaSelect jQuery plugin
- * version 0.9.10-monkey
+ * version 0.9.9
  *
- * Copyright (c) 2008-2013 Michal Wojciechowski (odyniec.net)
+ * Copyright (c) 2008-2011 Michal Wojciechowski (odyniec.net)
  *
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
@@ -117,9 +117,6 @@ $.imgAreaSelect = function (img, options) {
         /* Document element */
         docElem = document.documentElement,
 
-        /* User agent */
-        ua = navigator.userAgent,
-
         /* Various helper variables used throughout the code */
         $p, d, i, o, w, h, adjusted;
 
@@ -189,7 +186,7 @@ $.imgAreaSelect = function (img, options) {
      * @return Viewport X
      */
     function evX(event) {
-        return max(event.pageX || 0, touchCoords(event).x) - parOfs.left;
+        return event.pageX - parOfs.left;
     }
 
     /**
@@ -200,23 +197,7 @@ $.imgAreaSelect = function (img, options) {
      * @return Viewport Y
      */
     function evY(event) {
-        return max(event.pageY || 0, touchCoords(event).y) - parOfs.top;
-    }
-
-    /**
-     * Get X and Y coordinates of a touch event
-     *
-     * @param event
-     *            The event object
-     * @return Coordinates object
-     */
-    function touchCoords(event) {
-        var oev = event.originalEvent || {};
-
-        if (oev.touches && oev.touches.length)
-            return { x: oev.touches[0].pageX, y: oev.touches[0].pageY };
-        else
-            return { x: 0, y: 0 };
+        return event.pageY - parOfs.top;
     }
 
     /**
@@ -272,11 +253,11 @@ $.imgAreaSelect = function (img, options) {
      */
     function adjust() {
         /*
-         * Do not adjust if image has not yet loaded or if width is not a
-         * positive number. The latter might happen when imgAreaSelect is put
-         * on a parent element which is then hidden.
+         * Do not adjust if image width is not a positive number. This might
+         * happen when imgAreaSelect is put on a parent element which is then
+         * hidden.
          */
-        if (!imgLoaded || !$img.width())
+        if (!$img.width())
             return;
 
         /*
@@ -387,7 +368,7 @@ $.imgAreaSelect = function (img, options) {
              * Need to reset the document keypress event handler -- unbind the
              * current handler
              */
-            if ($.imgAreaSelect.onKeyPress != docKeyPress)
+            if ($.imgAreaSelect.keyPress != docKeyPress)
                 $(document).unbind($.imgAreaSelect.keyPress,
                     $.imgAreaSelect.onKeyPress);
 
@@ -412,7 +393,7 @@ $.imgAreaSelect = function (img, options) {
          * borderOpacity, borderColor1, and borderColor2 options (which are now
          * deprecated). Borders created with GIF background images are fine.
          */
-        if (msie && $border.outerWidth() - $border.innerWidth() == 2) {
+        if ($.browser.msie && $border.outerWidth() - $border.innerWidth() == 2) {
             $border.css('margin', 0);
             setTimeout(function () { $border.css('margin', 'auto'); }, 0);
         }
@@ -502,8 +483,8 @@ $.imgAreaSelect = function (img, options) {
         if (options.autoHide || selection.width * selection.height == 0)
             hide($box.add($outer), function () { $(this).hide(); });
 
-        $(document).off('mousemove touchmove', selectingMouseMove);
-        $box.on('mousemove touchmove', areaMouseMove);
+        $(document).unbind('mousemove', selectingMouseMove);
+        $box.mousemove(areaMouseMove);
 
         options.onSelectEnd(img, getSelection());
     }
@@ -516,14 +497,7 @@ $.imgAreaSelect = function (img, options) {
      * @return false
      */
     function areaMouseDown(event) {
-        if (event.type == 'mousedown' && event.which != 1) return false;
-
-    	/*
-    	 * With mobile browsers, there is no "moving the pointer over" action,
-    	 * so we need to simulate one mousemove event happening prior to
-    	 * mousedown/touchstart.
-    	 */
-    	areaMouseMove(event);
+        if (event.which != 1) return false;
 
         adjust();
 
@@ -534,22 +508,22 @@ $.imgAreaSelect = function (img, options) {
             x1 = viewX(selection[/w/.test(resize) ? 'x2' : 'x1']);
             y1 = viewY(selection[/n/.test(resize) ? 'y2' : 'y1']);
 
-            $(document).on('mousemove touchmove', selectingMouseMove)
-                .one('mouseup touchend', docMouseUp);
-            $box.off('mousemove touchmove', areaMouseMove);
+            $(document).mousemove(selectingMouseMove)
+                .one('mouseup', docMouseUp);
+            $box.unbind('mousemove', areaMouseMove);
         }
         else if (options.movable) {
             startX = left + selection.x1 - evX(event);
             startY = top + selection.y1 - evY(event);
 
-            $box.off('mousemove touchmove', areaMouseMove);
+            $box.unbind('mousemove', areaMouseMove);
 
-            $(document).on('mousemove touchmove', movingMouseMove)
-                .one('mouseup touchend', function () {
+            $(document).mousemove(movingMouseMove)
+                .one('mouseup', function () {
                     options.onSelectEnd(img, getSelection());
 
-                    $(document).off('mousemove touchmove', movingMouseMove);
-                    $box.on('mousemove touchmove', areaMouseMove);
+                    $(document).unbind('mousemove', movingMouseMove);
+                    $box.mousemove(areaMouseMove);
                 });
         }
         else
@@ -699,7 +673,7 @@ $.imgAreaSelect = function (img, options) {
      * Start selection
      */
     function startSelection() {
-        $(document).off('mousemove touchmove', startSelection);
+        $(document).unbind('mousemove', startSelection);
         adjust();
 
         x2 = x1;
@@ -714,10 +688,9 @@ $.imgAreaSelect = function (img, options) {
 
         shown = true;
 
-        $(document).off('mouseup touchend', cancelSelection)
-            .on('mousemove touchmove', selectingMouseMove)
-            .one('mouseup touchend', docMouseUp);
-        $box.off('mousemove touchmove', areaMouseMove);
+        $(document).unbind('mouseup', cancelSelection)
+            .mousemove(selectingMouseMove).one('mouseup', docMouseUp);
+        $box.unbind('mousemove', areaMouseMove);
 
         options.onSelectStart(img, getSelection());
     }
@@ -726,8 +699,8 @@ $.imgAreaSelect = function (img, options) {
      * Cancel selection
      */
     function cancelSelection() {
-        $(document).off('mousemove touchmove', startSelection)
-            .off('mouseup touchend', cancelSelection);
+        $(document).unbind('mousemove', startSelection)
+            .unbind('mouseup', cancelSelection);
         hide($box.add($outer));
 
         setSelection(selX(x1), selY(y1), selX(x1), selY(y1));
@@ -748,15 +721,14 @@ $.imgAreaSelect = function (img, options) {
      */
     function imgMouseDown(event) {
         /* Ignore the event if animation is in progress */
-        if (event.which > 1 || $outer.is(':animated')) return false;
+        if (event.which != 1 || $outer.is(':animated')) return false;
 
         adjust();
         startX = x1 = evX(event);
         startY = y1 = evY(event);
 
         /* Selection will start when the mouse is moved */
-        $(document).on({ 'mousemove touchmove': startSelection,
-            'mouseup touchend': cancelSelection });
+        $(document).mousemove(startSelection).mouseup(cancelSelection);
 
         return false;
     }
@@ -990,12 +962,12 @@ $.imgAreaSelect = function (img, options) {
             $($border[1]).css({ borderStyle: 'dashed', borderColor: o });
 
         /* Append all the selection area elements to the container box */
-        $box.append($area.add($border).add($areaOpera)).append($handles);
+        $box.append($area.add($border).add($areaOpera).add($handles));
 
-        if (msie) {
-            if (o = ($outer.css('filter')||'').match(/opacity=(\d+)/))
+        if ($.browser.msie) {
+            if (o = $outer.css('filter').match(/opacity=(\d+)/))
                 $outer.css('opacity', o[1]/100);
-            if (o = ($border.css('filter')||'').match(/opacity=(\d+)/))
+            if (o = $border.css('filter').match(/opacity=(\d+)/))
                 $border.css('opacity', o[1]/100);
         }
 
@@ -1014,22 +986,20 @@ $.imgAreaSelect = function (img, options) {
 
         if (options.disable || options.enable === false) {
             /* Disable the plugin */
-            $box.off({ 'mousemove touchmove': areaMouseMove,
-                'mousedown touchstart': areaMouseDown });
-            $(window).off('resize', windowResize);
+            $box.unbind('mousemove', areaMouseMove).unbind('mousedown', areaMouseDown);
+            $(window).unbind('resize', windowResize);
         }
         else {
             if (options.enable || options.disable === false) {
                 /* Enable the plugin */
                 if (options.resizable || options.movable)
-                    $box.on({ 'mousemove touchmove': areaMouseMove,
-                        'mousedown touchstart': areaMouseDown });
+                    $box.mousemove(areaMouseMove).mousedown(areaMouseDown);
 
                 $(window).resize(windowResize);
             }
 
             if (!options.persistent)
-                $img.add($outer).on('mousedown touchstart', imgMouseDown);
+                $img.add($outer).mousedown(imgMouseDown);
         }
 
         options.enable = options.disable = undefined;
@@ -1106,11 +1076,6 @@ $.imgAreaSelect = function (img, options) {
      */
     this.update = doUpdate;
 
-    /* Do the dreaded browser detection */
-    var msie = (/msie ([\w.]+)/i.exec(ua)||[])[1],
-        opera = /opera/i.test(ua),
-        safari = /webkit/i.test(ua) && !/chrome/i.test(ua);
-
     /*
      * Traverse the image's parent elements (up to <body>) and find the
      * highest z-index
@@ -1133,13 +1098,14 @@ $.imgAreaSelect = function (img, options) {
      */
     zIndex = options.zIndex || zIndex;
 
-    if (msie)
+    if ($.browser.msie)
         $img.attr('unselectable', 'on');
 
     /*
      * In MSIE and WebKit, we need to use the keydown event instead of keypress
      */
-    $.imgAreaSelect.keyPress = msie || safari ? 'keydown' : 'keypress';
+    $.imgAreaSelect.keyPress = $.browser.msie ||
+        $.browser.safari ? 'keydown' : 'keypress';
 
     /*
      * There is a bug affecting the CSS cursor property in Opera (observed in
@@ -1148,7 +1114,7 @@ $.imgAreaSelect = function (img, options) {
      * event, we're adding an additional div to $box and we're going to toggle
      * it when mouse moves inside the selection area.
      */
-    if (opera)
+    if ($.browser.opera)
         $areaOpera = div().css({ width: '100%', height: '100%',
             position: 'absolute', zIndex: zIndex + 2 || 2 });
 
@@ -1177,7 +1143,7 @@ $.imgAreaSelect = function (img, options) {
      * attribute seems to trigger it. The check is for version 7 and above to
      * accommodate for MSIE 9 running in compatibility mode.
      */
-    if (!imgLoaded && msie && msie >= 7)
+   if (!imgLoaded && $.browser.msie && $.browser.version >= 7)
         img.src = img.src;
 };
 
