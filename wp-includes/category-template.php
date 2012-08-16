@@ -160,7 +160,7 @@ function get_the_category_list( $separator = '', $parents='', $post_id = false )
 	if ( empty( $categories ) )
 		return apply_filters( 'the_category', __( 'Uncategorized' ), $separator, $parents );
 
-	$rel = ( is_object( $wp_rewrite ) && $wp_rewrite->using_permalinks() ) ? 'rel="category tag"' : 'rel="category"';
+	$rel = ( is_object( $wp_rewrite ) && $wp_rewrite->using_permalinks() ) ? 'rel="tag"' : 'rel="category"';
 
 	$thelist = '';
 	if ( '' == $separator ) {
