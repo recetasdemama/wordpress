@@ -113,9 +113,6 @@ class Jetpack_Comments extends Highlander_Comments_Base {
 
 		// After a comment is posted
 		add_action( 'comment_post', array( $this, 'add_comment_meta' ) );
-
-		// Add some JS to the footer
-		add_action( 'wp_footer', array( $this, 'watch_comment_parent' ), 100 );
 	}
 
 	/** Output Methods ********************************************************/
@@ -125,6 +122,9 @@ class Jetpack_Comments extends Highlander_Comments_Base {
 	 * @since JetpackComments (1.4)
 	 */
 	public function comment_form_before() {
+		// Add some JS to the footer
+		add_action( 'wp_footer', array( $this, 'watch_comment_parent' ), 100 );
+
 		ob_start();
 	}
 
@@ -224,7 +224,8 @@ class Jetpack_Comments extends Highlander_Comments_Base {
 	?>
 
 		<script type="text/javascript">
-			var comm_par = document.getElementById( 'comment_parent' ).value,
+			var comm_par_el = document.getElementById( 'comment_parent' ),
+			    comm_par = (comm_par_el && comm_par_el.value) ? comm_par_el.value : '',
 			    frame = document.getElementById( 'jetpack_remote_comment' ),
 			    tellFrameNewParent;
 
@@ -236,51 +237,67 @@ class Jetpack_Comments extends Highlander_Comments_Base {
 				}
 			};
 
-			addComment._Jetpack_moveForm = addComment.moveForm;
+	<?php if ( get_option( 'thread_comments' ) && get_option( 'thread_comments_depth' ) ) : ?>
 
-			addComment.moveForm = function( commId, parentId, respondId, postId ) {
-				var returnValue = addComment._Jetpack_moveForm( commId, parentId, respondId, postId ), cancelClick, cancel;
+			if ( 'undefined' !== typeof addComment ) {
+				addComment._Jetpack_moveForm = addComment.moveForm;
 
-				if ( false === returnValue ) {
-					cancel = document.getElementById( 'cancel-comment-reply-link' );
-					cancelClick = cancel.onclick;
-					cancel.onclick = function() {
-						var cancelReturn = cancelClick.call( this );
-						if ( false !== cancelReturn ) {
+				addComment.moveForm = function( commId, parentId, respondId, postId ) {
+					var returnValue = addComment._Jetpack_moveForm( commId, parentId, respondId, postId ), cancelClick, cancel;
+
+					if ( false === returnValue ) {
+						cancel = document.getElementById( 'cancel-comment-reply-link' );
+						cancelClick = cancel.onclick;
+						cancel.onclick = function() {
+							var cancelReturn = cancelClick.call( this );
+							if ( false !== cancelReturn ) {
+								return cancelReturn;
+							}
+
+							if ( !comm_par ) {
+								return cancelReturn;
+							}
+
+							comm_par = 0;
+
+							tellFrameNewParent();
+
 							return cancelReturn;
-						}
-
-						if ( !comm_par ) {
-							return cancelReturn;
-						}
-
-						comm_par = 0;
-
-						tellFrameNewParent();
-
-						return cancelReturn;
-					};
-				}
-
-				if ( comm_par == parentId ) {
-					return returnValue;
-				}
-
-				comm_par = parentId;
-
-				tellFrameNewParent();
-
-				return returnValue;
-			};
-
-			if ( window.postMessage ) {
-				window.addEventListener( 'message', function( event ) {
-					if ( <?php echo json_encode( esc_url_raw( $url_origin ) ); ?> !== event.origin ) {
-						return;
+						};
 					}
 
-					jQuery( frame ).height( event.data );
-				} );
+					if ( comm_par == parentId ) {
+						return returnValue;
+					}
+
+					comm_par = parentId;
+
+					tellFrameNewParent();
+
+					return returnValue;
+				};
+			}
+
+	<?php endif; ?>
+
+			if ( window.postMessage ) {
+				if ( document.addEventListener ) {
+					window.addEventListener( 'message', function( event ) {
+						if ( <?php echo json_encode( esc_url_raw( $url_origin ) ); ?> !== event.origin ) {
+							return;
+						}
+
+						jQuery( frame ).height( event.data );
+					} );
+				} else if ( document.attachEvent ) {
+					window.attachEvent( 'message', function( event ) {
+						if ( <?php echo json_encode( esc_url_raw( $url_origin ) ); ?> !== event.origin ) {
+							return;
+						}
+
+						jQuery( frame ).height( event.data );
+					} );
+				}
 			}
 		</script>
 
