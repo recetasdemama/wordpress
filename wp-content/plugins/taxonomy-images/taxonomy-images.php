@@ -922,20 +922,22 @@ add_action( 'admin_print_styles-edit-tags.php', 'taxonomy_image_plugin_css_thick
  * @since     0.7
  * @access    private
  */
-function taxonomy_image_plugin_css_public() {
-	if ( apply_filters( 'taxonomy-images-disable-public-css', false ) ) {
-		return;
-	}
-	wp_enqueue_style(
-		'taxonomy-image-plugin-public',
-		taxonomy_image_plugin_url( 'style.css' ),
-		array(),
-		taxonomy_image_plugin_version(),
-		'screen'
-		);
-}
-add_action( 'wp_print_styles', 'taxonomy_image_plugin_css_public' );
 
+/* Disabled as it's merged with the them stylesheet'
+ * function taxonomy_image_plugin_css_public() {
+ *	if ( apply_filters( 'taxonomy-images-disable-public-css', false ) ) {
+ *		return;
+ *	}
+ *	wp_enqueue_style(
+ *		'taxonomy-image-plugin-public',
+ *		taxonomy_image_plugin_url( 'style.css' ),
+ *		array(),
+ *		taxonomy_image_plugin_version(),
+ *		'screen'
+ *		);
+ *}
+ * add_action( 'wp_print_styles', 'taxonomy_image_plugin_css_public' );
+ */
 
 /**
  * Activation.
