@@ -34,7 +34,9 @@
                                         </select>
                                     </td>
                                 </tr>
-<?php $this->mailinglist_specific_rows($viewed_mp); ?>
+                                
+                                <?php if(isset($viewed_mp) && file_exists(dirname(__FILE__).'/rows-' . $viewed_mp . '.php')) require dirname(__FILE__). '/rows-' . $viewed_mp . '.php'; ?>
+                                
                                 <tbody class="form_rows"<?php if (isset($viewed_mp) && in_array($viewed_mp, array('mailchimp', 'ymlp')) && isset($opts['use_api']) && $opts['use_api'] == 1)
     echo ' style="display:none" '; ?>>
                                     <tr valign="top"><th scope="row">Newsletter form action</th>
@@ -97,15 +99,14 @@ endif;
                             </p>
                     </div>
                 </div></div></div></div></div>
-<div class="postbox-container" style="width:30%;">
+<div class="postbox-container" style="width:33%; float:right; margin-right:1%;">
     <div class="metabox-holder">	
         <div class="meta-box-sortables">						
-<?php
-$this->likebox();
-$this->donate_box();
-$this->latest_posts();
-$this->support_box();
-?>				
+        <?php
+        $this->donate_box();
+        $this->latest_posts();
+        $this->support_box();
+        ?>				
         </div>
     </div>
 </div>
@@ -130,7 +131,7 @@ $this->support_box();
 
                     </td>
                     <td>
-                        <a href="http://twitter.com/share" class="twitter-share-button" data-url="<?php echo $this->plugin_url; ?>" data-text="Showing my appreciation to @DannyvanKooten for his awsome #WordPress plugin: <?php echo $this->shortname; ?>" data-count="none">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+                        <a href="http://twitter.com/share" class="twitter-share-button" data-url="<?php echo $this->plugin_url; ?>" data-text="Showing my appreciation to @DannyvanKooten for his awesome #WordPress plugin: <?php echo $this->shortname; ?>" data-count="none">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
                     </td>
                 </tr>
             </table>

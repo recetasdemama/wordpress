@@ -201,108 +201,25 @@ if (!class_exists('NewsletterSignUpAdmin')) {
         }
 
         /**
-         * Show the rows that are unique for some mailinglist providers (i.e. MC API or YMLP API)
-         * @param string $mailinglist The mailinglist provider that is being viewed
-         */
-        function mailinglist_specific_rows($mailinglist) {
-            $opts = get_option('nsu_mailinglist');
-
-            switch ($mailinglist) {
-
-                case 'mailchimp':
-                    ?>
-                    <tr valign="top">
-                        <th scope="row"><label for="use_api">Use MailChimp API? <span class="ns_small">(recommended)</span></label></th>
-                        <td><input type="checkbox" id="use_api" name="nsu_mailinglist[use_api]" value="1"<?php
-                    if (isset($opts['use_api']) && $opts['use_api'] == '1') {
-                        echo ' checked="checked"';
-                    }
-                    ?> /></td>
-                    </tr>
-                    <tbody class="api_rows" <?php if (!isset($opts['use_api']) || $opts['use_api'] != 1)
-                        echo ' style="display:none" '; ?>>
-                        <tr valign="top"><th scope="row">MailChimp API Key <a target="_blank" href="http://admin.mailchimp.com/account/api">(?)</a></th>
-                            <td><input size="50%" type="text" id="mc_api_key" name="nsu_mailinglist[mc_api_key]" value="<?php if (isset($opts['mc_api_key']))
-                        echo $opts['mc_api_key']; ?>" /></td>
-                        </tr>
-                        <tr valign="top"><th scope="row">MailChimp List ID <a href="http://www.mailchimp.com/kb/article/how-can-i-find-my-list-id" target="_blank">(?)</a></th>
-                            <td><input size="50%" type="text" name="nsu_mailinglist[mc_list_id]" value="<?php if (isset($opts['mc_list_id']))
-                        echo $opts['mc_list_id']; ?>" /></td>
-                        </tr>
-                    </tbody>
-                    <?php
-                    break;
-
-                case 'ymlp':
-                    ?>
-                    <tr valign="top"><th scope="row"><label for="use_api">Use the YMLP API? <span class="ns_small">(recommended)</span></label></th>
-                        <td><input type="checkbox" id="use_api" name="nsu_mailinglist[use_api]" value="1"<?php
-                    if (isset($opts['use_api']) && $opts['use_api'] == '1') {
-                        echo ' checked="checked"';
-                    }
-                    ?> /></td>
-                    </tr>
-
-                    <tbody class="api_rows"<?php if (!isset($opts['use_api']) || $opts['use_api'] != 1)
-                        echo ' style="display:none" '; ?>>
-                        <tr valign="top"><th scope="row">YMLP API Key <a target="_blank" href="http://www.ymlp.com/app/api.php">(?)</a></th>
-                            <td><input size="50%" type="text" id="ymlp_api_key" name="nsu_mailinglist[ymlp_api_key]" value="<?php if (isset($opts['ymlp_api_key']))
-                        echo $opts['ymlp_api_key']; ?>" /></td>
-                        </tr>
-                        <tr valign="top"><th scope="row">YMLP Username</th>
-                            <td><input size="50%" type="text" id="ymlp_username" name="nsu_mailinglist[ymlp_username]" value="<?php if (isset($opts['ymlp_username']))
-                        echo $opts['ymlp_username']; ?>" /></td>
-                        </tr>
-                        <tr valign="top"><th scope="row">YMLP GroupID<span class="ns_small">(starts at 1, check URL when 'viewing all contacts' in certain group)</span></th>
-                            <td><input size="50%" type="text" id="ymlp_groupid" name="nsu_mailinglist[ymlp_groupid]" value="<?php if (isset($opts['ymlp_groupid']))
-                        echo $opts['ymlp_groupid']; ?>" /></td>
-                        </tr>
-                    </tbody>
-                    <?php
-                    break;
-
-                case 'phplist':
-                    ?>
-                    <tr valign="top">
-                        <th scope="row">PHPList list ID</th>
-                        <td><input size="2" type="text" name="nsu_mailinglist[phplist_list_id]" value="<?php
-                    if (isset($opts['phplist_list_id'])) {
-                        echo $opts['phplist_list_id'];
-                    } else {
-                        echo 1;
-                    };
-                    ?>" /></td>
-                    </tr>
-                    <?php
-                    break;
-
-                case 'aweber':
-                    ?>
-                    <tr valign="top">
-                        <th scope="row">Aweber list name</th>
-                        <td><input size="25%" type="text" name="nsu_mailinglist[aweber_list_name]" value="<?php if (isset($opts['aweber_list_name']))
-                        echo $opts['aweber_list_name']; ?>" /></td>
-                    </tr>
-                    <?php
-                    break;
-            }
-        }
-
-        /**
          * Renders a donate box
          */
         function donate_box() {
-            $content = '<p>This plugin cost me countless hours of work. If you use it, please donate a token of your appreciation!</p>
-					<center>
-					<form id="dvk_donate" action="https://www.paypal.com/cgi-bin/webscr" method="post">
-                                            <input type="hidden" name="cmd" value="_s-xclick">
-                                            <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
-                                            ">
-                                            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-                                            <img alt="" border="0" src="https://www.paypalobjects.com/nl_NL/i/scr/pixel.gif" width="1" height="1">
-                                            </form>
+            $content = '
+            <p>I spent countless hours developing this plugin for <b>FREE</b>. If you like it, consider donating a token of your appreciation.</p>
+					
+			<form id="dvk_donate" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+                <input type="hidden" name="cmd" value="_s-xclick">
+                <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
+                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                <img alt="" border="0" src="https://www.paypalobjects.com/nl_NL/i/scr/pixel.gif" width="1" height="1">
+            </form>
 
-				</center>';
+			<p>Or you can: </p>
+            <ul>
+                <li><a href="http://wordpress.org/extend/plugins/newsletter-sign-up/">Give a 5&#9733; rating on WordPress.org</a></li>
+                <li><a href="'.$this->plugin_url.'">Blog about it and link to the plugin page</a></li>
+                <li style="vertical-align:bottom;"><a href="http://twitter.com/share" class="twitter-share-button" data-url="'.$this->plugin_url.'" data-text="Showing my appreciation to @DannyvanKooten for his #WordPress plugin: '.$this->shortname.'" data-count="none">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></li>
+            </ul>';
             $this->postbox($this->hook . '-donatebox', 'Donate $10, $20 or $50!', $content);
         }
 
@@ -322,6 +239,7 @@ if (!class_exists('NewsletterSignUpAdmin')) {
                 }
                 $content .= '<li class="dvk-rss"><a href="http://dannyvankooten.com/feed/">Subscribe to my RSS feed</a></li>';
                 $content .= '<li class="dvk-email"><a href="http://dannyvankooten.com/newsletter/">Subscribe by email</a></li>';
+                $content .= '<li class="dvk-twitter">You should follow me on twitter <a href="http://twitter.com/dannyvankooten">here</a></li>';
                 $content .= '</ul><br style="clear:both;" />';
             } else {
                 $content = '<p>No updates..</p>';
@@ -329,25 +247,13 @@ if (!class_exists('NewsletterSignUpAdmin')) {
             $this->postbox($this->hook . '-latestpostbox', 'Latest blog posts..', $content);
         }
 
-        /**
-         * Renders a box with options on how to show your appreciations
-         */
-        function likebox() {
-            $content = '<p>Consider the following options, please:</p>
-				<ul>
-					<li><a href="http://DannyvanKooten.com/donate/" target="_blank">Buy me a beer</a></li>
-					<li><a href="http://wordpress.org/extend/plugins/' . $this->hook . '/" target="_blank">Give it a good rating on WordPress.org.</a></li>
-					<li>Tell others about this plugin.</li>
-				</ul>';
-            $this->postbox($this->hook . '-likebox', 'Like this plugin?', $content);
-        }
 
         /**
          * Renders a box with a link to the support forums for NSU
          */
         function support_box() {
             $content = '<p>Are you having trouble setting-up ' . $this->shortname . ', experiencing an error or got a great idea on how to improve it?</p><p>Please, post
-				your question or tip in the <a target="_blank" href="http://wordpress.org/tags/' . $this->hook . '">Support forums</a> on WordPress.org</p>';
+				your question or tip in the <a target="_blank" href="http://wordpress.org/tags/' . $this->hook . '">support forums</a> on WordPress.org. This is so that others can benefit from this too.</p>';
             $this->postbox($this->hook . '-support-box', "Looking for support?", $content);
         }
 
@@ -360,9 +266,9 @@ if (!class_exists('NewsletterSignUpAdmin')) {
          */
         function postbox($id, $title, $content) {
             ?>
-            <div id="<?php echo $id; ?>" class="postbox dvk-box">		
-                <div class="handlediv" title="<?php _e('Click to toggle'); ?>"><br></div>
-                <h3 class="hndle"><span><?php echo $title; ?></span></h3>
+            <div id="<?php echo $id; ?>" class="dvk-box">		
+               
+                <h3 class="hndle"><?php echo $title; ?></h3>
                 <div class="inside">
                     <?php echo $content; ?>			
                 </div>

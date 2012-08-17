@@ -87,11 +87,10 @@
                         </form>
                         <br style="clear:both;" />
                     </div></div></div></div></div></div>
-<div class="postbox-container" style="width:30%;">
+<div class="postbox-container" style="width:33%; float:right; margin-right:1%;">
     <div class="metabox-holder">	
         <div class="meta-box-sortables">						
 <?php
-$this->likebox();
 $this->donate_box();
 $this->latest_posts();
 $this->support_box();
