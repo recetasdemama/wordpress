@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: WordPress Tweeter
-Plugin URI: http://www.fusiontech.me/wordpress/wordpress-tweeter/
-Description: WordPress Tweeter tweets every time you make a new post on your blog. Make sure you read the <a href="http://www.fusiontech.me/wordpress/wordpress-tweeter/" title="WordPress Tweeter">documentations</a> before using this plugin. The changelog, installation instructions, and any other plugin related information is there.
-Version: 0.8
+Plugin URI: http://www.fusionswift.com/wordpress/wordpress-tweeter/
+Description: WordPress Tweeter tweets every time you make a new post on your blog. Make sure you read the <a href="http://www.fusionswift.com/wordpress/wordpress-tweeter/" title="WordPress Tweeter">documentations</a> before using this plugin. The changelog, installation instructions, and any other plugin related information is there.
+Version: 0.8.1
 Author: Tech163
-Author URI: http://www.fusiontech.me/
+Author URI: http://www.fusionswift.com/
 */
 
 function wp_tweeter() {
@@ -189,7 +189,7 @@ function wp_tweeter_admin() {
 	?>
 	<style type="text/css">
 		.twittersignin {
-			background: url(http://www.fusiontech.me/files/2010/03/twitter_signin.png);
+			background: url(//www.fusionswift.com/files/2010/03/twitter_signin.png);
 			width: 150px;
 			height: 22px;
 			display: block;
@@ -238,7 +238,7 @@ function wp_tweeter_new_tweet() {
 	<p><span id="tweetcounter">140</span> characters remaining </p>
 	<p><input type="submit" value="TWEET!" /></p>
 	</form>
-	<p>Read the <a href="http://www.fusiontech.me/wordpress/wordpress-tweeter/" target="_blank">documentation</a> for information regarding this feature.</p>
+	<p>Read the <a href="http://www.fusionswift.com/wordpress/wordpress-tweeter/" target="_blank">documentation</a> for information regarding this feature.</p>
 	<?php echo '</div>';
 }
 
@@ -469,7 +469,7 @@ function wp_tweeter_meta_box() {
 
 function wp_tweeter_uninstall() {
 	delete_option('wp_tweeter');
-	echo '<p>WordPress Tweeter options have been successfully uninstalled. Feel free to deactivate the plugin now. We would appreciate it if you <a href="http://www.fusiontech.me/wordpress/wordpress-tweeter/" target="_blank">share the reason by leaving a comment</a> on why you have decided to uninstall WordPress Tweeter. I\'m are hoping to make it better everyday.</p>';
+	echo '<p>WordPress Tweeter options have been successfully uninstalled. Feel free to deactivate the plugin now. We would appreciate it if you <a href="http://www.fusionswift.com/wordpress/wordpress-tweeter/" target="_blank">share the reason by leaving a comment</a> on why you have decided to uninstall WordPress Tweeter. I\'m are hoping to make it better everyday.</p>';
 }
 
 function wp_tweeter_menu() {
@@ -477,7 +477,7 @@ function wp_tweeter_menu() {
 	add_submenu_page('edit.php', 'New Tweet', 'New Tweet', 8, basename(__FILE__), 'wp_tweeter_new_tweet');
 	add_meta_box('wordpress_tweeter', 'WP Tweeter Options', 'wp_tweeter_meta_box', 'post', 'side');
 	if(function_exists('add_contextual_help')) {
-		$link = '<a href="http://www.fusiontech.me/wordpress/wordpress-tweeter/" target="_blank">View Documentations</a>';
+		$link = '<a href="http://www.fusionswift.com/wordpress/wordpress-tweeter/" target="_blank">View Documentations</a>';
 		add_contextual_help($newtweet, '<p>You can use this form to tweet directly from inside WordPress. Tweet messages longer than 140 characters will be truncated. ' . $link . '</p>');
 		add_contextual_help($options, '<p>This page allows you to customize the options for WordPress Tweeter. This page allows you to change twitter accounts, modify templates, settings, and much others. ' . $link . '</p>');
 	}
@@ -486,7 +486,7 @@ function wp_tweeter_menu() {
 function wp_tweeter_notice() {
 	$wptweeteroptions = get_option('wp_tweeter');
 	if(function_exists('admin_url') && !is_array($wptweeteroptions)) {
-		echo '<div class="error"><p>WordPress Tweeter is NOT configured yet! Please <a href="' . admin_url('options-general.php?page=wptweeter.php') . '">configure</a> it now! <strong><a href="http://www.fusiontech.me/wordpress/wordpress-tweeter/" target="_blank">Documentations</a></strong></p></div>';
+		echo '<div class="error"><p>WordPress Tweeter is NOT configured yet! Please <a href="' . admin_url('options-general.php?page=wptweeter.php') . '">configure</a> it now! <strong><a href="http://www.fusionswift.com/wordpress/wordpress-tweeter/" target="_blank">Documentations</a></strong></p></div>';
 	}
 }
 
