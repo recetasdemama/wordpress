@@ -2,7 +2,7 @@
 
 class All_in_One_SEO_Pack {
 	
- 	var $version = "1.6.14.5";
+ 	var $version = "1.6.14.6";
  	
  	/** Max numbers of chars in auto-generated description */
  	var $maximum_description_length = 160;
@@ -405,6 +405,11 @@ function aiosp_google_analytics(){
 
 		  var _gaq = _gaq || [];
 		  _gaq.push(['_setAccount', '<?php echo $aioseop_options['aiosp_google_analytics_id']; ?>']);
+<?php if ( !empty( $aioseop_options['aiosp_ga_domain'] ) ) {
+?>		  _gaq.push(['_setDomainName', '<?php echo $aioseop_options['aiosp_ga_domain']; ?>']);
+<?php
+}
+?>
 		  _gaq.push(['_trackPageview']);
 
 		  (function() {
@@ -1406,8 +1411,9 @@ function aiosp_google_analytics(){
 					"aiosp_404_title_format"=>'Nothing found for %request_words%',
 					"aiosp_paged_format"=>' - Part %page%',
 					"aiosp_google_analytics_id"=>null,
-					"aiosp_google_publisher"=>'',
+					"aiosp_ga_domain"=>'',
 					"aiosp_ga_track_outbound_links"=>0,
+					"aiosp_google_publisher"=>'',
 					"aiosp_use_categories"=>0,
 					"aiosp_dynamic_postspage_keywords"=>1,
 					"aiosp_category_noindex"=>1,
@@ -1440,13 +1446,13 @@ function aiosp_google_analytics(){
 				$options = Array(	"aiosp_can", "aiosp_donate", "aiosp_home_title", "aiosp_home_description", "aiosp_home_keywords", "aiosp_max_words_excerpt",
 									"aiosp_rewrite_titles", "aiosp_post_title_format", "aiosp_page_title_format", "aiosp_category_title_format",
 									"aiosp_archive_title_format", "aiosp_tag_title_format", "aiosp_search_title_format", "aiosp_description_format",
-									"aiosp_404_title_format", "aiosp_paged_format", "aiosp_google_publisher", "aiosp_google_analytics_id", "aiosp_ga_track_outbound_links",
+									"aiosp_404_title_format", "aiosp_paged_format", "aiosp_google_publisher", "aiosp_google_analytics_id", "aiosp_ga_domain", "aiosp_ga_track_outbound_links",
 									"aiosp_use_categories", "aiosp_dynamic_postspage_keywords", "aiosp_category_noindex", "aiosp_archive_noindex",
 									"aiosp_tags_noindex", "aiosp_generate_descriptions", "aiosp_cap_cats", "aiosp_enablecpost", "aiosp_debug_info",
 									"aiosp_post_meta_tags", "aiosp_page_meta_tags", "aiosp_home_meta_tags", "aiosp_ex_pages", "aiosp_do_log",
 									"aiosp_enabled", "aiosp_use_tags_as_keywords", "aiosp_seopostcol", "aiosp_seocustptcol", "aiosp_posttypecolumns");
 				
-				$esc_options = Array( "aiosp_home_title", "aiosp_home_description", "aiosp_google_publisher", "aiosp_google_analytics_id" );
+				$esc_options = Array( "aiosp_home_title", "aiosp_home_description", "aiosp_google_analytics_id", "aiosp_ga_domain", "aiosp_google_publisher", "aiosp_google_analytics_id" );
 				
 				foreach( $options as $o ) {
 					$aioseop_options[$o] = '';
@@ -1535,17 +1541,7 @@ href="http://semperplugins.com/plugins/all-in-one-seo-pack-pro-version/"><?php _
 		<a href="http://semperfiwebdesign.com/headwayaio/" target="_blank"><img src="<?php echo AIOSEOP_PLUGIN_IMAGES_URL; ?>headwaybanner.png"></a>
 	</div>
 
-	<div style="clear:both;">	
-		<?php $themefuse_ab = ( mt_rand( 0, 1 ) ) ? 'a' : 'b'; ?>
-		<div style="float:left;background-color:white;margin-top:3px;margin-right:15px;">
-			<a title="ThemeFuse" target="_blank"
-			href="http://themefuse.com/wp-themes-shop/?plugin=all-in-one-seo-pack&v=<?php echo $themefuse_ab; ?>"><img
-			src="<?php echo AIOSEOP_PLUGIN_IMAGES_URL; ?>themefuse_banner_<?php echo $themefuse_ab; ?>.jpg"
-			alt="ThemeFuse" width="445" height="220" border="0" /></a>	
-		</div>
-	</div>
-	
-	<div style="float:left;background-color:white;padding:10px;border:1px solid #ddd;margin-top:2px;"> 
+	<div style="clear:both;float:left;background-color:white;padding:10px;border:1px solid #ddd;margin-top:2px;"> 
 			<div style="width:423px;height:130px"> 
 			<h3>Secure your WordPress Blog with WebsiteDefender.com</h3>
 			<p><a href="http://www.websitedefender.com">WebsiteDefender.com</a> is an online service that checks your WordPress blog by checking for malware, security vulnerabilities and hacker activity. Don’t take the risk of getting blacklisted by Google.
@@ -2126,7 +2122,7 @@ _e('Choose which post types you want to have SEO columns on the edit.php screen.
 <?php _e('Google Plus Profile Sitewide Default:', 'all_in_one_seo_pack')?>
 </td>
 <td>
-<input type="text" name="aiosp_google_publisher" value="<?php echo $aioseop_options['aiosp_google_publisher']; ?>" size="38"/>
+<input type="text" name="aiosp_google_publisher" value="<?php if ( !empty( $aioseop_options['aiosp_google_publisher'] ) ) echo $aioseop_options['aiosp_google_publisher']; ?>" size="38"/>
 <div style="max-width:500px; text-align:left; display:none" id="aiosp_google_publisher_tip">
 <?php
 _e('Enter your Google Plus Profile URL here to link your site\'s pages to Google Plus.', 'all_in_one_seo_pack');
@@ -2151,6 +2147,21 @@ _e('Enter your Google Analytics ID here to track your site with Google Analytics
 <?php
 if ( isset( $aioseop_options['aiosp_google_analytics_id'] ) && $aioseop_options['aiosp_google_analytics_id'] ) {
 ?>
+<tr>
+<th scope="row" style="text-align:right; vertical-align:top;">
+<a style="cursor:pointer;" title="<?php _e('Click for Help!', 'all_in_one_seo_pack')?>" onclick="toggleVisibility('aiosp_ga_domain_tip');">
+<?php _e('Tracking Domain:', 'all_in_one_seo_pack')?>
+</td>
+<td>
+<input type="text" name="aiosp_ga_domain" value="<?php echo $aioseop_options['aiosp_ga_domain']; ?>" size="38"/>
+<div style="max-width:500px; text-align:left; display:none" id="aiosp_ga_domain_tip">
+<?php
+_e('Enter domain name for tracking with Google Analytics.', 'all_in_one_seo_pack');
+ ?>
+</div>
+</td>
+</tr>
+
 <tr>
 <th scope="row" style="text-align:right; vertical-align:top;">
 <a style="cursor:pointer;" title="<?php _e('Click for Help!', 'all_in_one_seo_pack')?>" onclick="toggleVisibility('aiosp_ga_track_outbound_links_tip');">
