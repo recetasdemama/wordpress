@@ -102,7 +102,6 @@ if (!function_exists('aioseop_mrt_mkarry')) {
 		}
 
 		add_option('aioseop_options',$naioseop_options);
-		echo "<div class='updated fade' style='background-color:green;border-color:green;'><p><strong>". __( "Updating SEO configuration options in database", 'all_in_one_seo_pack' ) . "</strong></p></div>";
 	}
 }
 
