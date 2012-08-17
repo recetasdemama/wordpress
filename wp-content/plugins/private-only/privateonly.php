@@ -3,7 +3,7 @@
 Plugin Name: Private Only
 Plugin URI: http://www.pixert.com/
 Description: Redirects all non-logged in users to login form with custom login capability
-Version: 2.5.1
+Version: 2.5.2
 Author: Kate Mag (Pixel Insert)
 Author URI: http://www.pixert.com
 */
@@ -113,11 +113,11 @@ function log_in_message ($error) {
 	$error="";
 	return $error;
 }
-/* Fix Logo Title */
-function change_wp_login_title() { 
-	echo '' . get_option('blogname'); 
-} 
-add_filter('login_headertitle', 'change_wp_login_title');
+/* Fix Logo Title */;
+function change_login_headertitle(){
+	return get_bloginfo('title', 'display' );
+}
+add_filter( 'login_headertitle', 'change_login_headertitle');
 add_action('template_redirect','private_only');
 add_action('login_head','no_index');
 add_filter('login_headertitle','log_in_message');

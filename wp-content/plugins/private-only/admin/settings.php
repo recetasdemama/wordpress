@@ -1,6 +1,6 @@
 <?php
 /*
-Private Only 2.5.1
+Private Only 2.5.2
 Need a WP expert? Hire me : studio[at]pixert.com
 */
 ?>
@@ -14,17 +14,21 @@ Need a WP expert? Hire me : studio[at]pixert.com
 
 	<ul>
     
-    <li>
+    <li style="margin-bottom: 40px;">
       <h4><?php _e('This is Private Only plugin for WordPress ver 2.5.1','private-only'); ?></h4>
+      <h5>Coded by Kate Mag (Pixel Insert)</h5>
       <p><?php _e('If you disable or enable feed, DO NOT FORGET TO REFRESH YOUR BROWSER CACHE AFTER ACTIVATE PRIVATE ONLY or DISABLE FEED','private-only'); ?></p>
     </li>    
         
-		<li><a href="http://twitter.com/katemag" title="Kate Mag on Twitter"><?php _e('Follow me on twitter','private-only'); ?></a>.</li>
-        
-		<li>Need a WP expert? <a href="http://pixert.com/" title="Pixel Insert"><?php _e('Hire me','private-only'); ?></a>.</li>
+		<li><iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2FPixelInsert&amp;send=false&amp;layout=standard&amp;width=300&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:300px; height:35px;" allowTransparency="true"></iframe></li>
 		
-		<li>Contributor : Ivan Ricotti</li>
+		<li><a href="https://twitter.com/share" class="twitter-share-button" data-url="http://pixert.com" data-text="Pixel Insert/Pixert" data-related="pixert" data-count="none">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+<a href="https://twitter.com/pixert" class="twitter-follow-button" data-show-count="false">Follow @pixert</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></li>
         
+		<li><div style="clear: both; margin-top: 40px; "></div>Need a WP expert? <a href="http://pixert.com/" title="Pixel Insert"><?php _e('Hire me','private-only'); ?></a>.</li>
+		<li>Visit Our <a href="http://pixert.com/blog">Blog</a></li>
 	</ul>
     
 </div>
