@@ -213,11 +213,17 @@ class NewsletterSignUp {
 					  'apikey' => $opts['mc_api_key'],
 					  'id' => $opts['mc_list_id'],
 					  'email_address' => $email,
-					  'double_optin' => TRUE,
+					  'double_optin' => (isset($opts['mc_no_double_optin']) && $opts['mc_no_double_optin'] == 1) ? FALSE : TRUE,
 					  'merge_vars' => array(
 							'OPTIN_TIME' => date('Y-M-D H:i:s')
 					  )
 					);
+
+					if(isset($opts['mc_use_groupings']) && $opts['mc_use_groupings'] == 1 && !empty($opts['mc_groupings_name'])) {
+						$request['merge_vars']['GROUPINGS'] = array(
+							array( 'name' => $opts['mc_groupings_name'], 'groups' => $opts['mc_groupings_groups'] )
+						);
+					}
 					
 					/* Subscribe with name? If so, add name to merge_vars array */
 					if(isset($opts['subscribe_with_name']) && $opts['subscribe_with_name'] == 1) {
@@ -233,8 +239,7 @@ class NewsletterSignUp {
 					$result = wp_remote_post(
 						'http://'.substr($opts['mc_api_key'],-3).'.api.mailchimp.com/1.3/?output=php&method=listSubscribe', 
 						array( 'body' => json_encode($request))
-					);
-                                        
+					);                                       
 					
 				break;
 			
@@ -433,7 +438,7 @@ class NewsletterSignUp {
 	{
                 $errors = $this->validation_errors;
 		$opts = $this->options;
-		$additional_fields = '';
+		$additional_fields = '<div class="hidden">';
 		$output = '';
 		
 		$this->no_of_forms++;
@@ -465,6 +470,7 @@ class NewsletterSignUp {
 				$additional_fields .= "<input type=\"hidden\" name=\"{$ed['name']}\" value=\"{$ed['value']}\" />";
 			endforeach; 
 		endif; 
+		$additional_fields .= "</div>";
 		
 		$email_label = (!empty($opts['form']['email_label'])) ? $opts['form']['email_label'] : 'E-mail:';
 		$name_label = (!empty($opts['form']['name_label'])) ? $opts['form']['name_label'] : 'Name:';
