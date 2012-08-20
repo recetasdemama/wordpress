@@ -13,3 +13,12 @@ RewriteRule ^ - [L]
 RewriteRule . index.php [L]
 </IfModule>
 # END WordPress
+
+Redirect 301 "/2007/08/salmorejo/<a href=" /2007/08/salmorejo/
+Redirect 301 "/categoria/masas/" /categoria/masas-y-pan/
+Redirect 301 "/categoria/cocteles/" /categoria/aperitivos/
+Redirect 301 "/categoria/concursos/" /categoria/eventos/
+Redirect 301 "/categoria/otras-cosas/" /categoria/eventos/
+Redirect 301 "/categoria/paseos-por-cordoba/" /categoria/eventos/
+Redirect 301 "/categoria/salsas/" /categoria/preparaciones-previas/
+Redirect 301 "/categoria/bizcocho" /categoria/bizcochos/
