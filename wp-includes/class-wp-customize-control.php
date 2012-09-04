@@ -1,235 +1,62 @@
 <?php
 /**
- * WordPress Customize Control classes
+ * Customize Control Class
  *
  * @package WordPress
  * @subpackage Customize
  * @since 3.4.0
  */
 
-/**
- * Customize Control class.
- *
- * @since 3.4.0
- */
 class WP_Customize_Control {
-
-	/**
-	 * Incremented with each new class instantiation, then stored in $instance_number.
-	 *
-	 * Used when sorting two instances whose priorities are equal.
-	 *
-	 * @since 4.1.0
-	 * @var int
-	 */
-	protected static $instance_count = 0;
-
-	/**
-	 * Order in which this instance was created in relation to other instances.
-	 *
-	 * @since 4.1.0
-	 * @var int
-	 */
-	public $instance_number;
-
-	/**
-	 * Customizer manager.
-	 *
-	 * @since 3.4.0
-	 * @var WP_Customize_Manager
-	 */
 	public $manager;
-
-	/**
-	 * Control ID.
-	 *
-	 * @since 3.4.0
-	 * @var string
-	 */
 	public $id;
 
-	/**
-	 * All settings tied to the control.
-	 *
-	 * @since 3.4.0
-	 * @var array
-	 */
+	// All settings tied to the control.
 	public $settings;
 
-	/**
-	 * The primary setting for the control (if there is one).
-	 *
-	 * @since 3.4.0
-	 * @var string
-	 */
+	// The primary setting for the control (if there is one).
 	public $setting = 'default';
 
-	/**
-	 * Capability required to use this control.
-	 *
-	 * Normally this is empty and the capability is derived from the capabilities
-	 * of the associated `$settings`.
-	 *
-	 * @since 4.5.0
-	 * @var string
-	 */
-	public $capability;
+	public $priority          = 10;
+	public $section           = '';
+	public $label             = '';
+	// @todo: remove choices
+	public $choices           = array();
 
-	/**
-	 * Order priority to load the control in Customizer.
-	 *
-	 * @since 3.4.0
-	 * @var int
-	 */
-	public $priority = 10;
-
-	/**
-	 * Section the control belongs to.
-	 *
-	 * @since 3.4.0
-	 * @var string
-	 */
-	public $section = '';
-
-	/**
-	 * Label for the control.
-	 *
-	 * @since 3.4.0
-	 * @var string
-	 */
-	public $label = '';
-
-	/**
-	 * Description for the control.
-	 *
-	 * @since 4.0.0
-	 * @var string
-	 */
-	public $description = '';
-
-	/**
-	 * List of choices for 'radio' or 'select' type controls, where values are the keys, and labels are the values.
-	 *
-	 * @since 3.4.0
-	 * @var array
-	 */
-	public $choices = array();
-
-	/**
-	 * List of custom input attributes for control output, where attribute names are the keys and values are the values.
-	 *
-	 * Not used for 'checkbox', 'radio', 'select', 'textarea', or 'dropdown-pages' control types.
-	 *
-	 * @since 4.0.0
-	 * @var array
-	 */
-	public $input_attrs = array();
-
-	/**
-	 * Show UI for adding new content, currently only used for the dropdown-pages control.
-	 *
-	 * @since 4.7.0
-	 * @var bool
-	 */
-	public $allow_addition = false;
-
-	/**
-	 * @deprecated It is better to just call the json() method
-	 * @since 3.4.0
-	 * @var array
-	 */
 	public $json = array();
 
-	/**
-	 * Control's Type.
-	 *
-	 * @since 3.4.0
-	 * @var string
-	 */
 	public $type = 'text';
 
-	/**
-	 * Callback.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @see WP_Customize_Control::active()
-	 *
-	 * @var callable Callback is called with one argument, the instance of
-	 *               WP_Customize_Control, and returns bool to indicate whether
-	 *               the control is active (such as it relates to the URL
-	 *               currently being previewed).
-	 */
-	public $active_callback = '';
 
 	/**
 	 * Constructor.
 	 *
-	 * Supplied `$args` override class property defaults.
-	 *
-	 * If `$args['settings']` is not defined, use the $id as the setting ID.
+	 * If $args['settings'] is not defined, use the $id as the setting ID.
 	 *
 	 * @since 3.4.0
-	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
-	 * @param string               $id      Control ID.
-	 * @param array                $args    {
-	 *     Optional. Arguments to override class property defaults.
-	 *
-	 *     @type int                  $instance_number Order in which this instance was created in relation
-	 *                                                 to other instances.
-	 *     @type WP_Customize_Manager $manager         Customizer bootstrap instance.
-	 *     @type string               $id              Control ID.
-	 *     @type array                $settings        All settings tied to the control. If undefined, `$id` will
-	 *                                                 be used.
-	 *     @type string               $setting         The primary setting for the control (if there is one).
-	 *                                                 Default 'default'.
-	 *     @type int                  $priority        Order priority to load the control. Default 10.
-	 *     @type string               $section         Section the control belongs to. Default empty.
-	 *     @type string               $label           Label for the control. Default empty.
-	 *     @type string               $description     Description for the control. Default empty.
-	 *     @type array                $choices         List of choices for 'radio' or 'select' type controls, where
-	 *                                                 values are the keys, and labels are the values.
-	 *                                                 Default empty array.
-	 *     @type array                $input_attrs     List of custom input attributes for control output, where
-	 *                                                 attribute names are the keys and values are the values. Not
-	 *                                                 used for 'checkbox', 'radio', 'select', 'textarea', or
-	 *                                                 'dropdown-pages' control types. Default empty array.
-	 *     @type array                $json            Deprecated. Use WP_Customize_Control::json() instead.
-	 *     @type string               $type            Control type. Core controls include 'text', 'checkbox',
-	 *                                                 'textarea', 'radio', 'select', and 'dropdown-pages'. Additional
-	 *                                                 input types such as 'email', 'url', 'number', 'hidden', and
-	 *                                                 'date' are supported implicitly. Default 'text'.
-	 * }
 	 */
-	public function __construct( $manager, $id, $args = array() ) {
+	function __construct( $manager, $id, $args = array() ) {
 		$keys = array_keys( get_object_vars( $this ) );
 		foreach ( $keys as $key ) {
-			if ( isset( $args[ $key ] ) ) {
+			if ( isset( $args[ $key ] ) )
 				$this->$key = $args[ $key ];
-			}
 		}
 
 		$this->manager = $manager;
-		$this->id      = $id;
-		if ( empty( $this->active_callback ) ) {
-			$this->active_callback = array( $this, 'active_callback' );
-		}
-		self::$instance_count += 1;
-		$this->instance_number = self::$instance_count;
+		$this->id = $id;
+
 
 		// Process settings.
-		if ( ! isset( $this->settings ) ) {
+		if ( empty( $this->settings ) )
 			$this->settings = $id;
-		}
 
 		$settings = array();
 		if ( is_array( $this->settings ) ) {
 			foreach ( $this->settings as $key => $setting ) {
 				$settings[ $key ] = $this->manager->get_setting( $setting );
 			}
-		} elseif ( is_string( $this->settings ) ) {
-			$this->setting       = $this->manager->get_setting( $this->settings );
+		} else {
+			$this->setting = $this->manager->get_setting( $this->settings );
 			$settings['default'] = $this->setting;
 		}
 		$this->settings = $settings;
@@ -242,57 +69,16 @@ class WP_Customize_Control {
 	 */
 	public function enqueue() {}
 
-	/**
-	 * Check whether control is active to current Customizer preview.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return bool Whether the control is active to the current preview.
-	 */
-	final public function active() {
-		$control = $this;
-		$active  = call_user_func( $this->active_callback, $this );
-
-		/**
-		 * Filters response of WP_Customize_Control::active().
-		 *
-		 * @since 4.0.0
-		 *
-		 * @param bool                 $active  Whether the Customizer control is active.
-		 * @param WP_Customize_Control $control WP_Customize_Control instance.
-		 */
-		$active = apply_filters( 'customize_control_active', $active, $control );
-
-		return $active;
-	}
-
-	/**
-	 * Default callback used when invoking WP_Customize_Control::active().
-	 *
-	 * Subclasses can override this with their specific logic, or they may
-	 * provide an 'active_callback' argument to the constructor.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return true Always true.
-	 */
-	public function active_callback() {
-		return true;
-	}
 
 	/**
 	 * Fetch a setting's value.
 	 * Grabs the main setting by default.
 	 *
 	 * @since 3.4.0
-	 *
-	 * @param string $setting_key
-	 * @return mixed The requested setting's value, if the setting exists.
 	 */
-	final public function value( $setting_key = 'default' ) {
-		if ( isset( $this->settings[ $setting_key ] ) ) {
+	public final function value( $setting_key = 'default' ) {
+		if ( isset( $this->settings[ $setting_key ] ) )
 			return $this->settings[ $setting_key ]->value();
-		}
 	}
 
 	/**
@@ -306,487 +92,476 @@ class WP_Customize_Control {
 			$this->json['settings'][ $key ] = $setting->id;
 		}
 
-		$this->json['type']           = $this->type;
-		$this->json['priority']       = $this->priority;
-		$this->json['active']         = $this->active();
-		$this->json['section']        = $this->section;
-		$this->json['content']        = $this->get_content();
-		$this->json['label']          = $this->label;
-		$this->json['description']    = $this->description;
-		$this->json['instanceNumber'] = $this->instance_number;
-
-		if ( 'dropdown-pages' === $this->type ) {
-			$this->json['allow_addition'] = $this->allow_addition;
-		}
+		$this->json['type'] = $this->type;
 	}
 
 	/**
-	 * Get the data to export to the client via JSON.
-	 *
-	 * @since 4.1.0
-	 *
-	 * @return array Array of parameters passed to the JavaScript.
-	 */
-	public function json() {
-		$this->to_json();
-		return $this->json;
-	}
-
-	/**
-	 * Checks if the user can use this control.
-	 *
-	 * Returns false if the user cannot manipulate one of the associated settings,
-	 * or if one of the associated settings does not exist. Also returns false if
-	 * the associated section does not exist or if its capability check returns
-	 * false.
+	 * Check if the theme supports the control and check user capabilities.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @return bool False if theme doesn't support the control or user doesn't have the required permissions, otherwise true.
 	 */
-	final public function check_capabilities() {
-		if ( ! empty( $this->capability ) && ! current_user_can( $this->capability ) ) {
-			return false;
-		}
-
+	public final function check_capabilities() {
 		foreach ( $this->settings as $setting ) {
-			if ( ! $setting || ! $setting->check_capabilities() ) {
+			if ( ! $setting->check_capabilities() )
 				return false;
-			}
 		}
 
 		$section = $this->manager->get_section( $this->section );
-		if ( isset( $section ) && ! $section->check_capabilities() ) {
+		if ( isset( $section ) && ! $section->check_capabilities() )
 			return false;
-		}
 
 		return true;
-	}
-
-	/**
-	 * Get the control's content for insertion into the Customizer pane.
-	 *
-	 * @since 4.1.0
-	 *
-	 * @return string Contents of the control.
-	 */
-	final public function get_content() {
-		ob_start();
-		$this->maybe_render();
-		return trim( ob_get_clean() );
 	}
 
 	/**
 	 * Check capabilities and render the control.
 	 *
 	 * @since 3.4.0
-	 * @uses WP_Customize_Control::render()
 	 */
-	final public function maybe_render() {
-		if ( ! $this->check_capabilities() ) {
+	public final function maybe_render() {
+		if ( ! $this->check_capabilities() )
 			return;
-		}
 
-		/**
-		 * Fires just before the current Customizer control is rendered.
-		 *
-		 * @since 3.4.0
-		 *
-		 * @param WP_Customize_Control $this WP_Customize_Control instance.
-		 */
 		do_action( 'customize_render_control', $this );
-
-		/**
-		 * Fires just before a specific Customizer control is rendered.
-		 *
-		 * The dynamic portion of the hook name, `$this->id`, refers to
-		 * the control ID.
-		 *
-		 * @since 3.4.0
-		 *
-		 * @param WP_Customize_Control $this WP_Customize_Control instance.
-		 */
-		do_action( "customize_render_control_{$this->id}", $this );
+		do_action( 'customize_render_control_' . $this->id, $this );
 
 		$this->render();
 	}
 
 	/**
-	 * Renders the control wrapper and calls $this->render_content() for the internals.
+	 * Render the control. Renders the control wrapper, then calls $this->render_content().
 	 *
 	 * @since 3.4.0
 	 */
 	protected function render() {
-		$id    = 'customize-control-' . str_replace( array( '[', ']' ), array( '-', '' ), $this->id );
+		$id    = 'customize-control-' . str_replace( '[', '-', str_replace( ']', '', $this->id ) );
 		$class = 'customize-control customize-control-' . $this->type;
 
-		printf( '<li id="%s" class="%s">', esc_attr( $id ), esc_attr( $class ) );
-		$this->render_content();
-		echo '</li>';
+		?><li id="<?php echo esc_attr( $id ); ?>" class="<?php echo esc_attr( $class ); ?>">
+			<?php $this->render_content(); ?>
+		</li><?php
 	}
 
-	/**
-	 * Get the data link attribute for a setting.
-	 *
-	 * @since 3.4.0
-	 * @since 4.9.0 Return a `data-customize-setting-key-link` attribute if a setting is not registered for the supplied setting key.
-	 *
-	 * @param string $setting_key
-	 * @return string Data link parameter, a `data-customize-setting-link` attribute if the `$setting_key` refers to a pre-registered setting,
-	 *                and a `data-customize-setting-key-link` attribute if the setting is not yet registered.
-	 */
 	public function get_link( $setting_key = 'default' ) {
-		if ( isset( $this->settings[ $setting_key ] ) && $this->settings[ $setting_key ] instanceof WP_Customize_Setting ) {
-			return 'data-customize-setting-link="' . esc_attr( $this->settings[ $setting_key ]->id ) . '"';
-		} else {
-			return 'data-customize-setting-key-link="' . esc_attr( $setting_key ) . '"';
-		}
+		if ( ! isset( $this->settings[ $setting_key ] ) )
+			return '';
+
+		return 'data-customize-setting-link="' . esc_attr( $this->settings[ $setting_key ]->id ) . '"';
 	}
 
-	/**
-	 * Render the data link attribute for the control's input element.
-	 *
-	 * @since 3.4.0
-	 * @uses WP_Customize_Control::get_link()
-	 *
-	 * @param string $setting_key
-	 */
 	public function link( $setting_key = 'default' ) {
 		echo $this->get_link( $setting_key );
 	}
 
 	/**
-	 * Render the custom attributes for the control's input element.
-	 *
-	 * @since 4.0.0
-	 */
-	public function input_attrs() {
-		foreach ( $this->input_attrs as $attr => $value ) {
-			echo $attr . '="' . esc_attr( $value ) . '" ';
-		}
-	}
-
-	/**
 	 * Render the control's content.
 	 *
-	 * Allows the content to be overridden without having to rewrite the wrapper in `$this::render()`.
-	 *
-	 * Supports basic input types `text`, `checkbox`, `textarea`, `radio`, `select` and `dropdown-pages`.
-	 * Additional input types such as `email`, `url`, `number`, `hidden` and `date` are supported implicitly.
-	 *
-	 * Control content can alternately be rendered in JS. See WP_Customize_Control::print_template().
+	 * Allows the content to be overriden without having to rewrite the wrapper.
 	 *
 	 * @since 3.4.0
 	 */
 	protected function render_content() {
-		$input_id         = '_customize-input-' . $this->id;
-		$description_id   = '_customize-description-' . $this->id;
-		$describedby_attr = ( ! empty( $this->description ) ) ? ' aria-describedby="' . esc_attr( $description_id ) . '" ' : '';
-		switch ( $this->type ) {
+		switch( $this->type ) {
+			case 'text':
+				?>
+				<label>
+					<span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
+					<input type="text" value="<?php echo esc_attr( $this->value() ); ?>" <?php $this->link(); ?> />
+				</label>
+				<?php
+				break;
 			case 'checkbox':
 				?>
-				<span class="customize-inside-control-row">
-					<input
-						id="<?php echo esc_attr( $input_id ); ?>"
-						<?php echo $describedby_attr; ?>
-						type="checkbox"
-						value="<?php echo esc_attr( $this->value() ); ?>"
-						<?php $this->link(); ?>
-						<?php checked( $this->value() ); ?>
-					/>
-					<label for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_html( $this->label ); ?></label>
-					<?php if ( ! empty( $this->description ) ) : ?>
-						<span id="<?php echo esc_attr( $description_id ); ?>" class="description customize-control-description"><?php echo $this->description; ?></span>
-					<?php endif; ?>
-				</span>
+				<label>
+					<input type="checkbox" value="<?php echo esc_attr( $this->value() ); ?>" <?php $this->link(); checked( $this->value() ); ?> />
+					<?php echo esc_html( $this->label ); ?>
+				</label>
 				<?php
 				break;
 			case 'radio':
-				if ( empty( $this->choices ) ) {
+				if ( empty( $this->choices ) )
 					return;
-				}
 
 				$name = '_customize-radio-' . $this->id;
-				?>
-				<?php if ( ! empty( $this->label ) ) : ?>
-					<span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
-				<?php endif; ?>
-				<?php if ( ! empty( $this->description ) ) : ?>
-					<span id="<?php echo esc_attr( $description_id ); ?>" class="description customize-control-description"><?php echo $this->description; ?></span>
-				<?php endif; ?>
 
-				<?php foreach ( $this->choices as $value => $label ) : ?>
-					<span class="customize-inside-control-row">
-						<input
-							id="<?php echo esc_attr( $input_id . '-radio-' . $value ); ?>"
-							type="radio"
-							<?php echo $describedby_attr; ?>
-							value="<?php echo esc_attr( $value ); ?>"
-							name="<?php echo esc_attr( $name ); ?>"
-							<?php $this->link(); ?>
-							<?php checked( $this->value(), $value ); ?>
-							/>
-						<label for="<?php echo esc_attr( $input_id . '-radio-' . $value ); ?>"><?php echo esc_html( $label ); ?></label>
-					</span>
-				<?php endforeach; ?>
+				?>
+				<span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
 				<?php
+				foreach ( $this->choices as $value => $label ) :
+					?>
+					<label>
+						<input type="radio" value="<?php echo esc_attr( $value ); ?>" name="<?php echo esc_attr( $name ); ?>" <?php $this->link(); checked( $this->value(), $value ); ?> />
+						<?php echo esc_html( $label ); ?><br/>
+					</label>
+					<?php
+				endforeach;
 				break;
 			case 'select':
-				if ( empty( $this->choices ) ) {
+				if ( empty( $this->choices ) )
 					return;
-				}
 
 				?>
-				<?php if ( ! empty( $this->label ) ) : ?>
-					<label for="<?php echo esc_attr( $input_id ); ?>" class="customize-control-title"><?php echo esc_html( $this->label ); ?></label>
-				<?php endif; ?>
-				<?php if ( ! empty( $this->description ) ) : ?>
-					<span id="<?php echo esc_attr( $description_id ); ?>" class="description customize-control-description"><?php echo $this->description; ?></span>
-				<?php endif; ?>
-
-				<select id="<?php echo esc_attr( $input_id ); ?>" <?php echo $describedby_attr; ?> <?php $this->link(); ?>>
-					<?php
-					foreach ( $this->choices as $value => $label ) {
-						echo '<option value="' . esc_attr( $value ) . '"' . selected( $this->value(), $value, false ) . '>' . $label . '</option>';
-					}
-					?>
-				</select>
-				<?php
-				break;
-			case 'textarea':
-				?>
-				<?php if ( ! empty( $this->label ) ) : ?>
-					<label for="<?php echo esc_attr( $input_id ); ?>" class="customize-control-title"><?php echo esc_html( $this->label ); ?></label>
-				<?php endif; ?>
-				<?php if ( ! empty( $this->description ) ) : ?>
-					<span id="<?php echo esc_attr( $description_id ); ?>" class="description customize-control-description"><?php echo $this->description; ?></span>
-				<?php endif; ?>
-				<textarea
-					id="<?php echo esc_attr( $input_id ); ?>"
-					rows="5"
-					<?php echo $describedby_attr; ?>
-					<?php $this->input_attrs(); ?>
-					<?php $this->link(); ?>
-				><?php echo esc_textarea( $this->value() ); ?></textarea>
+				<label>
+					<span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
+					<select <?php $this->link(); ?>>
+						<?php
+						foreach ( $this->choices as $value => $label )
+							echo '<option value="' . esc_attr( $value ) . '"' . selected( $this->value(), $value, false ) . '>' . $label . '</option>';
+						?>
+					</select>
+				</label>
 				<?php
 				break;
 			case 'dropdown-pages':
-				?>
-				<?php if ( ! empty( $this->label ) ) : ?>
-					<label for="<?php echo esc_attr( $input_id ); ?>" class="customize-control-title"><?php echo esc_html( $this->label ); ?></label>
-				<?php endif; ?>
-				<?php if ( ! empty( $this->description ) ) : ?>
-					<span id="<?php echo esc_attr( $description_id ); ?>" class="description customize-control-description"><?php echo $this->description; ?></span>
-				<?php endif; ?>
-
-				<?php
-				$dropdown_name     = '_customize-dropdown-pages-' . $this->id;
-				$show_option_none  = __( '&mdash; Select &mdash;' );
-				$option_none_value = '0';
-				$dropdown          = wp_dropdown_pages(
+				$dropdown = wp_dropdown_pages(
 					array(
-						'name'              => $dropdown_name,
+						'name'              => '_customize-dropdown-pages-' . $this->id,
 						'echo'              => 0,
-						'show_option_none'  => $show_option_none,
-						'option_none_value' => $option_none_value,
+						'show_option_none'  => __( '&mdash; Select &mdash;' ),
+						'option_none_value' => '0',
 						'selected'          => $this->value(),
 					)
 				);
-				if ( empty( $dropdown ) ) {
-					$dropdown  = sprintf( '<select id="%1$s" name="%1$s">', esc_attr( $dropdown_name ) );
-					$dropdown .= sprintf( '<option value="%1$s">%2$s</option>', esc_attr( $option_none_value ), esc_html( $show_option_none ) );
-					$dropdown .= '</select>';
-				}
 
 				// Hackily add in the data link parameter.
-				$dropdown = str_replace( '<select', '<select ' . $this->get_link() . ' id="' . esc_attr( $input_id ) . '" ' . $describedby_attr, $dropdown );
+				$dropdown = str_replace( '<select', '<select ' . $this->get_link(), $dropdown );
 
-				// Even more hacikly add auto-draft page stubs.
-				// @todo Eventually this should be removed in favor of the pages being injected into the underlying get_pages() call. See <https://github.com/xwp/wp-customize-posts/pull/250>.
-				$nav_menus_created_posts_setting = $this->manager->get_setting( 'nav_menus_created_posts' );
-				if ( $nav_menus_created_posts_setting && current_user_can( 'publish_pages' ) ) {
-					$auto_draft_page_options = '';
-					foreach ( $nav_menus_created_posts_setting->value() as $auto_draft_page_id ) {
-						$post = get_post( $auto_draft_page_id );
-						if ( $post && 'page' === $post->post_type ) {
-							$auto_draft_page_options .= sprintf( '<option value="%1$s">%2$s</option>', esc_attr( $post->ID ), esc_html( $post->post_title ) );
-						}
-					}
-					if ( $auto_draft_page_options ) {
-						$dropdown = str_replace( '</select>', $auto_draft_page_options . '</select>', $dropdown );
-					}
-				}
-
-				echo $dropdown;
-				?>
-				<?php if ( $this->allow_addition && current_user_can( 'publish_pages' ) && current_user_can( 'edit_theme_options' ) ) : // Currently tied to menus functionality. ?>
-					<button type="button" class="button-link add-new-toggle">
-						<?php
-						/* translators: %s: add new page label */
-						printf( __( '+ %s' ), get_post_type_object( 'page' )->labels->add_new_item );
-						?>
-					</button>
-					<div class="new-content-item">
-						<label for="create-input-<?php echo $this->id; ?>"><span class="screen-reader-text"><?php _e( 'New page title' ); ?></span></label>
-						<input type="text" id="create-input-<?php echo $this->id; ?>" class="create-item-input" placeholder="<?php esc_attr_e( 'New page title&hellip;' ); ?>">
-						<button type="button" class="button add-content"><?php _e( 'Add' ); ?></button>
-					</div>
-				<?php endif; ?>
-				<?php
-				break;
-			default:
-				?>
-				<?php if ( ! empty( $this->label ) ) : ?>
-					<label for="<?php echo esc_attr( $input_id ); ?>" class="customize-control-title"><?php echo esc_html( $this->label ); ?></label>
-				<?php endif; ?>
-				<?php if ( ! empty( $this->description ) ) : ?>
-					<span id="<?php echo esc_attr( $description_id ); ?>" class="description customize-control-description"><?php echo $this->description; ?></span>
-				<?php endif; ?>
-				<input
-					id="<?php echo esc_attr( $input_id ); ?>"
-					type="<?php echo esc_attr( $this->type ); ?>"
-					<?php echo $describedby_attr; ?>
-					<?php $this->input_attrs(); ?>
-					<?php if ( ! isset( $this->input_attrs['value'] ) ) : ?>
-						value="<?php echo esc_attr( $this->value() ); ?>"
-					<?php endif; ?>
-					<?php $this->link(); ?>
-					/>
-				<?php
+				printf(
+					'<label class="customize-control-select"><span class="customize-control-title">%s</span> %s</label>',
+					$this->label,
+					$dropdown
+				);
 				break;
 		}
 	}
+}
 
-	/**
-	 * Render the control's JS template.
-	 *
-	 * This function is only run for control types that have been registered with
-	 * WP_Customize_Manager::register_control_type().
-	 *
-	 * In the future, this will also print the template for the control's container
-	 * element and be override-able.
-	 *
-	 * @since 4.1.0
-	 */
-	final public function print_template() {
+class WP_Customize_Color_Control extends WP_Customize_Control {
+	public $type = 'color';
+	public $statuses;
+
+	public function __construct( $manager, $id, $args = array() ) {
+		$this->statuses = array( '' => __('Default') );
+		parent::__construct( $manager, $id, $args );
+	}
+
+	public function enqueue() {
+		wp_enqueue_script( 'farbtastic' );
+		wp_enqueue_style( 'farbtastic' );
+	}
+
+	public function to_json() {
+		parent::to_json();
+		$this->json['statuses'] = $this->statuses;
+	}
+
+	public function render_content() {
 		?>
-		<script type="text/html" id="tmpl-customize-control-<?php echo $this->type; ?>-content">
-			<?php $this->content_template(); ?>
-		</script>
+		<label>
+			<span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
+			<div class="customize-control-content">
+				<div class="dropdown">
+					<div class="dropdown-content">
+						<div class="dropdown-status"></div>
+					</div>
+					<div class="dropdown-arrow"></div>
+				</div>
+				<input class="color-picker-hex" type="text" maxlength="7" placeholder="<?php esc_attr_e('Hex Value'); ?>" />
+			</div>
+			<div class="farbtastic-placeholder"></div>
+		</label>
 		<?php
+	}
+}
+
+class WP_Customize_Upload_Control extends WP_Customize_Control {
+	public $type    = 'upload';
+	public $removed = '';
+	public $context;
+
+	public function enqueue() {
+		wp_enqueue_script( 'wp-plupload' );
+	}
+
+	public function to_json() {
+		parent::to_json();
+
+		$this->json['removed'] = $this->removed;
+
+		if ( $this->context )
+			$this->json['context'] = $this->context;
+	}
+
+	public function render_content() {
+		?>
+		<label>
+			<span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
+			<div>
+				<a href="#" class="button-secondary upload"><?php _e( 'Upload' ); ?></a>
+				<a href="#" class="remove"><?php _e( 'Remove' ); ?></a>
+			</div>
+		</label>
+		<?php
+	}
+}
+
+class WP_Customize_Image_Control extends WP_Customize_Upload_Control {
+	public $type = 'image';
+	public $get_url;
+	public $statuses;
+
+	protected $tabs = array();
+
+	public function __construct( $manager, $id, $args ) {
+		$this->statuses = array( '' => __('No Image') );
+
+		parent::__construct( $manager, $id, $args );
+
+		$this->add_tab( 'upload-new', __('Upload New'), array( $this, 'tab_upload_new' ) );
+		$this->add_tab( 'uploaded',   __('Uploaded'),   array( $this, 'tab_uploaded' ) );
+
+		// Early priority to occur before $this->manager->prepare_controls();
+		add_action( 'customize_controls_init', array( $this, 'prepare_control' ), 5 );
 	}
 
 	/**
-	 * An Underscore (JS) template for this control's content (but not its container).
+	 * Prepares the control.
 	 *
-	 * Class variables for this control class are available in the `data` JS object;
-	 * export custom variables by overriding WP_Customize_Control::to_json().
+	 * If no tabs exist, removes the control from the manager.
 	 *
-	 * @see WP_Customize_Control::print_template()
-	 *
-	 * @since 4.1.0
+	 * @since 3.4.2
 	 */
-	protected function content_template() {}
+	public function prepare_control() {
+		if ( ! $this->tabs )
+			$this->manager->remove_control( $this->id );
+	}
 
+	public function to_json() {
+		parent::to_json();
+		$this->json['statuses'] = $this->statuses;
+	}
+
+	public function render_content() {
+		$src = $this->value();
+		if ( isset( $this->get_url ) )
+			$src = call_user_func( $this->get_url, $src );
+
+		?>
+		<div class="customize-image-picker">
+			<span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
+
+			<div class="customize-control-content">
+				<div class="dropdown preview-thumbnail">
+					<div class="dropdown-content">
+						<?php if ( empty( $src ) ): ?>
+							<img style="display:none;" />
+						<?php else: ?>
+							<img src="<?php echo esc_url( set_url_scheme( $src ) ); ?>" />
+						<?php endif; ?>
+						<div class="dropdown-status"></div>
+					</div>
+					<div class="dropdown-arrow"></div>
+				</div>
+			</div>
+
+			<div class="library">
+				<ul>
+					<?php foreach ( $this->tabs as $id => $tab ): ?>
+						<li data-customize-tab='<?php echo esc_attr( $id ); ?>'>
+							<?php echo esc_html( $tab['label'] ); ?>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+				<?php foreach ( $this->tabs as $id => $tab ): ?>
+					<div class="library-content" data-customize-tab='<?php echo esc_attr( $id ); ?>'>
+						<?php call_user_func( $tab['callback'] ); ?>
+					</div>
+				<?php endforeach; ?>
+			</div>
+
+			<div class="actions">
+				<a href="#" class="remove"><?php _e( 'Remove Image' ); ?></a>
+			</div>
+		</div>
+		<?php
+	}
+
+	public function add_tab( $id, $label, $callback ) {
+		$this->tabs[ $id ] = array(
+			'label'    => $label,
+			'callback' => $callback,
+		);
+	}
+
+	public function remove_tab( $id ) {
+		unset( $this->tabs[ $id ] );
+	}
+
+	public function tab_upload_new() {
+		if ( ! _device_can_upload() ) {
+			?>
+			<p><?php _e('The web browser on your device cannot be used to upload files. You may be able to use the <a href="http://wordpress.org/extend/mobile/">native app for your device</a> instead.'); ?></p>
+			<?php
+		} else {
+			?>
+			<div class="upload-dropzone">
+				<?php _e('Drop a file here or <a href="#" class="upload">select a file</a>.'); ?>
+			</div>
+			<div class="upload-fallback">
+				<span class="button-secondary"><?php _e('Select File'); ?></span>
+			</div>
+			<?php
+		}
+	}
+
+	public function tab_uploaded() {
+		?>
+		<div class="uploaded-target"></div>
+		<?php
+	}
+
+	public function print_tab_image( $url, $thumbnail_url = null ) {
+		$url = set_url_scheme( $url );
+		$thumbnail_url = ( $thumbnail_url ) ? set_url_scheme( $thumbnail_url ) : $url;
+		?>
+		<a href="#" class="thumbnail" data-customize-image-value="<?php echo esc_url( $url ); ?>">
+			<img src="<?php echo esc_url( $thumbnail_url ); ?>" />
+		</a>
+		<?php
+	}
 }
 
-/**
- * WP_Customize_Color_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-color-control.php' );
+class WP_Customize_Background_Image_Control extends WP_Customize_Image_Control {
+	public function __construct( $manager ) {
+		parent::__construct( $manager, 'background_image', array(
+			'label'    => __( 'Background Image' ),
+			'section'  => 'background_image',
+			'context'  => 'custom-background',
+			'get_url'  => 'get_background_image',
+		) );
 
-/**
- * WP_Customize_Media_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-media-control.php' );
+		if ( $this->setting->default )
+			$this->add_tab( 'default',  __('Default'),  array( $this, 'tab_default_background' ) );
+	}
 
-/**
- * WP_Customize_Upload_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-upload-control.php' );
+	public function tab_uploaded() {
+		$backgrounds = get_posts( array(
+			'post_type'  => 'attachment',
+			'meta_key'   => '_wp_attachment_is_custom_background',
+			'meta_value' => $this->manager->get_stylesheet(),
+			'orderby'    => 'none',
+			'nopaging'   => true,
+		) );
 
-/**
- * WP_Customize_Image_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-image-control.php' );
+		?><div class="uploaded-target"></div><?php
 
-/**
- * WP_Customize_Background_Image_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-background-image-control.php' );
+		if ( empty( $backgrounds ) )
+			return;
 
-/**
- * WP_Customize_Background_Position_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-background-position-control.php' );
+		foreach ( (array) $backgrounds as $background )
+			$this->print_tab_image( esc_url_raw( $background->guid ) );
+	}
 
-/**
- * WP_Customize_Cropped_Image_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-cropped-image-control.php' );
+	public function tab_default_background() {
+		$this->print_tab_image( $this->setting->default );
+	}
+}
 
-/**
- * WP_Customize_Site_Icon_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-site-icon-control.php' );
+class WP_Customize_Header_Image_Control extends WP_Customize_Image_Control {
+	/**
+	 * The processed default headers.
+	 * @since 3.4.2
+	 * @var array
+	 */
+	protected $default_headers;
 
-/**
- * WP_Customize_Header_Image_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-header-image-control.php' );
+	/**
+	 * The uploaded headers.
+	 * @since 3.4.2
+	 * @var array
+	 */
+	protected $uploaded_headers;
 
-/**
- * WP_Customize_Theme_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-theme-control.php' );
+	public function __construct( $manager ) {
+		parent::__construct( $manager, 'header_image', array(
+			'label'    => __( 'Header Image' ),
+			'settings' => array(
+				'default' => 'header_image',
+				'data'    => 'header_image_data',
+			),
+			'section'  => 'header_image',
+			'context'  => 'custom-header',
+			'removed'  => 'remove-header',
+			'get_url'  => 'get_header_image',
+			'statuses' => array(
+				''                      => __('Default'),
+				'remove-header'         => __('No Image'),
+				'random-default-image'  => __('Random Default Image'),
+				'random-uploaded-image' => __('Random Uploaded Image'),
+			)
+		) );
 
-/**
- * WP_Widget_Area_Customize_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-widget-area-customize-control.php' );
+		// Remove the upload tab.
+		$this->remove_tab( 'upload-new' );
+	}
 
-/**
- * WP_Widget_Form_Customize_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-widget-form-customize-control.php' );
+	/**
+	 * Prepares the control.
+	 *
+	 * If no tabs exist, removes the control from the manager.
+	 *
+	 * @since 3.4.2
+	 */
+	public function prepare_control() {
+		global $custom_image_header;
+		if ( empty( $custom_image_header ) )
+			return parent::prepare_control();
 
-/**
- * WP_Customize_Nav_Menu_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-control.php' );
+		// Process default headers and uploaded headers.
+		$custom_image_header->process_default_headers();
+		$this->default_headers = $custom_image_header->default_headers;
+		$this->uploaded_headers = get_uploaded_header_images();
 
-/**
- * WP_Customize_Nav_Menu_Item_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-item-control.php' );
+		if ( $this->default_headers )
+			$this->add_tab( 'default',  __('Default'),  array( $this, 'tab_default_headers' ) );
 
-/**
- * WP_Customize_Nav_Menu_Location_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-location-control.php' );
+		if ( ! $this->uploaded_headers )
+			$this->remove_tab( 'uploaded' );
 
-/**
- * WP_Customize_Nav_Menu_Name_Control class.
- *
- * As this file is deprecated, it will trigger a deprecation notice if instantiated. In a subsequent
- * release, the require_once() here will be removed and _deprecated_file() will be called if file is
- * required at all.
- *
- * @deprecated 4.9.0 This file is no longer used due to new menu creation UX.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-name-control.php' );
+		return parent::prepare_control();
+	}
 
-/**
- * WP_Customize_Nav_Menu_Locations_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-locations-control.php' );
+	public function print_header_image( $choice, $header ) {
+		$header['url']           = set_url_scheme( $header['url'] );
+		$header['thumbnail_url'] = set_url_scheme( $header['thumbnail_url'] );
 
-/**
- * WP_Customize_Nav_Menu_Auto_Add_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-auto-add-control.php' );
+		$header_image_data = array( 'choice' => $choice );
+		foreach ( array( 'attachment_id', 'width', 'height', 'url', 'thumbnail_url' ) as $key ) {
+			if ( isset( $header[ $key ] ) )
+				$header_image_data[ $key ] = $header[ $key ];
+		}
 
-/**
- * WP_Customize_Date_Time_Control class.
- */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-date-time-control.php' );
+
+		?>
+		<a href="#" class="thumbnail"
+			data-customize-image-value="<?php echo esc_url( $header['url'] ); ?>"
+			data-customize-header-image-data="<?php echo esc_attr( json_encode( $header_image_data ) ); ?>">
+			<img src="<?php echo esc_url( $header['thumbnail_url'] ); ?>" />
+		</a>
+		<?php
+	}
+
+	public function tab_uploaded() {
+		?><div class="uploaded-target"></div><?php
+
+		foreach ( $this->uploaded_headers as $choice => $header )
+			$this->print_header_image( $choice, $header );
+	}
+
+	public function tab_default_headers() {
+		foreach ( $this->default_headers as $choice => $header )
+			$this->print_header_image( $choice, $header );
+	}
+}
