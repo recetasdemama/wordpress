@@ -4,16 +4,16 @@ Author: mitcho (Michael Yoshitaka Erlewine)
 Author URI: http://mitcho.com/
 Plugin URI: http://yarpp.org/
 Donate link: http://tinyurl.com/donatetomitcho
-Tags: yarpp, debug, experiment
+Tags: yarpp, debug, experiment, experimental, related, related posts, utilities, options, advanced
 Requires at least: 3.2
-Tested up to: 3.3
-Stable tag: 0.6
+Tested up to: 3.5
+Stable tag: 0.8
 
 Some extras for tuning and diagnosing YARPP.
 
 == Description ==
 
-Some extras for tuning and diagnosing YARPP. Last tested with YARPP 3.4.1b6.
+Some extras for tuning and diagnosing YARPP. Requires YARPP 3.5.4b2 for full compatibility.
 
 Currently includes the following experiments:
 
@@ -36,6 +36,14 @@ Use at your own risk!
 3. Dingus
 
 == Changelog ==
+
+= 0.8 =
+* Updated for updated `stats` method in YARPP 3.5.4b2
+
+= 0.7 =
+* Update jQuery rangeinput code; fix CSS
+* Require `stats` method, implemented in YARPP 3.5.4b1
+* Fix a bug where computation would die prematurely
 
 = 0.6 =
 * Added nonce for cache flushing... now requires YARPP 3.4.1b6 for cache flushing to work
