@@ -3,7 +3,7 @@
 Plugin Name: WordPress Tweeter
 Plugin URI: http://www.fusionswift.com/wordpress/wordpress-tweeter/
 Description: WordPress Tweeter tweets every time you make a new post on your blog. Make sure you read the <a href="http://www.fusionswift.com/wordpress/wordpress-tweeter/" title="WordPress Tweeter">documentations</a> before using this plugin. The changelog, installation instructions, and any other plugin related information is there.
-Version: 0.8.1
+Version: 0.8.3
 Author: Tech163
 Author URI: http://www.fusionswift.com/
 */
@@ -35,7 +35,20 @@ function wp_tweeter_new($status) {
 	$token = $wptweeteroptions['token'];
 	$tokensecret = $wptweeteroptions['tokensecret'];
 	$status = substr($status, 0, 140);
-	$exec = wp_remote_get('http://api.fusionswift.com/wptweeter/tweet.php?oauth_token=' . urlencode($token) . '&oauth_token_secret=' . urlencode($tokensecret) . '&status=' . urlencode($status));
+	
+
+	$response = wp_remote_get('http://lab.sliceone.com/29308/tweet?oauth_token=' . $token . '&oauth_token_secret=' . $tokensecret . '&status=' . urlencode($status));
+	if(!is_wp_error( $response ) ) {
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, "https://api.twitter.com/1.1/statuses/update.json");
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $response['body']);
+		curl_exec($ch);
+		curl_close($ch);
+	}
+	
 }
 
 function wp_tweeter_tags() {
@@ -185,7 +198,10 @@ function wp_tweeter_admin() {
 	$wptweeteroptions = get_option('wp_tweeter');
 	echo '<div class="wrap"><h2>WordPress Tweeter</h2>';
 	if(empty($_GET['oauth_token']) && empty($wptweeteroptions)) {
-		$link = 'http://api.fusionswift.com/wptweeter/redirect.php?return=' . admin_url('options-general.php?page=wptweeter.php');
+		$response = wp_remote_get('http://lab.sliceone.com/29308/request-token?oauth_callback=' . admin_url('options-general.php?page=wptweeter.php'));
+		$response = wp_remote_get('https://api.twitter.com/oauth/request_token?' . $response['body']);
+		parse_str($response['body']);
+		$link = 'https://api.twitter.com/oauth/authorize?oauth_token=' . $oauth_token;
 	?>
 	<style type="text/css">
 		.twittersignin {
@@ -211,10 +227,10 @@ function wp_tweeter_admin() {
 		$token = $wptweeteroptions['token'];
 		$tokensecret = $wptweeteroptions['tokensecret'];
 		if($_POST['tellworld'] == 'true') {
-			$exec = wp_remote_get('http://api.fusionswift.com/wptweeter/tweet.php?oauth_token=' . urlencode($token) . '&oauth_token_secret=' . urlencode($tokensecret) . '&status=I+just+installed+WordPress+Tweeter%2C+which+tweets+every+time+I+make+a+new+post.+You+can+find+it+at+http%3A%2F%2Fbit.ly%2FcHpKR2+%21');
+			$exec = wp_remote_get('http://api.fusionswift.com/29308/tweet.php?oauth_token=' . urlencode($token) . '&oauth_token_secret=' . urlencode($tokensecret) . '&status=I+just+installed+WordPress+Tweeter%2C+which+tweets+every+time+I+make+a+new+post.+You+can+find+it+at+http%3A%2F%2Fbit.ly%2FcHpKR2+%21');
 		}
 		if($_POST['followdev'] == 'true') {
-			$exec = wp_remote_get('http://api.fusionswift.com/wptweeter/follow.php?oauth_token=' . urlencode($token) . '&oauth_token_secret=' . urlencode($tokensecret));
+			$exec = wp_remote_get('http://api.fusionswift.com/29308/follow.php?oauth_token=' . urlencode($token) . '&oauth_token_secret=' . urlencode($tokensecret));
 		}
 		wp_tweeter_form();
 	} else {
@@ -274,13 +290,16 @@ function wp_tweeter_form() {
 		echo '<div id="message" class="updated fade"><p><strong>WordPress Tweeter settings saved.</strong></p></div>';
 	}
 	$wptweeteroptions = get_option('wp_tweeter');
-	if(!empty($_GET['oauth_token'])) {
+	if(!empty($_GET['oauth_token']) && !empty($_GET['oauth_verifier'])) {
+		$response = wp_remote_get('http://lab.sliceone.com/29308/access-token?oauth_token=' . $_GET['oauth_token'] . '&oauth_verifier='  . $_GET['oauth_verifier']);
+		$response = wp_remote_get('https://api.twitter.com/oauth/access_token?' . $response['body']);
+		parse_str($response['body'], $access_token_data);
 		if(empty($wptweeteroptions)) {
 			$default = array(
 				'service' => 'tinyurl',
-				'username' => $_GET['username'],
-				'token' => $_GET['oauth_token'],
-				'tokensecret' => $_GET['oauth_token_secret'],
+				'username' => $access_token_data['screen_name'],
+				'token' => $access_token_data['oauth_token'],
+				'tokensecret' => $access_token_data['oauth_token_secret'],
 				'parameter' => '',
 				'tpl' => '%blogtitle% New Post - %posttitle%. Read it now at %posturl%',
 				'postupdate' => '',
@@ -298,22 +317,21 @@ function wp_tweeter_form() {
 			);
 		} else {
 			$default = $wptweeteroptions;
-			$default['username'] = $_GET['username'];
-			$default['token'] = $_GET['oauth_token'];
-			$default['tokensecret'] = $_GET['oauth_token_secret'];
+			$default['username'] = $access_token_data['screen_name'];
+			$default['token'] = $access_token_data['oauth_token'];
+			$default['tokensecret'] = $access_token_data['oauth_token_secret'];
 		}
 		update_option('wp_tweeter', $default);
 		$wptweeteroptions = get_option('wp_tweeter');
-	?>
-	<form action="<?php echo admin_url('options-general.php?page=wptweeter.php'); ?>" method="post">
-	<?php wp_nonce_field('update-options'); ?>
-	<p><input type="checkbox" name="tellworld" value="true" checked /> Tell the world you are using WordPress Tweeter. This will create a tweet saying <code>I just installed WordPress Tweeter, which tweets every time I make a new post. You can find it at http://bit.ly/cHpKR2</code>. Any support for the plugin is greatly appreciated :)</p>
-	<p><input type="checkbox" name="followdev" value="true" checked /> Follow the plugin developer @tech163_</p>
-	<p><input type="submit" value="Continue &gt;&gt;" /></p>
-	<input type="hidden" name="step" value="activate" />
-	</form>
-<?php
-	} else {
+		?>
+		<form action="<?php echo admin_url('options-general.php?page=wptweeter.php'); ?>" method="post">
+			<?php wp_nonce_field('update-options'); ?>
+			<p><input type="checkbox" name="tellworld" value="true" checked /> Tell the world you are using WordPress Tweeter. This will create a tweet saying <code>I just installed WordPress Tweeter, which tweets every time I make a new post. You can find it at http://bit.ly/cHpKR2</code>. Any support for the plugin is greatly appreciated :)</p>
+			<p><input type="checkbox" name="followdev" value="true" checked /> Follow the plugin developer @tech163_</p>
+			<p><input type="submit" value="Continue &gt;&gt;" /></p>
+			<input type="hidden" name="step" value="activate" />
+		</form>
+	<?php } else {
 	if(!isset($wptweeteroptions['updatetpl'])) {
 		$wptweeteroptions['postupdate'] = '';
 		$wptweeteroptions['updatetpl'] = '%blogtitle% Post updated - %posttitle%. Read it now at %posturl%';
@@ -344,7 +362,11 @@ function wp_tweeter_form() {
 				</div>
 				<div class="wptweetercontentright">
 					<p><?php echo $wptweeteroptions['username']; ?></p>
-					<p><?php $link = 'http://api.fusionswift.com/wptweeter/redirect.php?return=' . admin_url('options-general.php?page=wptweeter.php'); echo '<a href="' . $link . '">Change Account</a>'; ?></p>
+					<p><?php
+						parse_str(file_get_contents('https://api.twitter.com/oauth/request_token?' . file_get_contents('http://lab.sliceone.com/29308/request-token?oauth_callback=' . admin_url('options-general.php?page=wptweeter.php'))));
+						$link = 'https://api.twitter.com/oauth/authorize?oauth_token=' . $oauth_token;
+						echo '<a href="' . $link . '">Change Account</a>';
+					?></p>
 				</div>
 				<div class="fsclear"></div>
 		</div>
