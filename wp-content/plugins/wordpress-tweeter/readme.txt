@@ -1,16 +1,16 @@
 === WordPress Tweeter ===
 Contributors: tech163
-Donate link: http://www.fusiontech.me/donate/
+Donate link: http://www.fusionswift.com/
 Tags: twitter
 Requires at least: 2.7
-Tested up to: 3.2.1
+Tested up to: 3.4.2
 Stable tag: trunk
 
 WordPress Tweeter tweets every time you make a new post on your blog.
 
 == Description ==
 
-WordPress Tweeter tweets every time you make a new post on your blog. Please read the <a href="http://www.fusiontech.me/wordpress/wordpress-tweeter/" title="WordPress Tweeter">documentations</a> before using this plugin, as the documentation provides all the information needed to use the plugin. The changelog, installation instructions, and any other plugin related information is there.
+WordPress Tweeter tweets every time you make a new post on your blog. Please read the <a href="http://www.fusionswift.com/wordpress/wordpress-tweeter/" title="WordPress Tweeter">documentations</a> before using this plugin, as the documentation provides all the information needed to use the plugin. The changelog, installation instructions, and any other plugin related information is there.
 
 Features:
 
@@ -23,7 +23,7 @@ Features:
 
 == Installation ==
 
-Installation instructions can be found in the <a href="http://www.fusiontech.me/wordpress/wordpress-tweeter/" title="WordPress Tweeter">documentations</a>
+Installation instructions can be found in the <a href="http://www.fusionswift.com/wordpress/wordpress-tweeter/" title="WordPress Tweeter">documentations</a>
 
 == Frequently Asked Questions ==
 
@@ -31,7 +31,7 @@ FAQ is not yet available.
 
 == Changelog ==
 
-See <a href="http://www.fusiontech.me/wordpress/wordpress-tweeter/changelog/" title="WordPress Tweeter">changelog</a>.
+See <a href="http://www.fusionswift.com/wordpress/wordpress-tweeter/changelog/" title="WordPress Tweeter">changelog</a>.
 
 == Screenshots ==
 
