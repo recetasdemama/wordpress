@@ -3,13 +3,13 @@
 Plugin Name: YARPP Experiments
 Plugin URI: http://yarpp.org/
 Description: Some extras for tuning and diagnosing YARPP.
-Version: 0.6
+Version: 0.8
 Author: mitcho (Michael Yoshitaka Erlewine)
 Author URI: http://mitcho.com/
 Donate link: http://tinyurl.com/donatetomitcho
 */
 
-define( 'YARPP_EXPERIMENTS_VERSION', '0.6' );
+define( 'YARPP_EXPERIMENTS_VERSION', '0.8' );
 function yarpp_experiments_version( $html ) {
 	return $html . ' with YARPP Experiments ' . YARPP_EXPERIMENTS_VERSION;
 }
@@ -22,7 +22,11 @@ function yarpp_experiments_version_check() {
 	else if (is_object($current_screen) &&
 		$current_screen->id == 'settings_page_yarpp' &&
 		version_compare(YARPP_VERSION, '3.4b3') < 0 )
-		echo '<div class="updated"><p>The Throttle feature of YARPP Experiments will not work without <a href="http://wordpress.org/extend/plugins/yet-another-related-posts-plugin/download/">YARPP 3.4b3 or later</a> installed.</p></div>';
+		echo '<div class="updated"><p>The Throttle feature of YARPP Experiments will not work without <a href="https://wordpress.org/extend/plugins/yet-another-related-posts-plugin/developers/">YARPP 3.4b3 or later</a> installed.</p></div>';
+	else if (is_object($current_screen) &&
+		$current_screen->id == 'settings_page_yarpp' &&
+		version_compare(YARPP_VERSION, '3.5.4b2') < 0 )
+		echo '<div class="updated"><p>The Cache Statistics feature of YARPP Experiments will not work without <a href="https://wordpress.org/extend/plugins/yet-another-related-posts-plugin/developers/">YARPP 3.5.4b2 or later</a> installed.</p></div>';
 }
 add_action( 'admin_notices', 'yarpp_experiments_version_check' );
 
@@ -58,27 +62,28 @@ function add_yarpp_experiments_meta_boxes() {
 
 			echo "<p><strong>Cache type:</strong> {$yarpp->cache->name}</p>";
 			
+			if ( method_exists($yarpp->cache, 'stats') ) {
+				$stats = $yarpp->cache->stats();
+				if ( count($stats) && array_sum( $stats ) > 0 ) {
+					echo "<h4>Number related: </h4>";
+				
+					$sum = array_sum(array_map('array_product', array_map(null, array_values($stats), array_keys($stats))));
+					$avg = $sum / array_sum( $stats );
+
+					echo "<table>";
+					echo '<tr><th>' . join('</th><th>', array_keys($stats)) . '</th><th>Avg</th></tr>';
+					echo '<tr><td>' . join('</td><td>', array_values($stats)) . '</td><td>' . round($avg,2) . '</td></tr>';
+					echo "</table>";
+				}
+			}
+			
 			if ( 'postmeta' == $yarpp->cache->name ) {
 				echo "<p><strong>Thank you for trying the postmeta cache!</strong> Unfortunately there's no good way to do statisitics over the postmeta cache. If you have comments on the postmeta cache, including any performance issues you may have noticed, please <a href='mailto:mitcho@mitcho.com'>contact me</a>.</p>";
 			}
 
 			if ( 'custom tables' == $yarpp->cache->name ) {
-				$counts = $wpdb->get_results("select count(*) as ct, num from (select if(id = 0, 0, count(ID)) as num from {$wpdb->prefix}yarpp_related_cache group by reference_ID) as t group by num order by num asc");
-				if ( !is_null($counts) && count($counts) ) {
-					echo "<h4>Number related: </h4>";
-				
-					$table = array();
-					foreach ($counts as $row) {
-						$table[$row->num] = $row->ct;
-					}
-					echo "<table>";
-					echo '<tr><th>' . join('</th><th>', array_keys($table)) . '</th></tr>';
-					echo '<tr><td>' . join('</td><td>', array_values($table)) . '</td></tr>';
-					echo "</table>";
-				}
-	
 				$dates = $wpdb->get_results("select count(distinct `reference_ID`) as ct, date(date) as date from {$wpdb->prefix}yarpp_related_cache group by date(date) order by date desc");
-				if ( !is_null($counts) && count($dates) ) {
+				if ( !is_null($dates) && count($dates) ) {
 					echo "<h4>Generation dates: </h4>";
 					$table = array();
 					foreach ($dates as $row) {
@@ -197,7 +202,7 @@ function yarpp_experiments_admin_enqueue() {
 	wp_enqueue_script( 'jquery-range', plugins_url('jquery.range.js', __FILE__), array('jquery'), YARPP_EXPERIMENTS_VERSION );
 	wp_enqueue_script( 'yarpp-experiments-status', plugins_url('status.js', __FILE__), array('jquery-range'), YARPP_EXPERIMENTS_VERSION );
 	wp_enqueue_script( 'yarpp-experiments-throttle', plugins_url('throttle.js', __FILE__), array('jquery-range'), YARPP_EXPERIMENTS_VERSION );
-	wp_enqueue_style( 'yarpp-experiments-throttle', plugins_url('throttle.css', __FILE__), YARPP_EXPERIMENTS_VERSION );
+	wp_enqueue_style( 'yarpp-experiments-throttle', plugins_url('throttle.css', __FILE__), array(), YARPP_EXPERIMENTS_VERSION );
 }
 add_action( 'admin_enqueue_scripts', 'yarpp_experiments_admin_enqueue' );
 
@@ -258,13 +263,14 @@ function yarpp_build_cache() {
 	}
 
 	foreach ($uncached as $id) {
-		$result = $yarpp->cache->enforce($id, true);
+		$result = $yarpp->cache->enforce((int) $id, true);
 
 		if ( $result != YARPP_RELATED && $result != YARPP_NO_RELATED ) {
 			$title = get_the_title($id);
 			header('Content-Type: application/json');
 			echo json_encode(array(
 				'result' => 'error',
+				'result_code' => $result,
 				'title' => $title,
 				'id' => $id,
 				'i' => $i,
