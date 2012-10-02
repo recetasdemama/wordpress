@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: post, posts, Facebook, social, link, links, permalink, wpmu, admin, comment, comments, shortcode, sidebar, widget, bbPress
 Requires at least: 3.2
 Tested up to: 3.4.1
-Stable tag: 1.163
+Stable tag: 1.164
 
 Automatically add links to published posts or pages to your Facebook wall, pages or groups and more
 
@@ -493,6 +493,15 @@ This option exists only to solve aspect ratio problems in some case.
 You are probably using a non-personal Facebook account type.
 Try to login with a personal Facebook account that has access to the page you want to add links to.
 
+= U46 My website gets slow =
+
+If you enabled comment integration: try increasing the refresh/cache time (option *Refresh Facebook comments every*, settings tab *Admin*)
+or try decreasing the number of posts to import comments for (option *Refresh Facebook comments for*)
+or try enabling the option *Refresh Facebook comments in the background*.
+
+This plugin does require some memory and processor cycles, maybe more than your hosting provider provides,
+so consider contacting your hosting provider for an upgrade or switching to another hosting provider.
+
 **--- Security ---**
 
 = X01 Which users can use this plugin? =
@@ -774,7 +783,8 @@ and describe the problem as accurate as possible and press the *Send* button.
 == Changelog ==
 
 = Development version =
-* Updated Italian (it\_IT) translation by [Gianni](http://gidibao.net/ "Gianni")
+* Improvement: auto fix invalid locales
+* Improvement: strip shortcodes if not filtering text/excerpt
 
 Follow these steps to install the development version:
 
@@ -788,6 +798,10 @@ Follow these steps to install the development version:
 * Click *Install*, then *Activate Plugin*
 * Please report any problem you encounter
 * Reports that everything works are also appreciated :-)
+
+= 1.164 =
+* Bugfix: correct character set post submit box actions
+* Updated Italian (it\_IT) translation by [Gianni](http://gidibao.net/ "Gianni")
 
 = 1.163 =
 * Bugfix: add extra link to personal wall when using groups
@@ -808,45 +822,20 @@ Follow these steps to install the development version:
 * Bugfix: define WP_DEBUG only if not already defined (debug mode only)
 * Updated Norwegian (nb\_NO) translation by [Stein Ivar Johnsen](http://www.idyrøy.no/ "Stein Ivar Johnsen")
 
-= 1.161 =
-* New feature: option to automatically generate excerpts (like WordPress does)
-* New feature: do not add video can be set by default (option)
-* Updated Dutch (nl\_NL) and Flemish (nl\_BE) translations
-
-= 1.159 =
-* Bugfix: fixed a notice for an undefined constant
-* New feature: option to disable social plugins (for example like button) in excerpts
-* Updated Dutch (nl\_NL) and Flemish (nl\_BE) translations
-
-= 1.158 =
-* Bugfix: fixed a notice while importing comments/likes
-* Bugfix: fixed a notice redeclaring a function
-* New feature: trash/untrash and spam/unspam deletes/restores exported Facebook comment too
-* Improvement: more debug info
-* Tested with WordPress 3.4 RC
-* Updated Dutch (nl\_NL) and Flemish (nl\_BE) translations
-* Updated German (de\_DE) translation by [Wolfgang Tischer](http://www.literaturcafe.de "Wolfgang Tischer")
-
 = Older versions =
 * Deleted, because of maximum readme.txt size
 * Newer versions should always be compatible with [older versions](http://wordpress.org/extend/plugins/add-link-to-facebook/download/ "Other Versions")
 
 == Upgrade Notice ==
 
+= 1.164 =
+One bugfix, translation update
+
 = 1.163 =
 Two bugfixes, two new features, four improvements, several translation updates
 
 = 1.162 =
 One improvement, one bugfix, translation update
-
-= 1.161 =
-Two new features, translation update
-
-= 1.159 =
-One new feature, translation update
-
-= 1.158 =
-Two bugfixes, one new feature, one improvement, updated translations
 
 == Setup guide ==
 

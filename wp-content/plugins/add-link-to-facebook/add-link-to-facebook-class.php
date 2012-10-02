@@ -288,21 +288,19 @@ if (!class_exists('WPAL2Facebook')) {
 				wp_register_style('al2fb_style_admin', $css_url);
 				wp_enqueue_style('al2fb_style_admin');
 			}
-			// remove unused css by fjuan
-			/*
-			 * else {
-			 *	$upload_dir = wp_upload_dir();
-			 *	$css_name = $this->Change_extension(basename($this->main_file), '.css');
-			 *	if (file_exists($upload_dir['basedir'] . '/' . $css_name))
-			 *		$css_url = $upload_dir['baseurl'] . '/' . $css_name;
-			 *	else if (file_exists(TEMPLATEPATH . '/' . $css_name))
-			 *		$css_url = get_bloginfo('template_directory') . '/' . $css_name;
-			 * 	else
-			 * 		$css_url = plugins_url($css_name, __FILE__);
-			 * 	wp_register_style('al2fb_style', $css_url);
-			 * 	wp_enqueue_style('al2fb_style');
-			 * }
-       */
+			else {
+				$upload_dir = wp_upload_dir();
+				$css_name = $this->Change_extension(basename($this->main_file), '.css');
+				if (file_exists($upload_dir['basedir'] . '/' . $css_name))
+					$css_url = $upload_dir['baseurl'] . '/' . $css_name;
+				else if (file_exists(TEMPLATEPATH . '/' . $css_name))
+					$css_url = get_bloginfo('template_directory') . '/' . $css_name;
+				else
+					$css_url = plugins_url($css_name, __FILE__);
+				wp_register_style('al2fb_style', $css_url);
+				wp_enqueue_style('al2fb_style');
+			}
+
 			if (get_option(c_al2fb_option_use_ssp) || is_admin())
 				wp_enqueue_script('jquery');
 
@@ -863,6 +861,7 @@ if (!class_exists('WPAL2Facebook')) {
 			// Get user/link
 			$user_ID = self::Get_user_ID($post);
 			$link_ids = get_post_meta($post->ID, c_al2fb_meta_link_id, false);
+			$charset = get_bloginfo('charset');
 
 			// Get exclude indication
 			$exclude = get_post_meta($post->ID, c_al2fb_meta_exclude, true);
