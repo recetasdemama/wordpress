@@ -2,7 +2,7 @@
 
 class All_in_One_SEO_Pack {
 	
- 	var $version = "1.6.14.6";
+ 	var $version = "1.6.15.2";
  	
  	/** Max numbers of chars in auto-generated description */
  	var $maximum_description_length = 160;
@@ -259,7 +259,8 @@ class All_in_One_SEO_Pack {
 		}
 		echo "[$this->title_start,$this->title_end] ";
 		echo "-->\n";
-		if ((is_home() && $aioseop_options['aiosp_home_keywords'] && !$this->is_static_posts_page()) || $this->is_static_front_page()) {
+		$is_front_page = ( ( is_home() && $aioseop_options['aiosp_home_keywords'] && !$this->is_static_posts_page() ) || $this->is_static_front_page() );
+		if ( $is_front_page ) {
 			$keywords = trim($this->internationalize($aioseop_options['aiosp_home_keywords']));
 		} elseif($this->is_static_posts_page() && !$aioseop_options['aiosp_dynamic_postspage_keywords']){  // and if option = use page set keywords instead of keywords from recent posts
 				//$keywords = "posts keyyysss" . stripcslashes(get_post_meta($post->ID,'keywords',true));
@@ -342,11 +343,11 @@ class All_in_One_SEO_Pack {
 			$page_meta = stripcslashes($aioseop_options['aiosp_page_meta_tags']);
 			$post_meta = stripcslashes($aioseop_options['aiosp_post_meta_tags']);
 			$home_meta = stripcslashes($aioseop_options['aiosp_home_meta_tags']);
-			if (is_page() && isset($page_meta) && !empty($page_meta) || $this->is_static_posts_page()) {
-				if (isset($meta_string)) {
-					$meta_string .= "\n";
-				}
-				echo "\n$page_meta";
+			$front_meta = stripcslashes($aioseop_options['aiosp_front_meta_tags']);
+			
+			if ( is_page() && isset( $page_meta ) && !empty( $page_meta ) && ( !$is_front_page || empty( $front_meta ) ) ) {
+				if ( isset( $meta_string ) ) $meta_string .= "\n";
+				$meta_string .= $page_meta;
 			}
 		
 			if (is_single() && isset($post_meta) && !empty($post_meta)) {
@@ -371,11 +372,14 @@ class All_in_One_SEO_Pack {
 			if ( is_home() && !empty( $aioseop_options['aiosp_google_publisher'] ) )
 				$meta_string = '<link rel="publisher" href="' . $aioseop_options['aiosp_google_publisher'] . '" />' . "\n" . $meta_string;
 		
-			if (is_home() && !empty($home_meta)) {
-				if (isset($meta_string)) {
-					$meta_string .= "\n";
+			if ( $is_front_page && !empty( $front_meta ) ) {
+				if ( isset( $meta_string ) ) $meta_string .= "\n";
+				$meta_string .= $front_meta;
+			} else {
+				if ( is_home() && !empty( $home_meta ) ) {
+					if ( isset( $meta_string ) ) $meta_string .= "\n";
+					$meta_string .= $home_meta;
 				}
-				$meta_string .= "$home_meta";
 			}
 		
 			if ($meta_string != null) {
@@ -389,8 +393,6 @@ class All_in_One_SEO_Pack {
 					
 					echo "".'<link rel="canonical" href="'.$url.'" />'."\n";
 				}
-		
-		
 
 			}
 		
@@ -544,9 +546,11 @@ function aiosp_google_analytics(){
 				$term = get_query_var( 'term' );
 				$link = get_term_link( $term, $taxonomy );
 				$link = $this->yoast_get_paged( $link );
-	    } else {
-	        return false;
-	    }
+	    } elseif ( $query->is_archive && function_exists( 'get_post_type_archive_link' ) && ( $post_type = get_query_var( 'post_type' ) ) ) {
+	            $link = get_post_type_archive_link( $post_type );
+		} else {
+		        return false;
+		}
 
 		return $link;
 
@@ -1426,6 +1430,7 @@ function aiosp_google_analytics(){
 					"aiosp_enablecpost"=>'0',
 					"aiosp_page_meta_tags"=>'',
 					"aiosp_home_meta_tags"=>'',
+					"aiosp_front_meta_tags"=>'',
 					"aiosp_enabled" =>0,
 					"aiosp_use_tags_as_keywords" =>1,
 					"aiosp_seopostcol" => 1,
@@ -1449,7 +1454,7 @@ function aiosp_google_analytics(){
 									"aiosp_404_title_format", "aiosp_paged_format", "aiosp_google_publisher", "aiosp_google_analytics_id", "aiosp_ga_domain", "aiosp_ga_track_outbound_links",
 									"aiosp_use_categories", "aiosp_dynamic_postspage_keywords", "aiosp_category_noindex", "aiosp_archive_noindex",
 									"aiosp_tags_noindex", "aiosp_generate_descriptions", "aiosp_cap_cats", "aiosp_enablecpost", "aiosp_debug_info",
-									"aiosp_post_meta_tags", "aiosp_page_meta_tags", "aiosp_home_meta_tags", "aiosp_ex_pages", "aiosp_do_log",
+									"aiosp_post_meta_tags", "aiosp_page_meta_tags", "aiosp_home_meta_tags", "aiosp_front_meta_tags", "aiosp_ex_pages", "aiosp_do_log",
 									"aiosp_enabled", "aiosp_use_tags_as_keywords", "aiosp_seopostcol", "aiosp_seocustptcol", "aiosp_posttypecolumns");
 				
 				$esc_options = Array( "aiosp_home_title", "aiosp_home_description", "aiosp_google_analytics_id", "aiosp_ga_domain", "aiosp_google_publisher", "aiosp_google_analytics_id" );
@@ -1540,16 +1545,6 @@ href="http://semperplugins.com/plugins/all-in-one-seo-pack-pro-version/"><?php _
 		</div>
 		<a href="http://semperfiwebdesign.com/headwayaio/" target="_blank"><img src="<?php echo AIOSEOP_PLUGIN_IMAGES_URL; ?>headwaybanner.png"></a>
 	</div>
-
-	<div style="clear:both;float:left;background-color:white;padding:10px;border:1px solid #ddd;margin-top:2px;"> 
-			<div style="width:423px;height:130px"> 
-			<h3>Secure your WordPress Blog with WebsiteDefender.com</h3>
-			<p><a href="http://www.websitedefender.com">WebsiteDefender.com</a> is an online service that checks your WordPress blog by checking for malware, security vulnerabilities and hacker activity. Don’t take the risk of getting blacklisted by Google.
-				<strong><a href="https://dashboard.websitedefender.com/register-for-free-website-scan.php">Sign up for FREE</a> and keep your blog safe!</strong></p>
-		</div>
-		<a href="http://www.websitedefender.com/wordpress-security-with-websitedefender/" target="_blank"><img src="<?php echo AIOSEOP_PLUGIN_IMAGES_URL; ?>WD_wordpress_450x50.gif" alt="Sign up for a free WebsiteDefender account and secure your WordPress blog"></a>
-	</div>
-	
 </div>
 
 <!--
@@ -2372,6 +2367,22 @@ _e('What you enter here will be copied verbatim to your header on pages. You can
 <div style="max-width:500px; text-align:left; display:none" id="aiosp_home_meta_tags_tip">
 <?php
 _e('What you enter here will be copied verbatim to your header on the home page. You can enter whatever additional headers you want here, even references to stylesheets.', 'all_in_one_seo_pack');
+ ?>
+</div>
+</td>
+</tr>
+
+<tr>
+<th scope="row" style="text-align:right; vertical-align:top;">
+<a style="cursor:pointer;" title="<?php _e('Click for Help!', 'all_in_one_seo_pack')?>" onclick="toggleVisibility('aiosp_front_meta_tags_tip');">
+<?php _e('Additional Front Page Headers:', 'all_in_one_seo_pack')?>
+</a>
+</td>
+<td>
+<textarea cols="57" rows="2" name="aiosp_front_meta_tags"><?php echo stripcslashes($aioseop_options['aiosp_front_meta_tags']); ?></textarea>
+<div style="max-width:500px; text-align:left; display:none" id="aiosp_front_meta_tags_tip">
+<?php
+_e('What you enter here will be copied verbatim to your header on the front page. You can enter whatever additional headers you want here, even references to stylesheets.', 'all_in_one_seo_pack');
  ?>
 </div>
 </td>
