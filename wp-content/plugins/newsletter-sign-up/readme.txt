@@ -3,8 +3,8 @@ Contributors: DvanKooten
 Donate link: http://dannyvankooten.com/donate/
 Tags: newsletter,sign-up,mailchimp,aweber,newsletter signup,checkbox,ymlp,email,phplist,icontact,mailinglist,checkbox,form widget,widget,newsletter widget,subscribe widget,form shortcode,mailchimp api
 Requires at least: 2.7
-Tested up to: 3.4.1
-Stable tag: 1.7.5
+Tested up to: 3.4.2
+Stable tag: 1.7.6
 
 Boost your mailinglist with this plugins! Provides you with a "sign me up" checkbox for your comment form, a Newsletter widget, shortcodes, template tags and more..
 
@@ -106,6 +106,9 @@ For more questions and answers go have a look at my website regarding [Newslette
 3. The "sign-up" checkbox in action @ Twenty Eleven
 
 == Changelog ==
+= 1.7.6 =
+* Fixed: The plugin now works with PHPList again. Thanks ryanjlaw.
+
 = 1.7.5 =
 * Fixed: Hidden inputs are now wrapped by a block element too, so the form output validates as XHTML 1.0 STRICT.
 

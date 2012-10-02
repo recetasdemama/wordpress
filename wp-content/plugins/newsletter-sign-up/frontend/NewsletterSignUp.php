@@ -269,7 +269,7 @@ class NewsletterSignUp {
 					$post_data['list['.$opts['phplist_list_id'].']'] = 'signup';
 					$post_data['subscribe'] = "Subscribe";
 					$post_data["htmlemail"] = "1"; 
-					$post_data['emailconfirm'] = $emailadres;
+					$post_data['emailconfirm'] = $email;
 					$post_data['makeconfirmed']='0';
 				break;
 			
