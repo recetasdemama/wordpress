@@ -65,6 +65,7 @@
                                 For some newsletter services you need to specify some additional static data, like a list ID or your account name. These fields are usually found as hidden fields in your sign-up form's HTML code.
                                 You can specify these additional fields here using name / value pairs so they will be sent along with every sign-up request.
                             </p>
+                            <p>If you use <em>%%NAME%%</em> or <em>%%IP%%</em> in the value fields it will be replaced by respectively the actual name or IP address of the subscriber.</p>
                             <table class="form-table">
                                 <tr valign="top">
                                     <th scope="column" style="font-weight:bold;">Name</th>
