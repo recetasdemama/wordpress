@@ -83,8 +83,8 @@ if(!class_exists('NewsletterSignUpWidget')) {
 			<p>
 				You can further configure the sign-up form at the <a href="admin.php?page=newsletter-sign-up/form-settings">Newsletter Sign-Up configuration page</a>.
 			</p>
-                        
-                        <p style="font-size:11px; font-style:italic;">Tip: You can also use <a href="http://wordpress.org/extend/plugins/wysiwyg-widgets/" target="_blank">WYSIWYG Widgets</a> in combination with the shortcode <strong>[nsu-form]</strong> to render a sign-up form in your widget area's.</p>
+               
+            <p style="border: 2px solid green; background: #CFC; padding:5px; ">I spent countless hours developing this plugin for FREE (unlike many other Newsletter plugins). If you like it, consider <a href="http://dannyvankooten.com/donate/">donating $10, $20 or $50</a> as a token of your appreciation.</p>       
 			<?php 
 		}
 

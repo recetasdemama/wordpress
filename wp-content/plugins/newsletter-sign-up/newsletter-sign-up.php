@@ -3,7 +3,7 @@
 Plugin Name: Newsletter Sign-Up
 Plugin URI: http://DannyvanKooten.com/wordpress-plugins/newsletter-sign-up/
 Description: Adds various ways for your visitors to sign-up to your mailinglist (checkbox, widget, form)
-Version: 1.7.6
+Version: 1.7.7
 Author: Danny van Kooten
 Author URI: http://DannyvanKooten.com
 License: GPL2
@@ -23,14 +23,6 @@ License: GPL2
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
-
-/* 
-	TO DO
-	
-	* Add %%NAME%% to use in additional data
-	* Add %%IP%% to use in additional data
-	
 */
 
 require('frontend/NewsletterSignUpWidget.php');
