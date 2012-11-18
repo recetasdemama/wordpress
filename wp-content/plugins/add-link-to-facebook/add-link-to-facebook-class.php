@@ -113,6 +113,7 @@ if (!class_exists('WPAL2Facebook')) {
 			add_shortcode('al2fb_like_button', array(&$this, 'Shortcode_like_button'));
 			add_shortcode('al2fb_like_box', array(&$this, 'Shortcode_like_box'));
 			add_shortcode('al2fb_send_button', array(&$this, 'Shortcode_send_button'));
+			add_shortcode('al2fb_subscribe_button', array(&$this, 'Shortcode_subscribe_button'));
 			add_shortcode('al2fb_comments_plugin', array(&$this, 'Shortcode_comments_plugin'));
 			add_shortcode('al2fb_face_pile', array(&$this, 'Shortcode_face_pile'));
 			add_shortcode('al2fb_profile_link', array(&$this, 'Shortcode_profile_link'));
@@ -505,6 +506,8 @@ if (!class_exists('WPAL2Facebook')) {
 			update_user_meta($user_ID, c_al2fb_meta_like_box_border, $_POST[c_al2fb_meta_like_box_border]);
 			update_user_meta($user_ID, c_al2fb_meta_like_box_noheader, $_POST[c_al2fb_meta_like_box_noheader]);
 			update_user_meta($user_ID, c_al2fb_meta_like_box_nostream, $_POST[c_al2fb_meta_like_box_nostream]);
+			update_user_meta($user_ID, c_al2fb_meta_subscribe_layout, $_POST[c_al2fb_meta_subscribe_layout]);
+			update_user_meta($user_ID, c_al2fb_meta_subscribe_width, $_POST[c_al2fb_meta_subscribe_width]);
 			update_user_meta($user_ID, c_al2fb_meta_comments_posts, $_POST[c_al2fb_meta_comments_posts]);
 			update_user_meta($user_ID, c_al2fb_meta_comments_width, $_POST[c_al2fb_meta_comments_width]);
 			update_user_meta($user_ID, c_al2fb_meta_comments_auto, $_POST[c_al2fb_meta_comments_auto]);
@@ -529,6 +532,8 @@ if (!class_exists('WPAL2Facebook')) {
 			update_user_meta($user_ID, c_al2fb_meta_not_post_list, $_POST[c_al2fb_meta_not_post_list]);
 			update_user_meta($user_ID, c_al2fb_meta_fb_encoding, $_POST[c_al2fb_meta_fb_encoding]);
 			update_user_meta($user_ID, c_al2fb_meta_fb_locale, $_POST[c_al2fb_meta_fb_locale]);
+			update_user_meta($user_ID, c_al2fb_meta_param_name, $_POST[c_al2fb_meta_param_name]);
+			update_user_meta($user_ID, c_al2fb_meta_param_value, $_POST[c_al2fb_meta_param_value]);
 			update_user_meta($user_ID, c_al2fb_meta_donated, $_POST[c_al2fb_meta_donated]);
 			update_user_meta($user_ID, c_al2fb_meta_rated, $_POST[c_al2fb_meta_rated]);
 			if ($_POST[c_al2fb_meta_rated])
@@ -600,9 +605,10 @@ if (!class_exists('WPAL2Facebook')) {
 			// Clear all errors
 			if ($_POST[c_al2fb_meta_clear_errors]) {
 				$query = array(
-					'author' => $user_ID,
 					'meta_key' => c_al2fb_meta_error,
 					'posts_per_page' => -1);
+				if (!get_site_option(c_al2fb_option_app_share))
+					$query['author'] = $user_ID;
 				$posts = new WP_Query($query);
 				while ($posts->have_posts()) {
 					$posts->next_post();
@@ -1389,8 +1395,10 @@ if (!class_exists('WPAL2Facebook')) {
 				(self::Is_authorized($user_ID) || self::Is_login_authorized($user_ID, true))) {
 				// Apply defaults if no form
 				if (!isset($_POST['al2fb_form'])) {
-					update_post_meta($post->ID, c_al2fb_meta_exclude, get_user_meta($user_ID, c_al2fb_meta_exclude_default, true));
-					update_post_meta($post->ID, c_al2fb_meta_exclude_video, get_user_meta($user_ID, c_al2fb_meta_exclude_default_video, true));
+					if (!get_post_meta($post->ID, c_al2fb_meta_exclude, true))
+						update_post_meta($post->ID, c_al2fb_meta_exclude, get_user_meta($user_ID, c_al2fb_meta_exclude_default, true));
+					if (!get_post_meta($post->ID, c_al2fb_meta_exclude_video, true))
+						update_post_meta($post->ID, c_al2fb_meta_exclude_video, get_user_meta($user_ID, c_al2fb_meta_exclude_default_video, true));
 				}
 
 				// Check if not added/excluded
@@ -1487,6 +1495,8 @@ if (!class_exists('WPAL2Facebook')) {
 				$excerpt = $post->post_excerpt;
 				if (!get_option(c_al2fb_option_nofilter))
 					$excerpt = apply_filters('the_excerpt', $excerpt);
+				else
+					$excerpt = strip_shortcodes($excerpt);
 				if (empty($excerpt) && get_user_meta($user_ID, c_al2fb_meta_auto_excerpt, true)) {
 					$excerpt = strip_tags(strip_shortcodes($post->post_content));
 					$words = explode(' ', $excerpt, 55 + 1);
@@ -1505,6 +1515,8 @@ if (!class_exists('WPAL2Facebook')) {
 				$content = $post->post_content;
 				if (!get_option(c_al2fb_option_nofilter))
 					$content = apply_filters('the_content', $content);
+				else
+					$content = strip_shortcodes($content);
 			}
 			$content = apply_filters('al2fb_content', $content, $post);
 
@@ -2092,6 +2104,19 @@ if (!class_exists('WPAL2Facebook')) {
 				$post = get_post($post_id);
 			if (isset($post))
 				return WPAL2Int::Get_send_button($post);
+			else
+				return '';
+		}
+
+		// Shortcode send button
+		function Shortcode_subscribe_button($atts) {
+			extract(shortcode_atts(array('post_id' => null), $atts));
+			if (empty($post_id))
+				global $post;
+			else
+				$post = get_post($post_id);
+			if (isset($post))
+				return WPAL2Int::Get_subscribe_button($post);
 			else
 				return '';
 		}

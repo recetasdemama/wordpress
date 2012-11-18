@@ -94,6 +94,9 @@ function al2fb_render_admin($al2fb)
 	$like_color_light = ($like_color == 'light' ? ' checked' : '');
 	$like_color_dark = ($like_color == 'dark' ? ' checked' : '');
 
+	// Subscribe button
+	$subscribe_layout = get_user_meta($user_ID, c_al2fb_meta_subscribe_layout, true);
+
 	// Comment link option
 	$comments_nolink = get_user_meta($user_ID, c_al2fb_meta_fb_comments_nolink, true);
 	if (empty($comments_nolink))
@@ -334,6 +337,7 @@ function al2fb_render_admin($al2fb)
 		<li><a href="#al2fb_tab_comments"><?php _e('Comments', c_al2fb_text_domain); ?></a></li>
 		<li><a href="#al2fb_tab_like_button"><?php _e('Like button', c_al2fb_text_domain); ?></a></li>
 		<li><a href="#al2fb_tab_like_box"><?php _e('Like box', c_al2fb_text_domain); ?></a></li>
+		<li><a href="#al2fb_tab_subscribe_button"><?php _e('Subscribe button', c_al2fb_text_domain); ?></a></li>
 		<li><a href="#al2fb_tab_comments_plugin"><?php _e('Comments plugin', c_al2fb_text_domain); ?></a></li>
 		<li><a href="#al2fb_tab_face_pile"><?php _e('Face pile', c_al2fb_text_domain); ?></a></li>
 		<li><a href="#al2fb_tab_login"><?php _e('Login', c_al2fb_text_domain); ?></a></li>
@@ -386,6 +390,7 @@ function al2fb_render_admin($al2fb)
 		<input type="radio" name="<?php echo c_al2fb_meta_picture_size; ?>" value="thumbnail"<?php echo $pic_thumbnail; ?>><?php _e('thumbnail', c_al2fb_text_domain); ?><br />
 		<input type="radio" name="<?php echo c_al2fb_meta_picture_size; ?>" value="medium"<?php echo $pic_medium; ?>><?php _e('medium', c_al2fb_text_domain); ?><br />
 		<input type="radio" name="<?php echo c_al2fb_meta_picture_size; ?>" value="large"<?php echo $pic_large; ?>><?php _e('large', c_al2fb_text_domain); ?><br />
+		<span class="al2fb_explanation"><?php _e('Facebook will always show a small picture', c_al2fb_text_domain); ?></span><br />
 		<span class="al2fb_explanation"><?php _e('Only works for pictures from the media library', c_al2fb_text_domain); ?></span>
 	</td></tr>
 
@@ -869,6 +874,33 @@ function al2fb_render_admin($al2fb)
 	</p>
 	</div>
 
+	<div id="al2fb_tab_subscribe_button" class="al2fb_tab_content">
+	<h4><?php _e('Subscribe button', c_al2fb_text_domain); ?></h4>
+	<table class="form-table al2fb_border">
+
+	<tr valign="top"><th scope="row">
+		<label for="al2fb_subscribe_layout"><?php _e('Layout:', c_al2fb_text_domain); ?></label>
+	</th><td>
+		<select class="al2fb_select" id="al2fb_subscribe_layout" name="<?php echo c_al2fb_meta_subscribe_layout; ?>">
+		<option value="standard" <?php echo $subscribe_layout == 'standard' ? 'selected' : ''; ?>><?php _e('Standard', c_al2fb_text_domain); ?></option>
+		<option value="button_count" <?php echo $subscribe_layout == 'button_count' ? 'selected' : ''; ?>><?php _e('Button with count', c_al2fb_text_domain); ?></option>
+		<option value="box_count" <?php echo $subscribe_layout == 'box_count' ? 'selected' : ''; ?>><?php _e('Box with count', c_al2fb_text_domain); ?></option>
+		</select>
+	</td></tr>
+
+	<tr valign="top"><th scope="row">
+		<label for="al2fb_subscribe_width"><?php _e('Width:', c_al2fb_text_domain); ?></label>
+	</th><td>
+		<input class="al2fb_numeric" id="al2fb_subscribe_width" name="<?php echo c_al2fb_meta_subscribe_width; ?>" type="text" value="<?php echo get_user_meta($user_ID, c_al2fb_meta_subscribe_width, true); ?>" />
+		<span><?php _e('Pixels', c_al2fb_text_domain); ?></span>
+	</td></tr>
+
+	</table>
+	<p class="submit">
+	<input type="submit" class="button-primary" value="<?php _e('Save', c_al2fb_text_domain) ?>" />
+	</p>
+	</div>
+
 	<div id="al2fb_tab_comments_plugin" class="al2fb_tab_content">
 	<h4><?php _e('Facebook comments plugin', c_al2fb_text_domain); ?></h4>
 	<table class="form-table al2fb_border">
@@ -1178,7 +1210,16 @@ function al2fb_render_admin($al2fb)
 		<label for="al2fb_fb_locale"><?php _e('Facebook locale:', c_al2fb_text_domain); ?></label>
 	</th><td>
 		<input id="al2fb_fb_locale" class="al2fb_text" name="<?php echo c_al2fb_meta_fb_locale; ?>" type="text" value="<?php echo get_user_meta($user_ID, c_al2fb_meta_fb_locale, true); ?>" />
-		<br /><span class="al2fb_explanation"><?php _e('Do not change if no need', c_al2fb_text_domain); ?><span>&nbsp;(<?php echo get_bloginfo('language'); ?>)</span></span>
+		<br /><span class="al2fb_explanation"><?php _e('Do not change if no need', c_al2fb_text_domain); ?><span>&nbsp;(<?php echo str_replace('-', '_', get_bloginfo('language')); ?>)</span></span>
+	</td></tr>
+
+	<tr valign="top"><th scope="row">
+		<label for="al2fb_param_name"><?php _e('Extra URL parameter', c_al2fb_text_domain); ?>:</label>
+	</th><td>
+		<input id="al2fb_param_name" class="al2fb_text" name="<?php echo c_al2fb_meta_param_name; ?>" type="text" value="<?php echo get_user_meta($user_ID, c_al2fb_meta_param_name, true); ?>" />
+		&nbsp;=&nbsp;
+		<input id="al2fb_param_value" class="al2fb_text" name="<?php echo c_al2fb_meta_param_value ?>" type="text" value="<?php echo get_user_meta($user_ID, c_al2fb_meta_param_value, true); ?>" />
+		<br /><span class="al2fb_explanation"><?php _e('For example for Google Anaylytics', c_al2fb_text_domain); ?></span>
 	</td></tr>
 
 	<tr valign="top"><th scope="row">
