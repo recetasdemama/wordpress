@@ -3,8 +3,8 @@ Contributors: Marcel Bokhorst, M66B
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB7DGNA3MJ&lc=US&item_name=Add%20Link%20to%20Facebook%20WordPress%20Plugin&item_number=Marcel%20Bokhorst&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 Tags: post, posts, Facebook, social, link, links, permalink, wpmu, admin, comment, comments, shortcode, sidebar, widget, bbPress
 Requires at least: 3.2
-Tested up to: 3.4.1
-Stable tag: 1.164
+Tested up to: 3.5
+Stable tag: 1.168
 
 Automatically add links to published posts or pages to your Facebook wall, pages or groups and more
 
@@ -783,8 +783,7 @@ and describe the problem as accurate as possible and press the *Send* button.
 == Changelog ==
 
 = Development version =
-* Improvement: auto fix invalid locales
-* Improvement: strip shortcodes if not filtering text/excerpt
+* Improvement: display thumbnails in the post meta box
 
 Follow these steps to install the development version:
 
@@ -799,28 +798,29 @@ Follow these steps to install the development version:
 * Please report any problem you encounter
 * Reports that everything works are also appreciated :-)
 
-= 1.164 =
-* Bugfix: correct character set post submit box actions
-* Updated Italian (it\_IT) translation by [Gianni](http://gidibao.net/ "Gianni")
+= 1.168 =
+* Bugfix: clear errors for all users
+* Improvement: more debug info
+* Tested with WordPress 3.5 beta 2
 
-= 1.163 =
-* Bugfix: add extra link to personal wall when using groups
-* Bugfix: losing selected pages/groups in some cases
-* New feature: add to wall of friends ([Pro version](http://www.faircode.eu/al2fbpro/) only; beta)
-* New feature: option to clear all errors (plugin settings tab Misc)
-* Improvement: add to page: none
-* Improvement: updated Mozilla CA certificates
-* Improvement: (video) exclude default when not using the post editor
-* Improvement: list custom post type for exclusion
+= 1.167 =
+* Bugfix: excludes when using scheduled posts
+* New feature: widget/shortcode/template tag for Facebook subscribe button
 * Updated Dutch (nl\_NL) and Flemish (nl\_BE) translations
-* Updated German (de\_DE) translation by [Wolfgang Tischer](http://www.literaturcafe.de "Wolfgang Tischer")
-* Updated Italian (it\_IT) translation by [Gianni](http://gidibao.net/ "Gianni")
 * Updated Norwegian (nb\_NO) translation by [Stein Ivar Johnsen](http://www.idyrøy.no/ "Stein Ivar Johnsen")
 
-= 1.162 =
-* Improvement: strip_shortcodes when not processing shortcodes
-* Bugfix: define WP_DEBUG only if not already defined (debug mode only)
+= 1.166 =
+* Bugfix: revert WordPress logo in Open Graph Protocol if no link added
+
+= 1.165 =
+* Bugfix: exclude/video for scheduled posts
+* Improvement: auto fix invalid locales
+* Improvement: strip shortcodes if not filtering text/excerpt
+* Improvement: WordPress logo in Open Graph Protocol if no link added (performance)
+* New feature: global URL parameter
+* Updated Dutch (nl\_NL) and Flemish (nl\_BE) translations
 * Updated Norwegian (nb\_NO) translation by [Stein Ivar Johnsen](http://www.idyrøy.no/ "Stein Ivar Johnsen")
+* Tested with WordPress 3.5 beta 2
 
 = Older versions =
 * Deleted, because of maximum readme.txt size
@@ -828,14 +828,8 @@ Follow these steps to install the development version:
 
 == Upgrade Notice ==
 
-= 1.164 =
-One bugfix, translation update
-
-= 1.163 =
-Two bugfixes, two new features, four improvements, several translation updates
-
-= 1.162 =
-One improvement, one bugfix, translation update
+= 1.168 =
+One bugfix, one improvement
 
 == Setup guide ==
 
@@ -850,11 +844,11 @@ Basically there are five steps to follow:
 
 1. Click on the link *Click here to create* in the yellow box on the settings page
 	* Or click [here](https://developers.facebook.com/) ;-)
-	* Navigate to *Apps* (top)
+	* Navigate to *Apps* (top menu)
 	* Select *Create New App* (button at top)
 	* See the [screenshots](http://wordpress.org/extend/plugins/add-link-to-facebook/screenshots/) if you cannot find it
 2. Create the Facebook application:
-	* Give it any display name you like (will appear as *via* below the added links)
+	* Give it any name you like (will appear as *via* below the added links) and press *Continue*
 	* Fill in the red URL which the plugin indicates into the field *Website with Facebook Login* (click the sentence) > *Site URL*
 	* See the [screenshot](http://wordpress.org/extend/plugins/add-link-to-facebook/screenshots/) if you cannot find it
 	* **Don't confuse this with the field *App Domain*, this field should be empty**

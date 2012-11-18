@@ -54,6 +54,7 @@ class AL2FB_Widget extends WP_Widget {
 		$like_button = isset($instance['al2fb_like_button']) ? $instance['al2fb_like_button'] : false;
 		$like_box = isset($instance['al2fb_like_box']) ? $instance['al2fb_like_box'] : false;
 		$send_button = isset($instance['al2fb_send_button']) ? $instance['al2fb_send_button'] : false;
+		$subscribe_button = isset($instance['al2fb_subscribe_button']) ? $instance['al2fb_subscribe_button'] : false;
 		$comments_plugin = isset($instance['al2fb_comments_plugin']) ? $instance['al2fb_comments_plugin'] : false;
 		$face_pile = isset($instance['al2fb_face_pile']) ? $instance['al2fb_face_pile'] : false;
 		$profile = isset($instance['al2fb_profile']) ? $instance['al2fb_profile'] : false;
@@ -93,7 +94,7 @@ class AL2FB_Widget extends WP_Widget {
 			}
 
 		if ($fb_comments || $fb_messages ||
-			$like_button || $like_box || $send_button ||
+			$like_button || $like_box || $send_button || $subscribe_button ||
 			$comments_plugin || $face_pile ||
 			$profile || $registration || $login || $activity) {
 			// Get values
@@ -131,6 +132,9 @@ class AL2FB_Widget extends WP_Widget {
 			// Facebook send button
 			if ($send_button)
 				echo WPAL2Int::Get_send_button($post);
+
+			if ($subscribe_button)
+				echo WPAL2Int::Get_subscribe_button($post);
 
 			// Facebook comments plugins
 			if ($comments_plugin)
@@ -279,6 +283,7 @@ class AL2FB_Widget extends WP_Widget {
 			$instance['al2fb_like_button'] = $new_instance['al2fb_like_button'];
 			$instance['al2fb_like_box'] = $new_instance['al2fb_like_box'];
 			$instance['al2fb_send_button'] = $new_instance['al2fb_send_button'];
+			$instance['al2fb_subscribe_button'] = $new_instance['al2fb_subscribe_button'];
 			$instance['al2fb_comments_plugin'] = $new_instance['al2fb_comments_plugin'];
 			$instance['al2fb_face_pile'] = $new_instance['al2fb_face_pile'];
 			$instance['al2fb_profile'] = $new_instance['al2fb_profile'];
@@ -313,6 +318,8 @@ class AL2FB_Widget extends WP_Widget {
 			$instance['al2fb_like_box'] = false;
 		if (empty($instance['al2fb_send_button']))
 			$instance['al2fb_send_button'] = false;
+		if (empty($instance['al2fb_subscribe_button']))
+			$instance['al2fb_subscribe_button'] = false;
 		if (empty($instance['al2fb_comments_plugin']))
 			$instance['al2fb_comments_plugin'] = false;
 		if (empty($instance['al2fb_face_pile']))
@@ -344,6 +351,7 @@ class AL2FB_Widget extends WP_Widget {
 		$chk_like = ($instance['al2fb_like_button'] ? ' checked ' : '');
 		$chk_box = ($instance['al2fb_like_box'] ? ' checked ' : '');
 		$chk_send = ($instance['al2fb_send_button'] ? ' checked ' : '');
+		$chk_subscribe = ($instance['al2fb_subscribe_button'] ? ' checked ' : '');
 		$chk_comments_plugin = ($instance['al2fb_comments_plugin'] ? ' checked ' : '');
 		$chk_face_pile = ($instance['al2fb_face_pile'] ? ' checked ' : '');
 		$chk_profile = ($instance['al2fb_profile'] ? ' checked ' : '');
@@ -389,6 +397,10 @@ class AL2FB_Widget extends WP_Widget {
 
 			<input class="checkbox" type="checkbox" <?php echo $chk_send; ?> id="<?php echo $this->get_field_id('al2fb_send_button'); ?>" name="<?php echo $this->get_field_name('al2fb_send_button'); ?>" />
 			<label for="<?php echo $this->get_field_id('al2fb_send_button'); ?>"><?php _e('Show Facebook send button', c_al2fb_text_domain); ?></label>
+			<br />
+
+			<input class="checkbox" type="checkbox" <?php echo $chk_subscribe ?> id="<?php echo $this->get_field_id('al2fb_subscribe_button'); ?>" name="<?php echo $this->get_field_name('al2fb_subscribe_button'); ?>" />
+			<label for="<?php echo $this->get_field_id('al2fb_subscribe_button'); ?>"><?php _e('Show Facebook subscribe button', c_al2fb_text_domain); ?></label>
 			<br />
 
 			<input class="checkbox" type="checkbox" <?php echo $chk_comments_plugin; ?> id="<?php echo $this->get_field_id('al2fb_comments_plugin'); ?>" name="<?php echo $this->get_field_name('al2fb_comments_plugin'); ?>" />

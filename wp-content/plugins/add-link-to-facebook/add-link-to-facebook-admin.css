@@ -203,6 +203,7 @@ html ul.al2fb_tabs li.active, html ul.al2fb_tabs li.active a:hover {
 
 .al2fb_tab_content {
 	padding: 0 10px;
+	padding-top: 15px;
 }
 
 #al2fb_video {

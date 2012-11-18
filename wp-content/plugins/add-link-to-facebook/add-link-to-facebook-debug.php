@@ -133,6 +133,7 @@ function al2fb_debug_info($al2fb) {
 	$info .= '<tr><td>Picture type:</td><td>' . get_user_meta($user_ID, c_al2fb_meta_picture_type, true) . '</td></tr>';
 	$info .= '<tr><td>Custom picture URL:</td><td>' . $picture . '</td></tr>';
 	$info .= '<tr><td>Default picture URL:</td><td>' . $picture_default . '</td></tr>';
+	$info .= '<tr><td>Picture size:</td><td>' . get_user_meta($user_ID, c_al2fb_meta_picture_size, true) . '</td></tr>';
 
 	try {
 		$page_ids = WPAL2Int::Get_page_ids($user_ID);
