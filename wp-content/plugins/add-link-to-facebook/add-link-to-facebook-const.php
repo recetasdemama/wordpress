@@ -2,7 +2,8 @@
 
 // Define constants
 define('c_al2fb_text_domain', 'add-link-to-facebook');
-define('c_al2fb_nonce_form', 'al2fb-nonce-form');
+define('c_al2fb_nonce_action', 'wp-al2fb-action');
+define('c_al2fb_nonce_name', 'wp-al2fb-nonce');
 
 // Global options
 define('c_al2fb_option_version', 'al2fb_version');
