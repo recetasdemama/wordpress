@@ -1,10 +1,10 @@
 ===Private Only===  
 Contributors: katemag  
-Donate Link: http://www.pixert.com/blog/  
+Donate Link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L3J4LBDGP533Q   
 Tags: private access, login, remove feed  
 Requires at least: 3.0  
-Tested up to: 3.4.1  
-Stable tag: 2.5.2
+Tested up to: 3.5  
+Stable tag: 3.0
 
 Redirects all non-logged in users to login form.
 
@@ -26,7 +26,8 @@ Features:
 2. Updated feature! Custom Logo on Login Page. You can change WordPress Logo  
 3. Sub plugin name Disable Feed that allow you to choose disable or enable feed.  
 4. Single public page *new feature*  
-5. Localization *new feature*
+5. Localization *new feature*   
+6. Custom CSS *new feature*
 
 ==Installation==  
 1. Download The Private Only package file, extract the private-only directory from ZIP file, upload it to WordPress Plugins directory '/wp-content/plugins/'  

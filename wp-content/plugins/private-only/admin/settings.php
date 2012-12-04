@@ -1,6 +1,6 @@
 <?php
 /*
-Private Only 2.5.2
+Private Only 3.0
 Need a WP expert? Hire me : studio[at]pixert.com
 */
 ?>
@@ -15,10 +15,15 @@ Need a WP expert? Hire me : studio[at]pixert.com
 	<ul>
     
     <li style="margin-bottom: 40px;">
-      <h4><?php _e('This is Private Only plugin for WordPress ver 2.5.1','private-only'); ?></h4>
+      <h4><?php _e('This is Private Only plugin for WordPress ver 3.0','private-only'); ?></h4>
       <h5>Coded by Kate Mag (Pixel Insert)</h5>
       <p><?php _e('If you disable or enable feed, DO NOT FORGET TO REFRESH YOUR BROWSER CACHE AFTER ACTIVATE PRIVATE ONLY or DISABLE FEED','private-only'); ?></p>
-    </li>    
+    </li> 
+    <li>
+    <h4>Thank you for using this plugin on your site</h4>
+   <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L3J4LBDGP533Q">
+<img src="https://www.paypal.com/en_US/i/btn/x-click-but21.gif" alt="" /></a>
+    </li>   
         
 		<li><iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2FPixelInsert&amp;send=false&amp;layout=standard&amp;width=300&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:300px; height:35px;" allowTransparency="true"></iframe></li>
 		
@@ -105,6 +110,23 @@ Need a WP expert? Hire me : studio[at]pixert.com
     </table>
 </div>
 </div>
+
+<div class="postbox open">
+<div class="inside">
+	<table class="form-table">
+   		<tr>
+            <th>
+            	<label for="<?php echo $data['use_custom_css']; ?>"><?php _e('Use Custom CSS','private-only'); ?>:</label> 
+            </th>
+            <td>
+                <input id="<?php echo $data['use_custom_css']; ?>" name="<?php echo $data['use_custom_css']; ?>" type="checkbox" <?php if ( $val['use_custom_css'] ) echo 'checked="checked"'; ?> value="true" /><br />
+                <?php _e('Check this box to use Custom CSS, leave unchecked to disable it. You should have custom css in your active theme','private-only'); ?>
+            </td>
+   		</tr>
+    </table>
+</div>
+</div>
+
 
 </div> <!-- /float:left -->
 
