@@ -3,7 +3,7 @@
 Plugin Name: Private Only
 Plugin URI: http://www.pixert.com/
 Description: Redirects all non-logged in users to login form with custom login capability
-Version: 2.5.2
+Version: 3.0
 Author: Kate Mag (Pixel Insert)
 Author URI: http://www.pixert.com
 */
@@ -59,6 +59,9 @@ if ( is_admin() )
 #login h1 a{ display: none !important; }
 </style>
 <?php } } ?>
+<?php if (isset($po_login['use_custom_css'])) { ?>
+<link rel="stylesheet" type="text/css" href="<?php echo get_bloginfo('stylesheet_directory') ?>/custom.css" />
+<?php } ?>
 <?php
 		echo '<!-- Private Only by Kate Mag - @link: http://pixert.com-->' . "\n\n";
   }

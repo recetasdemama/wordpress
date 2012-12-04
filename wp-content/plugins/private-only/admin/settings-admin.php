@@ -1,6 +1,6 @@
 <?php
 /*
-Private Only 2.5.2
+Private Only 3.0
 Need a WP expert? Hire me : studio[at]pixert.com
 */
 function po_login_settings_args() {
@@ -10,6 +10,7 @@ function po_login_settings_args() {
 		'po_logo' => '',
 		'use_wp_logo' => '',	
 		'public_pages' => '',
+		'use_custom_css' => ''
 	);
 	
 	return $settings_arr;
