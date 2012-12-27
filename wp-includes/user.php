@@ -1403,6 +1403,8 @@ function wp_update_user($userdata) {
 
 	// First, get all of the original fields
 	$user_obj = get_userdata( $ID );
+	if ( ! $user_obj )
+		return new WP_Error( 'invalid_user_id', __( 'Invalid user ID.' ) );
 
 	$user = get_object_vars( $user_obj->data );
 
