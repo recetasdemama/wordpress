@@ -4,22 +4,23 @@ Author: mitcho (Michael Yoshitaka Erlewine)
 Author URI: http://mitcho.com/
 Plugin URI: http://yarpp.org/
 Donate link: http://tinyurl.com/donatetomitcho
-Tags: yarpp, debug, experiment, experimental, related, related posts, utilities, options, advanced
-Requires at least: 3.2
-Tested up to: 3.5
-Stable tag: 0.8
+Tags: yarpp, debug, experiment, experimental, related, related posts, utilities, options, advanced, pingback
+Requires at least: 3.3
+Tested up to: 3.6
+Stable tag: 0.9
 
 Some extras for tuning and diagnosing YARPP.
 
 == Description ==
 
-Some extras for tuning and diagnosing YARPP. Requires YARPP 3.5.4b2 for full compatibility.
+Some extras for tuning and diagnosing [YARPP](https://wordpress.org/extend/plugins/yet-another-related-posts-plugin/). Requires YARPP 3.5.4b2 or later for full compatibility.
 
 Currently includes the following experiments:
 
 * **Cache Status:** computes some statistics which give an overall picture of YARPP's results and cache usage. Some controls to flush and build up the cache.
 * **Throttle:** lets you slow down YARPP's computation of "related" results when not cached. It may be useful for very high traffic sites, where suddenly turning YARPP on may cause some database lockups.
 * **Dingus:** lets you try different YARPP settings, returning results as well as caching and performance information.
+* **Pingback Control:** Disable pingbacks to your own site from YARPP's results.
 
 Use at your own risk!
 
@@ -36,6 +37,9 @@ Use at your own risk!
 3. Dingus
 
 == Changelog ==
+
+= 0.9 =
+* Added "stop self-pinging" option
 
 = 0.8 =
 * Updated for updated `stats` method in YARPP 3.5.4b2

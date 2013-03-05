@@ -3,13 +3,13 @@
 Plugin Name: YARPP Experiments
 Plugin URI: http://yarpp.org/
 Description: Some extras for tuning and diagnosing YARPP.
-Version: 0.8
+Version: 0.9
 Author: mitcho (Michael Yoshitaka Erlewine)
 Author URI: http://mitcho.com/
 Donate link: http://tinyurl.com/donatetomitcho
 */
 
-define( 'YARPP_EXPERIMENTS_VERSION', '0.8' );
+define( 'YARPP_EXPERIMENTS_VERSION', '0.9' );
 function yarpp_experiments_version( $html ) {
 	return $html . ' with YARPP Experiments ' . YARPP_EXPERIMENTS_VERSION;
 }
@@ -17,16 +17,19 @@ add_filter( 'yarpp_version_html', 'yarpp_experiments_version' );
 
 function yarpp_experiments_version_check() {
 	global $current_screen;
-	if ( !defined('YARPP_VERSION') )
+	if ( !defined('YARPP_VERSION') ) {
 		echo '<div class="updated"><p>YARPP Experiments will not do anything unless you have <a href="http://wordpress.org/extend/plugins/yet-another-related-posts-plugin/">YARPP</a> installed.</p></div>';
-	else if (is_object($current_screen) &&
-		$current_screen->id == 'settings_page_yarpp' &&
-		version_compare(YARPP_VERSION, '3.4b3') < 0 )
-		echo '<div class="updated"><p>The Throttle feature of YARPP Experiments will not work without <a href="https://wordpress.org/extend/plugins/yet-another-related-posts-plugin/developers/">YARPP 3.4b3 or later</a> installed.</p></div>';
-	else if (is_object($current_screen) &&
-		$current_screen->id == 'settings_page_yarpp' &&
-		version_compare(YARPP_VERSION, '3.5.4b2') < 0 )
-		echo '<div class="updated"><p>The Cache Statistics feature of YARPP Experiments will not work without <a href="https://wordpress.org/extend/plugins/yet-another-related-posts-plugin/developers/">YARPP 3.5.4b2 or later</a> installed.</p></div>';
+	} else if (is_object($current_screen) &&
+		$current_screen->id == 'settings_page_yarpp') {
+		
+		if ( version_compare(YARPP_VERSION, '3.4b3') < 0 ) {
+			echo '<div class="updated"><p>The Throttle feature of YARPP Experiments will not work without <a href="https://wordpress.org/extend/plugins/yet-another-related-posts-plugin/developers/">YARPP 3.4b3 or later</a> installed.</p></div>';
+		} 
+	
+		if ( version_compare(YARPP_VERSION, '3.5.4b2') < 0 ) {
+			echo '<div class="updated"><p>The Cache Statistics feature of YARPP Experiments will not work without <a href="https://wordpress.org/extend/plugins/yet-another-related-posts-plugin/developers/">YARPP 3.5.4b2 or later</a> installed.</p></div>';
+		}
+	}
 }
 add_action( 'admin_notices', 'yarpp_experiments_version_check' );
 
@@ -179,7 +182,15 @@ function add_yarpp_experiments_meta_boxes() {
 		}
 	}
 	add_meta_box('yarpp_dingus', 'Dingus' . sprintf($experiment_label, mt_rand(-4,4)), array(new YARPP_Meta_Box_Dingus, 'display'), 'settings_page_yarpp', 'normal', 'core');
-		
+	
+	class YARPP_Meta_Box_Pingbacks extends YARPP_Meta_Box {
+		function display() {
+			$pingback = yarpp_get_option('experiment_pingback');
+			
+			echo "<div><label for='yarpp_experiment_pingback'><input type='checkbox' " . checked($pingback, true, false) . " name='pingback' id='yarpp_experiment_pingback'/> Avoid pingbacks to own site</label></div>";
+		}
+	}
+	add_meta_box('yarpp_pingback', 'Pingbacks' . sprintf($experiment_label, mt_rand(-4,4)), array(new YARPP_Meta_Box_Pingbacks, 'display'), 'settings_page_yarpp', 'normal', 'core');
 
 }
 add_action( 'add_meta_boxes_settings_page_yarpp', 'add_yarpp_experiments_meta_boxes' );
@@ -190,6 +201,13 @@ function yarpp_experiment_throttle_save( $options ) {
 	return $options;
 }
 add_filter( 'yarpp_settings_save', 'yarpp_experiment_throttle_save', 10, 1 );
+
+function yarpp_experiment_pingback_save( $options ) {
+	if ( version_compare(YARPP_VERSION, '4.0.4') >= 0 )
+		$options['experiment_pingback'] = isset($_POST['pingback']);
+	return $options;
+}
+add_filter( 'yarpp_settings_save', 'yarpp_experiment_pingback_save', 10, 1 );
 
 function yarpp_experiments_admin_enqueue() {
 	global $current_screen;
@@ -340,3 +358,18 @@ function yarpp_dingus_print_cache_type( $query ) {
 	if (isset($query->yarpp_cache_type))
 		echo "cache type: " . $query->yarpp_cache_type;
 }
+
+function yarpp_pingback_maybe_block_pingback($url, $post, $leavename) {
+	global $yarpp;
+	if ( !yarpp_get_option('experiment_pingback') || !$yarpp->cache->is_yarpp_time() )
+		return $url;
+
+	$home = parse_url( home_url() );
+	$replacepart = $home['scheme'] . '://' . $home['host'];
+	if ( isset($home['port']) )
+		$replacepart .= ':' . $home['port'];
+	$url = preg_replace('!^' . preg_quote($replacepart) . '!', '', $url);
+	
+	return $url;
+}
+add_filter( 'post_link', 'yarpp_pingback_maybe_block_pingback', 10, 3 );
