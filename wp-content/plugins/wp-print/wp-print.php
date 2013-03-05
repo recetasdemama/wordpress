@@ -3,14 +3,14 @@
 Plugin Name: WP-Print
 Plugin URI: http://lesterchan.net/portfolio/programming/php/
 Description: Displays a printable version of your WordPress blog's post/page.
-Version: 2.50
+Version: 2.51
 Author: Lester 'GaMerZ' Chan
 Author URI: http://lesterchan.net
 */
 
 
-/*  
-	Copyright 2009  Lester Chan  (email : lesterchan@gmail.com)
+/*
+	Copyright 2012  Lester Chan  (email : lesterchan@gmail.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -70,7 +70,7 @@ function print_rewrite($wp_rewrite) {
 	$uris = $page_uris[0];
 	if(is_array($uris)) {
 		$print_page_rules = array();
-		foreach ($uris as $uri => $pagename) {			
+		foreach ($uris as $uri => $pagename) {
 			$wp_rewrite->add_rewrite_tag('%pagename%', "($uri)", 'pagename=');
 			$rewrite_rules = $wp_rewrite->generate_rewrite_rules($wp_rewrite->get_page_permastruct().'/printpage', EP_PAGES);
 			$rewrite_rules = array_slice($rewrite_rules, 5, 1);
@@ -116,7 +116,7 @@ function print_link($print_post_text = '', $print_page_text = '', $echo = true) 
 	$print_link = get_permalink();
 	$print_html = stripslashes($print_options['print_html']);
 	// Fix For Static Page
-	if(get_option('show_on_front') == 'page' && is_page()) {	
+	if(get_option('show_on_front') == 'page' && is_page()) {
 		if(intval(get_option('page_on_front')) > 0) {
 			$print_link = _get_page_link();
 		}
@@ -204,7 +204,7 @@ function print_content($display = true) {
 	if (!isset($matched_links)) {
 		$matched_links = array();
 	}
-	if(!empty($post->post_password) && stripslashes($_COOKIE['wp-postpass_'.COOKIEHASH]) != $post->post_password) {
+	if(post_password_required()) {
 		$content = get_the_password_form();
 	} else {
 		if($multipage) {
@@ -235,16 +235,18 @@ function print_content($display = true) {
 			for ($i=0; $i < count($matches[0]); $i++) {
 				$link_match = $matches[0][$i];
 				$link_url = $matches[2][$i];
-				if(stristr($link_url, 'https://')) {
-					 $link_url =(strtolower(substr($link_url,0,8)) != 'https://') ?get_option('home') . $link_url : $link_url;
-				} else if( stristr($link_url, 'mailto:')) {
+				if(substr($link_url, 0, 2) == '//') {
+					$link_url = (is_ssl() ? 'https:' : 'http:') . $link_url;
+				} elseif(stristr($link_url, 'https://')) {
+					$link_url =(strtolower(substr($link_url,0,8)) != 'https://') ?get_option('home') . $link_url : $link_url;
+				} else if(stristr($link_url, 'mailto:')) {
 					$link_url =(strtolower(substr($link_url,0,7)) != 'mailto:') ?get_option('home') . $link_url : $link_url;
-				} else if( $link_url[0] == '#' ) {
-					$link_url = $link_url; 
+				} else if($link_url[0] == '#') {
+					$link_url = $link_url;
 				} else {
 					$link_url =(strtolower(substr($link_url,0,7)) != 'http://') ?get_option('home') . $link_url : $link_url;
 				}
-				$link_text = $matches[4][$i];+				
+				$link_text = $matches[4][$i];
 				$new_link = true;
 				$link_url_hash = md5($link_url);
 				if (!isset($matched_links[$link_url_hash])) {
@@ -306,7 +308,7 @@ function print_comments_content($display = true) {
 			} else if(stristr($link_url, 'mailto:')) {
 				$link_url =(strtolower(substr($link_url,0,7)) != 'mailto:') ?get_option('home') . $link_url : $link_url;
 			} else if($link_url[0] == '#') {
-				$link_url = $link_url; 
+				$link_url = $link_url;
 			} else {
 				$link_url =(strtolower(substr($link_url,0,7)) != 'http://') ?get_option('home') . $link_url : $link_url;
 			}
@@ -352,7 +354,7 @@ function print_comments_number() {
 	} else {
 		$comment_text = __('Comments Disabled', 'wp-print');
 	}
-	if(!empty($post->post_password) && stripslashes($_COOKIE['wp-postpass_'.COOKIEHASH]) != $post->post_password) {
+	if(post_password_required()) {
 		_e('Comments Hidden', 'wp-print');
 	} else {
 		echo $comment_text;
@@ -366,8 +368,8 @@ function print_links($text_links = '') {
 	if(empty($text_links)) {
 		$text_links = __('URLs in this post:', 'wp-print');
 	}
-	if(!empty($links_text)) { 
-		echo $text_links.$links_text; 
+	if(!empty($links_text)) {
+		echo $text_links.$links_text;
 	}
 }
 

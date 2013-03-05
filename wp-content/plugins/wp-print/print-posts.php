@@ -1,20 +1,16 @@
 <?php
 /*
-+----------------------------------------------------------------+
-|																							|
-|	WordPress 2.7 Plugin: WP-Print 2.50										|
-|	Copyright (c) 2008 Lester "GaMerZ" Chan									|
-|																							|
-|	File Written By:																	|
-|	- Lester "GaMerZ" Chan															|
-|	- http://lesterchan.net															|
-|																							|
-|	File Information:																	|
-|	- Printer Friendly Post/Page Template										|
-|	- wp-content/plugins/wp-print/print-posts.php							|
-|																							|
-+----------------------------------------------------------------+
-*/
+ * WordPress Plugin: WP-Print
+ * Copyright (c) 2012 Lester "GaMerZ" Chan
+ *
+ * File Written By:
+ * - Lester "GaMerZ" Chan
+ * - http://lesterchan.net
+ *
+ * File Information:
+ * - Printer Friendly Post/Page Template
+ * - wp-content/plugins/wp-print/print-posts.php
+ */
 ?>
 
 <?php global $text_direction; ?>
@@ -36,6 +32,7 @@
 			<link rel="stylesheet" href="<?php echo plugins_url('wp-print/print-css-rtl.css'); ?>" type="text/css" media="screen, print" />
 		<?php endif; ?>
 	<?php endif; ?>
+	<link rel="canonical" href="<?php the_permalink(); ?>" />
 </head>
 <body>
 <p style="text-align: center;"><strong>- <?php bloginfo('name'); ?> - <span dir="ltr"><?php bloginfo('url')?></span> -</strong></p>
@@ -44,7 +41,7 @@
 		<?php if (have_posts()): ?>
 			<?php while (have_posts()): the_post(); ?>
 					<p id="BlogTitle"><?php the_title(); ?></p>
-					<p id="BlogDate"><?php _e('Posted By', 'wp-print'); ?> <u><?php the_author(); ?></u> <?php _e('On', 'wp-print'); ?> <?php the_time(sprintf(__('%s @ %s', 'wp-print'), get_option('date_format'), get_option('time_format'))); ?> <?php _e('In', 'wp-print'); ?> <?php print_categories('<u>', '</u>'); ?></p>
+					<p id="BlogDate"><?php _e('Posted By', 'wp-print'); ?> <u><?php the_author(); ?></u> <?php _e('On', 'wp-print'); ?> <?php the_time(sprintf(__('%s @ %s', 'wp-print'), get_option('date_format'), get_option('time_format'))); ?> <?php _e('In', 'wp-print'); ?> <?php print_categories('<u>', '</u>'); ?> | <u><a href='#comments_controls'><?php print_comments_number(); ?></a></u></p>
 					<div id="BlogContent"><?php print_content(); ?></div>
 			<?php endwhile; ?>
 			<hr class="Divider" style="text-align: center;" />

@@ -1,20 +1,16 @@
 <?php
 /*
-+----------------------------------------------------------------+
-|																							|
-|	WordPress 2.7 Plugin: WP-Print 2.50										|
-|	Copyright (c) 2008 Lester "GaMerZ" Chan									|
-|																							|
-|	File Written By:																	|
-|	- Lester "GaMerZ" Chan															|
-|	- http://lesterchan.net															|
-|																							|
-|	File Information:																	|
-|	- Process Printing Page															|
-|	- wp-content/plugins/wp-print/print.php									|
-|																							|
-+----------------------------------------------------------------+
-*/
+ * WordPress Plugin: WP-Print
+ * Copyright (c) 2012 Lester "GaMerZ" Chan
+ *
+ * File Written By:
+ * - Lester "GaMerZ" Chan
+ * - http://lesterchan.net
+ *
+ * File Information:
+ * - Process Printing Page
+ * - wp-content/plugins/wp-print/print.php
+ */
 
 
 ### Variables

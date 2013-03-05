@@ -1,20 +1,16 @@
 <?php
 /*
-+----------------------------------------------------------------+
-|																							|
-|	WordPress 2.7 Plugin: WP-Print 2.50										|
-|	Copyright (c) 2008 Lester "GaMerZ" Chan									|
-|																							|
-|	File Written By:																	|
-|	- Lester "GaMerZ" Chan															|
-|	- http://lesterchan.net															|
-|																							|
-|	File Information:																	|
-|	- Print Options Page																|
-|	- wp-content/plugins/wp-print/print-options.php						|
-|																							|
-+----------------------------------------------------------------+
-*/
+ * WordPress Plugin: WP-Print
+ * Copyright (c) 2012 Lester "GaMerZ" Chan
+ *
+ * File Written By:
+ * - Lester "GaMerZ" Chan
+ * - http://lesterchan.net
+ *
+ * File Information:
+ * - Print Options Page
+ * - wp-content/plugins/wp-print/print-options.php
+ */
 
 
 ### Variables Variables Variables
@@ -125,7 +121,7 @@ switch($mode) {
 	/* ]]> */
 </script>
 <?php if(!empty($text)) { echo '<!-- Last Action --><div id="message" class="updated fade"><p>'.$text.'</p></div>'; } ?>
-<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>?page=<?php echo plugin_basename(__FILE__); ?>">
+<form method="post" action="<?php echo admin_url('admin.php?page='.plugin_basename(__FILE__)); ?>">
 <div class="wrap"> 
 	<?php screen_icon(); ?>
 	<h2><?php _e('Print Options', 'wp-print'); ?></h2> 
@@ -249,7 +245,7 @@ switch($mode) {
 <p>&nbsp;</p>
 
 <!-- Uninstall WP-Print -->
-<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>?page=<?php echo plugin_basename(__FILE__); ?>">
+<form method="post" action="<?php echo admin_url('admin.php?page='.plugin_basename(__FILE__)); ?>">
 <div class="wrap"> 
 	<h3><?php _e('Uninstall WP-Print', 'wp-print'); ?></h3>
 	<p>
