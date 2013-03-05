@@ -2,7 +2,7 @@
 /*
 Plugin Name: WordPress Varnish
 Plugin URI: http://github.com/pkhamre/wp-varnish
-Version: 0.3
+Version: 0.6
 Author: <a href="http://github.com/pkhamre/">Pål-Kristian Hamre</a>
 Description: A plugin for purging Varnish cache when content is published or edited.
 
@@ -38,9 +38,11 @@ class WPVarnish {
     $this->wpv_port_optname = "wpvarnish_port";
     $this->wpv_secret_optname = "wpvarnish_secret";
     $this->wpv_timeout_optname = "wpvarnish_timeout";
+    $this->wpvarnish_purge_url_optname = "wpvarnish_purge_url";
     $this->wpv_update_pagenavi_optname = "wpvarnish_update_pagenavi";
     $this->wpv_update_commentnavi_optname = "wpvarnish_update_commentnavi";
     $this->wpv_use_adminport_optname = "wpvarnish_use_adminport";
+    $this->wpv_vversion_optname = "wpvarnish_vversion";
     $wpv_addr_optval = array ("127.0.0.1");
     $wpv_port_optval = array (80);
     $wpv_secret_optval = array ("");
@@ -48,6 +50,7 @@ class WPVarnish {
     $wpv_update_pagenavi_optval = 0;
     $wpv_update_commentnavi_optval = 0;
     $wpv_use_adminport_optval = 0;
+    $wpv_vversion_optval = 2;
 
     if ( (get_option($this->wpv_addr_optname) == FALSE) ) {
       add_option($this->wpv_addr_optname, $wpv_addr_optval, '', 'yes');
@@ -77,32 +80,50 @@ class WPVarnish {
       add_option($this->wpv_use_adminport_optname, $wpv_use_adminport_optval, '', 'yes');
     }
 
+    if ( (get_option($this->wpv_vversion_optname) == FALSE) ) {
+      add_option($this->wpv_vversion_optname, $wpv_vversion_optval, '', 'yes');
+    }
+
     // Localization init
-    add_action('init', array(&$this, 'WPVarnishLocalization'));
+    add_action('init', array($this, 'WPVarnishLocalization'));
 
     // Add Administration Interface
-    add_action('admin_menu', array(&$this, 'WPVarnishAdminMenu'));
+    add_action('admin_menu', array($this, 'WPVarnishAdminMenu'));
 
     // When posts/pages are published, edited or deleted
-    add_action('edit_post', array(&$this, 'WPVarnishPurgePost'), 99);
-    add_action('edit_post', array(&$this, 'WPVarnishPurgeCommonObjects'), 99);
+    add_action('edit_post', array($this, 'WPVarnishPurgePost'), 99);
+    add_action('edit_post', array($this, 'WPVarnishPurgeCommonObjects'), 99);
+    add_action('transition_post_status', array($this, 'WPVarnishPurgePostStatus'), 99, 3);
+    add_action('transition_post_status', array($this, 'WPVarnishPurgeCommonObjectsStatus'), 99, 3);
 
     // When comments are made, edited or deleted
-    add_action('comment_post', array(&$this, 'WPVarnishPurgePostComments'),99);
-    add_action('edit_comment', array(&$this, 'WPVarnishPurgePostComments'),99);
-    add_action('trashed_comment', array(&$this, 'WPVarnishPurgePostComments'),99);
-    add_action('untrashed_comment', array(&$this, 'WPVarnishPurgePostComments'),99);
-    add_action('deleted_comment', array(&$this, 'WPVarnishPurgePostComments'),99);
+    add_action('comment_post', array($this, 'WPVarnishPurgePostComments'),99);
+    add_action('edit_comment', array($this, 'WPVarnishPurgePostComments'),99);
+    add_action('trashed_comment', array($this, 'WPVarnishPurgePostComments'),99);
+    add_action('untrashed_comment', array($this, 'WPVarnishPurgePostComments'),99);
+    add_action('deleted_comment', array($this, 'WPVarnishPurgePostComments'),99);
 
     // When posts or pages are deleted
-    add_action('deleted_post', array(&$this, 'WPVarnishPurgePost'), 99);
-    add_action('deleted_post', array(&$this, 'WPVarnishPurgeCommonObjects'), 99);
+    add_action('deleted_post', array($this, 'WPVarnishPurgePost'), 99);
+    add_action('deleted_post', array($this, 'WPVarnishPurgeCommonObjects'), 99);
+
+    // When xmlRPC call is made
+    add_action('xmlrpc_call',array($this, 'WPVarnishPurgeAll'), 99);
+
+    // When a new plugin is loaded
+    // this was added due to Issue #12, but, doesn't do what was intended
+    // commenting this out gets rid of the incessant purging.
+    //add_action('plugins_loaded',array($this, 'WPVarnishPurgeAll'), 99);
   }
 
   function WPVarnishLocalization() {
     load_plugin_textdomain('wp-varnish', false, dirname(plugin_basename( __FILE__ ) ) . '/lang/');
   }
 
+  //wrapper on WPVarnishPurgeCommonObjects for transition_post_status
+  function WPVarnishPurgeCommonObjectsStatus($old, $new, $p) {
+	  $this->WPVarnishPurgeCommonObjects($p->ID);
+  }
   function WPVarnishPurgeCommonObjects() {
     $this->WPVarnishPurgeObject("/");
     $this->WPVarnishPurgeObject("/feed/");
@@ -120,11 +141,21 @@ class WPVarnish {
     $this->WPVarnishPurgeObject('/(.*)');
   }
 
+  // WPVarnishPurgeURL - Using a URL, clear the cache
+  function WPVarnishPurgeURL($wpv_purl) {
+    $wpv_purl = str_replace(get_bloginfo('url'),"",$wpv_purl);
+    $this->WPVarnishPurgeObject($wpv_purl);
+  }
+
+  //wrapper on WPVarnishPurgePost for transition_post_status
+  function WPVarnishPurgePostStatus($old, $new, $p) {
+	  $this->WPVarnishPurgePost($p->ID);
+  }
   // WPVarnishPurgePost - Takes a post id (number) as an argument and generates
   // the location path to the object that will be purged based on the permalink.
   function WPVarnishPurgePost($wpv_postid) {
     $wpv_url = get_permalink($wpv_postid);
-    $wpv_permalink = str_replace(get_option('siteurl'),"",$wpv_url);
+    $wpv_permalink = str_replace(get_bloginfo('url'),"",$wpv_url);
 
     $this->WPVarnishPurgeObject($wpv_permalink);
   }
@@ -151,7 +182,7 @@ class WPVarnish {
 
   function WPVarnishAdminMenu() {
     if (!defined('VARNISH_HIDE_ADMINMENU')) {
-      add_options_page(__('WP-Varnish Configuration','wp-varnish'), 'WP-Varnish', 1, 'WPVarnish', array(&$this, 'WPVarnishAdmin'));
+      add_options_page(__('WP-Varnish Configuration','wp-varnish'), 'WP-Varnish', 1, 'WPVarnish', array($this, 'WPVarnishAdmin'));
     }
   }
 
@@ -160,6 +191,8 @@ class WPVarnish {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
        if (current_user_can('administrator')) {
           if (isset($_POST['wpvarnish_admin'])) {
+             cleanSubmittedData('wpvarnish_port', '/[^0-9]/');
+             cleanSubmittedData('wpvarnish_addr', '/[^0-9.]/');
              if (!empty($_POST["$this->wpv_addr_optname"])) {
                 $wpv_addr_optval = $_POST["$this->wpv_addr_optname"];
                 update_option($this->wpv_addr_optname, $wpv_addr_optval);
@@ -197,6 +230,16 @@ class WPVarnish {
              } else {
                 update_option($this->wpv_use_adminport_optname, 0);
              }
+
+             if (!empty($_POST["$this->wpv_vversion_optname"])) {
+                $wpv_vversion_optval = $_POST["$this->wpv_vversion_optname"];
+                update_option($this->wpv_vversion_optname, $wpv_vversion_optval);
+             }
+
+          }
+
+          if (isset($_POST['wpvarnish_purge_url_submit'])) {
+              $this->WPVarnishPurgeURL($_POST["$this->wpvarnish_purge_url_optname"]);
           }
 
           if (isset($_POST['wpvarnish_clear_blog_cache']))
@@ -212,6 +255,7 @@ class WPVarnish {
          $wpv_update_pagenavi_optval = get_option($this->wpv_update_pagenavi_optname);
          $wpv_update_commentnavi_optval = get_option($this->wpv_update_commentnavi_optname);
          $wpv_use_adminport_optval = get_option($this->wpv_use_adminport_optname);
+         $wpv_vversion_optval = get_option($this->wpv_vversion_optname);
     ?>
     <div class="wrap">
       <script type="text/javascript" src="<?php echo plugins_url('wp-varnish.js', __FILE__ ); ?>"></script>
@@ -221,12 +265,15 @@ class WPVarnish {
     <?php
           // Can't be edited - already defined in wp-config.php
           global $varnish_servers;
+          global $varnish_version;
           if (is_array($varnish_servers)) {
              echo "<p>" . __("These values can't be edited since there's a global configuration located in <em>wp-config.php</em>. If you want to change these settings, please update the file or contact the administrator.",'wp-varnish') . "</p>\n";
              // Also, if defined, show the varnish servers configured (VARNISH_SHOWCFG)
              if (defined('VARNISH_SHOWCFG')) {
                 echo "<h3>" . __("Current configuration:",'wp-varnish') . "</h3>\n";
                 echo "<ul>";
+                if ( isset($varnish_version) && $varnish_version )
+                   echo "<li>" . __("Version: ",'wp-varnish') . $varnish_version . "</li>";
                 foreach ($varnish_servers as $server) {
                    list ($host, $port, $secret) = explode(':', $server);
                    echo "<li>" . __("Server: ",'wp-varnish') . $host . "<br/>" . __("Port: ",'wp-varnish') . $port . "</li>";
@@ -248,7 +295,7 @@ class WPVarnish {
           $addrs = get_option($this->wpv_addr_optname);
           $ports = get_option($this->wpv_port_optname);
           $secrets = get_option($this->wpv_secret_optname);
-          echo "rowCount = $i\n";
+          //echo "rowCount = $i\n";
           for ($i = 0; $i < count ($addrs); $i++) {
              // let's center the row creation in one spot, in javascript
              echo "addRow('form-table', $i, '$addrs[$i]', $ports[$i], '$secrets[$i]');\n";
@@ -274,7 +321,14 @@ class WPVarnish {
 
       <p><input type="checkbox" name="wpvarnish_update_commentnavi" value="1" <?php if ($wpv_update_commentnavi_optval == 1) echo 'checked '?>/> <?php echo __("Also purge all comment navigation (experimental, use carefully, it will include a bit more load on varnish servers.)",'wp-varnish'); ?></p>
 
+      <p>Varnish Version: <select name="wpvarnish_vversion"><option value="2" <?php if ($wpv_vversion_optval == 2) echo 'selected '?>/> 2 </option><option value="3" <?php if ($wpv_vversion_optval == 3) echo 'selected '?>/> 3 </option></select></p>
+
       <p class="submit"><input type="submit" class="button-primary" name="wpvarnish_admin" value="<?php echo __("Save Changes",'wp-varnish'); ?>" /></p>
+
+      <p>
+        Purge a URL:<input class="text" type="text" name="wpvarnish_purge_url" value="<?php echo get_bloginfo('url'); ?>" />
+        <input type="submit" class="button-primary" name="wpvarnish_purge_url_submit" value="<?php echo __("Purge",'wp-varnish'); ?>" />
+      </p>
 
       <p class="submit"><input type="submit" class="button-primary" name="wpvarnish_clear_blog_cache" value="<?php echo __("Purge All Blog Cache",'wp-varnish'); ?>" /> <?php echo __("Use only if necessary, and carefully as this will include a bit more load on varnish servers.",'wp-varnish'); ?></p>
       </form>
@@ -301,8 +355,13 @@ class WPVarnish {
 
     $wpv_timeout = get_option($this->wpv_timeout_optname);
     $wpv_use_adminport = get_option($this->wpv_use_adminport_optname);
+    global $varnish_version;
+    if ( isset($varnish_version) && in_array($varnish_version, array(2,3)) )
+       $wpv_vversion_optval = $varnish_version;
+    else
+       $wpv_vversion_optval = get_option($this->wpv_vversion_optname);
 
-    $wpv_wpurl = get_option('siteurl');
+    $wpv_wpurl = get_bloginfo('url');
     $wpv_replace_wpurl = '/^https?:\/\/([^\/]+)(.*)/i';
     $wpv_host = preg_replace($wpv_replace_wpurl, "$1", $wpv_wpurl);
     $wpv_blogaddr = preg_replace($wpv_replace_wpurl, "$2", $wpv_wpurl);
@@ -317,9 +376,9 @@ class WPVarnish {
 
       if($wpv_use_adminport) {
         $buf = fread($varnish_sock, 1024);
-        if(preg_match('/(\w+)\s+Authentication required./', $buf, &$matches)) {
+        if(preg_match('/(\w+)\s+Authentication required./', $buf, $matches)) {
           # get the secret
-	  $secret = "1beb871d-987a-4bbd-98aa-408e3de596cb";
+          $secret = $wpv_secret[$i];
           fwrite($varnish_sock, "auth " . $this->WPAuth($matches[1], $secret) . "\n");
 	  $buf = fread($varnish_sock, 1024);
           if(!preg_match('/^200/', $buf)) {
@@ -328,10 +387,15 @@ class WPVarnish {
 	    return;
 	  }
         }
-        $out = "purge req.url ~ ^$wpv_url && req.http.host == $wpv_host\n";
+        if ($wpv_vversion_optval == 3) {
+            $out = "ban req.url ~ ^$wpv_url && req.http.host == $wpv_host\n";
+          } else {
+            $out = "purge req.url ~ ^$wpv_url && req.http.host == $wpv_host\n";
+          }
       } else {
-        $out = "PURGE $wpv_url HTTP/1.0\r\n";
+        $out = "BAN $wpv_url HTTP/1.0\r\n";
         $out .= "Host: $wpv_host\r\n";
+        $out .= "User-Agent: WordPress-Varnish plugin\r\n";
         $out .= "Connection: Close\r\n\r\n";
       }
       fwrite($varnish_sock, $out);
@@ -352,6 +416,15 @@ class WPVarnish {
   }
 }
 
-$wpvarnish = & new WPVarnish();
+$wpvarnish = new WPVarnish();
 
+// Helper functions
+function cleanSubmittedData($varname, $regexp) {
+// FIXME: should do this in the admin console js, not here   
+// normally I hate cleaning data and would rather validate before submit
+// but, this fixes the problem in the cleanest method for now
+  foreach ($_POST[$varname] as $key=>$value) {
+    $_POST[$varname][$key] = preg_replace($regexp,'',$value);
+  }
+}
 ?>
