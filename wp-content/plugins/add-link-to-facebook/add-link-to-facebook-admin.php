@@ -2,7 +2,7 @@
 
 /*
 	Support class Add Link to Facebook admin
-	Copyright (c) 2011, 2012 by Marcel Bokhorst
+	Copyright (c) 2011-2013 by Marcel Bokhorst
 */
 
 function al2fb_render_admin($al2fb)
@@ -127,7 +127,6 @@ function al2fb_render_admin($al2fb)
 	al2fb_render_debug_info($al2fb);
 	echo '<div class="al2fb_sidebar">';
 	al2fb_render_resources($al2fb);
-	al2fb_render_ads($al2fb);
 	echo '</div>';
 ?>
 	<div class="al2fb_options">
@@ -585,44 +584,45 @@ function al2fb_render_admin($al2fb)
 			<tr valign="top"><th scope="row">
 				<label for="al2fb_friend"><?php _e('Add to wall of friends:', c_al2fb_text_domain); ?></label>
 			</th><td>
-				<p><strong>Beta!</strong></p>
+				<p style="color: red;"><strong><a href="https://developers.facebook.com/blog/post/2012/10/10/growing-quality-apps-with-open-graph/">Facebook will not allow</a> adding to friends walls from February 6th, 2013 anymore</strong></p>
 <?php
-				if (WPAL2Int::Check_multiple()) {
-					// Check links API
-					if (get_option(c_al2fb_option_uselinks))
-						echo '<p style="color: Red"><strong>' . __('Disable the links API to use this feature', c_al2fb_text_domain) . '</strong></p>';
+				if (time() < strtotime('6 February 2013'))
+					if (WPAL2Int::Check_multiple()) {
+						// Check links API
+						if (get_option(c_al2fb_option_uselinks))
+							echo '<p style="color: Red"><strong>' . __('Disable the links API to use this feature', c_al2fb_text_domain) . '</strong></p>';
 
-					// Get friends
-					try {
-						$friends = WPAL2Int::Get_fb_friends_cached($user_ID);
-					}
-					catch (Exception $e) {
-						if ($al2fb->debug)
-							print_r($e);
-						$friends = null;
-					}
-					$extra_friend = get_user_meta($user_ID, c_al2fb_meta_friend_extra, true);
-					if (empty($extra_friend) || !is_array($extra_friend))
-						$extra_friend = array();
-
-					echo '<table>';
-					if ($friends && $friends->data) {
-						usort($friends->data, 'al2fb_compare_friends');
-						foreach ($friends->data as $friend) {
-							if (empty($friend->name))
-								$friend->name = '?';
-							echo '<tr><td><input type="checkbox"' . (in_array($friend->id, $extra_friend) ? ' checked="checked"' : '') . ' name="' . c_al2fb_meta_friend_extra . '[]" value="' . $friend->id . '"></td>';
-							echo '<td>' . htmlspecialchars($friend->name, ENT_QUOTES, $charset) . '</td></tr>';
+						// Get friends
+						try {
+							$friends = WPAL2Int::Get_fb_friends_cached($user_ID);
 						}
+						catch (Exception $e) {
+							if ($al2fb->debug)
+								print_r($e);
+							$friends = null;
+						}
+						$extra_friend = get_user_meta($user_ID, c_al2fb_meta_friend_extra, true);
+						if (empty($extra_friend) || !is_array($extra_friend))
+							$extra_friend = array();
+
+						echo '<table>';
+						if ($friends && $friends->data) {
+							usort($friends->data, 'al2fb_compare_friends');
+							foreach ($friends->data as $friend) {
+								if (empty($friend->name))
+									$friend->name = '?';
+								echo '<tr><td><input type="checkbox"' . (in_array($friend->id, $extra_friend) ? ' checked="checked"' : '') . ' name="' . c_al2fb_meta_friend_extra . '[]" value="' . $friend->id . '"></td>';
+								echo '<td>' . htmlspecialchars($friend->name, ENT_QUOTES, $charset) . '</td></tr>';
+							}
+						}
+						echo '</table>';
 					}
-					echo '</table>';
-				}
-				else {
-					echo '<strong>';
-					_e('This option is only available in', c_al2fb_text_domain);
-					echo ' <a href="http://www.faircode.eu/al2fbpro/?url=' . WPAL2Int::Redirect_uri() . '" target="_blank">Add Link to Facebook Pro</a>';
-					echo '</strong>';
-				}
+					else {
+						echo '<strong>';
+						_e('This option is only available in', c_al2fb_text_domain);
+						echo ' <a href="http://www.faircode.eu/al2fbpro/?url=' . WPAL2Int::Redirect_uri() . '" target="_blank">Add Link to Facebook Pro</a>';
+						echo '</strong>';
+					}
 ?>
 			</td></tr>
 			</table>
@@ -1233,12 +1233,6 @@ function al2fb_render_admin($al2fb)
 	</th><td>
 		<input id="al2fb_donated" name="<?php echo c_al2fb_meta_donated; ?>" type="checkbox"<?php if (get_user_meta($user_ID, c_al2fb_meta_donated, true)) echo ' checked="checked"'; ?> />
 	</td></tr>
-
-	<tr valign="top"><th scope="row">
-		<label for="al2fb_rated"><?php _e('I have rated this plugin:', c_al2fb_text_domain); ?></label>
-	</th><td>
-		<input id="al2fb_rated" name="<?php echo c_al2fb_meta_rated; ?>" type="checkbox"<?php if (get_user_meta($user_ID, c_al2fb_meta_rated, true)) echo ' checked="checked"'; ?> />
-	</td></tr>
 	</table>
 	<p class="submit">
 	<input type="submit" class="button-primary" value="<?php _e('Save', c_al2fb_text_domain) ?>" />
@@ -1364,6 +1358,12 @@ function al2fb_render_admin($al2fb)
 			<input class="al2fb_numeric" id="al2fb_max_comment" name="<?php echo c_al2fb_option_max_comment; ?>" type="text" value="<?php echo get_option(c_al2fb_option_max_comment); ?>" />
 			<span><?php _e('Characters', c_al2fb_text_domain); ?></span>
 			<br /><span class="al2fb_explanation"><?php _e('Default 256 characters', c_al2fb_text_domain); ?></span>
+		</td></tr>
+
+		<tr valign="top"><th scope="row">
+			<label for="al2fb_exclude_custom"><?php _e('Do not add links for custom post types:', c_al2fb_text_domain); ?></label>
+		</th><td>
+			<input id="al2fb_exclude_custom" name="<?php echo c_al2fb_option_exclude_custom; ?>" type="checkbox"<?php if (get_option(c_al2fb_option_exclude_custom)) echo ' checked="checked"'; ?> />
 		</td></tr>
 
 		<tr valign="top"><th scope="row">
@@ -1632,22 +1632,6 @@ function al2fb_render_resources($al2fb) {
 ?>
 	</div>
 <?php
-}
-
-function al2fb_render_ads($al2fb) {
-	// Host1Plus
-	echo '<div class="al2fb_ads">';
-	echo '<a href="http://www.host1plus.com/vps-hosting/" target="_blank">';
-	echo '<img src="' . plugins_url('host1plus.jpg', __FILE__) . '" width="250" height="67" alt="Host1Plus">';
-	echo '</a>';
-	echo '</div>';
-
-	// ManageWP
-	echo '<div class="al2fb_ads">';
-	echo '<a href="http://managewp.com/?utm_source=Plugins&utm_medium=Banner&utm_content=mwp250_2&utm_campaign=addtofacebook" target="_blank">';
-	echo '<img src="' . plugins_url('mwp250_2.png', __FILE__) . '" alt="ManageWP">';
-	echo '</a>';
-	echo '</div>';
 }
 
 function al2fb_render_debug_info($al2fb) {

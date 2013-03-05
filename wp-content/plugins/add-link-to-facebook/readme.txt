@@ -3,8 +3,8 @@ Contributors: Marcel Bokhorst, M66B
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB7DGNA3MJ&lc=US&item_name=Add%20Link%20to%20Facebook%20WordPress%20Plugin&item_number=Marcel%20Bokhorst&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 Tags: post, posts, Facebook, social, link, links, permalink, wpmu, admin, comment, comments, shortcode, sidebar, widget, bbPress
 Requires at least: 3.2
-Tested up to: 3.5
-Stable tag: 1.171
+Tested up to: 3.5.1
+Stable tag: 1.177
 
 Automatically add links to published posts or pages to your Facebook wall, pages or groups and more
 
@@ -79,6 +79,7 @@ Translations are welcome, see [the FAQ](http://wordpress.org/extend/plugins/add-
 * Greek (el\_EL), thanks!
 * Lithuanian (lt\_LT) by [Host1Free](http://www.host1free.com/ "Host1Free"), thanks!
 * Danish (da\_DK) by [Mads Phikamphon](http://www.genvejen.dk/ "Mads Phikamphon"), thanks
+* Ukrainian (ua\_UA), thanks
 
 See [my other plugins](http://wordpress.org/extend/plugins/profile/m66b "Marcel Bokhorst")
 
@@ -252,6 +253,7 @@ Assuming that you have configured and authorize the plugin, you can check this:
 * Are you logged into the correct Facebook account?
 * Are you looking at the correct personal/page/group wall/profile?
 * Do the privacy options allow viewing the link?
+* Make sure sandbox mode is not enabled in the Facebook application
 
 Note that each WordPress user should authorize the plugin, unless you check the option *Share with all users on this site* in the Easy setup section.
 
@@ -372,6 +374,7 @@ The only thing that can be changed is the Facebook application name after 'via'.
 From version 1.142 video is supported for [Viper's Video Quicktags](http://wordpress.org/extend/plugins/vipers-video-quicktags/).
 
 From version 1.149.1 you can set a video URL in the post editor.
+See [here](http://www.viwickam.com/how-to-make-your-video-blog-posts-facebook-friendly/) for how to get the correct video URL.
 
 = U33 The like/send button doesn't look/behave as I want =
 
@@ -617,7 +620,7 @@ cURL errors commonly reported:
 * Error 28: *Operation timeout*: hopefully temporarily no internet available on the hosting server, you can try to increase the setting *Facebook communication timeout*
 * Error 47: *Maximum redirects followed*: update to version 1.149+
 * Error 56: *Failure with receiving network data*: this error may be caused by using a CDN or caching solutions like CloudFare
-* Error 60: *Peer certificate cannot be authenticated with known CA certificates*: the security certificates on the hosting server could be missing or outdated, try enabling the option *Do not verify the peer's certificate* (settings tab *Admin*), but be aware this is less secure
+* Error 60: *Peer certificate cannot be authenticated with known CA certificates*: the security certificates on the hosting server could be missing or outdated, try enabling the option *Use bundled CA certificates* or as a last resort *Do not verify the peer's certificate* (settings tab *Admin*), but be aware this is less secure
 * Error 77: *Problem with reading the SSL CA cert*: the certificate files on the hosting server are not accessible or missing
 
 You can find all cURL error codes on the [libcurl error page](http://curl.haxx.se/libcurl/c/libcurl-errors.html "libcurl-errors.3 -- man page").
@@ -709,6 +712,7 @@ Ask your provider to install and configure [cURL](http://www.php.net/manual/en/c
 
 You are probably using an existing Facebook application.
 You can solve this problem by going into application settings and setting the Stream post URL security to disabled under advanced.
+If you are adding links to a group, try disabling the option *Add 'Share' link*.
 
 = E24 I get 'file_get_contents ... No such file or directory' =
 
@@ -768,7 +772,7 @@ and describe the problem as accurate as possible and press the *Send* button.
 == Changelog ==
 
 = Development version =
-* Updated French (fr\_FR) translation
+* ...
 
 Follow these steps to install the development version:
 
@@ -783,36 +787,17 @@ Follow these steps to install the development version:
 * Please report any problem you encounter
 * Reports that everything works are also appreciated :-)
 
-= 1.171 =
-* Bugfix: add new post security warning
+= 1.177 =
+* Bugfix: Facebook login for multi-sites
+* Added Ukranian (ua\_UA) translation
 
-= 1.169 =
-* Improvement: thumbnails in the post meta box
-* Improvement: hardened form security
+= 1.176 =
+* Removed graphical ads
+* Removed request for rating
 
-= 1.168 =
-* Bugfix: clear errors for all users
-* Improvement: more debug info
-* Tested with WordPress 3.5 beta 2
-
-= 1.167 =
-* Bugfix: excludes when using scheduled posts
-* New feature: widget/shortcode/template tag for Facebook subscribe button
-* Updated Dutch (nl\_NL) and Flemish (nl\_BE) translations
-* Updated Norwegian (nb\_NO) translation by [Stein Ivar Johnsen](http://www.idyrøy.no/ "Stein Ivar Johnsen")
-
-= 1.166 =
-* Bugfix: revert WordPress logo in Open Graph Protocol if no link added
-
-= 1.165 =
-* Bugfix: exclude/video for scheduled posts
-* Improvement: auto fix invalid locales
-* Improvement: strip shortcodes if not filtering text/excerpt
-* Improvement: WordPress logo in Open Graph Protocol if no link added (performance)
-* New feature: global URL parameter
-* Updated Dutch (nl\_NL) and Flemish (nl\_BE) translations
-* Updated Norwegian (nb\_NO) translation by [Stein Ivar Johnsen](http://www.idyrøy.no/ "Stein Ivar Johnsen")
-* Tested with WordPress 3.5 beta 2
+= 1.175 =
+* Disable adding links to friends walls after February 6th, [read here](https://developers.facebook.com/blog/post/2012/10/10/growing-quality-apps-with-open-graph/) why
+* Updated German (de\_DE) translation by [Wolfgang Tischer](http://www.literaturcafe.de "Wolfgang Tischer")
 
 = Older versions =
 * Deleted, because of maximum readme.txt size
@@ -820,8 +805,8 @@ Follow these steps to install the development version:
 
 == Upgrade Notice ==
 
-= 1.171 =
-One bugfix, two improvements
+= 1.177 =
+One bugfix, new translation
 
 == Setup guide ==
 

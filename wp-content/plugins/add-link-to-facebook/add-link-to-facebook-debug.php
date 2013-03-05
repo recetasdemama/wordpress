@@ -2,7 +2,7 @@
 
 /*
 	Support class Add Link to Facebook debug info
-	Copyright (c) 2011, 2012 by Marcel Bokhorst
+	Copyright (c) 2011-2013 by Marcel Bokhorst
 */
 
 // Generate debug info

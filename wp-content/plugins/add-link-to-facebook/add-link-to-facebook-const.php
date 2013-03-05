@@ -17,6 +17,7 @@ define('c_al2fb_option_msg_maxage', 'al2fb_msg_maxage');
 define('c_al2fb_option_max_descr', 'al2fb_max_msg');
 define('c_al2fb_option_max_text', 'al2fb_max_text');
 define('c_al2fb_option_max_comment', 'al2fb_max_comment');
+define('c_al2fb_option_exclude_custom', 'al2fb_exclude_custom');
 define('c_al2fb_option_exclude_type', 'al2fb_exclude_type');
 define('c_al2fb_option_exclude_cat', 'al2fb_exclude_cat');
 define('c_al2fb_option_exclude_tag', 'al2fb_exclude_tag');
@@ -146,8 +147,6 @@ define('c_al2fb_meta_param_name', 'al2fb_param_name');
 define('c_al2fb_meta_param_value', 'al2fb_param_value');
 define('c_al2fb_meta_clear_errors', 'al2fb_clear_errors');
 define('c_al2fb_meta_donated', 'al2fb_donated');
-define('c_al2fb_meta_rated0', 'al2fb_rated');
-define('c_al2fb_meta_rated', 'al2fb_rated1');
 define('c_al2fb_meta_stat', 'al2fb_stat');
 define('c_al2fb_meta_week', 'al2fb_week');
 
