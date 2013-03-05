@@ -3,8 +3,8 @@ Contributors: katemag
 Donate Link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L3J4LBDGP533Q   
 Tags: private access, login, remove feed  
 Requires at least: 3.0  
-Tested up to: 3.5  
-Stable tag: 3.0
+Tested up to: 3.5.1  
+Stable tag: 3.1
 
 Redirects all non-logged in users to login form.
 
@@ -17,7 +17,7 @@ Requires WordPress 3.0 and PHP5
 
 If you have suggestions for a new add-on, feel free to email me at studio[at]pixert.com. 
 
-Become a fan of Pixel Insert/Pixert on Facebook! http://www.facebook.com/PixelInsert  Or follow Pixel Insert/Pixert on Twitter! http://twitter.com/pixert
+Become a fan of Pixel Insert/Pixert on Facebook! http://www.facebook.com/PixelInsert  or follow Pixel Insert/Pixert on Twitter! http://twitter.com/pixert
 
 Follow our developer, Kate Mag on Twitter! http://twitter.com/katemag
 
@@ -27,7 +27,8 @@ Features:
 3. Sub plugin name Disable Feed that allow you to choose disable or enable feed.  
 4. Single public page *new feature*  
 5. Localization *new feature*   
-6. Custom CSS *new feature*
+6. Custom CSS *new feature*  
+7. Custom Logo Link *new feature*
 
 ==Installation==  
 1. Download The Private Only package file, extract the private-only directory from ZIP file, upload it to WordPress Plugins directory '/wp-content/plugins/'  

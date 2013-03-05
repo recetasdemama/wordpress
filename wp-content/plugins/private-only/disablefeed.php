@@ -3,7 +3,7 @@
 Plugin Name: Private Only, Disable Feed
 Plugin URI: http://www.pixert.com/
 Description: This sub plugin disable Feed
-Version: 3.0
+Version: 3.1
 Author: Kate Mag (Pixel Insert)
 Author URI: http://www.pixert.com
 */

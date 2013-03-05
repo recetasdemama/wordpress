@@ -1,6 +1,6 @@
 <?php
 /*
-Private Only 3.0
+Private Only 3.1
 Need a WP expert? Hire me : studio[at]pixert.com
 */
 ?>
@@ -15,7 +15,7 @@ Need a WP expert? Hire me : studio[at]pixert.com
 	<ul>
     
     <li style="margin-bottom: 40px;">
-      <h4><?php _e('This is Private Only plugin for WordPress ver 3.0','private-only'); ?></h4>
+      <h4><?php _e('This is Private Only plugin for WordPress ver 3.1','private-only'); ?></h4>
       <h5>Coded by Kate Mag (Pixel Insert)</h5>
       <p><?php _e('If you disable or enable feed, DO NOT FORGET TO REFRESH YOUR BROWSER CACHE AFTER ACTIVATE PRIVATE ONLY or DISABLE FEED','private-only'); ?></p>
     </li> 
@@ -106,6 +106,16 @@ Need a WP expert? Hire me : studio[at]pixert.com
                 <input id="<?php echo $data['use_wp_logo']; ?>" name="<?php echo $data['use_wp_logo']; ?>" type="checkbox" <?php if ( $val['use_wp_logo'] ) echo 'checked="checked"'; ?> value="true" /><br />
                 <?php _e('Check this box to use WordPress Logo, leave unchecked to disable it.','private-only'); ?>
             </td>
+   		</tr>
+   		<tr>
+            <th>
+            	<label for="<?php echo $data['logo_url']; ?>"><?php _e('Change WordPress logo link','private-only'); ?>:</label> 
+            </th>
+            <td>
+               <input id="<?php echo $data['logo_url']; ?>" name="<?php echo $data['logo_url']; ?>" value="<?php echo $val['logo_url']; ?>" size="40" /><br />
+                <?php _e('Change WordPress logo link from wordpress.org to your domain, http://yourdomainname.com','private-on;y'); ?><br />
+            </td>
+
    		</tr>
     </table>
 </div>
