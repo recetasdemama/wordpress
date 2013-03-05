@@ -8,12 +8,12 @@ acl purge {
 }
 
 sub vcl_recv {
-  if (req.request == "PURGE") {
+  if (req.request == "BAN") {
     if(!client.ip ~ purge) {
       error 405 "Not allowed.";
     }
-
-    purge("req.url ~ ^" req.url "$ && req.http.host == "req.http.host);
+    ban("req.url ~ "+req.url+" && req.http.host == "+req.http.host);
+    error 200 "Banned.";
   }
 
   if (req.request != "GET" &&
@@ -39,8 +39,12 @@ sub vcl_recv {
 }
 
 sub vcl_fetch {
+  if (beresp.status == 404) {
+    set beresp.ttl = 0m;
+    return(hit_for_pass);
+  }
   if (req.url ~ "wp-(login|admin)" || req.url ~ "preview=true") {
-    return (pass);
+    return (hit_for_pass);
   }
 
   set beresp.ttl = 24h;
