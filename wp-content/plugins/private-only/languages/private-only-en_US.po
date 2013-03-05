@@ -1,100 +1,114 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Private nly WP Plugin\n"
+"Project-Id-Version: private-only\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-29 08:12+0700\n"
+"POT-Creation-Date: 2013-01-08 05:35+0700\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Pixel Insert/pixert <studio@pixert.com>\n"
-"Language-Team: Kate Mag (pixert.com) <kate@pixert.com>\n"
+"Language-Team: Pixert (Kate Mag) <studio@pixert.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: UNITED STATES\n"
+"X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-Basepath: .\n"
-"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-0: F:\\Server\\Wamp\\www\\wptwit\\wp-content\\plugins\\private-only\n"
 
-#: disablefeed.php:14
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/disablefeed.php:14
 msgid "<strong>Error:</strong> Feed unavailable!"
 msgstr ""
 
-#: privateonly.php:67
-#: admin/settings-admin.php:28
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/privateonly.php:70
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings-admin.php:30
 msgid "Private Only Custom Login"
 msgstr ""
 
-#: privateonly.php:97
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/privateonly.php:100
 msgid "Only registered and logged in users are allowed to view this site. Please login now"
 msgstr ""
 
-#: privateonly.php:99
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/privateonly.php:102
 msgid "Visit our public page:"
 msgstr ""
 
-#: privateonly.php:105
-msgid "Welcome,you need to be registered</a> to see content"
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/privateonly.php:110
+msgid "Welcome,you need to be registered to see content"
 msgstr ""
 
-#: admin/settings-admin.php:29
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings-admin.php:31
 msgid "Private Only Custom Login Settings"
 msgstr ""
 
-#: admin/settings-admin.php:84
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings-admin.php:86
 msgid "New Settings saved"
 msgstr ""
 
-#: admin/settings-admin.php:104
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings-admin.php:106
 msgid "Settings have been reset"
 msgstr ""
 
-#: admin/settings-admin.php:133
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings-admin.php:135
 msgid "Do you really want to delete/reset the plugin settings?"
 msgstr ""
 
-#: admin/settings.php:18
-msgid "This is Private Only plugin for WordPress ver 2.0"
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:18
+msgid "This is Private Only plugin for WordPress ver 3.1"
 msgstr ""
 
-#: admin/settings.php:19
-msgid "If you disable or enable feed, DO NOT FORGET TO REFRESH YOUR BROWSER CACHE AFTER ACTIVATE PRIVATE ONLY orDISABLE FEED"
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:20
+msgid "If you disable or enable feed, DO NOT FORGET TO REFRESH YOUR BROWSER CACHE AFTER ACTIVATE PRIVATE ONLY or DISABLE FEED"
 msgstr ""
 
-#: admin/settings.php:22
-msgid "Follow me on twitter"
-msgstr ""
-
-#: admin/settings.php:24
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:35
 msgid "Hire me"
 msgstr ""
 
-#: admin/settings.php:39
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:48
 msgid "Custom Login"
 msgstr ""
 
-#: admin/settings.php:48
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:57
 msgid "Public Page:"
 msgstr ""
 
-#: admin/settings.php:63
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:72
 msgid "Define the public page"
 msgstr ""
 
-#: admin/settings.php:76
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:85
 msgid "Logo:"
 msgstr ""
 
-#: admin/settings.php:80
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:89
 msgid "Upload an image with Media Library or FTP and put the full path here, http://yourdomainname.com/logo.jpg"
 msgstr ""
 
-#: admin/settings.php:81
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:90
 msgid "We do not provide upload tool here, because it is free for you upload it wherever you want to"
 msgstr ""
 
-#: admin/settings.php:94
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:103
 msgid "Use WordPress logo"
 msgstr ""
 
-#: admin/settings.php:98
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:107
 msgid "Check this box to use WordPress Logo, leave unchecked to disable it."
+msgstr ""
+
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:112
+msgid "Change WordPress logo link"
+msgstr ""
+
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:116
+msgid "Change WordPress logo link from wordpress.org to your domain, http://yourdomainname.com"
+msgstr ""
+
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:129
+msgid "Use Custom CSS"
+msgstr ""
+
+#: F:\Server\Wamp\www\wptwit\wp-content\plugins\private-only/admin/settings.php:133
+msgid "Check this box to use Custom CSS, leave unchecked to disable it. You should have custom css in your active theme"
 msgstr ""
 

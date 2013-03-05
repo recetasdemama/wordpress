@@ -3,7 +3,7 @@
 Plugin Name: Private Only
 Plugin URI: http://www.pixert.com/
 Description: Redirects all non-logged in users to login form with custom login capability
-Version: 3.0
+Version: 3.1
 Author: Kate Mag (Pixel Insert)
 Author URI: http://www.pixert.com
 */
@@ -85,7 +85,7 @@ function private_only () {
 	if (!is_user_logged_in() && !is_feed() && isset($settings['public_pages']) && $settings['public_pages'] && is_page($settings['public_pages'])) {
 		return;
 	} 
-	if (!is_user_logged_in() && !is_feed() && (!is_page($settings['public_pages']) || empty($settings['public_pages']))) {
+	if (!is_user_logged_in() && !is_feed() && (!is_page($settings['public_pages']) || empty($settings['public_pages']) || $settings['public_pages'] == '')) {
 		auth_redirect();
   } 
 }
@@ -120,7 +120,16 @@ function log_in_message ($error) {
 function change_login_headertitle(){
 	return get_bloginfo('title', 'display' );
 }
-add_filter( 'login_headertitle', 'change_login_headertitle');
+/* Change Logo URL */
+// Use your own external URL logo link
+function wpc_url_login(){
+global $po_login;
+if (isset($po_login['logo_url']) && $po_login['logo_url']) {
+	return $po_login['logo_url']; // your URL here
+}
+}
+add_filter('login_headerurl', 'wpc_url_login');
+add_filter('login_headertitle', 'change_login_headertitle');
 add_action('template_redirect','private_only');
 add_action('login_head','no_index');
 add_filter('login_headertitle','log_in_message');
