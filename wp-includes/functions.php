@@ -1600,11 +1600,7 @@ function wp_upload_dir( $time = null ) {
 			$error_path = basename( $uploads['basedir'] ) . $uploads['subdir'];
 
 		$message = sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $error_path );
-<<<<<<< HEAD
-		return array( 'error' => $message );
-=======
 		$uploads['error'] = $message;
->>>>>>> 3.5.1
 	}
 
 	return $uploads;
@@ -1972,23 +1968,6 @@ function wp_get_mime_types() {
 	) );
 }
 /**
-<<<<<<< HEAD
- * Retrieve nonce action "Are you sure" message.
- *
- * Deprecated in 3.4.1 and 3.5.0. Backported to 3.3.3.
- *
- * @since 2.0.4
- * @deprecated 3.4.1
- * @deprecated Use wp_nonce_ays()
- * @see wp_nonce_ays()
- *
- * @param string $action Nonce action.
- * @return string Are you sure message.
- */
-function wp_explain_nonce( $action ) {
-	_deprecated_function( __FUNCTION__, '3.4.1', 'wp_nonce_ays()' );
-	return __( 'Are you sure you want to do this?' );
-=======
  * Retrieve list of allowed mime types and file extensions.
  *
  * @since 2.8.6
@@ -2000,7 +1979,6 @@ function wp_explain_nonce( $action ) {
  */
 function get_allowed_mime_types() {
 	return apply_filters( 'upload_mimes', wp_get_mime_types() );
->>>>>>> 3.5.1
 }
 
 /**
@@ -3852,11 +3830,6 @@ function _device_can_upload() {
 		|| strpos($ua, 'iPad') !== false
 		|| strpos($ua, 'iPod') !== false ) {
 			return preg_match( '#OS ([\d_]+) like Mac OS X#', $ua, $version ) && version_compare( $version[1], '6', '>=' );
-<<<<<<< HEAD
-	} else {
-		return true;
-=======
->>>>>>> 3.5.1
 	}
 
 	return true;

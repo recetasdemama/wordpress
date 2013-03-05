@@ -365,10 +365,6 @@ final class _WP_Editors {
 						foreach ( $editor_styles as $key => $file ) {
 							if ( $file && file_exists( "$template_dir/$file" ) )
 								$mce_css[] = "$template_uri/$file";
-<<<<<<< HEAD
-							}
-=======
->>>>>>> 3.5.1
 						}
 					}
 
@@ -832,15 +828,9 @@ final class _WP_Editors {
 		<div id="search-panel"<?php if ( ! $show_internal ) echo ' style="display:none"'; ?>>
 			<div class="link-search-wrapper">
 				<label>
-<<<<<<< HEAD
-					<span><?php _e( 'Search' ); ?></span>
-					<input type="text" id="search-field" class="link-search-field" tabindex="60" autocomplete="off" />
-					<img class="waiting" src="<?php echo esc_url( admin_url( 'images/wpspin_light.gif' ) ); ?>" alt="" />
-=======
 					<span class="search-label"><?php _e( 'Search' ); ?></span>
 					<input type="search" id="search-field" class="link-search-field" autocomplete="off" />
 					<span class="spinner"></span>
->>>>>>> 3.5.1
 				</label>
 			</div>
 			<div id="search-results" class="query-results">

@@ -382,19 +382,11 @@ final class WP_Customize_Manager {
 		);
 
 		if ( 2 == $this->nonce_tick ) {
-<<<<<<< HEAD
- 			$settings['nonce'] = array(
- 				'save' => wp_create_nonce( 'save-customize_' . $this->get_stylesheet() ),
- 				'preview' => wp_create_nonce( 'preview-customize_' . $this->get_stylesheet() )
- 			);
- 		}
-=======
 			$settings['nonce'] = array(
 				'save' => wp_create_nonce( 'save-customize_' . $this->get_stylesheet() ),
 				'preview' => wp_create_nonce( 'preview-customize_' . $this->get_stylesheet() )
 			);
 		}
->>>>>>> 3.5.1
 
 		foreach ( $this->settings as $id => $setting ) {
 			$settings['values'][ $id ] = $setting->js_value();

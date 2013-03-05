@@ -486,21 +486,6 @@ class WP_Customize_Image_Control extends WP_Customize_Upload_Control {
 
 		// Early priority to occur before $this->manager->prepare_controls();
 		add_action( 'customize_controls_init', array( $this, 'prepare_control' ), 5 );
-<<<<<<< HEAD
-	}
-
-	/**
-	 * Prepares the control.
-	 *
-	 * If no tabs exist, removes the control from the manager.
-	 *
-	 * @since 3.4.2
-	 */
-	public function prepare_control() {
-		if ( ! $this->tabs )
-			$this->manager->remove_control( $this->id );
-=======
->>>>>>> 3.5.1
 	}
 
 	/**
@@ -730,8 +715,6 @@ class WP_Customize_Header_Image_Control extends WP_Customize_Image_Control {
 	 */
 	protected $uploaded_headers;
 
-<<<<<<< HEAD
-=======
 	/**
 	 * Constructor.
 	 *
@@ -741,7 +724,6 @@ class WP_Customize_Header_Image_Control extends WP_Customize_Image_Control {
 	 *
 	 * @param WP_Customize_Manager $manager
 	 */
->>>>>>> 3.5.1
 	public function __construct( $manager ) {
 		parent::__construct( $manager, 'header_image', array(
 			'label'    => __( 'Header Image' ),

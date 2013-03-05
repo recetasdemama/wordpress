@@ -972,12 +972,8 @@ function setup_userdata($for_user_id = '') {
 		return;
 	}
 
-<<<<<<< HEAD
-
-=======
 	$user_ID    = (int) $user->ID;
 	$user_level = (int) $user->user_level;
->>>>>>> 3.5.1
 	$userdata   = $user;
 	$user_login = $user->user_login;
 	$user_email = $user->user_email;
