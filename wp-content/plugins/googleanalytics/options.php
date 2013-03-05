@@ -12,14 +12,6 @@
 <td><input type="text" name="web_property_id" value="<?php echo get_option('web_property_id'); ?>" /></td>
 </tr>
 
-<tr valign="top">
-<th scape="row">Asynchronous Tracking:</th>
-<td>
-  <select name="asynchronous_tracking">
-    <option value="yes" <?php if (get_option('asynchronous_tracking') == 'yes') echo "selected=selected" ?>>Yes</option>
-    <option value="no"  <?php if (get_option('asynchronous_tracking') == 'no') echo "selected=selected" ?>>No</option>
-  </select>
-</td>
 </tr>
 
 </table>
