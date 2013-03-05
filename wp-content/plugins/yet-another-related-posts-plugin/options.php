@@ -5,8 +5,13 @@ global $wpdb, $wp_version, $yarpp;
 $yarpp->enforce();
 
 // check to see that templates are in the right place
-if ( !count($yarpp->admin->get_templates()) ) {
-	yarpp_set_option( array( 'template' => false, 'rss_template' => false) );
+if ( !$yarpp->diagnostic_custom_templates() ) {
+	$template_option = yarpp_get_option( 'template' );
+	if ( $template_option !== false && 'thumbnails' != $template_option )
+		yarpp_set_option( 'template', false );
+	$template_option = yarpp_get_option( 'rss_template' );
+	if ( $template_option !== false && 'thumbnails' != $template_option )
+		yarpp_set_option( 'rss_template', false );
 }
 
 // 3.3: move version checking here, in PHP:
@@ -28,7 +33,7 @@ if ( current_user_can('update_plugins' ) ) {
 	
 		echo '<div class="updated"><p>';
 		$details_url = self_admin_url('plugin-install.php?tab=plugin-information&plugin=' . $slug . '&TB_iframe=true&width=600&height=800');
-		printf( __('There is a new version of %1$s available. <a href="%2$s" class="thickbox" title="%3$s">View version %4$s details</a> or <a href="%5$s">update automatically</a>.'), $plugin_name, esc_url($details_url), esc_attr($plugin_name), $yarpp_version_info['current']['version'], wp_nonce_url( self_admin_url('update.php?action=upgrade-plugin&plugin=') . $file, 'upgrade-plugin_' . $file) );
+		printf( __('There is a new version of %1$s available. <a href="%2$s" class="thickbox" title="%3$s">View version %4$s details</a> or <a href="%5$s">update automatically</a>.', 'yarpp'), $plugin_name, esc_url($details_url), esc_attr($plugin_name), $yarpp_version_info['current']['version'], wp_nonce_url( self_admin_url('update.php?action=upgrade-plugin&plugin=') . $file, 'upgrade-plugin_' . $file) );
 		echo '</p></div>';
 	} else if ( $yarpp_version_info['result'] == 'newbeta' ) {
 		echo '<div class="updated"><p>';
