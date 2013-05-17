@@ -681,13 +681,6 @@ function al2fb_render_admin($al2fb)
 	</td></tr>
 
 	<tr valign="top"><th scope="row">
-		<label for="al2fb_share_link"><?php _e('Add \'Share\' link:', c_al2fb_text_domain); ?></label>
-	</th><td>
-		<input id="al2fb_share_link" name="<?php echo c_al2fb_meta_share_link; ?>" type="checkbox"<?php if (get_user_meta($user_ID, c_al2fb_meta_share_link, true)) echo ' checked="checked"'; ?> />
-		<strong>Experimental!</strong>
-	</td></tr>
-
-	<tr valign="top"><th scope="row">
 		<label for="al2fb_shortlink"><?php _e('Use short URL:', c_al2fb_text_domain); ?></label>
 	</th><td>
 		<input id="al2fb_shortlink" name="<?php echo c_al2fb_meta_shortlink; ?>" type="checkbox"<?php if (get_user_meta($user_ID, c_al2fb_meta_shortlink, true)) echo ' checked="checked"'; ?> />

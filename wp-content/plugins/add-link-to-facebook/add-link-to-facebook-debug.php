@@ -156,7 +156,6 @@ function al2fb_debug_info($al2fb) {
 	$info .= '<tr><td>Excerpt:</td><td>' . (get_user_meta($user_ID, c_al2fb_meta_msg, true) ? 'Yes' : 'No') . '</td></tr>';
 	$info .= '<tr><td>Trailer:</td><td>' . htmlspecialchars(get_user_meta($user_ID, c_al2fb_meta_trailer, true), ENT_QUOTES, $charset) . '</td></tr>';
 	$info .= '<tr><td>Hyperlink:</td><td>' . (get_user_meta($user_ID, c_al2fb_meta_hyperlink, true) ? 'Yes' : 'No') . '</td></tr>';
-	$info .= '<tr><td>Share link:</td><td>' . (get_user_meta($user_ID, c_al2fb_meta_share_link, true) ? 'Yes' : 'No') . '</td></tr>';
 	$info .= '<tr><td>Shortlink:</td><td>' . (get_user_meta($user_ID, c_al2fb_meta_shortlink, true) ? 'Yes' : 'No') . '</td></tr>';
 	$info .= '<tr><td>Page link:</td><td>' . (get_user_meta($user_ID, c_al2fb_meta_add_new_page, true) ? 'Yes' : 'No') . '</td></tr>';
 
@@ -322,17 +321,21 @@ function al2fb_debug_info($al2fb) {
 		$comment_status = $posts->post->comment_status;
 		$recent = WPAL2Facebook::Is_recent($posts->post);
 		$comments_enabled = get_user_meta($xuser_ID, c_al2fb_meta_fb_comments, true);
+		$fbi = array();
 		$comment_count = '?';
 		if ($xuser_ID && !$excluded && $post_type != 'reply' && !$nointegrate && $comment_status == 'open' && $recent && $comments_enabled) {
 			$fb_comments = WPAL2Int::Get_comments_or_likes($posts->post, false);
 			if ($fb_comments) {
 				$comment_count = 0;
-				foreach ($fb_comments->data as $fb_comment)
+				foreach ($fb_comments->data as $fb_comment) {
 					$comment_count++;
+					$fbi[] = $fb_comment->id;
+				}
 			}
 		}
 
 		// Exported comments
+		$fbo = array();
 		$total_count = '-';
 		$stored_count = '-';
 		$stored_comments = get_comments('post_id=' . $posts->post->ID);
@@ -340,8 +343,11 @@ function al2fb_debug_info($al2fb) {
 			$total_count = count($stored_comments);
 			$stored_count = 0;
 			foreach ($stored_comments as $comment)
-				if (get_comment_meta($comment->comment_ID, c_al2fb_meta_fb_comment_id, true))
+				$fbid = get_comment_meta($comment->comment_ID, c_al2fb_meta_fb_comment_id, true);
+				if ($fbid) {
 					$stored_count++;
+					$fbo[] = $fbid;
+				}
 		}
 
 		$info .= '<tr><td>' . $posts->post->post_type . ' #' . $posts->post->ID . ':</td>';
@@ -369,6 +375,9 @@ function al2fb_debug_info($al2fb) {
 		$info .= ' export=' . $stored_count . '/' . $total_count;
 
 		$info .= '</td></tr>';
+
+		$info .= '<tr><td>Comments in:</td><td>' . implode(', ', $fbi) . '</td></tr>';
+		$info .= '<tr><td>Comments out:</td><td>' . implode(', ', $fbo) . '</td></tr>';
 	}
 
 	// Last link pictures
@@ -431,16 +440,16 @@ function al2fb_debug_info($al2fb) {
 
 	$info .= '<pre>$_SERVER=' . print_r($_SERVER, true) . '</pre>';
 
-	$comments = get_comments('number=10');
+	// Comments
+	$comments = get_comments('number=20');
 	foreach ($comments as $comment) {
 		$fb_id = get_comment_meta($comment->comment_ID, c_al2fb_meta_fb_comment_id, true);
 		$comment->fb_comment_id = $fb_id;
 	}
 	$info .= '<pre>comments=' . print_r($comments, true) . '</pre>';
 
-	$extra = ($_REQUEST['debug'] == 2);
-
 	// Info self
+	$extra = ($_REQUEST['debug'] == 2);
 	if ($extra)
 		try {
 			$me = WPAL2Int::Get_fb_me_cached($user_ID, true);

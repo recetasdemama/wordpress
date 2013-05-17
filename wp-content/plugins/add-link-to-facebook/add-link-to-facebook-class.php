@@ -482,7 +482,6 @@ if (!class_exists('WPAL2Facebook')) {
 			update_user_meta($user_ID, c_al2fb_meta_social_noexcerpt, $_POST[c_al2fb_meta_social_noexcerpt]);
 			update_user_meta($user_ID, c_al2fb_meta_trailer, $_POST[c_al2fb_meta_trailer]);
 			update_user_meta($user_ID, c_al2fb_meta_hyperlink, $_POST[c_al2fb_meta_hyperlink]);
-			update_user_meta($user_ID, c_al2fb_meta_share_link, $_POST[c_al2fb_meta_share_link]);
 			update_user_meta($user_ID, c_al2fb_meta_fb_comments, $_POST[c_al2fb_meta_fb_comments]);
 			update_user_meta($user_ID, c_al2fb_meta_fb_comments_trailer, $_POST[c_al2fb_meta_fb_comments_trailer]);
 			update_user_meta($user_ID, c_al2fb_meta_fb_comments_postback, $_POST[c_al2fb_meta_fb_comments_postback]);
@@ -1621,9 +1620,10 @@ if (!class_exists('WPAL2Facebook')) {
 						function_exists('wp_get_attachment_image_src')) {
 						$picture_id = get_post_thumbnail_id($post->ID);
 						if ($picture_id) {
-							if (stripos($picture_id, 'ngg-') !== false && class_exists('nggdb')) {
+							if (stripos($picture_id, 'ngg-') !== false && class_exists('nggdb') && class_exists('nggMeta')) {
 								$nggMeta = new nggMeta(str_replace('ngg-', '', $picture_id));
-								$picture = $nggMeta->image->imageURL;
+								if (!empty($nggMeta->image) && !empty($nggMeta->image->imageURL))
+									$picture = $nggMeta->image->imageURL;
 							}
 							else {
 								$picture = wp_get_attachment_image_src($picture_id, $image_size);
@@ -1692,9 +1692,11 @@ if (!class_exists('WPAL2Facebook')) {
 				global $VipersVideoQuicktags;
 				if (isset($VipersVideoQuicktags)) {
 					do_shortcode($post->post_content);
-					$video = reset($VipersVideoQuicktags->swfobjects);
-					if (!empty($video))
-						$video = $video['url'];
+					if (!empty($VipersVideoQuicktags->swfobjects)) {
+						$video = reset($VipersVideoQuicktags->swfobjects);
+						if (!empty($video) && !empty($video['url']))
+							$video = $video['url'];
+					}
 				}
 			}
 			$video = apply_filters('al2fb_video', $video, $post);
@@ -1941,7 +1943,7 @@ if (!class_exists('WPAL2Facebook')) {
 					echo '<meta property="og:title" content="' . htmlspecialchars($title, ENT_COMPAT, $charset) . '" />' . PHP_EOL;
 					echo '<meta property="og:type" content="blog" />' . PHP_EOL;
 					echo '<meta property="og:image" content="' . $picture . '" />' . PHP_EOL;
-					echo '<meta property="og:url" content="' . get_home_url() . '" />' . PHP_EOL;
+					echo '<meta property="og:url" content="' . get_home_url(null, '/') . '" />' . PHP_EOL;
 					echo '<meta property="og:site_name" content="' . htmlspecialchars($title, ENT_COMPAT, $charset) . '" />' . PHP_EOL;
 					echo '<meta property="og:description" content="' . htmlspecialchars(empty($description) ? $title : $description, ENT_COMPAT, $charset) . '" />' . PHP_EOL;
 
@@ -2293,17 +2295,26 @@ if (!class_exists('WPAL2Facebook')) {
 
 						foreach ($fb_comments->data as $fb_comment)
 							if (!empty($fb_comment->id)) {
+								$search_comment_id = end(explode('_', $fb_comment->id));
+
 								// Check if stored comment
 								$stored = false;
 								if ($stored_comments)
 									foreach ($stored_comments as $comment) {
 										$fb_comment_id = get_comment_meta($comment->comment_ID, c_al2fb_meta_fb_comment_id, true);
-										if ($fb_comment_id == $fb_comment->id) {
+										if ($search_comment_id == end(explode('_', $fb_comment_id))) {
 											$stored = true;
 											break;
 										}
 									}
-								$stored = $stored || in_array($fb_comment->id, $deleted_fb_comment_ids);
+
+								// Check if deleted comment
+								if (!$stored && $deleted_fb_comment_ids)
+									foreach ($deleted_fb_comment_ids as $deleted_fb_comment_id)
+										if ($search_comment_id == end(explode('_', $deleted_fb_comment_id))) {
+											$stored = true;
+											break;
+										}
 
 								// Create new comment
 								if (!$stored) {
@@ -2531,19 +2542,26 @@ if (!class_exists('WPAL2Facebook')) {
 						$deleted_fb_comment_ids = get_post_meta($post->ID, c_al2fb_meta_fb_comment_id, false);
 
 						foreach ($fb_comments->data as $fb_comment) {
-							// Check if comment in database
+							$search_comment_id = end(explode('_', $fb_comment->id));
+
+							// Check if stored comment
 							$stored = false;
 							if ($stored_comments)
 								foreach ($stored_comments as $comment) {
 									$fb_comment_id = get_comment_meta($comment->comment_ID, c_al2fb_meta_fb_comment_id, true);
-									if ($fb_comment_id == $fb_comment->id) {
+									if ($search_comment_id == end(explode('_', $fb_comment_id))) {
 										$stored = true;
 										break;
 									}
 								}
 
-							// Check if comment deleted
-							$stored = $stored || in_array($fb_comment->id, $deleted_fb_comment_ids);
+							// Check if deleted comment
+							if (!$stored && $deleted_fb_comment_ids)
+								foreach ($deleted_fb_comment_ids as $deleted_fb_comment_id)
+									if ($search_comment_id == end(explode('_', $deleted_fb_comment_id))) {
+										$stored = true;
+										break;
+									}
 
 							// Only count if not in database or deleted
 							if (!$stored)
