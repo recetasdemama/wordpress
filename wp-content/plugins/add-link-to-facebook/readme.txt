@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: post, posts, Facebook, social, link, links, permalink, wpmu, admin, comment, comments, shortcode, sidebar, widget, bbPress
 Requires at least: 3.2
 Tested up to: 3.5.1
-Stable tag: 1.177
+Stable tag: 1.184
 
 Automatically add links to published posts or pages to your Facebook wall, pages or groups and more
 
@@ -369,12 +369,10 @@ Question E22 describes possible errors for the Facebook registration form / logi
 No, this can't be removed or changed for automatically added links, see also question U27.
 The only thing that can be changed is the Facebook application name after 'via'.
 
-= U32 Is video or audio supported? =
-
-From version 1.142 video is supported for [Viper's Video Quicktags](http://wordpress.org/extend/plugins/vipers-video-quicktags/).
+= U32 Is video supported? =
 
 From version 1.149.1 you can set a video URL in the post editor.
-See [here](http://www.viwickam.com/how-to-make-your-video-blog-posts-facebook-friendly/) for how to get the correct video URL.
+Please note that the URL must link *directly* to the video and not to a page that displays the video.
 
 = U33 The like/send button doesn't look/behave as I want =
 
@@ -513,11 +511,6 @@ Because of this I don't give support on compatibility with other plugins and the
 You should contact the author of the other plugin or theme.
 The author of the other plugin or theme is free to contact me if needed.
 
-Known incompatible plugins:
-
-* [WordPress Importer](http://wordpress.org/extend/plugins/wordpress-importer/)
-* [Pricing Table](http://wordpress.org/extend/plugins/pricing-table/)
-
 = C03 Are shortcodes being processed? =
 
 This is an option, when enabled shortcodes will be processed.
@@ -545,8 +538,8 @@ Yes, but the custom post type should support custom values for it to work.
 
 Assuming that you embed a NextGEN Gallery into a post, set the option *Link Picture* to *First image in the post*.
 Disable the option *Do not execute filters for texts*, but take care to check if this doesn't result in compatibility problems with other plugins.
-Enable the option *Do not execute shortcodes for texts*.
-It is also possible to use featured images of NextGEN Gallery.
+Also enable the option *Do not execute shortcodes for texts*.
+Please note that changes in NextGEN may cause this not to work anymore, see also question C02.
 
 **--- Error messages ---**
 
@@ -745,6 +738,15 @@ Authorizing the plugin again is reported to solve this problem.
 This is probably because you are trying to add links to an application page.
 Check the pages you are adding links to on the plugin settings tab Page/group.
 
+= E30 I get 'The url you supplied is invalid' =
+
+This is most probably caused by multiple plugins outputing the Open Graph Protocol meta tag *og:url*.
+Make sure that other plugins don't output conflicting OGP tags.
+
+= E31 I get 'Developer Alert: July 2013 Breaking Changes' =
+
+Just enable the Facebook app advanced option 'July 2013 Breaking Changes'.
+
 **--- Support ---**
 
 = S01 Where can I ask questions, report bugs and request features? =
@@ -787,17 +789,16 @@ Follow these steps to install the development version:
 * Please report any problem you encounter
 * Reports that everything works are also appreciated :-)
 
-= 1.177 =
-* Bugfix: Facebook login for multi-sites
-* Added Ukranian (ua\_UA) translation
+= 1.184 =
+* Revert: use new Facebook comments API
+* Improvement: more debug information
+* Updated FAQ
 
-= 1.176 =
-* Removed graphical ads
-* Removed request for rating
+= 1.183 =
+* Improvement: use new Facebook comments API
 
-= 1.175 =
-* Disable adding links to friends walls after February 6th, [read here](https://developers.facebook.com/blog/post/2012/10/10/growing-quality-apps-with-open-graph/) why
-* Updated German (de\_DE) translation by [Wolfgang Tischer](http://www.literaturcafe.de "Wolfgang Tischer")
+= 1.182 =
+* Workaround: number of comments (caused by Facebook bug)
 
 = Older versions =
 * Deleted, because of maximum readme.txt size
@@ -805,8 +806,8 @@ Follow these steps to install the development version:
 
 == Upgrade Notice ==
 
-= 1.177 =
-One bugfix, new translation
+= 1.184 =
+One revert, one improvement
 
 == Setup guide ==
 
