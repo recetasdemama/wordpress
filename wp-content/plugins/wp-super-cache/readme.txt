@@ -1,8 +1,8 @@
 === WP Super Cache ===
 Contributors: donncha, automattic
 Tags: performance,caching,wp-cache,wp-super-cache,cache
-Tested up to: 3.4.2
-Stable tag: 1.2
+Tested up to: 3.5.1
+Stable tag: 1.3.2
 Requires at least: 3.0
 
 A very fast caching engine for WordPress that produces static html files.
@@ -56,16 +56,29 @@ The cache directory, usually wp-content/cache/ is only for temporary files. Do n
 
 == Upgrade Notice ==
 
-= 1.2 =
-Lots of bugfixes, garbage collection improved, more details at http://ocaoimh.ie/y/3i
+= 1.3.2 =
+IMPORTANT - Dynamic cached content now disabled by default. See advanced settings page. Better mangling of the mfunc tag in comments. Jetpack Mobile Theme support.
 
 == Changelog ==
+
+= 1.3.2 =
+* Any mfunc/mclude/dynamic-cached-content tags in comments are now removed.
+* Dynamic cached content feature disabled by default and must be enabled on the Advanced Settings page.
+* Support for the mobile theme in Jetpack via helper plugin on script's Plugins tab.
+
+= 1.3.1 =
+* Minor updates to documentation
+* Fixed XSS in settings page.
+
+= 1.3 =
+* mfunc tags could be executed in comments. Fixed.
+* More support for sites that use the LOGGED_IN_COOKIE constant and custom cookies.
 
 = 1.2 =
 * Garbage collection of old cache files is significantly improved. I added a scheduled job that keeps an eye on things and restarts the job if necessary. Also, if you enable caching from the Easy page garbage collection will be enabled too.
 * Editors can delete single cached files from the admin bar now.
 * Fixed the cached page counter on the settings page.
-* Some sites that updated to 1.0 experienced too much garbage collection. There are still stragglers out there who haven.t upgraded but that.s fixed now!
+* Some sites that updated to 1.0 experienced too much garbage collection. There are still stragglers out there who haven't upgraded but that's fixed now!
 * Supercached mobile files are now used as there was a tiny little typo that needed fixing.
 * If your site is in a directory and you saw problems updating a page then that should be fixed now.
 * The deactivate hook has been changed so your configuration isn.t hosed when you upgrade. Unfortunately this will only happen after you do this upgrade.
@@ -361,6 +374,8 @@ Comments will show as soon as they are moderated, depending on the comment polic
 No, it will do the opposite. Super Cache files are compressed and stored that way so the heavy compression is done only once. These files are generally much smaller and are sent to a visitor's browser much more quickly than uncompressed html. As a result, your server spends less time talking over the network which saves CPU time and bandwidth, and can also serve the next request much more quickly.
 
 = How do I make certain parts of the page stay dynamic? =
+
+Note: from version 1.4 this functionality will be disabled by default. You will have to enable it on the settings page.
 
 There are 2 ways of doing this. You can use Javascript to draw the part of the page you want to keep dynamic. That's what Google Adsense and many widgets from external sites do. Or you can use a WP Super Cache tag to do the job but you can't use mod_rewrite mode caching. You have to switch to PHP or legacy caching.
 
