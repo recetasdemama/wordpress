@@ -3,13 +3,13 @@
 Plugin Name: YARPP Experiments
 Plugin URI: http://yarpp.org/
 Description: Some extras for tuning and diagnosing YARPP.
-Version: 0.9
+Version: 1.1
 Author: mitcho (Michael Yoshitaka Erlewine)
 Author URI: http://mitcho.com/
 Donate link: http://tinyurl.com/donatetomitcho
 */
 
-define( 'YARPP_EXPERIMENTS_VERSION', '0.9' );
+define( 'YARPP_EXPERIMENTS_VERSION', '1.1' );
 function yarpp_experiments_version( $html ) {
 	return $html . ' with YARPP Experiments ' . YARPP_EXPERIMENTS_VERSION;
 }
@@ -192,6 +192,14 @@ function add_yarpp_experiments_meta_boxes() {
 	}
 	add_meta_box('yarpp_pingback', 'Pingbacks' . sprintf($experiment_label, mt_rand(-4,4)), array(new YARPP_Meta_Box_Pingbacks, 'display'), 'settings_page_yarpp', 'normal', 'core');
 
+	class YARPP_Meta_Box_Thumbnails extends YARPP_Meta_Box {
+		function display() {
+			$pingback = yarpp_get_option('manually_using_thumbnails');
+			
+			echo "<div><label for='yarpp_manually_using_thumbnails'><input type='checkbox' " . checked($pingback, true, false) . " name='manually_using_thumbnails' id='yarpp_manually_using_thumbnails'/> Generate thumbnails for manual thumbnail template use (for example, using the widget or via the API)</label></div>";
+		}
+	}
+	add_meta_box('yarpp_thumbnails', 'Thumbnails' . sprintf($experiment_label, mt_rand(-4,4)), array(new YARPP_Meta_Box_Thumbnails, 'display'), 'settings_page_yarpp', 'normal', 'core');
 }
 add_action( 'add_meta_boxes_settings_page_yarpp', 'add_yarpp_experiments_meta_boxes' );
 
@@ -208,6 +216,13 @@ function yarpp_experiment_pingback_save( $options ) {
 	return $options;
 }
 add_filter( 'yarpp_settings_save', 'yarpp_experiment_pingback_save', 10, 1 );
+
+function yarpp_manually_using_thumbnails_save( $options ) {
+	if ( version_compare(YARPP_VERSION, '4.0.6b3') >= 0 )
+		$options['manually_using_thumbnails'] = isset($_POST['manually_using_thumbnails']);
+	return $options;
+}
+add_filter( 'yarpp_settings_save', 'yarpp_manually_using_thumbnails_save', 10, 1 );
 
 function yarpp_experiments_admin_enqueue() {
 	global $current_screen;
@@ -361,7 +376,10 @@ function yarpp_dingus_print_cache_type( $query ) {
 
 function yarpp_pingback_maybe_block_pingback($url, $post, $leavename) {
 	global $yarpp;
-	if ( !yarpp_get_option('experiment_pingback') || !$yarpp->cache->is_yarpp_time() )
+	if ( is_feed() ||
+		!is_object($yarpp) ||
+		!yarpp_get_option('experiment_pingback') ||
+		!$yarpp->cache->is_yarpp_time() )
 		return $url;
 
 	$home = parse_url( home_url() );
@@ -373,3 +391,47 @@ function yarpp_pingback_maybe_block_pingback($url, $post, $leavename) {
 	return $url;
 }
 add_filter( 'post_link', 'yarpp_pingback_maybe_block_pingback', 10, 3 );
+
+function yarpp_graph_data() {
+//	check_ajax_referer( 'yarpp_graph_data' );
+	global $yarpp;
+
+	header('Content-Type: application/json');
+
+	$threshold = 5;
+	if ( isset($_GET['threshold']) )
+		$threshold = $_GET['threshold'];
+
+	if ( method_exists($yarpp->cache, 'graph_data') ) {
+		$data = $yarpp->cache->graph_data( $threshold );
+		
+		$nodes = array();
+		$index = 0;
+		foreach ( $data as $pair ) {
+			list($a, $b) = explode('-', $pair->pair);
+
+			if ( !isset($nodes[$a]) ) {
+				$nodes[$a] = array( 'index' => $index, 'ID' => $a, 'link' => get_permalink($a), 'title' => get_the_title( $a ) );
+				$index++;
+			}
+			if ( !isset($nodes[$b]) ) {
+				$nodes[$b] = array( 'index' => $index, 'ID' => $b, 'link' => get_permalink($b), 'title' => get_the_title( $b ) );
+				$index++;
+			}
+		}
+		
+		$links = array();
+		foreach ( $data as $pair ) {
+			list($a, $b) = explode('-', $pair->pair);
+
+			$links[] = array( 'source' => $nodes[$a]['index'], 'target' => $nodes[$b]['index'], 'score' => (float) $pair->score );
+		}
+
+		$nodes = array_values($nodes);
+		echo json_encode( compact('nodes', 'links'), JSON_UNESCAPED_UNICODE );
+	}
+	else echo '[]';
+	
+	exit;
+}
+add_action('wp_ajax_yarpp_graph_data', 'yarpp_graph_data');
