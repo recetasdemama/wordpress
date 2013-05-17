@@ -7,13 +7,13 @@ Donate link: http://tinyurl.com/donatetomitcho
 Tags: yarpp, debug, experiment, experimental, related, related posts, utilities, options, advanced, pingback
 Requires at least: 3.3
 Tested up to: 3.6
-Stable tag: 0.9
+Stable tag: 1.1
 
 Some extras for tuning and diagnosing YARPP.
 
 == Description ==
 
-Some extras for tuning and diagnosing [YARPP](https://wordpress.org/extend/plugins/yet-another-related-posts-plugin/). Requires YARPP 3.5.4b2 or later for full compatibility.
+Some extras for tuning and diagnosing [YARPP](https://wordpress.org/extend/plugins/yet-another-related-posts-plugin/). Requires YARPP 4.0.6 or later for full compatibility.
 
 Currently includes the following experiments:
 
@@ -21,6 +21,7 @@ Currently includes the following experiments:
 * **Throttle:** lets you slow down YARPP's computation of "related" results when not cached. It may be useful for very high traffic sites, where suddenly turning YARPP on may cause some database lockups.
 * **Dingus:** lets you try different YARPP settings, returning results as well as caching and performance information.
 * **Pingback Control:** Disable pingbacks to your own site from YARPP's results.
+* **Thumbnail Generation Control:** Control the low-level "manually using thumbnails" option
 
 Use at your own risk!
 
@@ -37,6 +38,13 @@ Use at your own risk!
 3. Dingus
 
 == Changelog ==
+
+= 1.1 =
+* [Bugfix](https://wordpress.org/support/topic/links-not-working-in-rss): Pingback handling should not affect RSS feeds
+
+= 1.0 =
+* Add control to override the `manually using thumbnails` low-level option.
+* [Bugfix](https://wordpress.org/support/topic/fatal-error-call-to-a-member-function-get_option-on-a-non-object): Fixed a case where very early permalink calculations could cause fatal errors.
 
 = 0.9 =
 * Added "stop self-pinging" option
