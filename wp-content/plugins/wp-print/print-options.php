@@ -1,7 +1,7 @@
 <?php
 /*
  * WordPress Plugin: WP-Print
- * Copyright (c) 2012 Lester "GaMerZ" Chan
+ * Copyright (c) 2013 Lester "GaMerZ" Chan
  *
  * File Written By:
  * - Lester "GaMerZ" Chan
@@ -24,6 +24,7 @@ $print_settings = array('print_options');
 ### Form Processing
 // Update Options
 if(!empty($_POST['Submit'])) {
+	check_admin_referer('wp-print_options');
 	$print_options = array();
 	$print_options['post_text'] = addslashes(trim(wp_filter_kses($_POST['print_post_text'])));
 	$print_options['page_text'] = addslashes(trim(wp_filter_kses($_POST['print_page_text'])));
@@ -53,7 +54,7 @@ if(!empty($_POST['Submit'])) {
 }
 // Uninstall WP-Print
 if(!empty($_POST['do'])) {
-	switch($_POST['do']) {		
+	switch($_POST['do']) {
 		case __('UNINSTALL WP-Print', 'wp-print') :
 			if(trim($_POST['uninstall_print_yes']) == 'yes') {
 				echo '<div id="message" class="updated fade">';
@@ -71,7 +72,7 @@ if(!empty($_POST['do'])) {
 					}
 				}
 				echo '</p>';
-				echo '</div>'; 
+				echo '</div>';
 				$mode = 'end-UNINSTALL';
 			}
 			break;
@@ -83,7 +84,7 @@ switch($mode) {
 		//  Deactivating WP-Print
 		case 'end-UNINSTALL':
 			$deactivate_url = 'plugins.php?action=deactivate&amp;plugin=wp-print/wp-print.php';
-			if(function_exists('wp_nonce_url')) { 
+			if(function_exists('wp_nonce_url')) {
 				$deactivate_url = wp_nonce_url($deactivate_url, 'deactivate-plugin_wp-print/wp-print.php');
 			}
 			echo '<div class="wrap">';
@@ -122,9 +123,10 @@ switch($mode) {
 </script>
 <?php if(!empty($text)) { echo '<!-- Last Action --><div id="message" class="updated fade"><p>'.$text.'</p></div>'; } ?>
 <form method="post" action="<?php echo admin_url('admin.php?page='.plugin_basename(__FILE__)); ?>">
-<div class="wrap"> 
+<?php wp_nonce_field('wp-print_options'); ?>
+<div class="wrap">
 	<?php screen_icon(); ?>
-	<h2><?php _e('Print Options', 'wp-print'); ?></h2> 
+	<h2><?php _e('Print Options', 'wp-print'); ?></h2>
 	<h3><?php _e('Print Styles', 'wp-print'); ?></h3>
 	<table class="form-table">
 		<tr>
@@ -146,13 +148,13 @@ switch($mode) {
 					$print_icon = $print_options['print_icon'];
 					$print_icon_url = plugins_url('wp-print/images');
 					$print_icon_path = WP_PLUGIN_DIR.'/wp-print/images';
-					if($handle = @opendir($print_icon_path)) {     
-						while (false !== ($filename = readdir($handle))) {  
+					if($handle = @opendir($print_icon_path)) {
+						while (false !== ($filename = readdir($handle))) {
 							if ($filename != '.' && $filename != '..') {
 								if(is_file($print_icon_path.'/'.$filename)) {
 									echo '<p>';
 									if($print_icon == $filename) {
-										echo '<input type="radio" name="print_icon" value="'.$filename.'" checked="checked" />'."\n";										
+										echo '<input type="radio" name="print_icon" value="'.$filename.'" checked="checked" />'."\n";
 									} else {
 										echo '<input type="radio" name="print_icon" value="'.$filename.'" />'."\n";
 									}
@@ -161,8 +163,8 @@ switch($mode) {
 									echo '&nbsp;&nbsp;&nbsp;('.$filename.')';
 									echo '</p>'."\n";
 								}
-							} 
-						} 
+							}
+						}
 						closedir($handle);
 					}
 				?>
@@ -199,54 +201,54 @@ switch($mode) {
 				</select>
 			</td>
 		</tr>
-		<tr> 
+		<tr>
 			<th scope="row" valign="top"><?php _e('Print Links?', 'wp-print'); ?></th>
 			<td>
 				<select name="print_links" size="1">
 					<option value="1"<?php selected('1', $print_options['links']); ?>><?php _e('Yes', 'wp-print'); ?></option>
 					<option value="0"<?php selected('0', $print_options['links']); ?>><?php _e('No', 'wp-print'); ?></option>
 				</select>
-			</td> 
+			</td>
 		</tr>
-		<tr> 
+		<tr>
 			<th scope="row" valign="top"><?php _e('Print Images?', 'wp-print'); ?></th>
 			<td>
 				<select name="print_images" size="1">
 					<option value="1"<?php selected('1', $print_options['images']); ?>><?php _e('Yes', 'wp-print'); ?></option>
 					<option value="0"<?php selected('0', $print_options['images']); ?>><?php _e('No', 'wp-print'); ?></option>
 				</select>
-			</td> 
+			</td>
 		</tr>
-		<tr> 
+		<tr>
 			<th scope="row" valign="top"><?php _e('Print Videos?', 'wp-print'); ?></th>
 			<td>
 				<select name="print_videos" size="1">
 					<option value="1"<?php selected('1', $print_options['videos']); ?>><?php _e('Yes', 'wp-print'); ?></option>
 					<option value="0"<?php selected('0', $print_options['videos']); ?>><?php _e('No', 'wp-print'); ?></option>
 				</select>
-			</td> 
+			</td>
 		</tr>
-		<tr> 
-			<th scope="row" valign="top">				
+		<tr>
+			<th scope="row" valign="top">
 				<?php _e('Disclaimer/Copyright Text?', 'wp-print'); ?>
 				<br /><br />
 				<input type="button" name="RestoreDefault" value="<?php _e('Restore Default Template', 'wp-print'); ?>" onclick="print_default_templates('disclaimer');" class="button" />
 			</th>
 			<td>
-				<textarea rows="2" cols="80" name="print_disclaimer" id="print_template_disclaimer"><?php echo htmlspecialchars(stripslashes($print_options['disclaimer'])); ?></textarea><br /><?php _e('HTML is allowed.', 'wp-print'); ?><br />					
-			</td> 
+				<textarea rows="2" cols="80" name="print_disclaimer" id="print_template_disclaimer"><?php echo htmlspecialchars(stripslashes($print_options['disclaimer'])); ?></textarea><br /><?php _e('HTML is allowed.', 'wp-print'); ?><br />
+			</td>
 		</tr>
 	</table>
 	<p class="submit">
 		<input type="submit" name="Submit" class="button" value="<?php _e('Save Changes', 'wp-print'); ?>" />
 	</p>
 </div>
-</form> 
+</form>
 <p>&nbsp;</p>
 
 <!-- Uninstall WP-Print -->
 <form method="post" action="<?php echo admin_url('admin.php?page='.plugin_basename(__FILE__)); ?>">
-<div class="wrap"> 
+<div class="wrap">
 	<h3><?php _e('Uninstall WP-Print', 'wp-print'); ?></h3>
 	<p>
 		<?php _e('Deactivating WP-Print plugin does not remove any data that may have been created, such as the print options. To completely remove this plugin, you can uninstall it here.', 'wp-print'); ?>
@@ -281,7 +283,7 @@ switch($mode) {
 		<input type="checkbox" name="uninstall_print_yes" value="yes" />&nbsp;<?php _e('Yes', 'wp-print'); ?><br /><br />
 		<input type="submit" name="do" value="<?php _e('UNINSTALL WP-Print', 'wp-print'); ?>" class="button" onclick="return confirm('<?php _e('You Are About To Uninstall WP-Print From WordPress.\nThis Action Is Not Reversible.\n\n Choose [Cancel] To Stop, [OK] To Uninstall.', 'wp-print'); ?>')" />
 	</p>
-</div> 
+</div>
 </form>
 <?php
 } // End switch($mode)
