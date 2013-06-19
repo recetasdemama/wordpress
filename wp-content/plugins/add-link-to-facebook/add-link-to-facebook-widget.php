@@ -179,35 +179,36 @@ class AL2FB_Widget extends WP_Widget {
 
 		$count = 0;
 		echo '<ul>';
-		foreach ($fb_comments->data as $fb_comment) {
-			if ($max_count && ++$count > $max_count)
-				break;
-			echo '<li>';
+		if ($fb_comments->data)
+			foreach ($fb_comments->data as $fb_comment) {
+				if ($max_count && ++$count > $max_count)
+					break;
+				echo '<li>';
 
-			// Picture
-			if ($comments_nolink == 'author')
-				echo '<img class="al2fb_widget_picture" alt="' . htmlspecialchars($fb_comment->from->name, ENT_QUOTES, $charset) . '" src="' . WPAL2Int::Get_fb_picture_url_cached($fb_comment->from->id, 'small') . '" />';
+				// Picture
+				if ($comments_nolink == 'author')
+					echo '<img class="al2fb_widget_picture" alt="' . htmlspecialchars($fb_comment->from->name, ENT_QUOTES, $charset) . '" src="' . WPAL2Int::Get_fb_picture_url_cached($fb_comment->from->id, 'small') . '" />';
 
-			// Author
-			echo ' ';
-			if ($comments_nolink == 'link')
-				echo '<a href="' . WPAL2Int::Get_fb_permalink($link_id) . '" class="al2fb_widget_name">' .  htmlspecialchars($fb_comment->from->name, ENT_QUOTES, $charset) . '</a>';
-			else if ($comments_nolink == 'author')
-				echo '<a href="' . WPAL2Int::Get_fb_profilelink($fb_comment->from->id) . '" class="al2fb_widget_name">' .  htmlspecialchars($fb_comment->from->name, ENT_QUOTES, $charset) . '</a>';
-			else
-				echo '<span class="al2fb_widget_name">' .  htmlspecialchars($fb_comment->from->name, ENT_QUOTES, $charset) . '</span>';
+				// Author
+				echo ' ';
+				if ($comments_nolink == 'link')
+					echo '<a href="' . WPAL2Int::Get_fb_permalink($link_id) . '" class="al2fb_widget_name">' .  htmlspecialchars($fb_comment->from->name, ENT_QUOTES, $charset) . '</a>';
+				else if ($comments_nolink == 'author')
+					echo '<a href="' . WPAL2Int::Get_fb_profilelink($fb_comment->from->id) . '" class="al2fb_widget_name">' .  htmlspecialchars($fb_comment->from->name, ENT_QUOTES, $charset) . '</a>';
+				else
+					echo '<span class="al2fb_widget_name">' .  htmlspecialchars($fb_comment->from->name, ENT_QUOTES, $charset) . '</span>';
 
-			// Comment
-			echo ' ';
-			echo '<span class="al2fb_widget_comment">' .  htmlspecialchars($fb_comment->message, ENT_QUOTES, $charset) . '</span>';
+				// Comment
+				echo ' ';
+				echo '<span class="al2fb_widget_comment">' .  htmlspecialchars($fb_comment->message, ENT_QUOTES, $charset) . '</span>';
 
-			// Time
-			echo ' ';
-			$fb_time = strtotime($fb_comment->created_time) + $tz_off;
-			echo '<span class="al2fb_widget_date">' . date(get_option('date_format') . ' ' . get_option('time_format'), $fb_time) . '</span>';
+				// Time
+				echo ' ';
+				$fb_time = strtotime($fb_comment->created_time) + $tz_off;
+				echo '<span class="al2fb_widget_date">' . date(get_option('date_format') . ' ' . get_option('time_format'), $fb_time) . '</span>';
 
-			echo '</li>';
-		}
+				echo '</li>';
+			}
 		echo '</ul>';
 	}
 
@@ -224,46 +225,47 @@ class AL2FB_Widget extends WP_Widget {
 
 		$count = 0;
 		echo '<ul>';
-		foreach ($fb_messages->data as $fb_message)
-			if (isset($fb_message->message)) {
-				if ($max_count && ++$count > $max_count)
-					break;
-				echo '<li>';
+		if ($fb_messages->data)
+			foreach ($fb_messages->data as $fb_message)
+				if (isset($fb_message->message)) {
+					if ($max_count && ++$count > $max_count)
+						break;
+					echo '<li>';
 
-				// Picture
-				if ($comments_nolink == 'author')
-					echo '<img class="al2fb_widget_picture" alt="' . htmlspecialchars($fb_message->from->name, ENT_QUOTES, $charset) . '" src="' . WPAL2Int::Get_fb_picture_url_cached($fb_message->from->id, 'small') . '" />';
+					// Picture
+					if ($comments_nolink == 'author')
+						echo '<img class="al2fb_widget_picture" alt="' . htmlspecialchars($fb_message->from->name, ENT_QUOTES, $charset) . '" src="' . WPAL2Int::Get_fb_picture_url_cached($fb_message->from->id, 'small') . '" />';
 
-				// Author
-				if ($comments_nolink == 'link')
-					echo '<a href="' . WPAL2Int::Get_fb_permalink($fb_message->id) . '" class="al2fb_widget_name">' .  htmlspecialchars($fb_message->from->name, ENT_QUOTES, $charset) . '</a>';
-				else if ($comments_nolink == 'author')
-					echo '<a href="' . WPAL2Int::Get_fb_profilelink($fb_message->from->id) . '" class="al2fb_widget_name">' .  htmlspecialchars($fb_message->from->name, ENT_QUOTES, $charset) . '</a>';
-				else
-					echo '<span class="al2fb_widget_name">' .  htmlspecialchars($fb_message->from->name, ENT_QUOTES, $charset) . '</span>';
+					// Author
+					if ($comments_nolink == 'link')
+						echo '<a href="' . WPAL2Int::Get_fb_permalink($fb_message->id) . '" class="al2fb_widget_name">' .  htmlspecialchars($fb_message->from->name, ENT_QUOTES, $charset) . '</a>';
+					else if ($comments_nolink == 'author')
+						echo '<a href="' . WPAL2Int::Get_fb_profilelink($fb_message->from->id) . '" class="al2fb_widget_name">' .  htmlspecialchars($fb_message->from->name, ENT_QUOTES, $charset) . '</a>';
+					else
+						echo '<span class="al2fb_widget_name">' .  htmlspecialchars($fb_message->from->name, ENT_QUOTES, $charset) . '</span>';
 
-				// Message
-				echo ' ';
-				echo '<span class="al2fb_widget_message">' .  htmlspecialchars($fb_message->message, ENT_QUOTES, $charset) . '</span>';
+					// Message
+					echo ' ';
+					echo '<span class="al2fb_widget_message">' .  htmlspecialchars($fb_message->message, ENT_QUOTES, $charset) . '</span>';
 
-				// Time
-				echo ' ';
-				$fb_time = strtotime($fb_message->created_time) + $tz_off;
-				echo '<span class="al2fb_widget_date">' . date(get_option('date_format') . ' ' . get_option('time_format'), $fb_time) . '</span>';
+					// Time
+					echo ' ';
+					$fb_time = strtotime($fb_message->created_time) + $tz_off;
+					echo '<span class="al2fb_widget_date">' . date(get_option('date_format') . ' ' . get_option('time_format'), $fb_time) . '</span>';
 
-				// Comments on message
-				if ($messages_comments)
-					try {
-						$fb_message_comments = WPAL2Int::Get_fb_comments_cached($user_ID, $fb_message->id);
-						if ($fb_message_comments)
-							self::Render_fb_comments($fb_message_comments, $comments_nolink, $fb_message->id, $messages_comments);
-					}
-					catch (Exception $e) {
-						$error = $e->getMessage();
-					}
+					// Comments on message
+					if ($messages_comments)
+						try {
+							$fb_message_comments = WPAL2Int::Get_fb_comments_cached($user_ID, $fb_message->id);
+							if ($fb_message_comments)
+								self::Render_fb_comments($fb_message_comments, $comments_nolink, $fb_message->id, $messages_comments);
+						}
+						catch (Exception $e) {
+							$error = $e->getMessage();
+						}
 
-				echo '</li>';
-			}
+					echo '</li>';
+				}
 		echo '</ul>';
 	}
 
