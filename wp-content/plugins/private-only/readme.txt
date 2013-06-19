@@ -3,7 +3,7 @@ Contributors: katemag
 Donate Link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L3J4LBDGP533Q   
 Tags: private access, login, remove feed  
 Requires at least: 3.0  
-Tested up to: 3.5.1  
+Tested up to: 3.5  
 Stable tag: 3.1
 
 Redirects all non-logged in users to login form.
@@ -25,15 +25,17 @@ Features:
 1. Redirect all non-logged in users to login form  
 2. Updated feature! Custom Logo on Login Page. You can change WordPress Logo  
 3. Sub plugin name Disable Feed that allow you to choose disable or enable feed.  
-4. Single public page *new feature*  
-5. Localization *new feature*   
-6. Custom CSS *new feature*  
-7. Custom Logo Link *new feature*
+4. Single public page  
+5. Localization    
+6. Custom CSS  
+7. Custom Logo Link                        
+8. Responsive Login Logo *new feature*                          
+9. Bug fixes                                                   
 
 ==Installation==  
 1. Download The Private Only package file, extract the private-only directory from ZIP file, upload it to WordPress Plugins directory '/wp-content/plugins/'  
 2. Activate Private Only via Plugin page, See Private Only, Disable Feed below the Private Only.  
-3. See Settings tab on WP Admin, look for Private Only Custom Login settings
+3. See Settings tab on WP Admin, look for Private Only Custom Login settings                                        
 
 If you are new to WordPress : http://codex.wordpress.org/Managing_Plugins#Installing_Plugins
 

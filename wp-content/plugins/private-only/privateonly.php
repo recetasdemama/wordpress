@@ -3,7 +3,7 @@
 Plugin Name: Private Only
 Plugin URI: http://www.pixert.com/
 Description: Redirects all non-logged in users to login form with custom login capability
-Version: 3.1
+Version: 3.2.1
 Author: Kate Mag (Pixel Insert)
 Author URI: http://www.pixert.com
 */
@@ -29,7 +29,7 @@ along with this program; if not, write to the Free Software Fondation, Inc.,
 load_plugin_textdomain('private-only', false, basename( dirname( __FILE__ ) ) . '/languages' );
 //login page - sweet!
 //define constant folder to the plugin
-$wp_content_dir = ABSPATH . 'wp-content';
+$wp_content_dir = WP_CONTENT_DIR;
 $wp_plugin_dir = $wp_content_dir . '/plugins';
 define( 'PO_LOGIN', $wp_plugin_dir . '/private-only' );
 define( 'PO_LOGIN_URL', $wp_plugin_dir . '/private-only' );
@@ -52,7 +52,7 @@ if ( is_admin() )
 <?php if (isset($po_login[ 'use_wp_logo' ]) && $po_login[ 'use_wp_logo' ] == true ) {} else { ?> 
 <?php if (isset($po_login[ 'po_logo' ]) && !empty($po_login[ 'po_logo']) ) { ?>
 <style>
-#login h1 a{ background: url(<?php echo $po_login[ 'po_logo' ]; ?>) no-repeat top center !important; }
+#login h1 a{ background-image: url( '<?php echo $po_login[ 'po_logo' ]; ?>' ); height: <?php if (isset($po_login[ 'po_logo_height' ]) && !empty($po_login[ 'po_logo_height'])) { echo $po_login[ 'po_logo_height' ].'px'; } else { ?> 67px <?php } ?>;  background-size: 327px <?php if (isset($po_login[ 'po_logo_height' ]) && !empty($po_login[ 'po_logo_height'])) { echo $po_login[ 'po_logo_height' ].'px'; } ?>; background-size: contain; -moz-background-size: contain;  /* Firefox 3.6 */  background-position: center;  /* Internet Explorer 7/8 */ }
 </style>
 <?php } else { ?>
 <style>
@@ -81,6 +81,7 @@ if ( is_admin() )
 //Main Private Only features
 function private_only () {
 	$settings = get_option( 'po_login_settings' );
+	$pagelink = get_permalink($settings['public_pages']);
 	/* New Feature, code added by Ivan Ricotti. Thanks */
 	if (!is_user_logged_in() && !is_feed() && isset($settings['public_pages']) && $settings['public_pages'] && is_page($settings['public_pages'])) {
 		return;
@@ -111,11 +112,6 @@ $message ='<p class="message">'.printf(__('Welcome,you need to be registered to 
 return $message;
 }
 add_filter('register_message', 'custom_register_message');
-function log_in_message ($error) {
-	global $error;
-	$error="";
-	return $error;
-}
 /* Fix Logo Title */;
 function change_login_headertitle(){
 	return get_bloginfo('title', 'display' );
@@ -132,5 +128,4 @@ add_filter('login_headerurl', 'wpc_url_login');
 add_filter('login_headertitle', 'change_login_headertitle');
 add_action('template_redirect','private_only');
 add_action('login_head','no_index');
-add_filter('login_headertitle','log_in_message');
 ?>

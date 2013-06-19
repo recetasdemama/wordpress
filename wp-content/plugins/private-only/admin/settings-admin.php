@@ -1,6 +1,6 @@
 <?php
 /*
-Private Only 3.1
+Private Only 3.2.1
 Need a WP expert? Hire me : studio[at]pixert.com
 */
 function po_login_settings_args() {
@@ -8,6 +8,7 @@ function po_login_settings_args() {
 		
 		/* logo or not? */
 		'po_logo' => '',
+		'po_logo_height' => '',
 		'use_wp_logo' => '',
 		'logo_url' => '',	
 		'public_pages' => '',
