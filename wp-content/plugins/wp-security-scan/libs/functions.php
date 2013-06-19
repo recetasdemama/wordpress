@@ -238,14 +238,6 @@ function mrt_check_version()
     echo '<span class="acx-icon-alert-critical">'.__('An error has occurred while trying to retrieve the status of your Wordpress version.').'</span>';
 }
 
-
-function mrt_javascript(){
-$siteurl = get_option('siteurl');
-?><script type="text/javascript" src="<?php echo WP_PLUGIN_DIR;?>/wp-security-scan/js/scripts.js"></script><?php
-}
-
-
-
 /**
  * @public
  * @since v3.0.2
@@ -639,7 +631,5 @@ function wpss_admin_plugin_actions($links) {
 	$links[] = '<a href="admin.php?page=wp-security-scan/securityscan.php">'.__('Settings').'</a>';
 	return $links;
 }
-
-
 
 ?>
