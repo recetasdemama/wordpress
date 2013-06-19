@@ -1,6 +1,6 @@
 <?php
 /*
-Private Only 3.1
+Private Only 3.2.1
 Need a WP expert? Hire me : studio[at]pixert.com
 */
 ?>
@@ -15,7 +15,7 @@ Need a WP expert? Hire me : studio[at]pixert.com
 	<ul>
     
     <li style="margin-bottom: 40px;">
-      <h4><?php _e('This is Private Only plugin for WordPress ver 3.1','private-only'); ?></h4>
+      <h4><?php _e('This is Private Only plugin for WordPress ver 3.2.1','private-only'); ?></h4>
       <h5>Coded by Kate Mag (Pixel Insert)</h5>
       <p><?php _e('If you disable or enable feed, DO NOT FORGET TO REFRESH YOUR BROWSER CACHE AFTER ACTIVATE PRIVATE ONLY or DISABLE FEED','private-only'); ?></p>
     </li> 
@@ -88,6 +88,15 @@ Need a WP expert? Hire me : studio[at]pixert.com
                <input id="<?php echo $data['po_logo']; ?>" name="<?php echo $data['po_logo']; ?>" value="<?php echo $val['po_logo']; ?>" size="40" /><br />
                 <?php _e('Upload an image with Media Library or FTP and put the full path here, http://yourdomainname.com/logo.jpg','private-on;y'); ?><br />
                 <?php _e('We do not provide upload tool here, because it is free for you upload it wherever you want to','private-only'); ?><br />
+            </td>
+   		</tr>
+   	   	<tr>
+            <th>
+            	<label for="<?php echo $data['po_logo_height']; ?>"><?php _e('Logo Height:','private-only'); ?></label> 
+            </th>
+            <td>
+               <input id="<?php echo $data['po_logo_height']; ?>" name="<?php echo $data['po_logo_height']; ?>" value="<?php echo $val['po_logo_height']; ?>" size="40" /><br />
+                <?php _e('What is your logo height','private-only'); ?>
             </td>
    		</tr>
     </table>
