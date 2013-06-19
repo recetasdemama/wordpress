@@ -2,7 +2,7 @@
 /*
 Plugin Name: WordPress Varnish
 Plugin URI: http://github.com/pkhamre/wp-varnish
-Version: 0.6
+Version: 0.7
 Author: <a href="http://github.com/pkhamre/">Pål-Kristian Hamre</a>
 Description: A plugin for purging Varnish cache when content is published or edited.
 
@@ -110,6 +110,15 @@ class WPVarnish {
     // When xmlRPC call is made
     add_action('xmlrpc_call',array($this, 'WPVarnishPurgeAll'), 99);
 
+    // When a post changes from future to publish, Thanks Marcin Pietrzak
+    add_action('future_to_publish', array($this,
+        'WPVarnishPurgePost'), 99);
+    add_action('future_to_publish', array($this,
+        'WPVarnishPurgePurgeCommonObjects'), 99);
+
+    // When Theme is changed, Thanks dupuis
+    add_action('switch_theme',array($this, 'WPVarnishPurgeAll'), 99);
+
     // When a new plugin is loaded
     // this was added due to Issue #12, but, doesn't do what was intended
     // commenting this out gets rid of the incessant purging.
@@ -125,7 +134,7 @@ class WPVarnish {
 	  $this->WPVarnishPurgeCommonObjects($p->ID);
   }
   function WPVarnishPurgeCommonObjects() {
-    $this->WPVarnishPurgeObject("/");
+    $this->WPVarnishPurgeObject("/$");
     $this->WPVarnishPurgeObject("/feed/");
     $this->WPVarnishPurgeObject("/feed/atom/");
     $this->WPVarnishPurgeObject("/category/(.*)");
@@ -321,12 +330,12 @@ class WPVarnish {
 
       <p><input type="checkbox" name="wpvarnish_update_commentnavi" value="1" <?php if ($wpv_update_commentnavi_optval == 1) echo 'checked '?>/> <?php echo __("Also purge all comment navigation (experimental, use carefully, it will include a bit more load on varnish servers.)",'wp-varnish'); ?></p>
 
-      <p>Varnish Version: <select name="wpvarnish_vversion"><option value="2" <?php if ($wpv_vversion_optval == 2) echo 'selected '?>/> 2 </option><option value="3" <?php if ($wpv_vversion_optval == 3) echo 'selected '?>/> 3 </option></select></p>
+      <p><?php echo __('Varnish Version', 'wp-varnish'); ?>: <select name="wpvarnish_vversion"><option value="2" <?php if ($wpv_vversion_optval == 2) echo 'selected '?>/> 2 </option><option value="3" <?php if ($wpv_vversion_optval == 3) echo 'selected '?>/> 3 </option></select></p>
 
       <p class="submit"><input type="submit" class="button-primary" name="wpvarnish_admin" value="<?php echo __("Save Changes",'wp-varnish'); ?>" /></p>
 
       <p>
-        Purge a URL:<input class="text" type="text" name="wpvarnish_purge_url" value="<?php echo get_bloginfo('url'); ?>" />
+        <?php echo __('Purge a URL', 'wp-varnish'); ?>:<input class="text" type="text" name="wpvarnish_purge_url" value="<?php echo get_bloginfo('url'); ?>" />
         <input type="submit" class="button-primary" name="wpvarnish_purge_url_submit" value="<?php echo __("Purge",'wp-varnish'); ?>" />
       </p>
 
@@ -361,7 +370,12 @@ class WPVarnish {
     else
        $wpv_vversion_optval = get_option($this->wpv_vversion_optname);
 
-    $wpv_wpurl = get_bloginfo('url');
+    // check for domain mapping plugin by donncha
+    if (function_exists('domain_mapping_siteurl')) {
+        $wpv_wpurl = domain_mapping_siteurl('NA');
+    } else {
+        $wpv_wpurl = get_bloginfo('url');
+    }
     $wpv_replace_wpurl = '/^https?:\/\/([^\/]+)(.*)/i';
     $wpv_host = preg_replace($wpv_replace_wpurl, "$1", $wpv_wpurl);
     $wpv_blogaddr = preg_replace($wpv_replace_wpurl, "$2", $wpv_wpurl);
