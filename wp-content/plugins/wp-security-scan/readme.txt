@@ -41,6 +41,9 @@ For more information on the WP Security Scan and other WordPress security news, 
 
 == Changelog ==
 
+= 3.1.0 =
+* Removed the registration requirement
+
 = v3.0.9 =
 * New feature: Added tooltips to the most important sections of the System Information box
 * Update: Added 'nonce' fields to forms where needed (thanks to julio from boiteaweb.fr)

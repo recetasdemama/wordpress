@@ -5,7 +5,7 @@ Plugin URI: http://www.websitedefender.com/news/free-wordpress-security-scan-plu
 
 Description: Perform security scan of WordPress installation.
 Author: WebsiteDefender
-Version: 3.0.9
+Version: 3.1.0
 Author URI: http://www.websitedefender.com/
 */
 /*
@@ -21,9 +21,8 @@ Author URI: http://www.websitedefender.com/
  * $rev #9 12/17/2011 {c}
  */
 /*
-Copyright (C) 2008-2010 Acunetix / http://www.websitedefender.com/
+Copyright (C) 2008-2013 Acunetix / http://www.websitedefender.com/
 (info AT websitedefender DOT com)
-
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -51,31 +50,17 @@ if ( ! defined('WP_PLUGIN_DIR')) {
     define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 }
 
-if(!function_exists('json_encode') || !class_exists('Services_JSON')) {
-    @require_once(WP_PLUGIN_DIR . "/wp-security-scan/libs/json.php");
-}
 require_once(WP_PLUGIN_DIR . "/wp-security-scan/libs/functions.php");
-
-if (!defined('WSD_RECAPTCHA_API_SERVER')) {
-    @require_once(WP_PLUGIN_DIR . "/wp-security-scan/libs/recaptchalib.php");
-}
-require_once(WP_PLUGIN_DIR . "/wp-security-scan/libs/wsd.php");
 
 //menus
 require_once(WP_PLUGIN_DIR . "/wp-security-scan/inc/admin/security.php");
 require_once(WP_PLUGIN_DIR . "/wp-security-scan/inc/admin/scanner.php");
-require_once(WP_PLUGIN_DIR . "/wp-security-scan/inc/admin/pwtool.php");
 require_once(WP_PLUGIN_DIR . "/wp-security-scan/inc/admin/plugin_options.php");
 require_once(WP_PLUGIN_DIR . "/wp-security-scan/inc/admin/db.php");
 require_once(WP_PLUGIN_DIR . "/wp-security-scan/inc/admin/support.php");
 require_once(WP_PLUGIN_DIR . "/wp-security-scan/inc/admin/templates/header.php");
 require_once(WP_PLUGIN_DIR . "/wp-security-scan/inc/admin/templates/footer.php");
 
-
-//## this is the container for header scripts
-add_action('admin_head', 'mrt_hd');
-// # $rev #2 {c}
-add_action('admin_init', 'wps_admin_init_load_resources');
 
 //before sending headers
 add_action("init",'mrt_wpdberrors',1);
@@ -126,7 +111,6 @@ function add_men_pg()
     {
         add_menu_page('WSD security', 'WSD security', 'edit_pages', __FILE__, 'mrt_opt_mng_pg', WP_PLUGIN_URL.'/wp-security-scan/images/wsd-logo-small.png');
             add_submenu_page(__FILE__, 'Scanner', 'Scanner', 'edit_pages', 'scanner', 'mrt_sub0');
-            add_submenu_page(__FILE__, 'Password Tool', 'Password Tool', 'edit_pages', 'passwordtool', 'mrt_sub1');
             add_submenu_page(__FILE__, 'Database', 'Database', 'edit_pages', 'database', 'mrt_sub3');
             add_submenu_page(__FILE__, 'Options', 'Options', 'edit_pages', 'plugin_options', 'mrt_sub4');
             add_submenu_page(__FILE__, 'Support', 'Support', 'edit_pages', 'support', 'mrt_sub2');
@@ -235,42 +219,4 @@ function wpss_mrt_meta_box2()
 <?php
 }
 
-
-// $rev #2: only load if they're not already.
-function wps_admin_init_load_resources()
-{
-    // @see: http://www.websitedefender.com/forums/wp-security-scan-plugin/wp-security-scan-and-ssl
-    wp_enqueue_script('acx-json', plugin_dir_url(__FILE__).'js/json.js');
-    wp_enqueue_script('acx-md5', plugin_dir_url(__FILE__).'js/md5.js');
-    wp_enqueue_script('wsd-scripts', plugin_dir_url(__FILE__).'js/scripts.js');
-    wp_enqueue_script('wsd-wsd', plugin_dir_url(__FILE__).'js/wsd.js');
-}
-
-function mrt_hd()
-{
-?>
-	<script type="text/javascript">
-		var wordpress_site_name = "<?php echo htmlentities(get_bloginfo('url'));?>"
-	</script>
-	<script type="text/javascript">
-	  var _wsdPassStrengthProvider = null;
-
-	  jQuery(document).ready(function($) {
-		_wsdPassStrengthProvider = new wsdPassStrengthProvider($);
-		_wsdPassStrengthProvider.init();
-
-		$('#wpss_mrt_1.postbox h3, #wpss_mrt_2.postbox h3, #wpss_mrt_3.postbox h3').click(function() {
-			var parent = $(this).parent();
-			if (parent) parent.toggleClass('closed');
-		});
-		$('#wpss_mrt_1.postbox .handlediv, #wpss_mrt_2.postbox .handlediv, #wpss_mrt_3.postbox .handlediv').click(function() {
-			var parent = $(this).parent();
-			if (parent) parent.toggleClass('closed');
-		});
-		$('#wpss_mrt_1.postbox.close-me, #wpss_mrt_2.postbox.close-me, #wpss_mrt_3.postbox.close-me').each(function() {
-			$(this).addClass("closed");
-		});
-	  });
-	</script>
-<?php }
 ?>
