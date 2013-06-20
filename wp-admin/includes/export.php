@@ -373,6 +373,7 @@ function export_wp( $args = array() ) {
 		<dc:creator><?php echo get_the_author_meta( 'login' ); ?></dc:creator>
 		<guid isPermaLink="false"><?php esc_url( the_guid() ); ?></guid>
 		<description></description>
+		<wp:post_image><?php echo get_the_post_thumbnail($post->ID, 'full'); ?></wp:post_image>
 		<content:encoded><?php echo wxr_cdata( apply_filters( 'the_content_export', $post->post_content ) ); ?></content:encoded>
 		<excerpt:encoded><?php echo wxr_cdata( apply_filters( 'the_excerpt_export', $post->post_excerpt ) ); ?></excerpt:encoded>
 		<wp:post_id><?php echo $post->ID; ?></wp:post_id>
