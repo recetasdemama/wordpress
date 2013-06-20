@@ -378,7 +378,6 @@ function export_wp( $args = array() ) {
 		<wp:post_id><?php echo $post->ID; ?></wp:post_id>
 		<wp:post_date><?php echo $post->post_date; ?></wp:post_date>
 		<wp:post_date_gmt><?php echo $post->post_date_gmt; ?></wp:post_date_gmt>
-		<wp:comment_status><?php echo $post->comment_status; ?></wp:comment_status>
 		<wp:ping_status><?php echo $post->ping_status; ?></wp:ping_status>
 		<wp:post_name><?php echo $post->post_name; ?></wp:post_name>
 		<wp:status><?php echo $post->post_status; ?></wp:status>
@@ -401,30 +400,7 @@ function export_wp( $args = array() ) {
 			<wp:meta_value><?php echo wxr_cdata( $meta->meta_value ); ?></wp:meta_value>
 		</wp:postmeta>
 <?php	endforeach; ?>
-<?php	$comments = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_approved <> 'spam'", $post->ID ) );
-		foreach ( $comments as $c ) : ?>
-		<wp:comment>
-			<wp:comment_id><?php echo $c->comment_ID; ?></wp:comment_id>
-			<wp:comment_author><?php echo wxr_cdata( $c->comment_author ); ?></wp:comment_author>
-			<wp:comment_author_email><?php echo $c->comment_author_email; ?></wp:comment_author_email>
-			<wp:comment_author_url><?php echo esc_url_raw( $c->comment_author_url ); ?></wp:comment_author_url>
-			<wp:comment_author_IP><?php echo $c->comment_author_IP; ?></wp:comment_author_IP>
-			<wp:comment_date><?php echo $c->comment_date; ?></wp:comment_date>
-			<wp:comment_date_gmt><?php echo $c->comment_date_gmt; ?></wp:comment_date_gmt>
-			<wp:comment_content><?php echo wxr_cdata( $c->comment_content ) ?></wp:comment_content>
-			<wp:comment_approved><?php echo $c->comment_approved; ?></wp:comment_approved>
-			<wp:comment_type><?php echo $c->comment_type; ?></wp:comment_type>
-			<wp:comment_parent><?php echo $c->comment_parent; ?></wp:comment_parent>
-			<wp:comment_user_id><?php echo $c->user_id; ?></wp:comment_user_id>
-<?php		$c_meta = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->commentmeta WHERE comment_id = %d", $c->comment_ID ) );
-			foreach ( $c_meta as $meta ) : ?>
-			<wp:commentmeta>
-				<wp:meta_key><?php echo $meta->meta_key; ?></wp:meta_key>
-				<wp:meta_value><?php echo wxr_cdata( $meta->meta_value ); ?></wp:meta_value>
-			</wp:commentmeta>
-<?php		endforeach; ?>
-		</wp:comment>
-<?php	endforeach; ?>
+
 	</item>
 <?php
 	}
