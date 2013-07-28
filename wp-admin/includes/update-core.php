@@ -538,6 +538,8 @@ $_old_files = array(
 'wp-admin/options-privacy.php',
 // 3.5.2
 'wp-includes/js/swfupload/swfupload-all.js',
+// 3.6
+'wp-admin/js/revisions-js.php',
 );
 
 /**
