@@ -435,7 +435,7 @@ function update_user_status( $id, $pref, $value, $deprecated = null ) {
 	if ( null !== $deprecated  )
 		_deprecated_argument( __FUNCTION__, '3.1' );
 
-	$wpdb->update( $wpdb->users, array( $pref => $value ), array( 'ID' => $id ) );
+	$wpdb->update( $wpdb->users, array( sanitize_key( $pref ) => $value ), array( 'ID' => $id ) );
 
 	clean_user_cache( $id );
 
