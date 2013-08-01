@@ -1,13 +1,13 @@
 /*
 Theme Name: Twenty Twelve
-Theme URI: https://wordpress.org/themes/twentytwelve/
+Theme URI: http://wordpress.org/themes/twentytwelve
 Author: the WordPress team
-Author URI: https://wordpress.org/
+Author URI: http://wordpress.org/
 Description: The 2012 theme for WordPress is a fully responsive theme that looks great on any device. Features include a front page template with its own widgets, an optional display font, styling for post formats on both index and single views, and an optional no-sidebar page template. Make it yours with a custom menu, header image, and background.
-Version: 2.9
+Version: 1.2
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Tags: blog, one-column, two-columns, right-sidebar, custom-background, custom-header, custom-menu, editor-style, featured-images, flexible-header, footer-widgets, full-width-template, microformats, post-formats, rtl-language-support, sticky-post, theme-options, translation-ready
+Tags: light, gray, white, one-column, two-columns, right-sidebar, flexible-width, custom-background, custom-header, custom-menu, editor-style, featured-images, flexible-header, full-width-template, microformats, post-formats, rtl-language-support, sticky-post, theme-options, translation-ready
 Text Domain: twentytwelve
 
 This theme, like WordPress, is licensed under the GPL.
@@ -205,7 +205,6 @@ article.format-status footer.entry-meta {
 /* Form fields, general styles first */
 button,
 input,
-select,
 textarea {
 	border: 1px solid #ccc;
 	border-radius: 3px;
@@ -272,7 +271,6 @@ input[disabled] {
 	cursor: default;
 }
 .menu-toggle:hover,
-.menu-toggle:focus,
 button:hover,
 input[type="submit"]:hover,
 input[type="button"]:hover,
@@ -506,14 +504,8 @@ a:hover {
 .site .screen-reader-text {
 	position: absolute !important;
 	clip: rect(1px, 1px, 1px, 1px);
-	overflow: hidden;
-	height: 1px;
-	width: 1px;
 }
-.main-navigation .assistive-text:focus,
-.site .screen-reader-text:hover,
-.site .screen-reader-text:active,
-.site .screen-reader-text:focus {
+.main-navigation .assistive-text:focus {
 	background: #fff;
 	border: 2px solid #333;
 	border-radius: 3px;
@@ -521,12 +513,10 @@ a:hover {
 	color: #000;
 	display: block;
 	font-size: 12px;
-	height: auto;
 	padding: 12px;
 	position: absolute;
 	top: 5px;
 	left: 5px;
-	width: auto;
 	z-index: 100000; /* Above WP toolbar */
 }
 
@@ -599,8 +589,7 @@ a:hover {
 .main-navigation a {
 	color: #5e5e5e;
 }
-.main-navigation a:hover,
-.main-navigation a:focus {
+.main-navigation a:hover {
 	color: #21759b;
 }
 .main-navigation ul.nav-menu,
@@ -642,18 +631,10 @@ section[role="banner"] {
 	margin-bottom: 24px;
 	margin-bottom: 1.714285714rem;
 }
-.widget-area .textwidget ul,
-.widget-area .textwidget ol {
+.widget-area .textwidget ul {
 	list-style: disc outside;
 	margin: 0 0 24px;
 	margin: 0 0 1.714285714rem;
-}
-.widget-area .textwidget li > ul,
-.widget-area .textwidget li > ol {
-	margin-bottom: 0;
-}
-.widget-area .textwidget ol {
-	list-style: decimal;
 }
 .widget-area .textwidget li {
 	margin-left: 36px;
@@ -693,12 +674,6 @@ footer[role="contentinfo"] a {
 }
 footer[role="contentinfo"] a:hover {
 	color: #21759b;
-}
-.site-info span[role=separator] {
-	padding: 0 0.3em 0 0.6em;
-}
-.site-info span[role=separator]::before {
-	content: '\002f';
 }
 
 
@@ -826,9 +801,6 @@ article.sticky .featured-post {
 .entry-content a:visited,
 .comment-content a:visited {
 	color: #9f9f9f;
-}
-.entry-content .more-link {
-	white-space: nowrap;
 }
 .entry-content ol,
 .comment-content ol,
@@ -1031,17 +1003,6 @@ footer.entry-meta {
 	line-height: 2;
 	margin-top: 22px;
 	margin-top: 1.571428571rem;
-}
-
-/* =Single audio/video attachment view
--------------------------------------------------------------- */
-
-.attachment .entry-content .mejs-audio {
-	max-width: 400px;
-}
-
-.attachment .entry-content .mejs-container {
-	margin-bottom: 24px;
 }
 
 
@@ -1360,12 +1321,6 @@ a.comment-edit-link:hover {
 	line-height: 2;
 	color: #5e5e5e;
 }
-#respond #wp-comment-cookies-consent {
-	margin: 0 10px 0 0;
-}
-#respond .comment-form-cookies-consent label {
-	display: inline;
-}
 .required {
 	color: red;
 }
@@ -1462,32 +1417,7 @@ a.comment-edit-link:hover {
 	display: block;
 	text-align: right;
 }
-.tagcloud ul {
-	list-style-type: none;
-}
 
-.tagcloud ul li {
-	display: inline-block;
-}
-
-.widget-area .widget.widget_tag_cloud li {
-	line-height: 1;
-}
-.template-front-page .widget-area .widget.widget_tag_cloud li {
-	margin: 0;
-}
-
-.widget-area .gallery-columns-2.gallery-size-full .gallery-icon img,
-.widget-area .gallery-columns-3.gallery-size-full .gallery-icon img,
-.widget-area .gallery-columns-4.gallery-size-full .gallery-icon img,
-.widget-area .gallery-columns-5.gallery-size-full .gallery-icon img,
-.widget-area .gallery-columns-6 .gallery-icon img,
-.widget-area .gallery-columns-7 .gallery-icon img,
-.widget-area .gallery-columns-8 .gallery-icon img,
-.widget-area .gallery-columns-9 .gallery-icon img {
-	height: auto;
-	max-width: 80%;
-}
 
 /* =Plugins
 ----------------------------------------------- */
@@ -1501,18 +1431,6 @@ img#wpstats {
 
 /* =Media queries
 -------------------------------------------------------------- */
-
-/* Does the same thing as <meta name="viewport" content="width=device-width">,
- * but in the future W3C standard way. -ms- prefix is required for IE10+ to
- * render responsive styling in Windows 8 "snapped" views; IE10+ does not honor
- * the meta tag. See https://core.trac.wordpress.org/ticket/25888.
- */
-@-ms-viewport {
-	width: device-width;
-}
-@viewport {
-	width: device-width;
-}
 
 /* Minimum width of 600 pixels. */
 @media screen and (min-width: 600px) {
@@ -1536,7 +1454,7 @@ img#wpstats {
 		width: 65.104166667%;
 	}
 	body.template-front-page .site-content,
-	body.attachment .site-content,
+	body.single-attachment .site-content,
 	body.full-width .site-content {
 		width: 100%;
 	}
@@ -1578,8 +1496,7 @@ img#wpstats {
 		text-transform: uppercase;
 		white-space: nowrap;
 	}
-	.main-navigation li a:hover,
-	.main-navigation li a:focus {
+	.main-navigation li a:hover {
 		color: #000;
 	}
 	.main-navigation li {
@@ -1588,28 +1505,20 @@ img#wpstats {
 		position: relative;
 	}
 	.main-navigation li ul {
+		display: none;
 		margin: 0;
 		padding: 0;
 		position: absolute;
 		top: 100%;
 		z-index: 1;
-		height: 1px;
-		width: 1px;
-		overflow: hidden;
-		clip: rect(1px, 1px, 1px, 1px);
 	}
 	.main-navigation li ul ul {
 		top: 0;
 		left: 100%;
 	}
-	.main-navigation ul li:hover > ul,
-	.main-navigation ul li:focus > ul,
-	.main-navigation .focus > ul {
+	.main-navigation ul li:hover > ul {
 		border-left: 0;
-		clip: inherit;
-		overflow: inherit;
-		height: inherit;
-		width: inherit;
+		display: block;
 	}
 	.main-navigation li ul li a {
 		background: #efefef;
@@ -1624,8 +1533,7 @@ img#wpstats {
 		width: 12.85714286rem;
 		white-space: normal;
 	}
-	.main-navigation li ul li a:hover,
-	.main-navigation li ul li a:focus {
+	.main-navigation li ul li a:hover {
 		background: #e3e3e3;
 		color: #444;
 	}
@@ -1788,9 +1696,20 @@ img#wpstats {
 		margin: 0;
 		width: auto;
 	}
-
+	.singular .entry-header .entry-meta {
+		position: static;
+	}
+	.singular .site-content,
+	.singular .entry-header,
+	.singular .entry-content,
+	.singular footer.entry-meta,
+	.singular .comments-title {
+		margin: 0;
+		width: 100%;
+	}
 	.entry-header .entry-title,
-	.entry-title {
+	.entry-title,
+	.singular .entry-title {
 		font-size: 21pt;
 	}
 	footer.entry-meta,
