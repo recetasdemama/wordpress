@@ -2,6 +2,7 @@
     <th scope="row"><label for="use_api">Use MailChimp API? <span class="ns_small">(recommended)</span></label></th>
         <td><input type="checkbox" id="use_api" name="nsu_mailinglist[use_api]" value="1"<?php if (isset($opts['use_api']) && $opts['use_api'] == '1') { echo ' checked="checked"'; } ?> /></td>
 </tr>
+
 <tbody class="api_rows" <?php if (!isset($opts['use_api']) || $opts['use_api'] != 1) echo ' style="display:none" '; ?>>
     <tr valign="top">
         <th scope="row">MailChimp API Key <a target="_blank" href="http://admin.mailchimp.com/account/api">(?)</a></th>
@@ -30,3 +31,14 @@
         </tr>
     </tbody>
 </tbody>
+
+<tr valign="top" style="display:block;">
+    <td colspan="2">
+        <div id="setting-error-settings_updated" class="updated settings-error"> 
+            <p>
+                <strong>Notice:</strong> You are using MailChimp, great! Consider switching to my newer plugin called <a href="http://dannyvankooten.com/wordpress-plugins/mailchimp-for-wordpress/">MailChimp for WordPress</a> which, surprisingly, focuses solely on MailChimp users. 
+                It can be downloaded from the WordPress repository <a href="http://wordpress.org/plugins/mailchimp-for-wp/">here</a>.
+            </p>
+        </div>
+    </td>
+</tr>

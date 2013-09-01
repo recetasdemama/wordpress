@@ -2,8 +2,8 @@
 
 if (isset($_GET['checkbox_reset']) && $_GET['checkbox_reset'] == 1) { ?>
     p#ns-checkbox{ clear:both; display:block; }
-    p#ns-checkbox input{ margin:0 5px 0 0; display:inline-block; width:13px; height:13px; }
-    p#ns-checkbox label{ display:inline-block; }
+    p#ns-checkbox input{ margin:0 5px 0 0; display:inline-block !important; width:13px; height:13px; }
+    p#ns-checkbox label{ display:inline-block !important; }
 <?php } 
 if (isset($_GET['form_css']) && $_GET['form_css'] == 1) { ?>
     .nsu-form { margin:10px 0; }
