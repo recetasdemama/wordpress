@@ -10,22 +10,70 @@ class NewsletterSignUp {
 	
 	public function __construct()
 	{
-		$this->get_options();
-		$this->add_hooks();	
+		$defaults = array(
+    		'form' => array('load_form_css' => 0, 'submit_button' => 'Sign up', 'name_label' => 'Name:', 'email_label' => "Email:", 'email_default_value' => 'Your emailaddress..', 'name_required' => 0, 'name_default_value' => 'Your name..', 'wpautop' => 0, 'text_after_signup' => 'Thanks for signing up to our newsletter. Please check your inbox to confirm your email address.', 'redirect_to' => ''),
+    		'mailinglist' => array('provider' => '', 'use_api' => 0, 'subscribe_with_name' => 0, 'email_id' => '', 'name_id' => '', 'form_action' => ''),
+    		'checkbox' => array('text' => 'Sign me up for the newsletter', 'redirect_to' => '', 'precheck' => 0, 'cookie_hide' => 0, 'css_reset' => 0, 'add_to_registration_form' => 0, 'add_to_comment_form' => 1, 'add_to_buddypress_form' => 0, 'add_to_multisite_form' => 0)
+    	);
+
+		$this->options['form'] = array_merge($defaults['form'], (array) get_option('nsu_form'));
+    	$this->options['mailinglist'] = array_merge($defaults['mailinglist'], (array) get_option('nsu_mailinglist'));
+    	$this->options['checkbox'] = array_merge($defaults['checkbox'], (array) get_option('nsu_checkbox'));
+    	$opts = $this->options;
+
+		// widget hooks
+		add_action('widgets_init', array($this, 'register_widget'));
+		add_action('init', array($this, 'check_for_form_submit'));
+		
+		// register the shortcode which can be used to output sign-up form
+		add_shortcode('newsletter-sign-up-form', array($this,'form_shortcode'));
+		add_shortcode('nsu-form', array($this,'form_shortcode'));
+		
+		// Should we load the stylesheet?
+		if($opts['checkbox']['css_reset'] == 1 || $opts['form']['load_form_css'] == 1) {
+            add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
+		}
+				
+		// Add to comment form? If so, add necessary actions. Try to add automatically.
+		if($opts['checkbox']['add_to_comment_form'] == 1) {
+			add_action('thesis_hook_after_comment_box', array($this, 'output_checkbox'), 20);
+			add_action('comment_form', array($this, 'output_checkbox'), 20);
+			add_action('comment_approved_', array($this, 'grab_email_from_comment'), 10, 1);
+			add_action('comment_post', array($this, 'grab_email_from_comment'), 50, 2);
+		}
+		
+		// If add_to_reg_form is ticked, add corresponding actions
+		if($opts['checkbox']['add_to_registration_form'] == 1) {
+			add_action('register_form',array($this, 'output_checkbox'), 20);
+			add_action('register_post',array($this, 'grab_email_from_wp_signup'), 50);
+		}
+		
+		// If add_to_bp_form is ticked, add BuddyPress actions
+		if($opts['checkbox']['add_to_buddypress_form'] == 1) {
+			add_action('bp_before_registration_submit_buttons', array($this, 'output_checkbox'), 20);
+			add_action('bp_complete_signup', array($this, 'grab_email_from_wp_signup'), 20);
+		}
+		
+		// If running a MultiSite, add to registration form and add actions.
+		if($opts['checkbox']['add_to_multisite_form'] == 1) {
+			add_action('signup_extra_fields', array($this, 'output_checkbox'), 20);
+			add_action('signup_blogform', array($this, 'add_hidden_checkbox'), 20);
+			add_filter('add_signup_meta', array($this, 'add_checkbox_to_usermeta'));
+			add_action('wpmu_activate_blog', array($this, 'grab_email_from_ms_blog_signup'), 20, 5);
+			add_action('wpmu_activate_user', array($this, 'grab_email_from_ms_user_signup'), 20, 3);
+		}	
 	}
-        
-         private function get_options() {
-            $this->options = get_option('nsu');
-            $this->options['form'] = get_option('nsu_form');
-            $this->options['mailinglist'] = get_option('nsu_mailinglist');
-            $this->options['checkbox'] = get_option('nsu_checkbox');
-        }
+
+	public function getOptions()
+	{
+		return $this->options;
+	}
 	
 	/**
-         * Registers the Newsletter Sign-Up Widget
+     * Registers the Newsletter Sign-Up Widget
          * @return type 
          */
-	function register_widget()
+	public function register_widget()
 	{
 		return register_widget('NewsletterSignUpWidget');
 	}
@@ -42,83 +90,29 @@ class NewsletterSignUp {
 
 	public function enqueue_styles()
 	{
+		$opts = $this->getOptions();
+
 		// Build stylesheet url --------------
 		$stylesheet_opts = '?';
 
 		// Load CSS to reset the checkbox' position?
-		if(isset($this->options['checkbox']['css_reset']) && $this->options['checkbox']['css_reset'] == 1) {
+		if($opts['checkbox']['css_reset'] == 1) {
 			$stylesheet_opts .= 'checkbox_reset=1&';
 		}
 
 		// Load CSS to reset label and input fields for the sign-up form?
-		if(isset($this->options['form']['load_form_css']) && $this->options['form']['load_form_css'] == 1) {
+		if($opts['form']['load_form_css'] == 1) {
 			$stylesheet_opts .= 'form_css=1&';
 		}
 
-		wp_enqueue_style('ns_checkbox_style', plugins_url("/frontend/css/newsletter-sign-up.php$stylesheet_opts", dirname(__FILE__)));
+		wp_enqueue_style('ns_checkbox_style', plugins_url("/frontend/css/newsletter-sign-up.php{$stylesheet_opts}", dirname(__FILE__)));
 	}
 	
-	/**
-	* Add all the various WP filters and actions
-	*/
-	function add_hooks()
-	{
-		// widget hooks
-		add_action('widgets_init',array(&$this,'register_widget'));
-		add_action('init',array(&$this,'check_for_form_submit'));
-		
-		// register the shortcode which can be used to output sign-up form
-		add_shortcode('newsletter-sign-up-form',array(&$this,'form_shortcode'));
-		add_shortcode('nsu-form',array(&$this,'form_shortcode'));
-		
-        $enqueue = false;
-
-		// Load CSS to reset the checkbox' position?
-		if(isset($this->options['checkbox']['css_reset']) && $this->options['checkbox']['css_reset'] == 1) {
-            $enqueue = true;
-		}
-		// Load CSS to reset label and input fields for the sign-up form?
-		if(isset($this->options['form']['load_form_css']) && $this->options['form']['load_form_css'] == 1) {
-            $enqueue = true;
-		}
-		
-        // Only enqueue stylesheet if asked to by user.
-        if($enqueue) { add_action('wp_enqueue_scripts', array(&$this, 'enqueue_styles')); }
-		
-		// Add to comment form? If so, add necessary actions. Try to add automatically.
-		if(isset($this->options['checkbox']['add_to_comment_form']) && $this->options['checkbox']['add_to_comment_form'] == 1) {
-			add_action('thesis_hook_after_comment_box',array(&$this,'output_checkbox'),20);
-			add_action('comment_form',array(&$this,'output_checkbox'),20);
-			add_action('comment_approved_',array(&$this,'grab_email_from_comment'),10,1);
-			add_action('comment_post', array(&$this,'grab_email_from_comment'), 50, 2);
-		}
-		
-		// If add_to_reg_form is ticked, add corresponding actions
-		if(isset($this->options['checkbox']['add_to_registration_form']) && $this->options['checkbox']['add_to_registration_form'] == 1) {
-			add_action('register_form',array(&$this,'output_checkbox'),20);
-			add_action('register_post',array(&$this,'grab_email_from_wp_signup'), 50);
-		}
-		
-		// If add_to_bp_form is ticked, add BuddyPress actions
-		if(isset($this->options['checkbox']['add_to_buddypress_form']) && $this->options['checkbox']['add_to_buddypress_form'] == 1) {
-			add_action('bp_before_registration_submit_buttons',array(&$this,'output_checkbox'),20);
-			add_action('bp_complete_signup',array(&$this,'grab_email_from_wp_signup'),20);
-		}
-		
-		// If running a MultiSite, add to registration form and add actions.
-		if(isset($this->options['checkbox']['add_to_multisite_form']) && $this->options['checkbox']['add_to_multisite_form'] == 1) {
-			add_action('signup_extra_fields',array(&$this,'output_checkbox'),20);
-			add_action('signup_blogform',array(&$this,'add_hidden_checkbox'),20);
-			add_filter('add_signup_meta',array(&$this,'add_checkbox_to_usermeta'));
-			add_action('wpmu_activate_blog',array(&$this,'grab_email_from_ms_blog_signup'),20,5);
-			add_action('wpmu_activate_user',array(&$this,'grab_email_from_ms_user_signup'),20,3);
-		}
-	}
 	
 	/**
 	* Check if ANY Newsletter Sign-Up form has been submitted. 
 	*/
-	function check_for_form_submit()
+	public function check_for_form_submit()
 	{
         $opts = $this->options['form'];
         $errors = array();   
@@ -128,7 +122,7 @@ class NewsletterSignUp {
 			$email = (isset($_POST['nsu_email'])) ? $_POST['nsu_email'] : '';
 			$name = (isset($_POST['nsu_name'])) ? $_POST['nsu_name'] : '';
 			
-			if(isset($this->options['mailinglist']['subscribe_with_name']) && $this->options['mailinglist']['subscribe_with_name'] == 1 && isset($opts['name_required']) && $opts['name_required'] == 1 && empty($name)) {
+			if($this->options['mailinglist']['subscribe_with_name'] == 1 && $opts['name_required'] == 1 && empty($name)) {
 				$errors['name-field'] = 'Please fill in the name field.';
 			}
                         
@@ -141,7 +135,7 @@ class NewsletterSignUp {
             $this->validation_errors = $errors;
                         
              if(count($this->validation_errors) == 0) {
-             	$this->send_post_data($email,$name,'form');
+             	$this->send_post_data($email, $name, 'form');
              }
                             
 		}
@@ -158,7 +152,7 @@ class NewsletterSignUp {
         $opts = $this->options['checkbox'];
 
         // If using option to hide checkbox for subscribers and cookie is set, set instance variable showed_checkbox to true so checkbox won't show.
-		if(isset($opts['cookie_hide']) && $opts['cookie_hide'] == 1 && isset($_COOKIE['ns_subscriber'])) $this->showed_checkbox = TRUE;
+		if($opts['cookie_hide'] == 1 && isset($_COOKIE['ns_subscriber'])) $this->showed_checkbox = TRUE;
 		
         // User could have rendered the checkbox by manually adding 'the hook 'ns_comment_checkbox()' to their comment form
         // If so, abandon function.
@@ -166,9 +160,9 @@ class NewsletterSignUp {
 	
 		?>
 		<p id="ns-checkbox">
-			<input value="1" id="nsu_checkbox" type="checkbox" name="newsletter-signup-do" <?php if(isset($opts['precheck']) && $opts['precheck'] == 1) echo 'checked="checked" '; ?>/>
+			<input value="1" id="nsu_checkbox" type="checkbox" name="newsletter-signup-do" <?php if($opts['precheck'] == 1) echo 'checked="checked" '; ?>/>
 			<label for="nsu_checkbox">
-				<?php if(!empty($opts['text'])) { echo $opts['text']; } else { echo "Sign me up for the newsletter!"; } ?>
+				<?php echo $opts['text']; ?>
 			</label>
 		</p>
 		<?php 
@@ -201,14 +195,15 @@ class NewsletterSignUp {
 	*/
 	function send_post_data($email, $name = '', $type = 'checkbox')
 	{	
-                $opts = $this->options['mailinglist'];
+        $opts = $this->options['mailinglist'];
+		
 		// when not using api and no form action has been given, abandon.
 		if(empty($opts['use_api']) && empty($opts['form_action'])) return;
 		
 		$post_data = array();
 		
 		/* Are we using API? */
-		if(isset($opts['use_api']) && $opts['use_api'] == 1) {
+		if($opts['use_api'] == 1) {
 			
 			switch($opts['provider']) {
 				
@@ -250,8 +245,18 @@ class NewsletterSignUp {
 					if(isset($opts['subscribe_with_name']) && $opts['subscribe_with_name'] == 1) {
                         // Try to provide values for First and Lastname fields
                         // These can be overridden, of just ignored by mailchimp.
-                        $request['merge_vars']['FNAME'] = substr($name, 0, strpos($name,' '));
-                        $request['merge_vars']['LNAME'] = substr($name,strpos($name,' '));
+                        $strpos = strpos($name, ' ');
+
+                        $request['merge_vars']['FNAME'] = $name;
+
+                     	if($strpos) {
+                     		$request['merge_vars']['FNAME'] = substr($name, 0, $strpos);
+                        	$request['merge_vars']['LNAME'] = substr($name, $strpos);
+                     	} else {
+                     		$request['merge_vars']['FNAME'] = $name;
+                        	$request['merge_vars']['LNAME'] = '...';
+                     	}
+                        
 						$request['merge_vars'][$opts['name_id']] = $name;
 					}
 					// Add any set additional data to merge_vars array
@@ -278,7 +283,7 @@ class NewsletterSignUp {
 			);
 		
 			// Subscribe with name? Add to $post_data array.
-			if(isset($opts['subscribe_with_name']) && $opts['subscribe_with_name'] == 1) $post_data[$opts['name_id']] = $name;
+			if($opts['subscribe_with_name'] == 1) $post_data[$opts['name_id']] = $name;
 			
 			// Add list specific data
 			switch($opts['provider']) {
@@ -313,17 +318,18 @@ class NewsletterSignUp {
 		}
 		
 		// store a cookie, if preferred by site owner
-		if(isset($opts['cookie_hide']) && $opts['cookie_hide'] == 1) @setcookie('ns_subscriber',TRUE,time() + 9999999);
+		if($opts['cookie_hide'] == 1) @setcookie('ns_subscriber',TRUE,time() + 9999999);
                 
         // Check if we should redirect to a given page
-        if($type == 'form' && isset($this->options['form']['redirect_to']) && strlen($this->options['form']['redirect_to']) > 6) {
+        if($type == 'form' && strlen($this->options['form']['redirect_to']) > 6) {
             wp_redirect( $this->options['form']['redirect_to']);
             exit;
-        } elseif($type == 'checkbox' && isset($this->options['checkbox']['redirect_to']) && strlen($this->options['checkbox']['redirect_to']) > 6) {
+        } elseif($type == 'checkbox' && strlen($this->options['checkbox']['redirect_to']) > 6) {
             wp_redirect( $this->options['checkbox']['redirect_to']);
             exit;
         }
-	
+
+        return true;	
 	}
 
 	
@@ -375,7 +381,7 @@ class NewsletterSignUp {
 	* @param string $password : the password, we don't actually use this
 	* @param array $meta : the meta values that belong to this user, holds the value of our 'newsletter-sign-up' checkbox.
 	*/
-	function grab_email_from_ms_user_signup($user_id, $password = NULL,$meta = NULL){
+	public function grab_email_from_ms_user_signup($user_id, $password = NULL,$meta = NULL){
 		if(!isset($meta['newsletter-signup-do']) || $meta['newsletter-signup-do'] != 1) return;
 		$user_info = get_userdata($user_id);
 		
@@ -394,7 +400,7 @@ class NewsletterSignUp {
     * @param $b No idea, seriously.
 	* @param array $meta The meta values that belong to this user, holds the value of our 'newsletter-sign-up' checkbox.
 	*/
-	function grab_email_from_ms_blog_signup($blog_id, $user_id, $a, $b ,$meta){
+	public function grab_email_from_ms_blog_signup($blog_id, $user_id, $a, $b ,$meta){
 		
 		if(!isset($meta['newsletter-signup-do']) || $meta['newsletter-signup-do'] != 1) return;
 		$user_info = get_userdata($user_id);
@@ -402,7 +408,7 @@ class NewsletterSignUp {
 		$email = $user_info->user_email;
 		$name = $user_info->first_name;
 		
-		$this->send_post_data($email,$name);
+		$this->send_post_data($email, $name);
 	}
 	
 	/**
@@ -434,7 +440,7 @@ class NewsletterSignUp {
 	* @param int $cid : the ID of the comment
 	* @param object $comment : the comment object, optionally
 	*/
-	function grab_email_from_comment($cid,$comment = NULL)
+	public function grab_email_from_comment($cid,$comment = NULL)
 	{
 		if($_POST['newsletter-signup-do'] != 1) return;
 		
@@ -459,7 +465,7 @@ class NewsletterSignUp {
          * @param string $content Not used
          * @return string Form HTML-code 
          */
-	function form_shortcode($atts = null,$content = null)
+	public function form_shortcode($atts = null,$content = null)
 	{ 
 		return $this->output_form(false);
 	}
@@ -472,7 +478,7 @@ class NewsletterSignUp {
 	public function output_form($echo = true)
 	{
         $errors = $this->validation_errors;
-		$opts = $this->options;
+		$opts = $this->getOptions();
 		$additional_fields = '';
 		$output = '';
 		
@@ -480,10 +486,10 @@ class NewsletterSignUp {
 		$formno = $this->no_of_forms;
 		
 		/* Set up form variables for API usage or normal form */
-		if(isset($opts['mailinglist']['use_api']) && $opts['mailinglist']['use_api'] == 1) {
+		if($opts['mailinglist']['use_api'] == 1) {
 			
 			/* Using API, send form request to ANY page */
-			$form_action = "";
+			$form_action = get_site_url();
 			$email_id = 'nsu_email';
 			$name_id = 'nsu_name';
 				
@@ -493,7 +499,7 @@ class NewsletterSignUp {
 			$form_action = $opts['mailinglist']['form_action'];
 			$email_id = $opts['mailinglist']['email_id'];
 				
-			if(isset($opts['mailinglist']['name_id'])) {
+			if(!empty($opts['mailinglist']['name_id'])) {
 				$name_id = $opts['mailinglist']['name_id'];
 			}
 				
@@ -511,23 +517,22 @@ class NewsletterSignUp {
 			$additional_fields .= "</div>";
 		endif; 
 		
-		$email_label = (!empty($opts['form']['email_label'])) ? $opts['form']['email_label'] : 'E-mail:';
-		$name_label = (!empty($opts['form']['name_label'])) ? $opts['form']['name_label'] : 'Name:';
+		$email_label = $opts['form']['email_label'];
+		$name_label = $opts['form']['name_label'];
                 
-        $email_value = (!empty($opts['form']['email_default_value'])) ? $opts['form']['email_default_value'] : '';
-        $name_value = (!empty($opts['form']['name_default_value'])) ? $opts['form']['name_default_value'] : '';
+        $email_value = $opts['form']['email_default_value'];
+        $name_value = $opts['form']['name_default_value'];
+        $submit_button = $opts['form']['submit_button'];      
                 
-		$submit_button = (!empty($opts['form']['submit_button'])) ? $opts['form']['submit_button'] : __('Sign-Up');
-                
-        $text_after_signup = (!empty($opts['form']['text_after_signup'])) ? $opts['form']['text_after_signup'] : 'Thanks for signing up to our newsletter. Please check your inbox to confirm your email address.';
-		$text_after_signup = (isset($opts['form']['wpautop']) && $opts['form']['wpautop'] == 1) ? wpautop(wptexturize($text_after_signup)) : $text_after_signup;
+        $text_after_signup =  $opts['form']['text_after_signup'];
+		$text_after_signup = ($opts['form']['wpautop'] == 1) ? wpautop(wptexturize($text_after_signup)) : $text_after_signup;
                 
                 
 		
 		 if(!isset($_POST['nsu_submit']) || count($errors) > 0) { //form has not been submitted yet 
   
 			$output .= "<form class=\"nsu-form\" id=\"nsu-form-$formno\" action=\"$form_action\" method=\"post\">";	
-			if(isset($opts['mailinglist']['subscribe_with_name']) && $opts['mailinglist']['subscribe_with_name'] == 1) {	
+			if($opts['mailinglist']['subscribe_with_name'] == 1) {	
 				$output .= "<p><label for=\"nsu-name-$formno\">$name_label</label><input class=\"nsu-field\" id=\"nsu-name-$formno\" type=\"text\" name=\"$name_id\" value=\"$name_value\" ";
 				if($name_value) $output .= "onblur=\"if(!this.value) this.value = '$name_value';\" onfocus=\"if(this.value == '$name_value') this.value=''\" ";
                 $output .= "/>";
