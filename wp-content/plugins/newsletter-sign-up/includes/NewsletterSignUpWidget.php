@@ -5,13 +5,13 @@ if(!class_exists('NewsletterSignUpWidget')) {
 	class NewsletterSignUpWidget extends WP_Widget {
 				
 		function __construct() {
-			$widget_ops = array('classname' => 'nsu_widget', 'description' => __('Adds a newsletter sign-up form.'));
+			$widget_ops = array('classname' => 'nsu_widget', 'description' => __('Displays a newsletter sign-up form.'));
 			$control_ops = array('width' => 400, 'height' => 350);
-			parent::__construct(false, 'Newsletter Sign-Up Widget', $widget_ops, $control_ops);
+			parent::__construct(false, 'Newsletter Sign-Up', $widget_ops, $control_ops);
 		}
 
 		function widget($args, $instance) {	
-			$NewsletterSignUp = NewsletterSignUp::getInstance();
+			
 			/* Get Newsletter Sign-up options */
 			$options = get_option('nsu_form');
 			
@@ -31,7 +31,9 @@ if(!class_exists('NewsletterSignUpWidget')) {
 							$instance['filter'] ? _e(wpautop($text_before_form),'nsu-widget') : _e($text_before_form,'nsu-widget'); 
 						?></div><?php
 					}
-					$NewsletterSignUp->output_form(true);
+					
+					NSU::form()->output_form(true);
+
 					if(!empty($text_after_form)) {
 						?><div class="nsu-text-after-form"><?php
 							$instance['filter'] ? _e(wpautop($text_after_form),'nsu-widget') : _e($text_after_form,'nsu-widget'); 
@@ -64,8 +66,7 @@ if(!class_exists('NewsletterSignUpWidget')) {
 			extract($instance);
 			$title = strip_tags($title);
 
-			?>
-                        
+			?>       
 
 			 <p>
 			  <label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label> 
@@ -81,10 +82,10 @@ if(!class_exists('NewsletterSignUpWidget')) {
 			<p><input id="<?php echo $this->get_field_id('filter'); ?>" name="<?php echo $this->get_field_name('filter'); ?>" type="checkbox" <?php checked(isset($instance['filter']) ? $instance['filter'] : 0); ?> />&nbsp;<label for="<?php echo $this->get_field_id('filter'); ?>"><?php _e('Automatically add paragraphs'); ?></label></p>
 			
 			<p>
-				You can further configure the sign-up form at the <a href="admin.php?page=newsletter-sign-up/form-settings">Newsletter Sign-Up configuration page</a>.
+				Configure the sign-up form at the <a href="admin.php?page=newsletter-sign-up-form-settings">Newsletter Sign-Up configuration page</a>.
 			</p>
                
-            <p style="border: 2px solid green; background: #CFC; padding:5px; ">I spent countless hours developing this plugin for FREE (unlike many other Newsletter plugins). If you like it, consider <a href="http://dannyvankooten.com/donate/">donating $10, $20 or $50</a> as a token of your appreciation.</p>       
+            <p style="background:#222; color:#eee; padding:10px;">If you like this plugin, consider <a href="http://dannyvankooten.com/donate/">donating $10, $20 or $50</a> as a token of your appreciation.</p>       
 			<?php 
 		}
 
