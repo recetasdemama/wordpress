@@ -1,123 +1,95 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Private Only WP Plugin\n"
+"Project-Id-Version: Private Only WordPress plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-22 21:02+0700\n"
+"POT-Creation-Date: 2013-11-02 16:57+0700\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Pixel Insert/pixert <studio@pixert.com>\n"
 "Language-Team: Kate Mag (Pixert) <studio@pixert.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: English\n"
-"X-Poedit-Country: UNITED STATES\n"
-"X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-KeywordsList: _e\n"
 "X-Poedit-Basepath: ./\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../disablefeed.php:14
-msgid "<strong>Error:</strong> Feed unavailable!"
-msgstr ""
-
-#: ../privateonly.php:70
-#: ../admin/settings-admin.php:31
-msgid "Private Only Custom Login"
-msgstr ""
-
-#: ../privateonly.php:101
-msgid "Only registered and logged in users are allowed to view this site. Please login now"
-msgstr ""
-
-#: ../privateonly.php:103
-msgid "Visit our public page:"
-msgstr ""
-
-#: ../privateonly.php:111
-msgid "Welcome,you need to be registered to see content"
-msgstr ""
-
-#: ../admin/settings-admin.php:32
-msgid "Private Only Custom Login Settings"
-msgstr ""
-
-#: ../admin/settings-admin.php:87
-msgid "New Settings saved"
-msgstr ""
-
-#: ../admin/settings-admin.php:107
-msgid "Settings have been reset"
-msgstr ""
-
-#: ../admin/settings-admin.php:136
-msgid "Do you really want to delete/reset the plugin settings?"
-msgstr ""
-
 #: ../admin/settings.php:18
-msgid "This is Private Only plugin for WordPress ver 3.1"
+msgid "This is Private Only plugin for WordPress ver 3.3"
 msgstr ""
 
 #: ../admin/settings.php:20
 msgid "If you disable or enable feed, DO NOT FORGET TO REFRESH YOUR BROWSER CACHE AFTER ACTIVATE PRIVATE ONLY or DISABLE FEED"
 msgstr ""
 
-#: ../admin/settings.php:35
-msgid "Hire me"
-msgstr ""
-
-#: ../admin/settings.php:48
+#: ../admin/settings.php:47
 msgid "Custom Login"
 msgstr ""
 
-#: ../admin/settings.php:57
+#: ../admin/settings.php:56
 msgid "Public Page:"
 msgstr ""
 
-#: ../admin/settings.php:72
+#: ../admin/settings.php:71
 msgid "Define the public page"
 msgstr ""
 
-#: ../admin/settings.php:85
+#: ../admin/settings.php:84
 msgid "Logo:"
 msgstr ""
 
-#: ../admin/settings.php:89
+#: ../admin/settings.php:88
 msgid "Upload an image with Media Library or FTP and put the full path here, http://yourdomainname.com/logo.jpg"
 msgstr ""
 
-#: ../admin/settings.php:90
+#: ../admin/settings.php:89
 msgid "We do not provide upload tool here, because it is free for you upload it wherever you want to"
 msgstr ""
 
-#: ../admin/settings.php:95
+#: ../admin/settings.php:94
 msgid "Logo Height:"
 msgstr ""
 
-#: ../admin/settings.php:99
+#: ../admin/settings.php:98
 msgid "What is your logo height"
 msgstr ""
 
-#: ../admin/settings.php:112
+#: ../admin/settings.php:111
 msgid "Use WordPress logo"
 msgstr ""
 
-#: ../admin/settings.php:116
+#: ../admin/settings.php:115
 msgid "Check this box to use WordPress Logo, leave unchecked to disable it."
 msgstr ""
 
-#: ../admin/settings.php:121
+#: ../admin/settings.php:120
 msgid "Change WordPress logo link"
 msgstr ""
 
-#: ../admin/settings.php:125
+#: ../admin/settings.php:124
 msgid "Change WordPress logo link from wordpress.org to your domain, http://yourdomainname.com"
 msgstr ""
 
-#: ../admin/settings.php:138
+#: ../admin/settings.php:130
+msgid "Remove Lost Password Text?"
+msgstr ""
+
+#: ../admin/settings.php:134
+msgid "Check this box to remove Lost Password text on WP-Admin login, leave unchecked to disable it."
+msgstr ""
+
+#: ../admin/settings.php:139
+msgid "Remove Back to Blog link?"
+msgstr ""
+
+#: ../admin/settings.php:143
+msgid "Check this box to remove Back to Blog link on WP-Admin login, leave unchecked to disable it."
+msgstr ""
+
+#: ../admin/settings.php:155
 msgid "Use Custom CSS"
 msgstr ""
 
-#: ../admin/settings.php:142
+#: ../admin/settings.php:159
 msgid "Check this box to use Custom CSS, leave unchecked to disable it. You should have custom css in your active theme"
 msgstr ""
 

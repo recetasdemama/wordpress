@@ -1,18 +1,19 @@
 <?php
 /*
-Private Only 3.2.1
-Need a WP expert? Hire me : studio[at]pixert.com
+Private Only 3.3
+Website: http://pixert.com
 */
 function po_login_settings_args() {
 	$settings_arr = array(
 		
-		/* logo or not? */
 		'po_logo' => '',
 		'po_logo_height' => '',
 		'use_wp_logo' => '',
 		'logo_url' => '',	
 		'public_pages' => '',
-		'use_custom_css' => ''
+		'use_custom_css' => '',
+		'remove_lost_password' => '',
+		'remove_backtoblog' => ''
 	);
 	
 	return $settings_arr;

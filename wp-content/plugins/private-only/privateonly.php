@@ -3,7 +3,7 @@
 Plugin Name: Private Only
 Plugin URI: http://www.pixert.com/
 Description: Redirects all non-logged in users to login form with custom login capability
-Version: 3.2.1
+Version: 3.3
 Author: Kate Mag (Pixel Insert)
 Author URI: http://www.pixert.com
 */
@@ -59,6 +59,11 @@ if ( is_admin() )
 #login h1 a{ display: none !important; }
 </style>
 <?php } } ?>
+<?php if (isset($po_login[ 'remove_backtoblog' ]) && $po_login[ 'remove_backtoblog' ] == true ) { ?>
+<style>
+#login p#backtoblog{ display: none !important; }
+</style>
+<?php } ?>
 <?php if (isset($po_login['use_custom_css'])) { ?>
 <link rel="stylesheet" type="text/css" href="<?php echo get_bloginfo('stylesheet_directory') ?>/custom.css" />
 <?php } ?>
@@ -90,6 +95,14 @@ function private_only () {
 		auth_redirect();
   } 
 }
+//Redirect to Homepage after Login
+function default_login_redirect( $redirect, $request_redirect )
+{
+    if ( $request_redirect === '' )
+        $redirect = home_url();
+    return $redirect; 
+}
+add_filter( 'login_redirect', 'default_login_redirect', 10, 2 );
 function no_index () {
 	echo "<meta name='robots' content='noindex,nofollow' />\n";
 }
@@ -124,8 +137,16 @@ if (isset($po_login['logo_url']) && $po_login['logo_url']) {
 	return $po_login['logo_url']; // your URL here
 }
 }
-add_filter('login_headerurl', 'wpc_url_login');
+//Remove Lost Your Password? on WP-Admin Login Page
+function remove_lostpassword_text ( $text ) {
+	 if ($text == 'Lost your password?'){$text = '';}
+		return $text;
+}
+if (isset($po_login[ 'remove_lost_password' ]) && $po_login[ 'remove_lost_password' ] == true ) {
+add_filter( 'gettext', 'remove_lostpassword_text' );
+}
 add_filter('login_headertitle', 'change_login_headertitle');
+add_filter('login_headerurl', 'wpc_url_login');
 add_action('template_redirect','private_only');
 add_action('login_head','no_index');
 ?>
