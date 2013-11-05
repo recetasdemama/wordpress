@@ -3,9 +3,9 @@
 Plugin Name: Newsletter Sign-Up
 Plugin URI: http://DannyvanKooten.com/wordpress-plugins/newsletter-sign-up/
 Description: Adds various ways for your visitors to sign-up to your mailinglist (checkbox, widget, form)
-Version: 1.8.1
+Version: 2.0.3
 Author: Danny van Kooten
-Author URI: http://DannyvanKooten.com
+Author URI: http://dannyvankooten.com
 License: GPL2
 */
 
@@ -25,29 +25,8 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-require('frontend/NewsletterSignUpWidget.php');
-require('frontend/NewsletterSignUp.php');
+define('NSU_VERSION_NUMBER', "2.0.3");
+define("NSU_PLUGIN_DIR", plugin_dir_path(__FILE__)); 
 
-$NewsletterSignUp = NewsletterSignUp::getInstance();
-
-if(is_admin()) {
-	require('backend/NewsletterSignUpAdmin.php');
-	$NewsletterSignUpAdmin = new NewsletterSignUpAdmin($NewsletterSignUp);
-}
-
-/**
-* Displays the comment checkbox, call this function if your theme does not use the 'comment_form' action in the comments.php template.
-*/
-function nsu_checkbox() {
-    $NewsletterSignUp = NewsletterSignUp::getInstance();
-    $NewsletterSignUp->output_checkbox();
-}
-
-/**
-* Outputs a sign-up form, for usage in your theme files.
-*/
-function nsu_signup_form()
-{
-	$NewsletterSignUp = NewsletterSignUp::getInstance();
-	$NewsletterSignUp->output_form(true);
-}
+require_once NSU_PLUGIN_DIR . 'includes/NSU.php';
+new NSU();
