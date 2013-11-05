@@ -1,7 +1,7 @@
 <?php
 /*
-Private Only 3.2.1
-Need a WP expert? Hire me : studio[at]pixert.com
+Private Only 3.3
+Website: http://pixert.com
 */
 ?>
 <div style="float:right; width:33%;">
@@ -15,7 +15,7 @@ Need a WP expert? Hire me : studio[at]pixert.com
 	<ul>
     
     <li style="margin-bottom: 40px;">
-      <h4><?php _e('This is Private Only plugin for WordPress ver 3.2.1','private-only'); ?></h4>
+      <h4><?php _e('This is Private Only plugin for WordPress ver 3.3','private-only'); ?></h4>
       <h5>Coded by Kate Mag (Pixel Insert)</h5>
       <p><?php _e('If you disable or enable feed, DO NOT FORGET TO REFRESH YOUR BROWSER CACHE AFTER ACTIVATE PRIVATE ONLY or DISABLE FEED','private-only'); ?></p>
     </li> 
@@ -32,7 +32,6 @@ Need a WP expert? Hire me : studio[at]pixert.com
 <a href="https://twitter.com/pixert" class="twitter-follow-button" data-show-count="false">Follow @pixert</a>
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></li>
         
-		<li><div style="clear: both; margin-top: 40px; "></div>Need a WP expert? <a href="http://pixert.com/" title="Pixel Insert"><?php _e('Hire me','private-only'); ?></a>.</li>
 		<li>Visit Our <a href="http://pixert.com/blog">Blog</a></li>
 	</ul>
     
@@ -125,6 +124,24 @@ Need a WP expert? Hire me : studio[at]pixert.com
                 <?php _e('Change WordPress logo link from wordpress.org to your domain, http://yourdomainname.com','private-on;y'); ?><br />
             </td>
 
+   		</tr>
+   		<tr>
+            <th>
+            	<label for="<?php echo $data['remove_lost_password']; ?>"><?php _e('Remove Lost Password Text?','private-only'); ?>:</label> 
+            </th>
+            <td>
+                <input id="<?php echo $data['remove_lost_password']; ?>" name="<?php echo $data['remove_lost_password']; ?>" type="checkbox" <?php if ( $val['remove_lost_password'] ) echo 'checked="checked"'; ?> value="true" /><br />
+                <?php _e('Check this box to remove Lost Password text on WP-Admin login, leave unchecked to disable it.','private-only'); ?>
+            </td>
+   		</tr>
+   		<tr>
+            <th>
+            	<label for="<?php echo $data['remove_backtoblog']; ?>"><?php _e('Remove Back to Blog link?','private-only'); ?>:</label> 
+            </th>
+            <td>
+                <input id="<?php echo $data['remove_backtoblog']; ?>" name="<?php echo $data['remove_backtoblog']; ?>" type="checkbox" <?php if ( $val['remove_backtoblog'] ) echo 'checked="checked"'; ?> value="true" /><br />
+                <?php _e('Check this box to remove Back to Blog link on WP-Admin login, leave unchecked to disable it.','private-only'); ?>
+            </td>
    		</tr>
     </table>
 </div>
