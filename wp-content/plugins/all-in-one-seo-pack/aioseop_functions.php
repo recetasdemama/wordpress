@@ -36,7 +36,7 @@ if ( !function_exists( 'aioseop_update_settings_check' ) ) {
 
 		// WPML has now attached to filters, read settings again so they can be translated
 		$aioseop_options = get_option( 'aioseop_options' );
-
+		
 		if ( !empty( $aioseop_options['aiosp_archive_noindex'] ) ) { // migrate setting for noindex archives
 			$aioseop_options['aiosp_archive_date_noindex'] = $aioseop_options['aiosp_archive_author_noindex'] = $aioseop_options['aiosp_archive_noindex'];
 			unset( $aioseop_options['aiosp_archive_noindex'] );
@@ -100,7 +100,10 @@ if ( !function_exists( 'aioseop_option_isset' ) ) {
 if ( !function_exists( 'aioseop_addmycolumns' ) ) {
 	function aioseop_addmycolumns() {
 		global $aioseop_options, $pagenow;
-		$aiosp_posttypecolumns = $aioseop_options['aiosp_posttypecolumns'];
+		$aiosp_posttypecolumns = Array();
+		if ( !empty( $aioseop_options) && !empty( $aioseop_options['aiosp_posttypecolumns'] ) ) {
+			$aiosp_posttypecolumns = $aioseop_options['aiosp_posttypecolumns'];			
+		}
 		if ( !empty( $pagenow ) && ( $pagenow == 'upload.php' ) )
 			$post_type = 'attachment';
 		elseif ( !isset( $_GET['post_type'] ) )
@@ -134,7 +137,7 @@ if ( !function_exists( 'aioseop_mrt_pcolumns' ) ) {
 	    if ( empty( $aioseop_options['aiosp_togglekeywords'] ) )
 			$aioseopc['seokeywords'] = __( 'SEO Keywords', 'all_in_one_seo_pack' );
 	    return $aioseopc;
-	}
+	}	
 }
 
 if ( !function_exists( 'aioseop_admin_head' ) ) {
@@ -194,7 +197,7 @@ if ( !function_exists( 'aioseop_ajax_save_meta' ) ) {
 		if( $result != '' ): $label = $result;  
 		else: $label = ''; $result = '<strong><i>' . __( 'No', 'all_in_one_seo_pack' ) . ' ' . $target . '</i></strong>' ; endif;
 		$output = $result . '<a id="' . $target . 'editlink' . $post_id . '" href="javascript:void(0);"'; 
-		$output .= 'onclick="aioseop_ajax_edit_meta_form(' . $post_id . ', \'' . $label . '\', \'' . $target . '\');return false;" title="' . __('Edit') . '">';
+		$output .= 'onclick=\'aioseop_ajax_edit_meta_form(' . $post_id . ', ' . json_encode( $label ) . ', "' . $target . '");return false;\' title="' . __('Edit') . '">';
 		$output .= '<img class="aioseop_edit_button" id="aioseop_edit_id" src="' . AIOSEOP_PLUGIN_IMAGES_URL . '/cog_edit.png" /></a>';
 		die( "jQuery('div#aioseop_" . $target . "_" . $post_id . "').fadeOut('fast', function() {
 			  jQuery('div#aioseop_" . $target . "_" . $post_id . "').html('" . addslashes_gpc($output) . "').fadeIn('fast');
@@ -232,8 +235,8 @@ if ( !function_exists( 'aioseop_ajax_save_url' ) ) {
 		$module->add_page_hooks();
 		$_POST = $module->get_current_options( $_POST, null );
 		$module->handle_settings_updates( null );
-		$options = $module->get_current_options( Array(), null );			
-		$output = $module->display_custom_options( '', Array( 'name' => 'aiosp_sitemap_addl_pages', 'type' => 'custom', 'save' => true, 'value' => $options['aiosp_sitemap_addl_pages'], 'attr' => '' ) );
+		$options = $module->get_current_options( Array(), null );
+		$output .= $module->display_custom_options( '', Array( 'name' => 'aiosp_sitemap_addl_pages', 'type' => 'custom', 'save' => true, 'value' => $options['aiosp_sitemap_addl_pages'], 'attr' => '' ) );
 		$output = str_replace( "'", "\'", $output );
 		$output = str_replace( "\n", '\n', $output );
 		die( sprintf( AIOSEOP_AJAX_MSG_TMPL, $output ) );
@@ -253,13 +256,15 @@ if ( !function_exists( 'aioseop_ajax_delete_url' ) ) {
 		$_POST['location'] = null;
 		$_POST['Submit'] = 'ajax';
 		$module->add_page_hooks();
-		$_POST = $module->get_current_options( $_POST, null );
+		$_POST = (Array)$module->get_current_options( $_POST, null );
+		if ( !empty( $_POST['aiosp_sitemap_addl_pages'] ) && ( is_object( $_POST['aiosp_sitemap_addl_pages'] ) ) )
+			$_POST['aiosp_sitemap_addl_pages'] = (Array)$_POST['aiosp_sitemap_addl_pages'];
 		if ( !empty( $_POST['aiosp_sitemap_addl_pages'] ) && ( !empty( $_POST['aiosp_sitemap_addl_pages'][ $options ] ) ) ) {
 			unset( $_POST['aiosp_sitemap_addl_pages'][ $options ] );
 			if ( empty( $_POST['aiosp_sitemap_addl_pages'] ) )
 				$_POST['aiosp_sitemap_addl_pages'] = '';
 			else
-				$_POST['aiosp_sitemap_addl_pages'] = serialize( $_POST['aiosp_sitemap_addl_pages'] );
+				$_POST['aiosp_sitemap_addl_pages'] = json_encode( $_POST['aiosp_sitemap_addl_pages'] );
 			$module->handle_settings_updates( null );
 			$options = $module->get_current_options( Array(), null );
 			$output = $module->display_custom_options( '', Array( 'name' => 'aiosp_sitemap_addl_pages', 'type' => 'custom', 'save' => true, 'value' => $options['aiosp_sitemap_addl_pages'], 'attr' => '' ) );
@@ -366,11 +371,11 @@ if ( !function_exists( 'aioseop_mrt_pccolumn' ) ) {
 				<div 	class="aioseop_mpc_admin_meta_options" 
 						id="aioseop_<?php print $target; ?>_<?php echo $id; ?>" 
 						style="float:left;">
-					<?php $content = htmlspecialchars( stripcslashes( get_post_meta( $id, "_aioseop_" . $target,	TRUE ) ) ); 
-					if( !empty($content) ): $label = str_replace( "'", "\'", $content );  
-					else: $label = ''; $content = '<strong><i>No ' . $target . '</i></strong>' ; endif;
-						print $content . '<a id="' . $target . 'editlink' . $id . '" href="javascript:void(0);" onclick="aioseop_ajax_edit_meta_form(' .
-						$id . ', \'' . $label . '\', \'' . $target . '\');return false;" title="' . __('Edit') . '">';
+					<?php $content = htmlspecialchars( stripslashes( get_post_meta( $id, "_aioseop_" . $target,	TRUE ) ) ); 
+				if( !empty($content) ): $label = esc_js( $content );  
+				else: $label = ''; $content = '<strong><i>No ' . $target . '</i></strong>' ; endif;
+					print $content . '<a id="' . $target . 'editlink' . $id . '" href="javascript:void(0);" onclick=\'aioseop_ajax_edit_meta_form(' .
+					$id . ', "' . str_replace( Array( '"', '&quot;' ), Array( '\x22', '\x22' ), esc_js( $label ) ) . '", "' . $target . '");return false;\' title="' . __('Edit') . '">';
 						print "<img class='aioseop_edit_button' 
 											id='aioseop_edit_id' 
 											src='" . AIOSEOP_PLUGIN_IMAGES_URL . "cog_edit.png' /></a>";
@@ -511,4 +516,13 @@ if ( !function_exists( 'json_decode' ) ) {
 		$services_json = aioseop_load_json_services();
 		return $services_json->decode( $arg );
 	}
+}
+
+/***
+ * fnmatch() doesn't exist on Windows pre PHP 5.3
+ */
+if( !function_exists( 'fnmatch' ) ) {
+    function fnmatch( $pattern, $string ) {
+        return preg_match( "#^" . strtr( preg_quote( $pattern, '#' ), array( '\*' => '.*', '\?' => '.' ) ) . "$#i", $string );
+    }
 }
