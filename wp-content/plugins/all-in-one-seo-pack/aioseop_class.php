@@ -39,6 +39,13 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
  	
  	/** Flag whether there should be logging. */
  	var $do_log;
+
+	var $token;
+	var $secret;
+	var $access_token;
+	var $ga_token;
+	var $account_cache;
+	var $profile_id;
  	
 	function All_in_One_SEO_Pack() {
 		global $aioseop_options;
@@ -156,10 +163,12 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 			"pinterest_verify" 		=> __( "Enter your verification code here to verify your site with Pinterest.<br /><a href='http://semperplugins.com/documentation/pinterest-site-verification/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),
 			"google_publisher"		=> __( "Enter your Google Plus Profile URL here to link your site to your Google Plus account for authorship.<br /><a href='http://semperplugins.com/documentation/google-settings/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),
 			"google_disable_profile"=> __( "Check this to remove the Google Plus field from the user profile screen.<br /><a href='http://semperplugins.com/documentation/google-settings/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),
+			"google_connect"		=> __( "Press the connect button to connect with Google Analytics; or if already connected, press the disconnect button to disable and remove any stored analytics credentials.", 'all_in_one_seo_pack' ),
 			"google_analytics_id"	=> __( "Enter your Google Analytics ID here to track visitor behavior on your site using Google Analytics.<br /><a href='http://semperplugins.com/documentation/google-analytics/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),
 			"ga_use_universal_analytics" => __( "Use the new Universal Analytics tracking code for Google Analytics; do this for new analytics accounts.", 'all_in_one_seo_pack' ),
 			"ga_domain"				=> __( "Enter your domain name if you have enabled tracking of Subdomains in Google Analytics.<br /><a href='http://semperplugins.com/documentation/google-settings/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),
 			"ga_multi_domain"		=> __( "Check this if you have enabled tracking of Multiple top-level domains in Google Analytics.<br /><a href='http://semperplugins.com/documentation/google-settings/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),
+			"ga_exclude_users"		=> __( "Exclude logged-in users from Google Analytics tracking by role.", 'all_in_one_seo_pack' ),
 			"ga_track_outbound_links"=> __( "Check this if you want to track outbound links with Google Analytics.<br /><a href='http://semperplugins.com/documentation/google-settings/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),
 			"cpostnoindex" 			=> __( "Set the default NOINDEX setting for each Post Type.<br /><a href='http://semperplugins.com/documentation/noindex-settings/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),
 			"cpostnofollow" 		=> __( "Set the default NOFOLLOW setting for each Post Type.<br /><a href='http://semperplugins.com/documentation/noindex-settings/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),
@@ -342,6 +351,8 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 			"google_disable_profile"=> Array(
 				'name' => __( 'Disable Google Plus Profile:', 'all_in_one_seo_pack' ), 'default' => 0, 'type' => 'checkbox'
 				),
+			"google_connect"=>Array( 'name' => __( 'Connect With Google Analytics', 'all_in_one_seo_pack' ), 
+				),
 			"google_analytics_id"=> Array(
 				'name' => __( 'Google Analytics ID:', 'all_in_one_seo_pack' ),
 				'default' => null, 'type' => 'text' ),
@@ -357,6 +368,10 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 				'name' => __( 'Track Multiple Domains:', 'all_in_one_seo_pack' ),
 				'default' => 0,
 				'condshow' => Array( 'aiosp_google_analytics_id' => Array( 'lhs' => 'aiosp_google_analytics_id', 'op' => '!=', 'rhs' => '' ) ) ),
+			"ga_exclude_users"=> Array(
+				'name' => __( 'Exclude Users From Tracking:', 'all_in_one_seo_pack' ),
+				'type' => 'multicheckbox',
+				'condshow' => Array( 'aiosp_google_analytics_id' => Array( 'lhs' => 'aiosp_google_analytics_id', 'op' => '!=', 'rhs' => '' ) ) ),				
 			"ga_track_outbound_links"=> Array(
 				'name' => __( 'Track Outbound Links:', 'all_in_one_seo_pack' ),
 				'default' => 0,
@@ -504,7 +519,7 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 				'google' => Array(
 						'name' => __( 'Google Settings', 'all_in_one_seo_pack' ),
 						'help_link' => 'http://semperplugins.com/documentation/google-settings/',
-						'options' => Array( "google_publisher", "google_disable_profile", "google_analytics_id", "ga_use_universal_analytics", "ga_domain", "ga_multi_domain", "ga_track_outbound_links" )
+						'options' => Array( "google_publisher", "google_disable_profile", "google_connect", "google_analytics_id", "ga_use_universal_analytics", "ga_domain", "ga_multi_domain", "ga_exclude_users", "ga_track_outbound_links" )
 					),
 				'noindex' => Array(
 						'name' => __( 'Noindex Settings', 'all_in_one_seo_pack' ),
@@ -566,6 +581,7 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 				if ( !$url ) $url = get_permalink();
 
 				$description = $this->get_aioseop_description( $post );
+				$description = apply_filters( 'aioseop_description', $description );
 				
 				if ( $this->strlen( $title ) > 70 ) $title = $this->trim_excerpt_without_filters( $title, 70 ) . '...';
 				if ( $this->strlen( $description ) > 156 ) $description = $this->trim_excerpt_without_filters( $description, 156 ) . '...';
@@ -689,6 +705,7 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 	}
 	
 	function add_page_hooks() {
+		$this->oauth_init();
 		$post_objs = get_post_types( '', 'objects' );
 		$pt = array_keys( $post_objs );
 		$rempost = array( 'revision', 'nav_menu_item' );
@@ -729,23 +746,30 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 				$this->layout['cpt']['options'][] = $field;
 			}
 		}
-		
+		global $wp_roles;
+		if ( ! isset( $wp_roles ) ) {
+			$wp_roles = new WP_Roles();			
+		}
+		$role_names = $wp_roles->get_names();
+		ksort( $role_names );
+		$this->default_options["ga_exclude_users"]['initial_options'] = $role_names;
+        
 		$this->setting_options();
 		add_filter( "{$this->prefix}display_options", Array( $this, 'filter_options' ), 10, 2 );
 		parent::add_page_hooks();
 	}
 	
 	function add_admin_pointers() {
-		$this->pointers['aioseop_menu_204'] = Array( 'pointer_target' => '#toplevel_page_all-in-one-seo-pack-aioseop_class',
+		$this->pointers['aioseop_menu_210'] = Array( 'pointer_target' => '#toplevel_page_all-in-one-seo-pack-aioseop_class',
 												 'pointer_text' => 	'<h3>' . sprintf( __( 'Welcome to Version %s!', 'all_in_one_seo_pack' ), AIOSEOP_VERSION )
 													. '</h3><p>' . __( 'Thank you for running the latest and greatest All in One SEO Pack ever! Please review your settings, as we\'re always adding new features for you!', 'all_in_one_seo_pack' ) . '</p>',
 												 'pointer_edge' => 'top',
 												 'pointer_align' => 'left',
 												 'pointer_scope' => 'global'
 											);
-		$this->pointers['aioseop_welcome_204'] = Array( 'pointer_target' => '#aioseop_top_button',
+		$this->pointers['aioseop_welcome_210'] = Array( 'pointer_target' => '#aioseop_top_button',
 													'pointer_text' => '<h3>' . sprintf( __( 'Review Your Settings', 'all_in_one_seo_pack' ), AIOSEOP_VERSION )
-													. '</h3><p>' . __( 'Thank you for running the latest and greatest All in One SEO Pack ever! New since 2.0.3: manage your sitemap with our XML Sitemap module; enable it from our Feature Manager! And please review your settings, we have added some new ones!', 'all_in_one_seo_pack' ) . '</p>',
+													. '</h3><p>' . __( 'Thank you for running the latest and greatest All in One SEO Pack ever! NEW: Manage how your site appears on Facebook, Google+, and Twitter with our Social Meta module.  Enable it from the Feature Manager.  Remember to review your settings, we have added some new ones!', 'all_in_one_seo_pack' ) . '</p>',
 													 'pointer_edge' => 'bottom',
 													 'pointer_align' => 'left',
 													 'pointer_scope' => 'local'
@@ -1146,6 +1170,8 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 			else if ( is_single() || is_page() || is_home() || $this->is_static_posts_page() )
 				$description = $this->get_aioseop_description( $post );
 			
+			$description = apply_filters( 'aioseop_description', $description );
+			
 			/*
 				if ( $this->is_static_front_page() )
 					$description = trim( stripslashes( $this->internationalize( $aioseop_options['aiosp_home_description'] ) ) );
@@ -1372,62 +1398,289 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 			do_action( 'aioseop_modules_wp_head' );
 			echo "<!-- /all in one seo pack -->\n";
 	}
-
-function get_analytics_domain() {
-	global $aioseop_options;
-	$domain = '';
-	if ( !empty( $aioseop_options['aiosp_ga_domain'] ) ) {
-		$domain = $aioseop_options['aiosp_ga_domain'];
-		$domain = trim( $domain );
-		$domain = $this->strtolower( $domain );
-		if ( $this->strpos( $domain, "http://" ) === 0 ) $domain = $this->substr( $domain, 7 );
-		elseif ( $this->strpos( $domain, "https://" ) === 0 ) $domain = $this->substr( $domain, 8 );
-		$domain = untrailingslashit( $domain );
+	
+	function override_options( $options, $location, $settings ) {
+		$opts = Array();
+		$options['aiosp_google_connect'] = $settings['aiosp_google_connect']['default'];
+		return $options;
 	}
-	return $domain;
-}
 
-function universal_analytics() {
-	global $aioseop_options;
-	$analytics = '';
-	if ( !empty( $aioseop_options['aiosp_ga_use_universal_analytics'] ) ) {
-		$allow_linker = '';
-		$cookie_domain = $this->get_analytics_domain();
-		if ( !empty( $cookie_domain ) ) {
-			$cookie_domain = esc_js( $cookie_domain );
-			$cookie_domain = "'cookieDomain': '{$cookie_domain}'";
+	function oauth_init() {
+		if ( !is_user_logged_in() || !current_user_can( 'manage_options' ) ) return false;
+		$this->token = "anonymous";
+		$this->secret = "anonymous";
+		$preload = $this->get_class_option();
+		$manual_ua = '';
+		if ( !empty( $_POST ) ) {
+			if ( !empty( $_POST["{$this->prefix}google_connect"] ) ) {
+				$manual_ua = 1;
+			}
+		} elseif ( !empty( $preload["{$this->prefix}google_connect"] ) ) {
+			$manual_ua = 1;
 		}
-		if ( !empty( $aioseop_options['aiosp_ga_multi_domain'] ) ) {
-			$allow_linker = "'allowLinker': true";
+		if ( !empty( $manual_ua ) ) {
+				foreach ( Array( "token", "secret", "access_token", "ga_token", "account_cache" ) as $v ) {
+					if ( !empty( $preload["{$this->prefix}{$v}"]) ) {
+						unset( $preload["{$this->prefix}{$v}"] );
+						unset( $this->$v );
+					}
+				}
+				$this->update_class_option( $preload );
+				$this->update_options( );
+	//		return;
 		}
-		$js_options = Array();
-		foreach( Array( 'cookie_domain', 'allow_linker' ) as $opts ) {
-			if ( !empty( $$opts ) ) $js_options[] = $$opts;
+		foreach ( Array( "token", "secret", "access_token", "ga_token", "account_cache" ) as $v ) {
+			if ( !empty( $preload["{$this->prefix}{$v}"]) ) {
+				$this->$v = $preload["{$this->prefix}{$v}"];
+			}
 		}
-		if ( !empty( $js_options ) ) {
-			$js_options = join( ',', $js_options );
-			$js_options = ', { ' . $js_options . ' } ';
-		} else $js_options = '';		
-		$analytics_id = esc_js( $aioseop_options["aiosp_google_analytics_id"] );
-		$analytics =<<<EOF
-		<script>
-		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		$callback_url = NULL;
+		if ( !empty( $_REQUEST['oauth_verifier'] ) ) {
+			$this->verifier = $_REQUEST['oauth_verifier'];
+			if ( !empty( $_REQUEST['oauth_token'] ) ) {
+				if ( isset( $this->token ) && $this->token == $_REQUEST['oauth_token'] ) {
+					$this->access_token = $this->oauth_get_token( $this->verifier );
+					if ( is_array( $this->access_token ) && !empty( $this->access_token['oauth_token'] ) ) {
+						unset( $this->token );
+						unset( $this->secret );
+						$this->ga_token = $this->access_token['oauth_token'];
+						foreach ( Array( "token", "secret", "access_token", "ga_token" ) as $v ) {
+							if ( !empty( $this->$v) )  $preload["{$this->prefix}{$v}"] = $this->$v;
+						}
+						$this->update_class_option( $preload );
+					}
+				}
+				wp_redirect( menu_page_url( plugin_basename( $this->file ), false ) );
+				exit;
+			}
+		}
+		if ( !empty( $this->ga_token ) ) {
+			if ( !empty( $this->account_cache ) ) {
+				$ua = $this->account_cache['ua'];
+				$profiles = $this->account_cache['profiles'];
+			} else {
+				$this->token = $this->access_token['oauth_token'];
+				$this->secret = $this->access_token['oauth_token_secret'];
 
-		ga('create', '{$analytics_id}'{$js_options});
-		ga('send', 'pageview');
-		</script>
+				$data = $this->oauth_get_data('https://www.googleapis.com/analytics/v2.4/management/accounts/~all/webproperties/~all/profiles' );
+				$http_code = wp_remote_retrieve_response_code( $data );
+	            if( $http_code == 200 ) {
+					$response = wp_remote_retrieve_body( $data );
+					$xml = $this->xml_string_to_array( $response );
+					$ua = Array();
+					$profiles = Array();
+					if ( !empty( $xml["entry"] ) ) {
+						$rec = Array();
+						$results = Array();
+						if ( !empty( $xml["entry"][0] ) )
+							$results = $xml["entry"];
+						else
+							$results[] = $xml["entry"];
+						foreach( $results as $r ) {
+							foreach( $r as $k => $v )
+								switch( $k ) {
+									case 'id':		$rec['id'] = $v; break;
+									case 'title':	$rec['title'] = $v['@content']; break;
+									case 'dxp:property':
+													$attr = Array();
+													foreach ( $v as $a => $f )
+														if ( is_array($f) && !empty($f['@attributes'] ) )
+															$rec[$f['@attributes']['name']] = $f['@attributes']['value'];
+													break;
+								}
+							$ua[$rec['title']] = Array( $rec['ga:webPropertyId'] => $rec['ga:webPropertyId'] );
+							$profiles[ $rec['ga:webPropertyId'] ] = $rec['ga:profileId'];
+						}
+					}
+					$this->account_cache = Array();
+					$this->account_cache['ua'] = $ua;
+					$this->account_cache['profiles'] = $profiles;
+					$preload["{$this->prefix}account_cache"] = $this->account_cache;
+				} else {
+					unset( $this->token );
+					unset( $this->secret );
+					unset( $this->ga_token );
+					unset( $preload["{$this->prefix}ga_token"] ); // error condition here -- pdb
+					$response = wp_remote_retrieve_body( $data );
+					$xml = $this->xml_string_to_array( $response );
+					if ( !empty( $xml ) && !empty( $xml["error"] ) ) {
+						$error = 'Error: ';
+						if ( !empty( $xml["error"]["internalReason"] ) ) {
+							$error .= $xml["error"]["internalReason"];
+						} else {
+							foreach( $xml["error"] as $k => $v )
+								$error .= "$k: $v\n";
+						}
+						$this->output_error( $error );
+					}
+				}
+			}
+		}
+		if ( !empty( $this->ga_token ) ) {
+			$this->default_options["google_analytics_id"]['type'] = 'select';
+			$this->default_options["google_analytics_id"]['initial_options'] = $ua;
+			$this->default_options["google_connect"]["type"] = 'html';
+			$this->default_options["google_connect"]["nolabel"] = 1;
+			$this->default_options["google_connect"]["save"] = true;
+			$this->default_options["google_connect"]["name"] = __( 'Disconnect From Google Analytics', 'all_in_one_seo_pack' );
+			$this->default_options["google_connect"]["default"] = "<input name='aiosp_google_connect' type=submit  class='button-primary' value='" . __( 'Remove Stored Credentials', 'all_in_one_seo_pack' ) . "'>";
+			add_filter( $this->prefix . 'override_options', Array( $this, 'override_options' ), 10, 3 );
+		} else {
+			$this->default_options["google_connect"]["type"] = 'html';
+			$this->default_options["google_connect"]["nolabel"] = 1;
+			$this->default_options["google_connect"]["save"] = false;
+			$url = $this->oauth_connect();
+			$this->default_options["google_connect"]["default"] = "<a href='{$url}' class='button-primary'>" . __( 'Connect With Google Analytics', 'all_in_one_seo_pack' ) . "</a>";
+			foreach ( Array( "token", "secret", "access_token", "ga_token", "account_cache" ) as $v ) {
+				if ( !empty( $this->$v) )  $preload["{$this->prefix}{$v}"] = $this->$v;
+			}
+		}
+		$this->update_class_option( $preload );
+		$this->update_options( );
+		// $url = $this->report_query();
+		if ( !empty( $this->account_cache ) && !empty( $this->options["{$this->prefix}google_analytics_id"] ) && !empty( $this->account_cache["profiles"][ $this->options["{$this->prefix}google_analytics_id"] ] ) ) {
+			$this->profile_id = $this->account_cache["profiles"][ $this->options["{$this->prefix}google_analytics_id"] ];
+		}
+	}
+
+	function oauth_get_data( $oauth_url, $args = null ) {
+		if ( !class_exists( 'OAuthConsumer' ) ) require_once( 'OAuth.php' );
+		if ( $args === null ) $args = Array( 'scope' => 'https://www.googleapis.com/auth/analytics.readonly', 'xoauth_displayname' => AIOSEOP_PLUGIN_NAME . ' ' . __('Google Analytics', 'all_in_one_seo_pack' ) );
+		$req_token = new OAuthConsumer( $this->token, $this->secret );
+		$req = $this->oauth_get_creds( $oauth_url, $req_token, $args );
+		return wp_remote_get( $req->to_url() );
+	}
+
+	function oauth_get_creds( $oauth_url, $req_token = NULL, $args = Array(), $callback = null ) {
+		if ( !class_exists( 'OAuthConsumer' ) ) require_once( 'OAuth.php' );
+		if ( !empty( $callback ) ) $args['oauth_callback'] = $callback;
+		if ( empty( $this->sig_method ) ) $this->sig_method = new OAuthSignatureMethod_HMAC_SHA1();
+		if ( empty( $this->consumer ) )   $this->consumer = new OAuthCOnsumer( 'anonymous', 'anonymous' );				
+		$req_req = OAuthRequest::from_consumer_and_token( $this->consumer, $req_token, "GET", $oauth_url, $args );
+		$req_req->sign_request( $this->sig_method, $this->consumer, $req_token );
+		return $req_req;
+	}
+
+	function oauth_get_token( $oauth_verifier ) {
+		if ( !class_exists( 'OAuthConsumer' ) ) require_once( 'OAuth.php' );
+		$args = Array( 'scope' => 'https://www.google.com/analytics/feeds/', 'xoauth_displayname' => AIOSEOP_PLUGIN_NAME . ' ' . __('Google Analytics', 'all_in_one_seo_pack' ) );
+		$args['oauth_verifier'] = $oauth_verifier;
+		$oauth_access_token = "https://www.google.com/accounts/OAuthGetAccessToken";
+		$reqData = $this->oauth_get_data( $oauth_access_token, $args );
+		$reqOAuthData = OAuthUtil::parse_parameters( wp_remote_retrieve_body( $reqData ) );
+		return $reqOAuthData;
+	}
+
+	function oauth_connect( $count = 0 ) {
+		global $aiosp_activation;
+		if ( !class_exists( 'OAuthConsumer' ) ) require_once( 'OAuth.php' );
+		$callback_url = NULL;
+		$consumer_key = "anonymous"; 
+		$consumer_secret = "anonymous"; 
+		$oauth_request_token = "https://www.google.com/accounts/OAuthGetRequestToken"; 
+		$oauth_authorize = "https://www.google.com/accounts/OAuthAuthorizeToken"; 
+		$oauth_access_token = "https://www.google.com/accounts/OAuthGetAccessToken";
+		if ( $aiosp_activation ) {
+			$oauth_current = false;
+		} else {			
+			$oauth_current = get_transient( "aioseop_oauth_current" );
+		}
+		if ( !empty( $this->token ) && ( $this->token != 'anonymous' ) && $oauth_current ) {
+			return $oauth_authorize . '?oauth_token=' . $this->token;			
+		} else {
+			set_transient( "aioseop_oauth_current", 1, 3600 );
+			unset( $this->token );
+			unset( $this->secret );
+		}
+		$args = array(
+			'scope' => 'https://www.google.com/analytics/feeds/',
+			'xoauth_displayname' => AIOSEOP_PLUGIN_NAME . ' ' . __('Google Analytics', 'all_in_one_seo_pack')
+		);
+		$req_req = $this->oauth_get_creds( $oauth_request_token, NULL, $args, admin_url( "admin.php?page=all-in-one-seo-pack/aioseop_class.php" ) );
+		$reqData = wp_remote_get( $req_req->to_url() );
+		$reqOAuthData = OAuthUtil::parse_parameters( wp_remote_retrieve_body( $reqData ) );
+		if ( !empty( $reqOAuthData['oauth_token'] ) ) $this->token = $reqOAuthData['oauth_token'];
+		if ( !empty( $reqOAuthData['oauth_token_secret'] ) ) $this->secret = $reqOAuthData['oauth_token_secret'];
+		if ( !empty( $this->token ) && ( $this->token != 'anonymous' ) && ( $oauth_current ) ) {
+			$url = $oauth_authorize . "?oauth_token={$this->token}";
+		} else {
+			if ( !$count ) {
+				return $this->oauth_connect( 1 );
+			}
+		/*
+			$req_token = new OAuthConsumer($this->token, $this->secret, 1);
+			$req_req = $this->oauth_get_creds( $oauth_authorize, $req_token, $args );
+			$url = $req_req->to_url();
+		*/	
+		}		
+		return $url;
+	}
+
+	function get_analytics_domain() {
+		global $aioseop_options;
+		$domain = '';
+		if ( !empty( $aioseop_options['aiosp_ga_domain'] ) ) {
+			$domain = $aioseop_options['aiosp_ga_domain'];
+			$domain = trim( $domain );
+			$domain = $this->strtolower( $domain );
+			if ( $this->strpos( $domain, "http://" ) === 0 ) $domain = $this->substr( $domain, 7 );
+			elseif ( $this->strpos( $domain, "https://" ) === 0 ) $domain = $this->substr( $domain, 8 );
+			$domain = untrailingslashit( $domain );
+		}
+		return $domain;
+	}
+
+	function universal_analytics() {
+		global $aioseop_options;
+		$analytics = '';
+		if ( !empty( $aioseop_options['aiosp_ga_use_universal_analytics'] ) ) {
+			$allow_linker = '';
+			$cookie_domain = $this->get_analytics_domain();
+			if ( !empty( $cookie_domain ) ) {
+				$cookie_domain = esc_js( $cookie_domain );
+				$cookie_domain = "'cookieDomain': '{$cookie_domain}'";
+			}
+			if ( !empty( $aioseop_options['aiosp_ga_multi_domain'] ) ) {
+				$allow_linker = "'allowLinker': true";
+			}
+			$js_options = Array();
+			foreach( Array( 'cookie_domain', 'allow_linker' ) as $opts ) {
+				if ( !empty( $$opts ) ) $js_options[] = $$opts;
+			}
+			if ( !empty( $js_options ) ) {
+				$js_options = join( ',', $js_options );
+				$js_options = ', { ' . $js_options . ' } ';
+			} else $js_options = '';		
+			$analytics_id = esc_js( $aioseop_options["aiosp_google_analytics_id"] );
+			$analytics =<<<EOF
+			<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+			ga('create', '{$analytics_id}'{$js_options});
+			ga('send', 'pageview');
+			</script>
 
 EOF;
+		}
+		return $analytics;
 	}
-	return $analytics;
-}
 
 function aiosp_google_analytics() {
 	global $aioseop_options;
 	$analytics = '';
+	if ( !empty( $aioseop_options['aiosp_ga_exclude_users'] ) ) {
+		if ( is_user_logged_in() ) {
+			global $current_user;
+			if ( empty( $current_user ) ) get_currentuserinfo();
+			if ( !empty( $current_user ) ) {
+				$intersect = array_intersect( $aioseop_options['aiosp_ga_exclude_users'], $current_user->roles );
+				if ( !empty( $intersect ) ) return;			
+			}
+		}
+	}
 	if ( !empty( $aioseop_options['aiosp_google_analytics_id'] ) ) {
 	ob_start();
 	$analytics = $this->universal_analytics();
@@ -1654,7 +1907,6 @@ function aiosp_google_analytics() {
 			$description = $this->get_post_description( $blog_page );
 		if ( empty( $description ) && is_object( $post ) && !is_archive() && empty( $blog_page ) )
 			$description = $this->get_post_description( $post );
-		$description = apply_filters( 'aioseop_description', $description );
 		return $description;
 	}
 	
@@ -1837,7 +2089,6 @@ function aiosp_google_analytics() {
 			}
 			if (empty( $title ) )
 				$title = $this->internationalize( get_option( 'blogname' ) ) . ' | ' . $this->internationalize( get_bloginfo( 'description' ) );
-//				$title = $this->internationalize( get_option( 'blogname' ) );
 			return $this->paged_title( $title );
 		} else if ( is_attachment() ) {
 			if ( $post === null ) return false;
@@ -2276,7 +2527,10 @@ function aiosp_google_analytics() {
 		$this->update_options( );
 		
 		$this->add_admin_pointers();
-
+		if ( !empty( $this->pointers ) )
+			foreach( $this->pointers as $k => $p )
+				if ( !empty( $p["pointer_scope"] ) && ( $p["pointer_scope"] == 'global' ) )
+					unset( $this->pointers[$k] );
 		
 		$donated = false;
 		if ( ( isset( $_POST ) ) && ( isset( $_POST['module'] ) ) && ( isset( $_POST['nonce-aioseop'] ) ) && ( $_POST['module'] == 'All_in_One_SEO_Pack' ) && ( wp_verify_nonce( $_POST['nonce-aioseop'], 'aioseop-nonce' ) ) ) {
@@ -2333,7 +2587,6 @@ function aiosp_google_analytics() {
 		
 		add_meta_box('aioseop-list', __( "Join Our Mailing List", 'all_in_one_seo_pack' ), array( $this, 'display_extra_metaboxes'), 'aioseop_metaboxes', 'normal', 'core');
 		add_meta_box('aioseop-about', "About <span style='float:right;'>Version <b>" . AIOSEOP_VERSION . "</b></span>", array( $this, 'display_extra_metaboxes'), 'aioseop_metaboxes', 'side', 'core');
-		add_meta_box('aioseop-hosting', __( "Recommended WordPress Hosting", 'all_in_one_seo_pack' ), array( $this, 'display_extra_metaboxes'), 'aioseop_metaboxes', 'side', 'core');
 		
 		add_action( 'aioseop_modules_add_menus', Array( $this, 'add_menu' ), 5 );
 		do_action( 'aioseop_modules_add_menus', $file );
@@ -2445,14 +2698,15 @@ function aiosp_google_analytics() {
 					// close postboxes that should be closed
 					$('.if-js-closed').removeClass('if-js-closed').addClass('closed');
 					// postboxes setup
-					postboxes.add_postbox_toggles('<?php echo $this->pagehook; ?>');
+					if ( typeof postboxes !== 'undefined' )
+						postboxes.add_postbox_toggles('<?php echo $this->pagehook; ?>');
 					$('.meta-box-sortables').removeClass('meta-box-sortables');
 				});
 				//]]>
 			</script>
-
+		<a href="http://open.ecwid.com/l8dt" target="_blank" style="margin-bottom: 15px;display: block;"><img src="<?php echo AIOSEOP_PLUGIN_IMAGES_URL; ?>ecwid_banner.png"></a>
 		<!-- Headway Themes-->
-		<div class="aioseop_advert"> 
+		<div class="aioseop_advert">
 					<div>
 					<h3>Drag and Drop WordPress Design</h3>
 					<p><a href="http://semperfiwebdesign.com/headwayaio/" target="_blank">Headway Themes</a> allows you to easily create your own stunning website designs! Stop using premade themes start making your own design with Headway's easy to use Drag and Drop interface. All in One SEO Pack users have an exclusive discount by using coupon code <strong>SEMPERFI30</strong> at checkout.</p>

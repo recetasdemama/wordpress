@@ -793,6 +793,7 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Sitemap' ) ) {
 					$post_counts = $this->get_all_post_counts( Array('post_type' => $options['aiosp_sitemap_posttypes'], 'post_status' => 'publish') );
 				}
 				foreach( $options['aiosp_sitemap_posttypes'] as $sm ) {
+					if ( $post_counts[$sm] == 0 ) continue;
 					if ( $this->paginate ) {
 						if ( $post_counts[$sm] > $this->max_posts ) {
 							$count = 1;
