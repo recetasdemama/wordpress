@@ -1,4 +1,15 @@
 <?php if(! WsdUtil::canLoad()) { return; } ?>
+<?php /*[Changing the db prefix is not available in MultiSite (yet)]*/
+if(wpsIsMultisite()){
+    echo '<p>This feature is not yet available for MultiSite.</p>';
+    return;
+}
+$wpsIsPostBack = ($_SERVER['REQUEST_METHOD'] == 'POST');
+if ($wpsIsPostBack)
+{
+    if(wpsIsMultisite()){ wp_die('<p>This feature is not yet available for MultiSite.</p>'); }
+}
+?>
 <?php
 /*
 * =====================================================================================
@@ -122,7 +133,7 @@ if ( ! $showPage )
  * VALIDATE FORM
  *======================================================
  */
-	 if ($_SERVER['REQUEST_METHOD'] == 'POST')
+	 if ($wpsIsPostBack)
 	 {
 		 if (!empty($_POST['newPrefixInput']) && isset($_POST['changePrefixButton']))
 		 {

@@ -1,14 +1,14 @@
-<?php if(! WsdUtil::canLoad()) { return; } ?>
+<?php /*/#! Check for install errors */ if(!wpsCanDisplayPage()){ return; } ?>
 <div class="wrap wsdplugin_content">
-    <h2><?php echo WSS_PLUGIN_NAME.' - '.__('About');?></h2>
+    <h2><?php echo WPS_PLUGIN_NAME.' - '.__('About');?></h2>
 
     <div class="metabox-holder">
 
         <div style="width:60%; float: left;" class="postbox">
-            <h3 class="hndle" style="cursor: default;"><span><?php echo __('About'). ' '.WSS_PLUGIN_NAME .' plugin';?></span></h3>
+            <h3 class="hndle" style="cursor: default;"><span><?php echo __('About'). ' '.WPS_PLUGIN_NAME .' plugin';?></span></h3>
             <div class="inside acx-section-box">
                 <p>
-                    <?php echo WSS_PLUGIN_NAME.' plug-in beefs up the security of your WordPress installation by removing error information on login pages, adds index.php to plugin directories, hides the WordPress version and much more.'; ?>
+                    <?php echo WPS_PLUGIN_NAME.' plug-in beefs up the security of your WordPress installation by removing error information on login pages, adds index.php to plugin directories, hides the WordPress version and much more.'; ?>
                 </p>
                 <div class="acx-section-box">
                     <ul class="acx-common-list">
@@ -36,18 +36,18 @@
         <div style="width:38%; float: right;" class="postbox">
             <h3 class="hndle" style="cursor: default;"><span><?php echo __('Get involved');?></span></h3>
             <div class="inside acx-section-box">
-                <ul class="acx-common-list">
+                <ul class="">
                     <li>
-                        <span><a href="//www.acunetix.com/blog/" target="_blank"><?php echo __('Acunetix blog');?></a></span>
+                        <span><a class="acunetix" href="//www.acunetix.com/blog/" target="_blank"><?php echo __('Acunetix blog');?></a></span>
                     </li>
                     <li>
-                        <span><a href="//twitter.com/acunetix" target="_blank"><?php echo __('Acunetix on Twitter');?></a></span>
+                        <span><a class="twitter" target="_blank" href="http://twitter.com/acunetix" title="<?php echo __('Follow us on Twitter');?>"><?php echo __('Acunetix on twitter');?></a></span>
                     </li>
                     <li>
-                        <span><a href="//www.facebook.com/Acunetix" target="_blank"><?php echo __('Acunetix on Facebook');?></a></span>
+                        <span><a class="facebook" target="_blank" href="http://www.facebook.com/Acunetix" title="<?php echo __('Follow us on Facebook');?>"><?php echo __('Acunetix on Facebook');?></a></a></span>
                     </li>
                     <li>
-                        <span><a href="//wordpress.org/support/plugin/wp-security-scan" target="_blank"><?php echo __('Support');?></a></span>
+                        <span><a class="support" href="//wordpress.org/support/plugin/wp-security-scan" target="_blank"><?php echo __('Support');?></a></span>
                     </li>
                 </ul>
             </div>

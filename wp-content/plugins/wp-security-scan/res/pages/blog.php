@@ -1,4 +1,4 @@
-<?php if(! WsdUtil::canLoad()) { return; } ?>
+<?php /*/#! Check for install errors */ if(!wpsCanDisplayPage()){ return; } ?>
 <?php wp_enqueue_style('wsdplugin_css_blog', WsdUtil::cssUrl('blog.css'), array(), '1.0'); ?>
 
 <div class="wrap wsdplugin_content">
@@ -21,9 +21,9 @@
              * @param int $maxItems
              * @return string
              */
-            function wsdplugin_GetFeedData($maxItems = 10)
+            function wpsPlugin_GetFeedData($maxItems = 10)
             {
-                $rss = fetch_feed(WSS_PLUGIN_BLOG_FEED);
+                $rss = fetch_feed(WpsSettings::BLOG_FEED);
                 $out = '';
                 if (is_wp_error( $rss ) ) { return '<li>'.__('An error has occurred while trying to load the rss feed!').'</li>'; }
                 else{
@@ -61,50 +61,50 @@
              * @param $optName
              * @param $optData
              */
-            function wsdplugin_updateRssFeedOption($optName, $optData)
+            function wpsPlugin_updateRssFeedOption($optName, $optData)
             {
                 $obj = new stdClass();
                 $obj->expires = time() + (24*60*60);
                 $obj->data = $optData;
-                update_option($optName, $obj);
+                WpsOption::updateOption($optName, $obj);
             }
             /**
              * @public
              * @param $optName
              * @param $getMaxRssEntries
              */
-            function wsdplugin_handleDisplayRssData($optName, $getMaxRssEntries)
+            function wpsPlugin_handleDisplayRssData($optName, $getMaxRssEntries)
             {
-                $data = wsdplugin_GetFeedData($getMaxRssEntries);
-                wsdplugin_updateRssFeedOption($optName, $data);
+                $data = wpsPlugin_GetFeedData($getMaxRssEntries);
+                wpsPlugin_updateRssFeedOption($optName, $data);
                 echo str_ireplace("url('rss.png')", "url('".WsdUtil::imageUrl('rss.png')."')", $data);
             }
 
-            $optName = 'WSD-FEED-DATA';
+            $optName = WpsSettings::BLOG_DATA_OPTION_NAME;
             $getMaxRssEntries = 10;
 
             //@ check cache
-            $optData = get_option($optName);
+            $optData = WpsOption::getOption($optName);
 
-            if(empty($optData)) { wsdplugin_handleDisplayRssData($optName, $getMaxRssEntries); }
+            if(empty($optData)) { wpsPlugin_handleDisplayRssData($optName, $getMaxRssEntries); }
             else{
                 // check cache expiry date
                 if (is_object($optData)) {
                     $lastUpdateTime = @$optData->expires;
                     // invalid cache: UPDATE
-                    if (empty($lastUpdateTime)) { wsdplugin_handleDisplayRssData($optName, $getMaxRssEntries); }
+                    if (empty($lastUpdateTime)) { wpsPlugin_handleDisplayRssData($optName, $getMaxRssEntries); }
                     else {
                         $nextUpdateTime = $lastUpdateTime+(24*60*60);
                         if ($nextUpdateTime >= $lastUpdateTime){
                             $data = @$optData->data;
-                            if (empty($data)) { wsdplugin_handleDisplayRssData($optName, $getMaxRssEntries); }
+                            if (empty($data)) { wpsPlugin_handleDisplayRssData($optName, $getMaxRssEntries); }
                             // still a valid cache: DISPLAY
                             else { echo str_ireplace("url('rss.png')", "url('".WsdUtil::imageUrl('rss.png')."')", $data); }
                         }
-                        else { wsdplugin_handleDisplayRssData($optName, $getMaxRssEntries); }
+                        else { wpsPlugin_handleDisplayRssData($optName, $getMaxRssEntries); }
                     }
                 }
-                else { wsdplugin_handleDisplayRssData($optName, $getMaxRssEntries); }
+                else { wpsPlugin_handleDisplayRssData($optName, $getMaxRssEntries); }
             }
             ?>
         </ul>

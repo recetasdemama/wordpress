@@ -4,8 +4,10 @@ Author: Acunetix
 Tags: security, securityscan, chmod, permissions, admin, administration, authentication, database, dashboard, post, notification, password, plugin, posts,
 plugins, private, protection, tracking, wordpress
 Requires at least: 3.0
-Tested up to: 3.6
+Tested up to: 3.7.1
 Stable tag: trunk
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Scans your WordPress installation for security vulnerabilities.
 
@@ -31,6 +33,7 @@ Acunetix WP Security checks your WordPress website/blog for security vulnerabili
 
 = Key security features: =
 
+* MultiSite ready
 * Easy backup of WordPress database for disaster recovery
 * Removal of error-information on login-page
 * Addition of index.php to the wp-content, wp-content/plugins, wp-content/themes and wp-content/uploads directories to prevent directory listings
@@ -91,6 +94,11 @@ From your FTP client:
 permissions.  Please consult your client's documentation for your specific
 directions.
 
+= I cannot activate the plugin for individual sites in MultiSite? =
+No, the Acunetix WP Security plugin when running in a MultiSite installation can only be network activated. It cannot be
+activated per individual sites. All its features are related to the whole network and activating it per individual sites
+would be pointless.
+
 For more information, please visit http://codex.wordpress.org/Changing_File_Permissions
 
 = Why do I need to hide my version of WordPress?  =
@@ -112,13 +120,13 @@ on the <a href="http://wordpress.org/support/plugin/wp-security-scan" target="_b
 2. The Settings page, displaying all configurable options
 3. The Live Traffic page
 4. The new Dashboard page
-
+5. The new Scan Page
 
 == WordPress Security ==
 
 Security Scanner:
 
-1. Scans Wordpress installation for file/directory permissions vulnerabilites
+1. Scans WordPress installation for file/directory permissions vulnerabilites
 2. Recommends corrective actions
 3. Scans for general security vulnerabilities
 
@@ -134,6 +142,40 @@ on the <a href="http://wordpress.org/support/plugin/wp-security-scan" target="_b
 
 
 == Changelog ==
+
+= 4.0.3 =
+* New Feature: Added support for MultiSite
+* New Feature: Added the WP file scan tool for checking the core WP files for modification date
+* New Feature: Added geo location to Live traffic tool
+* New Feature: Added ip lookup to Live Traffic tool
+* New Feature: Added support for deleting the database backup files
+* New Feature: Added the link to the plugin's settings page in the plugins page
+* New Feature: Live traffic tool can now be enabled/disabled from the settings page
+* New Alerts: Two new security checks were added for the install.php and upgrade.php files from wp-admin directory
+* Update: Improved the Live Traffic code and functionality
+* Update: Fixed the broken path to wp-config.php file
+* Update: Improved the Dashboard's UI
+* Update: When running in a MultiSite installation, the plugin can only be "Network activated"
+* Fixed bug when the ReflectionClass is not available.
+* Fixed various bugs reported in the forums
+
+
+= 4.0.2 =
+* New Feature: Added support for MultiSite
+* New Feature: Added the WP file scan tool for checking the core WP files for modification date
+* New Feature: Added geo location to Live traffic tool
+* New Feature: Added ip lookup to Live Traffic tool
+* New Feature: Added support for deleting the database backup files
+* New Feature: Added the link to the plugin's settings page in the plugins page
+* New Feature: Live traffic tool can now be enabled/disabled from the settings page
+* New Alerts: Two new security checks were added for the install.php and upgrade.php files from wp-admin directory
+* Update: Improved the Live Traffic code and functionality
+* Update: Fixed the broken path to wp-config.php file
+* Update: Improved the Dashboard's UI
+* Update: When running in a MultiSite installation, the plugin can only be "Network activated"
+* Fixed bug when the ReflectionClass is not available.
+* Fixed various bugs reported in the forums
+
 
 = 4.0.1 =
 * Fixed the LiveTraffic bug

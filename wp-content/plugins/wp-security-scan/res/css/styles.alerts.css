@@ -19,7 +19,8 @@
 /** Actions Bar **/
 .wsdplugin_content .wsdplugin_page_alerts_action_bar .wsdplugin_alerts_select_actions select,
 .wsdplugin_content .wsdplugin_page_alerts_action_bar .wsdplugin_alerts_bulk_actions select,
-.wsdplugin_content .wsdplugin_page_alerts_action_bar .wsdplugin_alerts_filter_severity select { width: 130px; }
+.wsdplugin_content .wsdplugin_page_alerts_action_bar .wsdplugin_alerts_filter_severity select { width: 150px; }
+.wsdplugin_alerts_filter_severity #FilterAlertTypeButton { margin-top: 0;}
 .wsdplugin_content .wsdplugin_page_alerts_action_bar .wsdplugin_alerts_sort .wsdplugin_alerts_sort_field { width: 120px; }
 .wsdplugin_content .wsdplugin_page_alerts_action_bar .wsdplugin_alerts_sort .wsdplugin_alerts_sort_dir { width: 110px; }
 .wsdplugin_content .wsdplugin_alerts_show_view select { width: 90px; }

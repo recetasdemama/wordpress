@@ -1,4 +1,4 @@
-<?php if(! defined('WSS_PLUGIN_PREFIX')) return;
+<?php if(! defined('WPS_PLUGIN_PREFIX')) return;
 /**
  * Class WsdScheduler
  * Provides common methods to register action with wp-cron
@@ -85,31 +85,4 @@ class WsdScheduler
             }
         }
     }
-
-    /**
-     * Execute all methods of a class that are prefixed with $onlyWithPrefix (if provided)
-     * @param $className The name of the class
-     * @param string $onlyWithPrefix Optional. The prefix to look up in the methods' name
-     * @return void
-     */
-    public static function registerClassTasks($className, $onlyWithPrefix = '')
-    {
-        $_class = new ReflectionClass($className);
-        $methods = $_class->getMethods();
-        if(! empty($methods)){
-            $pLength = strlen($onlyWithPrefix);
-            foreach($methods as $_method){
-                $method = $_method->name;
-                // only certain methods
-                if($pLength > 0){
-                    $search = substr($method, 0, $pLength);
-                    if(strcasecmp($search,$onlyWithPrefix) == 0){
-                        call_user_func(array($className, $method));
-                    }
-                }
-                else { call_user_func(array($className, $method)); }
-            }
-        }
-    }
-
 }

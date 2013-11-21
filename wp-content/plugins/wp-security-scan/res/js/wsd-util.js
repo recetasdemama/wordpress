@@ -2,13 +2,23 @@
  * This function will bind the click event for entry items in the dashboard
  * that will toggle the entry description row
  */
-function wsdplugin_bindEntryClick($)
+function wpsPlugin_bindEntryClick($)
 {
     $('.entry-event').each(function(){
         var self = $(this);
         self.click(function(){
-            var e = self.next('tr.entry-description');
+            var e = self.parent().next('tr.entry-description');
+            var i = $('i', self);
+            if(i.hasClass('action-expand-icon-12p')){
+                i.removeClass('action-expand-icon-12p');
+                i.addClass('action-collapse-icon-12p');
+            }
+            else {
+                i.removeClass('action-collapse-icon-12p');
+                i.addClass('action-expand-icon-12p');
+            }
             e.fadeToggle('fast','linear');
+            return false;
         });
     });
 }
