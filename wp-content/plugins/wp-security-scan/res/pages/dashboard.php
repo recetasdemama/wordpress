@@ -1,5 +1,4 @@
-<?php if(! WsdUtil::canLoad()) { return; } ?>
-<?php if(! WsdUtil::isAdministrator()) { return; } ?>
+<?php /*/#! Check for install errors */ if(!wpsCanDisplayPage()){ return; } ?>
 <?php
     if(!isset($_GET['filter']))
     {
@@ -21,7 +20,7 @@
     }
 ?>
 <div class="wrap wsdplugin_content">
-    <h2><?php echo WSS_PLUGIN_NAME.' - '. __('Dashboard');?></h2>
+    <h2><?php echo WPS_PLUGIN_NAME.' - '. __('Dashboard');?></h2>
 
     <p class="clear"></p>
     <div style="clear: both; display: block;">
@@ -39,7 +38,7 @@
                             <option value="1"><?php echo __('Low');?></option>
                             <option value="0"><?php echo __('Informational');?></option>
                         </select>
-                        <input type="button" value="Filter" class="button-secondary action" id="FilterAlertTypeButton">
+                        <input type="button" value="Filter" class="btn btn-primary action" id="FilterAlertTypeButton">
                     </div>
                 </div>
             </div>
@@ -49,10 +48,11 @@
 
             <!-- Body -->
             <div class="wsdplugin_alert_section_body">
-                <table class="widefat" cellspacing="0" cellpadding="0">
+                <table class="table table-condensed" cellspacing="0" cellpadding="0">
                     <thead>
-                        <th style="width:60px"><?php echo __('Severity');?></th>
-                        <th style="width: 150px;"><?php echo __('Date');?></th>
+                        <th style="width:16px"></th>
+                        <th style="width:20px"></th>
+                        <th style="width: 180px;"><?php echo __('Date');?></th>
                         <th><?php echo __('Title');?></th>
                     </thead>
                     <tbody>
@@ -63,19 +63,23 @@
                                 $alertType = $entry->alertType;
                                 $severity = $entry->alertSeverity;
                                 $afsDate = $entry->alertFirstSeen;
-                                if($severity == WSS_PLUGIN_ALERT_INFO){ $severity = 'info'; }
-                                elseif($severity == WSS_PLUGIN_ALERT_LOW){ $severity = 'low'; }
-                                elseif($severity == WSS_PLUGIN_ALERT_MEDIUM){ $severity = 'medium'; }
-                                elseif($severity == WSS_PLUGIN_ALERT_CRITICAL){ $severity = 'critical'; }
+                                if($severity == WpsSettings::ALERT_INFO){ $severity = 'info'; }
+                                elseif($severity == WpsSettings::ALERT_LOW){ $severity = 'low'; }
+                                elseif($severity == WpsSettings::ALERT_MEDIUM){ $severity = 'medium'; }
+                                elseif($severity == WpsSettings::ALERT_CRITICAL){ $severity = 'critical'; }
                                 else { $severity = 'info'; }
-                                echo '<tr class="entry-event alt" title="'.__('Click to expand/collapse').'">';
+                                echo '<tr class="alt">';
+                                    echo '<td class="entry-event" style="width: 16px; vertical-align: middle;">
+                                            <a href="#" style="display:block;"><i class="action-expand-icon-12p" style="margin-top:1px;"></i></a>
+                                          </td>';
                                     echo '<td class="wsdplugin_alert_indicator wsdplugin_alert_indicator_'.$severity.'" title="'.ucfirst($severity).'"></td>';
                                     echo '<td>'.$entry->alertDate.'</td>';
                                     echo '<td>'.$entry->alertTitle.'</td>';
                                 echo '</tr>';
                                 echo '<tr class="entry-description">';
-                                    echo '<td colspan="3">';
-                                        if($alertType == WSS_PLUGIN_ALERT_TYPE_STACK)
+                                    echo '<td colspan="4">';
+                                        echo '<div style="margin: 0 15px 20px 15px;"><div style="box-shadow: 4px 4px 14px #888888; padding: 7px;">';
+                                        if($alertType == WpsSettings::ALERT_TYPE_STACK)
                                         {
                                             // get child alerts
                                             $childAlerts = WsdPlugin::getChildAlerts($alertId, $alertType);
@@ -110,11 +114,12 @@
                                                 echo '<div><p>'.$entry->alertSolution.'</p></div>';
                                             }
                                         }
+                                        echo '</div></div>';
                                     echo '</td>';
                                 echo '</tr>';
                             }
                         }
-                        else { echo '<tr class="entry-event alt"><td colspan="3"><p style="font-weight:800;padding-top:6px;">'.__('No alerts found.').'</p></td></tr>'; }
+                        else { echo '<tr class="entry-event alt"><td colspan="4"><p style="font-weight:800;padding-top:6px;">'.__('No alerts found.').'</p></td></tr>'; }
                     ?>
                     </tbody>
                 </table>
@@ -124,7 +129,7 @@
     </div>
     <script type="text/javascript">
         jQuery(document).ready(function($){
-            wsdplugin_bindEntryClick($);
+            wpsPlugin_bindEntryClick($);
             $("#FilterAlertTypeSelect").val("<?php echo $alertsFilterBy;?>").attr("selected", "selected");
             $('#FilterAlertTypeButton').click(function(){window.location = updateQueryStringParam(document.URL,'filter',$('#FilterAlertTypeSelect').val());});
         });

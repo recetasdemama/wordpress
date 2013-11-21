@@ -1,4 +1,4 @@
-<?php if(! defined('WSS_PLUGIN_PREFIX')) return;
+<?php if(! defined('WPS_PLUGIN_PREFIX')) return;
 /**
  * Class WsdWatch
  * Static class. Provides common methods to be used to monitor website activity.
@@ -16,11 +16,6 @@ class WsdWatch extends WsdPlugin
     }
 
 
-
-
-
-
-
 /*
  * PRIVATE METHODS
  * ==============================================
@@ -31,8 +26,8 @@ class WsdWatch extends WsdPlugin
     {
         global $wpdb;
 
-        $t = $wpdb->prefix.'users';
-        $username = $wpdb->get_var("SELECT user_login FROM $t WHERE ID=$userID");
+        $t = wpsGetBasePrefix().'users';
+        $username = $wpdb->get_var($wpdb->prepare("SELECT user_login FROM $t WHERE ID=%d",$userID));
         $user = new WP_User( $userID );
         $userRole = (empty($user->roles[0]) ? '' : $user->roles[0]);
         return array(
@@ -53,13 +48,23 @@ class WsdWatch extends WsdPlugin
             $userRole = $userInfo['userRole'];
             if($userRole == 'administrator')
             {
-                global $wsdPluginAlertsArray;
-                $actionName = $wsdPluginAlertsArray['watch_admin_password_update']['name'];
-                $alertType = $wsdPluginAlertsArray['watch_admin_password_update']['type'];
+                global $wpsPluginAlertsArray;
+                $actionName = $wpsPluginAlertsArray['watch_admin_password_update']['name'];
+                $alertType = $wpsPluginAlertsArray['watch_admin_password_update']['type'];
 
-                self::alert($actionName, $alertType, WSS_PLUGIN_ALERT_MEDIUM,
-                    sprintf(__('Administrator (%s) password updated'), $userName),
-                    __('<p>This alert is generated every time an administrator\'s password is updated.</p>'));
+                if(wpsIsMultisite()){
+                    global $wpdb;
+                    $blogID = $wpdb->blogid;
+                    $blogName = WpsOption::getOption('blogname', $blogID);
+                    self::alert($actionName, $alertType, WpsSettings::ALERT_MEDIUM,
+                        sprintf(__('Administrator (<strong>%s</strong>) of blog <strong>%s</strong> has updated their password.',WpsSettings::TEXT_DOMAIN), $userName, $blogName),
+                        __('<p>This alert is generated every time an administrator\'s password is updated.</p>',WpsSettings::TEXT_DOMAIN));
+                }
+                else {
+                    self::alert($actionName, $alertType, WpsSettings::ALERT_MEDIUM,
+                        sprintf(__('Administrator (<strong>%s</strong>) has updated their password.',WpsSettings::TEXT_DOMAIN), $userName),
+                        __('<p>This alert is generated every time an administrator\'s password is updated.</p>',WpsSettings::TEXT_DOMAIN));
+                }
             }
         }
     }

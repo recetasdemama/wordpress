@@ -2,7 +2,7 @@
 /*
  * Displays the File scan results info
  */
-	global $acxFileList;
+	$acxFileList = WpsSettings::getScanFileList();
 ?>
 <?php
 	$acx_isPostBack = false;
@@ -54,7 +54,15 @@ else
 	foreach($acxFileList as $fileName => $v)
 	{
 		$filePath = $v['filePath'];
-		$p = WsdUtil::getFilePermissions($filePath);
+
+        if(false !== ($pos = stripos($filePath, 'readme'))){
+            if(! is_file($filePath)){
+                // safely ignore the readme file
+                continue;
+            }
+        }
+
+        $p = WsdUtil::getFilePermissions($filePath);
 		$sp = $v['suggestedPermissions'];
 
 		$cssClass = ((octdec($p) == octdec($sp)) ? 'success' : 'error');
@@ -95,7 +103,10 @@ else
         if ($acx_isPostBack && !empty($acx_message)){
             echo '<p class="acx-info-box" style="float: left; width: 70%; margin: 0 0; padding-top: 3px; padding-bottom: 3px;">'.$acx_message.'</p>';
         }
-        echo '<input type="submit" value="Apply suggested permissions" class="button-primary" style="float: right;" /></div>';
+        if(wpsIsMainSite()){
+            echo '<input type="submit" value="Apply suggested permissions" class="button-primary" style="float: right;" />';
+        }
+        echo '</div>';
     }
     echo '</form>';
 

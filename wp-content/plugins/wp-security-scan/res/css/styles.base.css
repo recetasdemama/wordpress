@@ -11,21 +11,21 @@
 
 .wsd-content-section { float: left; display: block; }
 
-#wsd-banner-rotator {
-    display: block; clear: both;
-    margin-top: 50px;
-}
+#wsd-banner-rotator { display: block; clear: both; margin-top: 50px; }
 
 .entry {}
 .entry-description { display: none; }
 
+.wrap {margin-right:10px!important;}
 
+.table-condensed th, .table-condensed td { padding: 2px 5px 0 5px !important; }
 
-
-
-
-
-
-
-
-
+li .acunetix, li .facebook, li .twitter, li .support {
+    padding-left: 25px;
+    padding-top: 1px;
+    padding-bottom: 4px;
+}
+li .acunetix { background: url("../images/logo-small.png") no-repeat 0 1px;  }
+li .support { background: url("../images/support.png") no-repeat 2px 2px; }
+li .facebook { background: url("../images/blog/ico-facebook.png") no-repeat left top; }
+li .twitter { background: url("../images/blog/ico-twitter.png") no-repeat left top; }

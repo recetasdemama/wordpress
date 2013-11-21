@@ -1,13 +1,17 @@
 <?php if(! WsdUtil::canLoad()) { return; } ?>
 <ul class="acx-common-list">
     <?php
-        // display wp info
-        $class = new ReflectionClass('WsdInfo');
-        $methods = $class->getMethods();
-        if(! empty($methods)){
-            foreach($methods as $method){
-                echo '<li><p>'.call_user_func(array($method->class, $method->name)).'</p></li>';
-            }
-        }
+        /*[ display wp info ]*/
+        echo '<li><p>'.WsdInfo::getCurrentVersionInfo().'</p></li>';
+        echo '<li><p>'.WsdInfo::getDatabasePrefixInfo().'</p></li>';
+        echo '<li><p>'.WsdInfo::getWpVersionStatusInfo().'</p></li>';
+        echo '<li><p>'.WsdInfo::getPhpStartupErrorStatusInfo().'</p></li>';
+        echo '<li><p>'.WsdInfo::getAdminUsernameInfo().'</p></li>';
+        echo '<li><p>'.WsdInfo::getWpAdminHtaccessInfo().'</p></li>';
+        echo '<li><p>'.WsdInfo::getDatabaseUserAccessRightsInfo().'</p></li>';
+        echo '<li><p>'.WsdInfo::getWpContentIndexInfo().'</p></li>';
+        echo '<li><p>'.WsdInfo::getWpContentPluginsIndexInfo().'</p></li>';
+        echo '<li><p>'.WsdInfo::getWpContentThemesIndexInfo().'</p></li>';
+        echo '<li><p>'.WsdInfo::getWpContentUploadsIndexInfo().'</p></li>';
     ?>
 </ul>

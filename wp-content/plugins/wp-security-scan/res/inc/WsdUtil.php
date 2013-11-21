@@ -1,4 +1,4 @@
-<?php if(! defined('WSS_PLUGIN_PREFIX')) return;
+<?php if(! defined('WPS_PLUGIN_PREFIX')) return;
 
 /**
  * Class WsdUtil
@@ -10,15 +10,15 @@ class WsdUtil
      * @return bool
      * Convenient method to check whether or not the plugin's resources can be loaded
      */
-    public static function canLoad() { return ((false === ($pos = stripos($_SERVER['REQUEST_URI'], WSS_PLUGIN_PREFIX))) ? false : true); }
-    public static function cssUrl($fileName){ return WSS_PLUGIN_URL.'res/css/'.$fileName; }
-    public static function imageUrl($fileName){ return WSS_PLUGIN_URL.'res/images/'.$fileName; }
-    public static function jsUrl($fileName) { return WSS_PLUGIN_URL.'res/js/'.$fileName; }
-    public static function resUrl() { return WSS_PLUGIN_URL.'res/'; }
-    public static function includePage($fileName)
+    static function canLoad() { return ((false === ($pos = stripos($_SERVER['REQUEST_URI'], WPS_PLUGIN_PREFIX))) ? false : true); }
+    static function cssUrl($fileName){ return WPS_PLUGIN_URL.'res/css/'.$fileName; }
+    static function imageUrl($fileName){ return WPS_PLUGIN_URL.'res/images/'.$fileName; }
+    static function jsUrl($fileName) { return WPS_PLUGIN_URL.'res/js/'.$fileName; }
+    static function resUrl() { return WPS_PLUGIN_URL.'res/'; }
+    static function includePage($fileName)
     {
         if(! self::canLoad()) { return; }
-        $dirPath = WSS_PLUGIN_DIR.'res/pages/';
+        $dirPath = WPS_PLUGIN_DIR.'res/pages/';
         if(! is_dir($dirPath)) { return; }
         if(! is_readable($dirPath)) { return; }
         $fname = $dirPath.$fileName;
@@ -33,7 +33,7 @@ class WsdUtil
      * Load the text domain
      * @return void
      */
-    public static function loadTextDomain(){ if ( function_exists('load_plugin_textdomain') ) { load_plugin_textdomain(WSS_PLUGIN_TEXT_DOMAIN, false, WSS_PLUGIN_DIR.'res/languages/'); } }
+    static function loadTextDomain(){ if ( function_exists('load_plugin_textdomain') ) { load_plugin_textdomain(WpsSettings::TEXT_DOMAIN, false, WPS_PLUGIN_DIR.'res/languages/'); } }
 
     /**
      * @public
@@ -47,11 +47,11 @@ class WsdUtil
      * @param array $data The data to send to the template file
      * @return string The parsed content of the template file
      */
-    public static function loadTemplate($fileName, array $data = array())
+    static function loadTemplate($fileName, array $data = array())
     {
         self::checkFileName($fileName);
         $str = '';
-        $file = WSS_PLUGIN_DIR.'res/pages/tpl/'.$fileName.'.php';
+        $file = WPS_PLUGIN_DIR.'res/pages/tpl/'.$fileName.'.php';
         if (is_file($file))
         {
             ob_start();
@@ -76,7 +76,7 @@ class WsdUtil
      * @param string $fileName The name of the file to check
      * @return void
      */
-    public static function checkFileName($fileName)
+    static function checkFileName($fileName)
     {
         $fileName = trim($fileName);
         //@@ Check for directory traversal attacks
@@ -98,7 +98,7 @@ class WsdUtil
      *
      * @return int  The number of bytes written to the file, otherwise -1.
      */
-    public static function writeFile($file, $data, $fh = null)
+    static function writeFile($file, $data, $fh = null)
     {
         if(! is_null($fh) && is_resource($fh)){
             fwrite($fh,$data);
@@ -119,7 +119,7 @@ class WsdUtil
      * provided in the global $acxFileList array.
      * @return array  array('success' => integer, 'failed' => integer)
      */
-    public static function changeFilePermissions($acxFileList)
+    static function changeFilePermissions($acxFileList)
     {
         if (empty($acxFileList)) {
             return array();
@@ -136,6 +136,12 @@ class WsdUtil
             $sp = $v['suggestedPermissions'];
             $sp = (is_string($sp) ? octdec($sp) : $sp);
 
+            // if this is the readme file
+            $isReadme = false;
+            if(false !== ($pos = stripos($filePath, 'readme'))){
+                $isReadme = true;
+            }
+
             //@ include directories too
             if (file_exists($filePath))
             {
@@ -150,12 +156,11 @@ class WsdUtil
                     $f++;
                     continue;
                 }
-                // try to create the missing files
-                if(false !== file_put_contents($filePath, '')){
-                    if (false !== @chmod($filePath, $sp)) {
-                        $s++;
-                    }
-                    else { $f++; }
+                if($isReadme){ // ignore the missing readme.html file
+                    continue;
+                }
+                if (false !== @chmod($filePath, $sp)) {
+                    $s++;
                 }
                 else { $f++; }
             }
@@ -163,7 +168,21 @@ class WsdUtil
         return array('success' => $s, 'failed' => $f);
     }
 
-    public static function getFilePermissions($filePath)
+    static function getWpConfigFilePath()
+    {
+        $path = ABSPATH.'wp-config.php';
+        if(! is_file($path)){
+            // search one level up
+            $path = realpath('../'.ABSPATH) . '/wp-config.php';
+            if(! is_file($path)){
+                return '';
+            }
+        }
+        return $path;
+    }
+
+
+    static function getFilePermissions($filePath)
     {
         if (!function_exists('fileperms')) {
             return '-1';
@@ -175,11 +194,11 @@ class WsdUtil
         return substr(sprintf("%o", fileperms($filePath)), -4);
     }
 
-    public static function normalizePath($path) {
+    static function normalizePath($path) {
         return str_replace('\\', '/', $path);
     }
 
-    public static function isWinOs(){
+    static function isWinOs(){
         return ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? true : false);
     }
 
@@ -187,9 +206,9 @@ class WsdUtil
      * Check to see whether or not the current user is an administrator
      * @return bool
      */
-    public static function isAdministrator(){
+    static function isAdministrator(){
         self::loadPluggable();
-        return user_can(wp_get_current_user(),'update_core');
+        return user_can(wp_get_current_user(),'administrator');
     }
 
     /**
@@ -198,7 +217,7 @@ class WsdUtil
      *                      - which means the prefix must be there as well.
      * @return bool
      */
-    public static function tableExists($tableName)
+    static function tableExists($tableName)
     {
         global $wpdb;
         $result = $wpdb->get_var("SHOW TABLES LIKE '$tableName'");
@@ -214,20 +233,20 @@ class WsdUtil
      *
      * @return string The name of the generated backup file or empty string on failure.
      */
-    public static function backupDatabase()
+    static function backupDatabase()
     {
-        if (!is_writable(WSS_PLUGIN_BACKUPS_DIR))
+        if (!is_writable(WPS_PLUGIN_BACKUPS_DIR))
         {
-            $s = sprintf(__('The %s directory <strong>MUST</strong> be writable for this feature to work!'), WSS_PLUGIN_BACKUPS_DIR);
+            $s = sprintf(__('The %s directory <strong>MUST</strong> be writable for this feature to work!',WpsSettings::TEXT_DOMAIN), WPS_PLUGIN_BACKUPS_DIR);
             wp_die($s);
         }
 
         $link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
         if (!$link) {
-            wp_die(__('Error: Cannot connect to database!'));
+            wp_die(__('Error: Cannot connect to database.',WpsSettings::TEXT_DOMAIN));
         }
         if (!mysql_select_db(DB_NAME,$link)) {
-            wp_die(__('Error: Could not select the database!'));
+            wp_die(__('Error: Could not select the database.',WpsSettings::TEXT_DOMAIN));
         }
 
         //get all of the tables
@@ -242,14 +261,14 @@ class WsdUtil
 
         if (empty($tables))
         {
-            wp_die(__('Could not retrieve the list of tables from the database!'));
+            wp_die(__('Could not retrieve the list of tables from the database.',WpsSettings::TEXT_DOMAIN));
         }
 
         $h = null;
         $time = gmdate("m-j-Y-h-i-s", time());
         $rand = self::makeSeed()+rand(12131, 9999999);
         $fname = 'bck_'.$time.'_'.$rand.'.sql';
-        $filePath = WSS_PLUGIN_BACKUPS_DIR.$fname;
+        $filePath = WPS_PLUGIN_BACKUPS_DIR.$fname;
 
         if(function_exists('fopen') && function_exists('fwrite') && function_exists('fclose'))
         {
@@ -308,31 +327,28 @@ class WsdUtil
         } //#! end foreach
     }
 
-
     /**
      * @public
      * Retrieve the list of all available backup files from the backups directory
      * @return array
      */
-    public static function getAvailableBackupFiles()
+    static function getAvailableBackupFiles()
     {
-        $files = glob(WSS_PLUGIN_BACKUPS_DIR.'*.sql');
+        $files = glob(WPS_PLUGIN_BACKUPS_DIR.'*.sql');
         if (empty($files)) { return array();}
         return array_map('basename', $files/*, array('.sql')*/);
     }
-
 
     /**
      * @public
      * Create a number
      * @return double
      */
-    public static function makeSeed()
+    static function makeSeed()
     {
         list($usec, $sec) = explode(' ', microtime());
         return (float)$sec + ((float)$usec * 100000);
     }
-
 
     /**
      * @public
@@ -340,13 +356,11 @@ class WsdUtil
      * Get the list of tables to modify
      * @return array
      */
-    public static function getTablesToAlter()
+    static function getTablesToAlter()
     {
         global $wpdb;
         return $wpdb->get_results("SHOW TABLES LIKE '".$GLOBALS['table_prefix']."%'", ARRAY_N);
     }
-
-
 
     /**
      * @public
@@ -357,7 +371,7 @@ class WsdUtil
      * @param string $newPrefix the new prefix to use
      * @return array
      */
-    public static function renameTables($tables, $currentPrefix, $newPrefix)
+    static function renameTables($tables, $currentPrefix, $newPrefix)
     {
         global $wpdb;
         $changedTables = array();
@@ -372,8 +386,6 @@ class WsdUtil
         return $changedTables;
     }
 
-
-
     /**
      * @public
      * @global object $wpdb
@@ -382,12 +394,12 @@ class WsdUtil
      * @param string $newPrefix the new prefix to use
      * @return string
      */
-    public static function renameDbFields($oldPrefix,$newPrefix)
+    static function renameDbFields($oldPrefix,$newPrefix)
     {
         global $wpdb;
         $str = '';
         if (false === $wpdb->query("UPDATE {$newPrefix}options SET option_name='{$newPrefix}user_roles' WHERE option_name='{$oldPrefix}user_roles';")) {
-            $str .= '<br/>'.sprintf(__('Changing value: %suser_roles in table <strong>%soptions</strong>: <span style="color:#ff0000;">Failed</span>'),$newPrefix, $newPrefix);
+            $str .= '<br/>'.sprintf(__('Changing value: %suser_roles in table <strong>%soptions</strong>: <span style="color:#ff0000;">Failed</span>',WpsSettings::TEXT_DOMAIN),$newPrefix, $newPrefix);
         }
         $query = 'UPDATE '.$newPrefix.'usermeta
                 SET meta_key = CONCAT(replace(left(meta_key, ' . strlen($oldPrefix) . "), '{$oldPrefix}', '{$newPrefix}'), SUBSTR(meta_key, " . (strlen($oldPrefix) + 1) . "))
@@ -396,15 +408,13 @@ class WsdUtil
                 '{$oldPrefix}usersettingstime', '{$oldPrefix}user-settings', '{$oldPrefix}user-settings-time', '{$oldPrefix}dashboard_quick_press_last_post_id')";
 
         if (false === $wpdb->query($query)) {
-            $str .= '<br/>'.sprintf(__('Changing values in table <strong>%susermeta</strong>: <span style="color:#ff0000;">Failed</span>'), $newPrefix);
+            $str .= '<br/>'.sprintf(__('Changing values in table <strong>%susermeta</strong>: <span style="color:#ff0000;">Failed</span>',WpsSettings::TEXT_DOMAIN), $newPrefix);
         }
         if (!empty($str)) {
-            $str = __('Changing database prefix').': '.$str;
+            $str = __('Changing database prefix',WpsSettings::TEXT_DOMAIN).': '.$str;
         }
         return $str;
     }
-
-
 
     /**
      * @public
@@ -415,7 +425,7 @@ class WsdUtil
      * @param string $newPrefix The new prefix to use instead of the old one
      * @return int the number of bytes written to te file or -1 on error
      */
-    public static function updateWpConfigTablePrefix($wsd_wpConfigFile, $newPrefix)
+    static function updateWpConfigTablePrefix($wsd_wpConfigFile, $newPrefix)
     {
         // If file is not writable...
         if (!is_writable($wsd_wpConfigFile)){
@@ -450,33 +460,22 @@ class WsdUtil
     }
 
 
-
     private static $_pluginID = 'acx_plugin_dashboard_widget';
 
     /**
      * @public
      * @static
-     * @const WSS_PLUGIN_BLOG_FEED
+     * @const BLOG_FEED
      * Retrieve and display a list of links for an existing RSS feed, limiting the selection to the 5 most recent items.
      * @return void
      */
-    public static function displayDashboardWidget()
+    static function displayDashboardWidget()
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST')
-        {
-            $opt = get_option('WSD-RSS-WGT-DISPLAY');
-            if (empty($opt) || ($opt == 'no')) {
-                update_option('WSD-RSS-WGT-DISPLAY', 'no');
-                self::_hideDashboardWidget();
-                return;
-            }
-        }
-
         //@ flag
         $run = false;
 
         //@ check cache
-        $optData = get_option('wsd_feed_data');
+        $optData = WpsOption::getOption(WpsSettings::FEED_DATA_OPTION_NAME);
         if (! empty($optData))
         {
             if (is_object($optData))
@@ -506,12 +505,12 @@ class WsdUtil
 
         if (!$run) { return; }
 
-        $rss = fetch_feed(WSS_PLUGIN_BLOG_FEED);
+        $rss = fetch_feed(WpsSettings::BLOG_FEED);
 
         $out = '';
         if (is_wp_error( $rss ) )
         {
-            $out = '<li>'.__('An error has occurred while trying to load the rss feed!').'</li>';
+            $out = '<li>'.__('An error has occurred while trying to load the rss feed.',WpsSettings::TEXT_DOMAIN).'</li>';
             echo $out;
             return;
         }
@@ -526,7 +525,7 @@ class WsdUtil
             $out .= '<ul>';
             if ($maxitems == 0)
             {
-                $out.= '<li>'.__('There are no entries for this rss feed!').'</li>';
+                $out.= '<li>'.__('There are no entries for this rss feed.',WpsSettings::TEXT_DOMAIN).'</li>';
             }
             else
             {
@@ -537,7 +536,7 @@ class WsdUtil
                     $out.= esc_html( $item->get_title() );
                     $out.= '</a></h4>';
                     $out.= '<p>';
-                    $d = utf8_decode( $item->get_description());
+                    $d = sanitize_text_field( $item->get_description());
                     $p = substr($d, 0, 120).' <a href="'.$url.'" target="_blank" title="Read all article">[...]</a>';
                     $out.= $p;
                     $out.= '</p>';
@@ -550,17 +549,15 @@ class WsdUtil
             $out .= '<a href="http://feeds.acunetix.com/acunetixwebapplicationsecurityblog"
                                 style="float: left; display: block; width: 50%; text-align: right; margin-left: 30px;
                                 padding-right: 22px; background: url('.self::imageUrl('rss.png').') no-repeat right center;"
-                                target="_blank">'.__('Follow us on RSS').'</a>';
+                                target="_blank">'.__('Follow us on RSS',WpsSettings::TEXT_DOMAIN).'</a>';
             $out .= '</p>';
             $out .= '</div>';
         }
-
         // Update cache
         $obj = new stdClass();
         $obj->expires = time();
         $obj->data = $out;
-        update_option('wsd_feed_data', $obj);
-
+        WpsOption::updateOption(WpsSettings::FEED_DATA_OPTION_NAME, $obj);
         echo $out;
     }
 
@@ -570,32 +567,97 @@ class WsdUtil
      * Add the rss widget to dashboard
      * @return void
      */
-    public static function addDashboardWidget()
+    static function addDashboardWidget()
     {
-        $rssWidgetData = get_option('WSD-RSS-WGT-DISPLAY');
-        if(($rssWidgetData == 'yes')){
-           wp_add_dashboard_widget('acx_plugin_dashboard_widget', __('Acunetix news and updates'), array(get_class(),'displayDashboardWidget'));
+        $rssWidgetData = WpsOption::getOption('WSD-RSS-WGT-DISPLAY');
+        if(($rssWidgetData == 'yes'))
+        {
+            if(wpsIsMultisite()){
+                global $wpdb;
+                $old_blog = $wpdb->blogid;
+                // Get all blog ids
+                $blogIds = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
+                foreach ($blogIds as $blog_id) {
+                    switch_to_blog($blog_id);
+                    wp_add_dashboard_widget('acx_plugin_dashboard_widget', __('Acunetix news and updates',WpsSettings::TEXT_DOMAIN), array('WsdUtil','displayDashboardWidget'));
+                }
+                switch_to_blog($old_blog);
+                wp_add_dashboard_widget('acx_plugin_dashboard_widget', __('Acunetix news and updates',WpsSettings::TEXT_DOMAIN), array('WsdUtil','displayDashboardWidget'));
+            }
+            else { wp_add_dashboard_widget('acx_plugin_dashboard_widget', __('Acunetix news and updates',WpsSettings::TEXT_DOMAIN), array('WsdUtil','displayDashboardWidget')); }
         }
     }
+
     /**
-     * Hide the dashboard rss widget
-     * @static
-     * @public
+     * This method allows the scanner to ignore a default WP file if not found
+     * @param string $crtFullFilePath
+     * @return bool
      */
-    public static function _hideDashboardWidget() { echo '<script>document.getElementById("'.self::$_pluginID.'").style.display = "none";</script>'; }
+    static function canIgnoreScanPath($crtFullFilePath)
+    {
+        // search in themes
+        $themes = WpsSettings::$ignoreThemes;
+        foreach($themes as $themeName){
+            if(false !== ($pos = stripos($crtFullFilePath, $themeName))){
+                return true;
+            }
+        }
+        // search in plugins
+        $plugins = WpsSettings::$ignorePlugins;
+        foreach($plugins as $pluginPath){
+            if(false !== ($pos = stripos($crtFullFilePath, $pluginPath))){
+                return true;
+            }
+        }
+        return false;
+    }
 
+    static function loadPluggable(){ @require_once(ABSPATH.'wp-includes/pluggable.php'); }
 
-    public static function loadPluggable(){ @require_once(ABSPATH.'wp-includes/pluggable.php'); }
+    // utility method to delete backup files. ajax only
+    static function ajaxDeleteBackupFile()
+    {
+        if(! isset($_REQUEST['nonce'])){ exit('Invalid request'); }
+        if ( !wp_verify_nonce( $_REQUEST['nonce'], "wpsBackupFileDelete_nonce")) { exit('Invalid request'); }
 
+        $result = array(
+            'type' => '',
+            'data' => ''
+        );
 
+        if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+        {
+            if ( !isset( $_REQUEST['file'])) {
+                $result['type'] = 'error';
+                $result['data'] = 'Invalid request';
+                exit(json_encode($result));
+            }
+            $basePath = self::normalizePath(WPS_PLUGIN_BACKUPS_DIR);
+            $fileName = self::normalizePath($_REQUEST['file']);
+            $filePath = $basePath.$fileName;
+            // prevent directory traversal attacks
+            $filePath = self::normalizePath(realpath($filePath));
+            if(false === ($pos = strpos($filePath, $basePath))){
+                $result['type'] = 'error';
+                $result['data'] = 'Invalid request';
+                exit(json_encode($result));
+            }
+            if(! is_file($filePath)){
+                $result['type'] = 'error';
+                $result['data'] = 'Invalid request';
+                exit(json_encode($result));
+            }
 
-
-
-
-
-
-
-
-
-
+            if(true === ($e = @unlink($filePath))){
+                $result['type'] = 'success';
+                $result['data'] = 'File '.$filePath.' has been deleted.';
+            }
+            else {
+                $result['type'] = 'error';
+                $result['data'] = 'File '.$filePath.' could not be deleted.';
+            }
+            exit(json_encode($result));
+        }
+        exit('Invalid request');
+    }
 }
