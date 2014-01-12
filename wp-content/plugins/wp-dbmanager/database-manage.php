@@ -33,6 +33,7 @@ $backup['mysqldumppath'] = $backup_options['mysqldumppath'];
 $backup['mysqlpath'] = $backup_options['mysqlpath'];
 $backup['path'] = $backup_options['path'];
 $backup['password'] = str_replace('$', '\$', DB_PASSWORD);
+$backup['charset'] = ' --default-character-set="utf8"';
 
 
 ### Form Processing 
@@ -53,16 +54,16 @@ if($_POST['do']) {
 				if(strpos(DB_HOST, ':') !== false) {
 					$db_host = explode(':', DB_HOST);
 					$backup['host'] = $db_host[0];
-					if(is_int($db_host[1])) {
+					if(intval($db_host[1]) != 0) {
 						$backup['port'] = ' --port="'.intval($db_host[1]).'"';
 					} else {
 						$backup['sock'] = ' --socket="'.$db_host[1].'"';
 					}
 				}
 				if(stristr($database_file, '.gz')) {
-					$backup['command'] = 'gunzip < '.$brace.$backup['path'].'/'.$database_file.$brace.' | '.$brace.$backup['mysqlpath'].$brace.' --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].' '.DB_NAME;
+					$backup['command'] = 'gunzip < '.$brace.$backup['path'].'/'.$database_file.$brace.' | '.$brace.$backup['mysqlpath'].$brace.' --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].$backup['charset'].' '.DB_NAME;
 				} else {
-					$backup['command'] = $brace.$backup['mysqlpath'].$brace.' --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].' '.DB_NAME.' < '.$brace.$backup['path'].'/'.$database_file.$brace;
+					$backup['command'] = $brace.$backup['mysqlpath'].$brace.' --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].$backup['charset'].' '.DB_NAME.' < '.$brace.$backup['path'].'/'.$database_file.$brace;
 				}
 				passthru($backup['command'], $error);
 				if($error) {
