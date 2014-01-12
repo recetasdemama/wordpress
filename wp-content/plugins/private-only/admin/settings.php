@@ -1,6 +1,6 @@
 <?php
 /*
-Private Only 3.3
+Private Only 3.4
 Website: http://pixert.com
 */
 ?>
@@ -15,7 +15,7 @@ Website: http://pixert.com
 	<ul>
     
     <li style="margin-bottom: 40px;">
-      <h4><?php _e('This is Private Only plugin for WordPress ver 3.3','private-only'); ?></h4>
+      <h4><?php _e('This is Private Only plugin for WordPress','private-only'); ?></h4>
       <h5>Coded by Kate Mag (Pixel Insert)</h5>
       <p><?php _e('If you disable or enable feed, DO NOT FORGET TO REFRESH YOUR BROWSER CACHE AFTER ACTIVATE PRIVATE ONLY or DISABLE FEED','private-only'); ?></p>
     </li> 

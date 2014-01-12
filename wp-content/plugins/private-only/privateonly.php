@@ -3,7 +3,7 @@
 Plugin Name: Private Only
 Plugin URI: http://www.pixert.com/
 Description: Redirects all non-logged in users to login form with custom login capability
-Version: 3.3
+Version: 3.4
 Author: Kate Mag (Pixel Insert)
 Author URI: http://www.pixert.com
 */
@@ -52,10 +52,13 @@ if ( is_admin() )
 <?php if (isset($po_login[ 'use_wp_logo' ]) && $po_login[ 'use_wp_logo' ] == true ) {} else { ?> 
 <?php if (isset($po_login[ 'po_logo' ]) && !empty($po_login[ 'po_logo']) ) { ?>
 <style>
-#login h1 a{ background-image: url( '<?php echo $po_login[ 'po_logo' ]; ?>' ); height: <?php if (isset($po_login[ 'po_logo_height' ]) && !empty($po_login[ 'po_logo_height'])) { echo $po_login[ 'po_logo_height' ].'px'; } else { ?> 67px <?php } ?>;  background-size: 327px <?php if (isset($po_login[ 'po_logo_height' ]) && !empty($po_login[ 'po_logo_height'])) { echo $po_login[ 'po_logo_height' ].'px'; } ?>; background-size: contain; -moz-background-size: contain;  /* Firefox 3.6 */  background-position: center;  /* Internet Explorer 7/8 */ }
+#loginform { margin-top: 0; }
+/* Fix for WP 3.8 */
+#login h1 a{ background-image: url( '<?php echo $po_login[ 'po_logo' ]; ?>' ); margin: 0; width: auto; height: <?php if (isset($po_login[ 'po_logo_height' ]) && !empty($po_login[ 'po_logo_height'])) { echo $po_login[ 'po_logo_height' ].'px'; } else { ?> 67px <?php } ?>;  background-size: 100%;  background-position: center;  /* Internet Explorer 7/8 */ }
 </style>
 <?php } else { ?>
 <style>
+#loginform { margin-top: 0; }
 #login h1 a{ display: none !important; }
 </style>
 <?php } } ?>
