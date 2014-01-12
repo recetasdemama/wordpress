@@ -3,14 +3,15 @@
 Plugin Name: WP-DBManager
 Plugin URI: http://lesterchan.net/portfolio/programming/php/
 Description: Manages your WordPress database. Allows you to optimize database, repair database, backup database, restore database, delete backup database , drop/empty tables and run selected queries. Supports automatic scheduling of backing up, optimizing and repairing of database.
-Version: 2.63
+Version: 2.65
 Author: Lester 'GaMerZ' Chan
 Author URI: http://lesterchan.net
+Text Domain: wp-dbmanager
 */
 
 
-/*  
-	Copyright 2011  Lester Chan  (email : lesterchan@gmail.com)
+/*
+	Copyright 2013  Lester Chan  (email : lesterchan@gmail.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -83,11 +84,11 @@ function cron_dbmanager_backup() {
 		$backup['password'] = str_replace('$', '\$', DB_PASSWORD);
 		$backup['host'] = DB_HOST;
 		$backup['port'] = '';
-		$backup['sock'] = '';	
+		$backup['sock'] = '';
 		if(strpos(DB_HOST, ':') !== false) {
 			$db_host = explode(':', DB_HOST);
 			$backup['host'] = $db_host[0];
-			if(is_int($db_host[1])) {
+			if(intval($db_host[1]) != 0) {
 				$backup['port'] = ' --port="'.intval($db_host[1]).'"';
 			} else {
 				$backup['sock'] = ' --socket="'.$db_host[1].'"';
@@ -98,11 +99,11 @@ function cron_dbmanager_backup() {
 		if(intval($backup_options['backup_gzip']) == 1) {
 			$backup['filename'] = $backup['date'].'_-_'.DB_NAME.'.sql.gz';
 			$backup['filepath'] = $backup['path'].'/'.$backup['filename'];
-			$backup['command'] = $brace.$backup['mysqldumppath'].$brace.' --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].' --add-drop-table --skip-lock-tables '.DB_NAME.' | gzip > '.$brace.$backup['filepath'].$brace;
+			$backup['command'] = $brace.$backup['mysqldumppath'].$brace.' --force --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].' --add-drop-table --skip-lock-tables '.DB_NAME.' | gzip > '.$brace.$backup['filepath'].$brace;
 		} else {
 			$backup['filename'] = $backup['date'].'_-_'.DB_NAME.'.sql';
 			$backup['filepath'] = $backup['path'].'/'.$backup['filename'];
-			$backup['command'] = $brace.$backup['mysqldumppath'].$brace.' --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].' --add-drop-table --skip-lock-tables '.DB_NAME.' > '.$brace.$backup['filepath'].$brace;
+			$backup['command'] = $brace.$backup['mysqldumppath'].$brace.' --force --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].' --add-drop-table --skip-lock-tables '.DB_NAME.' > '.$brace.$backup['filepath'].$brace;
 		}
 		execute_backup($backup['command']);
 		if(!empty($backup_email)) {
@@ -135,7 +136,7 @@ function cron_dbmanager_backup() {
 				$mail_message = "This is a multi-part message in MIME format.\n\n" .
 										"--{$mime_boundary}\n" .
 										"Content-Type: text/plain; charset=\"utf-8\"\n" .
-										"Content-Transfer-Encoding: 7bit\n\n".$mail_message."\n\n";				
+										"Content-Transfer-Encoding: 7bit\n\n".$mail_message."\n\n";
 				$mail_message .= "--{$mime_boundary}\n" .
 										"Content-Type: application/octet-stream;\n" .
 										" name=\"{$backup['filename']}\"\n" .
@@ -258,7 +259,7 @@ function execute_backup($command) {
 ### Function: Format Bytes Into KB/MB
 if(!function_exists('format_size')) {
 	function format_size($rawSize) {
-		if($rawSize / 1073741824 > 1) 
+		if($rawSize / 1073741824 > 1)
 			return number_format_i18n($rawSize/1048576, 1) . ' '.__('GiB', 'wp-dbmanager');
 		else if ($rawSize / 1048576 > 1)
 			return number_format_i18n($rawSize/1048576, 1) . ' '.__('MiB', 'wp-dbmanager');
@@ -308,11 +309,11 @@ function check_backup_files() {
 	$backup_options = get_option('dbmanager_options');
 	$database_files = array();
 	if(!is_emtpy_folder($backup_options['path'])) {
-		if ($handle = opendir($backup_options['path'])) {			
-			while (false !== ($file = readdir($handle))) { 
+		if ($handle = opendir($backup_options['path'])) {
+			while (false !== ($file = readdir($handle))) {
 				if ($file != '.' && $file != '..' && (file_ext($file) == 'sql' || file_ext($file) == 'gz')) {
 					$database_files[] = $file;
-				} 
+				}
 			}
 			closedir($handle);
 			sort($database_files);
@@ -351,7 +352,7 @@ function dbmanager_init() {
 		chmod(WP_CONTENT_DIR.'/backup-db', 0750);
 	}
 
-	// Set 'manage_database' Capabilities To Administrator	
+	// Set 'manage_database' Capabilities To Administrator
 	$role = get_role('administrator');
 	if(!$role->has_cap('manage_database')) {
 		$role->add_cap('manage_database');
@@ -373,7 +374,7 @@ function download_database() {
 				$file_path = $backup_options['path'].'/'.$clean_file_name;
 				header("Pragma: public");
 				header("Expires: 0");
-				header("Cache-Control: must-revalidate, post-check=0, pre-check=0"); 
+				header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 				header("Content-Type: application/force-download");
 				header("Content-Type: application/octet-stream");
 				header("Content-Type: application/download");
@@ -453,7 +454,7 @@ function dbmanager_options() {
 	<div class="wrap">
 		<div id="icon-wp-dbmanager" class="icon32"><br /></div>
 		<h2><?php _e('Database Options', 'wp-dbmanager'); ?></h2>
-		<h3><?php _e('Paths', 'wp-dbmanager'); ?></h3> 
+		<h3><?php _e('Paths', 'wp-dbmanager'); ?></h3>
 		<table class="form-table">
 			<tr>
 				<td width="20%" valign="top"><strong><?php _e('Path To mysqldump:', 'wp-dbmanager'); ?></strong></td>
@@ -509,8 +510,8 @@ function dbmanager_options() {
 			</tr>
 		</table>
 
-		<h3><?php _e('Automatic Scheduling', 'wp-dbmanager'); ?></h3> 
-		<table class="form-table"> 
+		<h3><?php _e('Automatic Scheduling', 'wp-dbmanager'); ?></h3>
+		<table class="form-table">
 			<tr>
 				<td valign="top"><strong><?php _e('Automatic Backing Up Of DB:', 'wp-dbmanager'); ?></strong></td>
 				<td>

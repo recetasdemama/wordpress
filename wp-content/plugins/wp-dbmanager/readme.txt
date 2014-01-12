@@ -1,10 +1,10 @@
 === WP-DBManager ===
-Contributors: GamerZ
-Donate link: http://lesterchan.net/site/donation/
-Tags: database, manage, wp-dbmanager, manager, table, optimize, backup, queries, query, drop, empty, tables, table, run, repair, cron, schedule, scheduling, automatic
-Requires at least: 2.8
-Tested up to: 3.1.1
-Stable tag: trunk
+Contributors: GamerZ  
+Donate link: http://lesterchan.net/site/donation/  
+Tags: database, manage, wp-dbmanager, manager, table, optimize, backup, queries, query, drop, empty, tables, table, run, repair, cron, schedule, scheduling, automatic  
+Requires at least: 2.8  
+Tested up to: 3.7  
+Stable tag: trunk  
 
 Manages your WordPress database.
 
@@ -35,13 +35,18 @@ Allows you to optimize database, repair database, backup database, restore datab
 * I spent most of my free time creating, updating, maintaining and supporting these plugins, if you really love my plugins and could spare me a couple of bucks, I will really appericiate it. If not feel free to use it without any obligations.
 
 == Changelog ==
+= Version 2.65 =
+* FIXED: Set default character set to UTF-8. Props Karsonito
+
+= Version 2.64 =
+* FIXED: Use intval() instead of is_int() when checking for port number. Props [Webby Scots](http://webbyscots.com/ "Webby Scots")
 
 = Version 2.63 (03-05-2011) =
 * NEW: Added Auto Repair Functionality
 * NEW: Added nonce To All Forms For Added Security
 
 = Version 2.61 (30-04-2011) =
-* FIXED: Checks File Extension And Sanitise File Name That Is Pass Through The URL When Downloading Database File. Props to [Joakim Jardenberg](http://jardenberg.se "Joakim Jardenberg"), [Jonas Nordstršm](http://jonasnordstrom.se "Jonas Nordstršm"), [Andreas Viklund](http://andreasviklund.com/ "Andreas Viklund")
+* FIXED: Checks File Extension And Sanitise File Name That Is Pass Through The URL When Downloading Database File. Props to [Joakim Jardenberg](http://jardenberg.se "Joakim Jardenberg"), [Jonas Nordstram](http://jonasnordstrom.se "Jonas Nordstrï¿½m"), [Andreas Viklund](http://andreasviklund.com/ "Andreas Viklund")
 
 = Version 2.60 (01-12-2009) =
 * FIXED: Bug In Cron Backup On Windows Server
@@ -98,13 +103,13 @@ Allows you to optimize database, repair database, backup database, restore datab
 
 = Version 2.04 (10-05-2006) =
 * FIXED: Unable To Download Backup DB Due To Header Sent Error
-* FIXED: Some XHTML Code Fixes			
+* FIXED: Some XHTML Code Fixes
 
 = Version 2.03 (01-04-2006) =
 * FIXED: Run Query Box Too Big
 * FIXED: Header Sent Error
 * FIXED: Extra Slashes For Mysql/Mysql Dump Path
-* FIXED: Mismatch Date Due To GMT					
+* FIXED: Mismatch Date Due To GMT
 
 = Version 2.02 (01-03-2006) =
 * NEW: Improved On 'manage_database' Capabilities
@@ -145,7 +150,7 @@ Allows you to optimize database, repair database, backup database, restore datab
 3. Put/Overwrite: `Folder: wp-dbmanager`
 4. Activate `WP-DBManager` Plugin
 5. Go to `WP-Admin -> Database -> DB Options` to re-configure the database options.
-	
+
 == Upgrade Notice ==
 
 N/A
