@@ -1,6 +1,6 @@
 <?php
 /*
-Private Only 3.3
+Private Only 3.4
 Website: http://pixert.com
 */
 function po_login_settings_args() {
@@ -134,7 +134,7 @@ function po_login_page() {
                 <form name="form0" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>" style="border:none;background:transparent;">
                 
                     <p class="submit" style="float:left; margin-left:10px;">
-                        <input type="submit" name="Reset" class="swg_warning" value="Delete/Reset" onclick="return confirm('<?php __('Do you really want to delete/reset the plugin settings?','private-only'); ?>');" />
+                        <input type="submit" name="Reset" class="button-primary" value="Delete/Reset" onclick="return confirm('<?php __('Do you really want to delete/reset the plugin settings?','private-only'); ?>');" />
                         <input type="hidden" name="po_submit" id="po_submit" value="R" />
                     </p>
             

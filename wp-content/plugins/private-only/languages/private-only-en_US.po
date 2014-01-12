@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Private Only WordPress plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-02 16:57+0700\n"
+"POT-Creation-Date: 2014-01-03 15:30+0700\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Pixel Insert/pixert <studio@pixert.com>\n"
 "Language-Team: Kate Mag (Pixert) <studio@pixert.com>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 
 #: ../admin/settings.php:18
-msgid "This is Private Only plugin for WordPress ver 3.3"
+msgid "This is Private Only plugin for WordPress"
 msgstr ""
 
 #: ../admin/settings.php:20
