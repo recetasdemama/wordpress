@@ -1,0 +1,432 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Manoj Thulasidas
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/easy-adsenser\n"
+"POT-Creation-Date: 2009-03-26 23:25+0000\n"
+"PO-Revision-Date: 2009-05-04 01:32+0300\n"
+"Last-Translator: Илья <mrilyuha@gmail.com>\n"
+"Language-Team: Ramerta Grup <admin@ramerta.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Belarusian\n"
+"X-Poedit-Country: BELARUS\n"
+"Project-Id-Version: \n"
+
+#: admin.php:6
+msgid "Instructions"
+msgstr "Інструкцыі"
+
+#: admin.php:12
+msgid "Generate AdSense code (from http://adsense.google.com &rarr; AdSense Setup &rarr; Get Ads)."
+msgstr "Генераваць код AdSense (з http://adsense.google.com &rarr; AdSense Setup &rarr; Get Ads)."
+
+#: admin.php:17
+msgid "Cut and paste the AdSense code into the boxes below, deleting the existing text."
+msgstr "Выразаць і ўставіць код AdSense у скрыню, выдаліўшы цяперашні код."
+
+#: admin.php:22
+msgid "Decide how to align and show the code in your blog posts."
+msgstr "Вырашыце, як выраўніваць і паказаць код у пастах блога. "
+
+#: admin.php:27
+msgid "Take a look at the Google policy option, and other options. The defaults should work."
+msgstr "Зірніце ў налады Google policy і іншыя варыянты. Па змаўчанні павінен працаваць."
+
+#: admin.php:32
+msgid "Save the options, and you are done!"
+msgstr "Захаваць налады, і будзе гатова!"
+
+#: admin.php:37
+#, php-format
+msgid "If you want to use the widgets, drag and drop them at %s Appearance (or Design) &rarr; Widgets %s"
+msgstr "Калі вы хочаце выкарыстоўваць віджэты, перацяніце гэта ў раздзел %s Appearance (ці Design) &rarr; Widgets %s"
+
+#: admin.php:42
+#, php-format
+msgid "Need to control ad blocks on each post? &nbsp; %s"
+msgstr "Неабходнасць кантролю блокаў аб'яў на кожнай пасадзе? &nbsp; %s"
+
+#: admin.php:51
+#, php-format
+msgid "Options (for the %s theme)"
+msgstr "Налады (для тэмы %s)"
+
+#: admin.php:64
+msgid "Ad Blocks in Your Posts"
+msgstr "Ad Blocks у вашых пастах"
+
+#: admin.php:65
+msgid "[Appears in your posts and pages]"
+msgstr "[Адлюстроўваецца ў вашых пастах і старонках] "
+
+#: admin.php:75
+msgid "Widgets for Your Sidebars"
+msgstr "Віджэты у вашых сайдбарах"
+
+#: admin.php:76
+msgid "[See <a href=\"widgets.php\"> Appearance (or Design) &rarr; Widgets</a>]"
+msgstr "[Глядзіце <a href=\"widgets.php\"> Appearance (or Design) &rarr; Widgets</a>]"
+
+#: admin.php:90
+msgid "Lead-in AdSense Text"
+msgstr "Уступ у тэксце AdSense "
+
+#: admin.php:91
+msgid "(Appears near the beginning of the post)"
+msgstr "(Адлюстроўваецца ў пачатку паста)"
+
+#: admin.php:94
+#: admin.php:109
+#: admin.php:124
+#: admin.php:164
+#: admin.php:180
+msgid "Ad Alignment"
+msgstr "Размяшчэнне аб'явы"
+
+#: admin.php:95
+#: admin.php:110
+#: admin.php:125
+#: admin.php:165
+#: admin.php:181
+msgid "(Where to show?)"
+msgstr "(Дзе паказаць?)"
+
+#: admin.php:97
+#: admin.php:112
+#: admin.php:127
+#: admin.php:167
+#: admin.php:183
+msgid "Align Left"
+msgstr "Па леваму боку"
+
+#: admin.php:98
+#: admin.php:113
+#: admin.php:128
+#: admin.php:168
+#: admin.php:184
+msgid "Center"
+msgstr "Па цэнтру"
+
+#: admin.php:99
+#: admin.php:114
+#: admin.php:129
+#: admin.php:169
+#: admin.php:185
+msgid "Align Right"
+msgstr "Па праваму боку"
+
+#: admin.php:100
+msgid "Suppress Lead-in Ad"
+msgstr "Сціснуць уступ у тэксце AdSense "
+
+#: admin.php:105
+msgid "Mid-Post AdSense Text"
+msgstr "Сярэдзіна ў тэксце AdSense "
+
+#: admin.php:106
+msgid "(Appears near the middle of the post)"
+msgstr "(Адлюстроўваецца ў сярэдзіне паста)"
+
+#: admin.php:115
+msgid "Suppress Mid-post Ad"
+msgstr "Сціснуць сярэдзіну ў тэксце AdSense "
+
+#: admin.php:120
+msgid "Post Lead-out AdSense Text"
+msgstr "Заканчэнне ў тэксце AdSense "
+
+#: admin.php:121
+msgid "(Appears near the end of the post)"
+msgstr "(Адлюстроўваецца ў канцы паста)"
+
+#: admin.php:130
+msgid "Suppress Lead-out Ad"
+msgstr "Сціснуць заканчэнне ў тэксце AdSense "
+
+#: admin.php:138
+msgid "Option on Google Policy"
+msgstr "Уключыць Google Policy"
+
+#: admin.php:139
+msgid "(Google policy allows no more than three ad blocks and three link units per page)"
+msgstr "(Палітыка Google дазваляе не больш трох рэкламных блокаў і трох блокаў спасылак на старонцы) "
+
+#: admin.php:142
+msgid "Three ad blocks (including the side bar widget, if enabled)."
+msgstr "Тры блокі аб'яў (уключаны ў віджэт сайдбара, калі актывавана)."
+
+#: admin.php:143
+msgid "Two ad blocks."
+msgstr "Два блокі аб'яў"
+
+#: admin.php:144
+msgid "One ad block."
+msgstr "Адзін блок аб'яў"
+
+#: admin.php:145
+msgid "No ad blocks in posts."
+msgstr "Няма аб'яў у пасце"
+
+#: admin.php:146
+msgid "Any number of ad blocks (At your own risk!)"
+msgstr "Адольны лік аб'яў (На вашу рызыку!)"
+
+#: admin.php:148
+msgid "Number of Link Units widgets (&le; 3) [Google serves only three]:"
+msgstr "Колькасць віджэтаў (&le; 3) [Google падтрымлівае толькі 3]:"
+
+#: admin.php:160
+msgid "AdSense Widget Text"
+msgstr "Тэкст віджэта AdSense "
+
+#: admin.php:161
+msgid "(Appears in the Sidebar as a Widget)"
+msgstr "(Адлюстроўваецца ў сайдбары як у віджэце)"
+
+#: admin.php:170
+msgid "Suppress Widget"
+msgstr "Віджэт сціскання"
+
+#: admin.php:171
+msgid "Widget Title:"
+msgstr "Загаловак віджэта:"
+
+#: admin.php:176
+msgid "AdSense Link-Units Text"
+msgstr "Тэкст AdSense Link-Units"
+
+#: admin.php:177
+msgid "(Appears in the Sidebar as  Widgets)"
+msgstr "(Адлюстроўваецца ў сайдбары як у віджэце)"
+
+#: admin.php:186
+msgid "Suppress Link Units"
+msgstr "Сціснуць элементы спасылак"
+
+#: admin.php:187
+msgid "Link Unit Title:"
+msgstr "Загаловак спасылкіı:"
+
+#: admin.php:192
+msgid "Google Search Widget"
+msgstr "Віджэт пошуку ў Google"
+
+#: admin.php:193
+msgid "(Adds a Google Search Box to your sidebar)"
+msgstr "(Аб'явы пошукавай скрыні Google у вашым сайдбары)"
+
+#: admin.php:196
+msgid "Search Title"
+msgstr "Загаловак пошуку"
+
+#: admin.php:197
+msgid "(Title of the Google Search Widget)"
+msgstr "(Загаловак віджэта пашуку ў віджэце Google )"
+
+#: admin.php:201
+msgid "Suppress Search Box"
+msgstr "Сціснуць пошукавую скрыню"
+
+#: admin.php:202
+msgid "Custom Title:"
+msgstr "Выбраны загаловак:"
+
+#: admin.php:210
+msgid "Other Options"
+msgstr "Іншыя налады"
+
+#: admin.php:212
+msgid "Allow ad blocks in feeds. [Please report any problems with this option.]"
+msgstr "Дазволіць блокі аб'яў у лентах. [Калі ласка, пішыце аб праблемах з гэтай наладай.]"
+
+#: admin.php:213
+msgid "Prioritize sidebar widget. (Always shows the widget, if enabled.)"
+msgstr "Прыярытэтны парадак на бакавой панэлі віджэтаў. (Заўсёды паказвае віджэт, калі налада ўключаная.) "
+
+#: admin.php:214
+msgid "Force mid-text ad (if enabled) even in short posts."
+msgstr "Уключыць аб'явы з цэнтраваным тэкстам (калі ўключана) у кароткіх пастах."
+
+#: admin.php:216
+msgid "Link-backs to"
+msgstr "Бэклінк:"
+
+#: admin.php:217
+msgid "(Consider showing at least one link.)"
+msgstr "(Падумайце ўказаннем, прынамсі адна спасылка.) "
+
+#: admin.php:219
+msgid "Show a link under every ad block."
+msgstr "Паказваць спасылку ля кожнага блоку аб'яў"
+
+#: admin.php:220
+msgid "Show the link only under the first ad block."
+msgstr "Паказваць спасылку толькі ля першага блоку аб'яў"
+
+#: admin.php:221
+msgid "Show the link at the bottom of your blog page."
+msgstr "Паказваць спасылку ля старонкі блогу"
+
+#: admin.php:222
+msgid "Show no links to my blog anywhere (Are you sure?!)"
+msgstr "Не паказваць спасылкі (Вы ўвераныя?)"
+
+#: admin.php:232
+msgid "Save Changes"
+msgstr "Захаваць налады"
+
+#: admin.php:232
+msgid "Save the changes as specified above"
+msgstr "Захаваць налады як вызначана вышэй"
+
+#: admin.php:233
+msgid "Reset Options"
+msgstr "Збіць налады"
+
+#: admin.php:233
+msgid "Discard all your changes and load defaults. (Are you quite sure?)"
+msgstr "Збіць налады і загрузіць налады па змоўчванню. (Вы ўвераныя?)"
+
+#: admin.php:233
+msgid "[This <b>Reset Options</b> button discards all your changes and loads the default options. This is your only warning!]"
+msgstr "[Гэтая <b>Збіць налады</b> кнопка саб'е ўсе вашыя змяненні і загрузіць звычайныя налады. Мы вас папярэдзілі!]"
+
+#: admin.php:240
+msgid "Support Easy AdSenser"
+msgstr "Падтрымка Easy AdSenser"
+
+#: admin.php:245
+#, php-format
+msgid "If you would like support my efforts, please visit (and link-back to) my blog - %s"
+msgstr "Калі вы жадаеце падтрымаць мае высілкі, можна знайсці (і спаслацца на) мой блог - %s"
+
+#: admin.php:248
+#, php-format
+msgid "If you like the content and style of my blog, %s. In other words, lend me your eyes, but don't give me any money unless you like what you see. %s"
+msgstr "Калі вам падабаецца ўтрыманне і стыль майго блога,% s. Іншымі словамі, не пазычыце мне вока, але не давайце мне грошы, калі вам спадабалася тое, што вы бачыце. %s"
+
+#: admin.php:251
+msgid "puts a tiny link below the (first) ad unit it displays like this:"
+msgstr "змяшчае малюсенькія спасылцы ніжэй (першы) рэкламны блок адлюстроўваецца наступным чынам: "
+
+#: admin.php:269
+msgid "Consider leaving it unchanged. If you must suppress it, please use the Link-back options above."
+msgstr "Разгледзім пакінуўшы яго без змен. Калі неабходна сціснуць яго, калі ласка, выкарыстайце спасылку, зваротную вышэйшай. "
+
+#: admin.php:273
+msgid "Please report any problems. And share your thoughts and comments."
+msgstr "Калі ласка, напішыце мне аб праблемах. Дасылайце таксама водзывы і каментары."
+
+#: admin.php:273
+msgid "Post it in the WordPress forum"
+msgstr "Напісаць гэта на форуме WordPress "
+
+#: admin.php:273
+msgid "[WordPress Forum]"
+msgstr "[Форум WordPress]"
+
+#: admin.php:273
+msgid "Or"
+msgstr "Ці"
+
+#: admin.php:273
+msgid "Contact the plugin author through email"
+msgstr "Паведаміць аўтару плагіна па email"
+
+#: admin.php:273
+msgid "[Email Author]"
+msgstr "[Email аўтара]"
+
+#: admin.php:276
+msgid "Check out my other plugin efforts:"
+msgstr "Праверце іншыя мае плагіны: "
+
+#: admin.php:279
+msgid "To modify the color scheme of your themes with no CSS/Stylesheet editing."
+msgstr "Змяніць каляровую схему тэм без рэдагавання CSS."
+
+#: admin.php:282
+msgid "To translate LaTeX formulas like this [math](a+b)^2 = a^2 + b^2 + 2ab[/math] into this:"
+msgstr "Каб перавесці формулы LaTeX, выкарыстоўвайце [math](a+b)^2 = a^2 + b^2 + 2ab[/math] тут:"
+
+#: admin.php:285
+msgid "My lean and mean AdSense plugin. No mess, no fuss."
+msgstr "My lean and mean AdSense plugin. Няма бязладзіцы, ні мітусні."
+
+#: admin.php:295
+msgid "Future Plans"
+msgstr "Планы на будучыню"
+
+#: admin.php:299
+msgid "Make the Google Link Units widget multi-insertable. [In version 2.0, the Link Units widgets are repeated because I cannot figure out how to do multi-insertable widgets in a neat way.]"
+msgstr "Зрабіце спасылкі  Google мульціўстаўляемымі. "
+
+#: admin.php:302
+msgid "Enable ad blocks in category view (User request)."
+msgstr "Уключыць блок аб'яў у катэгорыі прагляду (па запыту карыстача)."
+
+#: admin.php:305
+msgid "Release translated versions of the plugin. (Need your help!)"
+msgstr "Eklentinin tercüme edilmiş versiyonunu tanıt. (Yardımınıza ihtiyacımız var!)"
+
+#: easy-adsenser.php:244
+msgid "Settings Updated."
+msgstr "Налады абноўленыя."
+
+#: easy-adsenser.php:251
+msgid "Ok, all your settings have been discarded!"
+msgstr "Усе вашыя налады былі збітыя!"
+
+#: easy-adsenser.php:259
+msgid ""
+"Error locating the admin page!\n"
+"Ensure admin.php exists, or reinstall the plugin."
+msgstr ""
+"Памылка знаходжання старонкі адміністратараe!\n"
+"Упэўніцеся, што admin.php існуе ці пераўстанавіце плагін."
+
+#: easy-adsenser.php:272
+msgid "Settings"
+msgstr "Налады "
+
+#: easy-adsenser.php:439
+msgid "Sponsored Links"
+msgstr "Фундатарскія спасылкі"
+
+#: easy-adsenser.php:518
+msgid "Easy AdSenser: Show a Google AdSense block in your sidebar as a widget"
+msgstr "Easy Adserser: паказваць блок Google AdSense у вашым віджэце сайдбара"
+
+#: easy-adsenser.php:523
+msgid "Easy AdSenser: Show a Google Search Box in your sidebar as a widget"
+msgstr "Easy Adserser: паказваць пошукавую скрыню Google у вашым віджэце сайдбара"
+
+#: easy-adsenser.php:567
+msgid "Easy AdSenser: Show a Google Links Unit in your sidebar as a widget"
+msgstr "Easy Adserser: паказваць спасылкі Google (Google Links Unit) у вашым віджэце сайдбара"
+
+#. Plugin Name of an extension
+msgid "Easy AdSenser"
+msgstr "Easy AdSenser"
+
+#. Plugin URI of an extension
+msgid "http://www.thulasidas.com/adsense"
+msgstr "http://www.thulasidas.com/adsense"
+
+#. Description of an extension
+msgid "Easiest way to show AdSense and make money from your blog. Configure it at <a href=\"options-general.php?page=easy-adsenser.php\">Settings &rarr; Easy AdSenser</a>, or use the \"Settings\" link on the right."
+msgstr "Самы лёгкі метад паказваць AdSense і рабіць грошы на вашым блогу.Канфігураваць <a href=\"options-general.php?page=easy-adsenser.php\">Налады &rarr; Easy AdSenser</a> ці выкарыстоўваць \"Налады\" справа."
+
+#. Author of an extension
+msgid "Manoj Thulasidas"
+msgstr "Manoj Thulasidas"
+
+#. Author URI of an extension
+msgid "http://www.thulasidas.com"
+msgstr "http://www.thulasidas.com"
+
