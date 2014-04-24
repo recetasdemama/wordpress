@@ -542,6 +542,10 @@ div.mce-path {
 	border-color: #b4b9be;
 }
 
+.mce-toolbar .mce-btn-group .mce-btn.mce-listbox span {
+	font-size: 13px;
+}
+
 .mce-panel .mce-btn i.mce-caret {
 	border-top: 6px solid #555d66;
 	margin-right: 2px;
