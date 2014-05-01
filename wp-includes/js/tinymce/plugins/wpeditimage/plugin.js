@@ -1,233 +1,112 @@
 /* global tinymce */
 tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
-	var toolbar, serializer, touchOnImage, pasteInCaption,
-		each = tinymce.each,
-		trim = tinymce.trim,
-		iOS = tinymce.Env.iOS;
-
-	function isPlaceholder( node ) {
-		return !! ( editor.dom.getAttrib( node, 'data-mce-placeholder' ) || editor.dom.getAttrib( node, 'data-mce-object' ) );
-	}
-
-	editor.addButton( 'wp_img_remove', {
-		tooltip: 'Remove',
-		icon: 'dashicon dashicons-no',
-		onclick: function() {
-			removeImage( editor.selection.getNode() );
-		}
-	} );
-
-	editor.addButton( 'wp_img_edit', {
-		tooltip: 'Edit|button', // '|button' is not displayed, only used for context
-		icon: 'dashicon dashicons-edit',
-		onclick: function() {
-			editImage( editor.selection.getNode() );
-		}
-	} );
-
-	each( {
-		alignleft: 'Align left',
-		aligncenter: 'Align center',
-		alignright: 'Align right',
-		alignnone: 'No alignment'
-	}, function( tooltip, name ) {
-		var direction = name.slice( 5 );
-
-		editor.addButton( 'wp_img_' + name, {
-			tooltip: tooltip,
-			icon: 'dashicon dashicons-align-' + direction,
-			cmd: 'alignnone' === name ? 'wpAlignNone' : 'Justify' + direction.slice( 0, 1 ).toUpperCase() + direction.slice( 1 ),
-			onPostRender: function() {
-				var self = this;
-
-				editor.on( 'NodeChange', function( event ) {
-					var node;
-
-					// Don't bother.
-					if ( event.element.nodeName !== 'IMG' ) {
-						return;
-					}
-
-					node = editor.dom.getParent( event.element, '.wp-caption' ) || event.element;
-
-					if ( 'alignnone' === name ) {
-						self.active( ! /\balign(left|center|right)\b/.test( node.className ) );
-					} else {
-						self.active( editor.dom.hasClass( node, name ) );
-					}
-				} );
-			}
-		} );
-	} );
-
-	editor.once( 'preinit', function() {
-		if ( editor.wp && editor.wp._createToolbar ) {
-			toolbar = editor.wp._createToolbar( [
-				'wp_img_alignleft',
-				'wp_img_aligncenter',
-				'wp_img_alignright',
-				'wp_img_alignnone',
-				'wp_img_edit',
-				'wp_img_remove'
-			] );
-		}
-	} );
-
-	editor.on( 'wptoolbar', function( event ) {
-		if ( event.element.nodeName === 'IMG' && ! isPlaceholder( event.element ) ) {
-			event.toolbar = toolbar;
-		}
-	} );
-
-	function isNonEditable( node ) {
-		var parent = editor.$( node ).parents( '[contenteditable]' );
-		return parent && parent.attr( 'contenteditable' ) === 'false';
-	}
-
-	// Safari on iOS fails to select images in contentEditoble mode on touch.
-	// Select them again.
-	if ( iOS ) {
-		editor.on( 'init', function() {
-			editor.on( 'touchstart', function( event ) {
-				if ( event.target.nodeName === 'IMG' && ! isNonEditable( event.target ) ) {
-					touchOnImage = true;
-				}
-			});
-
-			editor.dom.bind( editor.getDoc(), 'touchmove', function() {
-				touchOnImage = false;
-			});
-
-			editor.on( 'touchend', function( event ) {
-				if ( touchOnImage && event.target.nodeName === 'IMG' && ! isNonEditable( event.target ) ) {
-					var node = event.target;
-
-					touchOnImage = false;
-
-					window.setTimeout( function() {
-						editor.selection.select( node );
-						editor.nodeChanged();
-					}, 100 );
-				} else if ( toolbar ) {
-					toolbar.hide();
-				}
-			});
-		});
-	}
+	var toolbarActive = false;
 
 	function parseShortcode( content ) {
 		return content.replace( /(?:<p>)?\[(?:wp_)?caption([^\]]+)\]([\s\S]+?)\[\/(?:wp_)?caption\](?:<\/p>)?/g, function( a, b, c ) {
-			var id, align, classes, caption, img, width;
+			var id, cls, w, cap, img, width,
+				trim = tinymce.trim;
 
 			id = b.match( /id=['"]([^'"]*)['"] ?/ );
 			if ( id ) {
 				b = b.replace( id[0], '' );
 			}
 
-			align = b.match( /align=['"]([^'"]*)['"] ?/ );
-			if ( align ) {
-				b = b.replace( align[0], '' );
+			cls = b.match( /align=['"]([^'"]*)['"] ?/ );
+			if ( cls ) {
+				b = b.replace( cls[0], '' );
 			}
 
-			classes = b.match( /class=['"]([^'"]*)['"] ?/ );
-			if ( classes ) {
-				b = b.replace( classes[0], '' );
-			}
-
-			width = b.match( /width=['"]([0-9]*)['"] ?/ );
-			if ( width ) {
-				b = b.replace( width[0], '' );
+			w = b.match( /width=['"]([0-9]*)['"] ?/ );
+			if ( w ) {
+				b = b.replace( w[0], '' );
 			}
 
 			c = trim( c );
 			img = c.match( /((?:<a [^>]+>)?<img [^>]+>(?:<\/a>)?)([\s\S]*)/i );
 
 			if ( img && img[2] ) {
-				caption = trim( img[2] );
+				cap = trim( img[2] );
 				img = trim( img[1] );
 			} else {
 				// old captions shortcode style
-				caption = trim( b ).replace( /caption=['"]/, '' ).replace( /['"]$/, '' );
+				cap = trim( b ).replace( /caption=['"]/, '' ).replace( /['"]$/, '' );
 				img = c;
 			}
 
-			id = ( id && id[1] ) ? id[1].replace( /[<>&]+/g,  '' ) : '';
-			align = ( align && align[1] ) ? align[1] : 'alignnone';
-			classes = ( classes && classes[1] ) ? ' ' + classes[1].replace( /[<>&]+/g,  '' ) : '';
+			id = ( id && id[1] ) ? id[1] : '';
+			cls = ( cls && cls[1] ) ? cls[1] : 'alignnone';
 
-			if ( ! width && img ) {
-				width = img.match( /width=['"]([0-9]*)['"]/ );
+			if ( ! w && img ) {
+				w = img.match( /width=['"]([0-9]*)['"]/ );
 			}
 
-			if ( width && width[1] ) {
-				width = width[1];
+			if ( w && w[1] ) {
+				w = w[1];
 			}
 
-			if ( ! width || ! caption ) {
+			if ( ! w || ! cap ) {
 				return c;
 			}
 
-			width = parseInt( width, 10 );
+			width = parseInt( w, 10 );
 			if ( ! editor.getParam( 'wpeditimage_html5_captions' ) ) {
 				width += 10;
 			}
 
-			return '<div class="mceTemp"><dl id="' + id + '" class="wp-caption ' + align + classes + '" style="width: ' + width + 'px">' +
-				'<dt class="wp-caption-dt">'+ img +'</dt><dd class="wp-caption-dd">'+ caption +'</dd></dl></div>';
+			return '<div class="mceTemp"><dl id="'+ id +'" class="wp-caption '+ cls +'" style="width: '+ width +'px">' +
+				'<dt class="wp-caption-dt">'+ img +'</dt><dd class="wp-caption-dd">'+ cap +'</dd></dl></div>';
 		});
 	}
 
 	function getShortcode( content ) {
-		return content.replace( /(?:<div [^>]+mceTemp[^>]+>)?\s*(<dl [^>]+wp-caption[^>]+>[\s\S]+?<\/dl>)\s*(?:<\/div>)?/g, function( all, dl ) {
+		return content.replace( /<div (?:id="attachment_|class="mceTemp)[^>]*>([\s\S]+?)<\/div>/g, function( a, b ) {
 			var out = '';
 
-			if ( dl.indexOf('<img ') === -1 || dl.indexOf('</p>') !== -1 ) {
-				// Broken caption. The user managed to drag the image out or type in the wrapper div?
-				// Remove the <dl>, <dd> and <dt> and return the remaining text.
-				return dl.replace( /<d[ldt]( [^>]+)?>/g, '' ).replace( /<\/d[ldt]>/g, '' );
+			if ( b.indexOf('<img ') === -1 ) {
+				// Broken caption. The user managed to drag the image out?
+				// Try to return the caption text as a paragraph.
+				out = b.match( /<dd [^>]+>([\s\S]+?)<\/dd>/i );
+
+				if ( out && out[1] ) {
+					return '<p>' + out[1] + '</p>';
+				}
+
+				return '';
 			}
 
-			out = dl.replace( /\s*<dl ([^>]+)>\s*<dt [^>]+>([\s\S]+?)<\/dt>\s*<dd [^>]+>([\s\S]*?)<\/dd>\s*<\/dl>\s*/gi, function( a, b, c, caption ) {
-				var id, classes, align, width;
+			out = b.replace( /<dl ([^>]+)>\s*<dt [^>]+>([\s\S]+?)<\/dt>\s*<dd [^>]+>([\s\S]*?)<\/dd>\s*<\/dl>/gi, function( a, b, c, cap ) {
+				var id, cls, w;
 
-				width = c.match( /width="([0-9]*)"/ );
-				width = ( width && width[1] ) ? width[1] : '';
+				w = c.match( /width="([0-9]*)"/ );
+				w = ( w && w[1] ) ? w[1] : '';
 
-				classes = b.match( /class="([^"]*)"/ );
-				classes = ( classes && classes[1] ) ? classes[1] : '';
-				align = classes.match( /align[a-z]+/i ) || 'alignnone';
-
-				if ( ! width || ! caption ) {
-					if ( 'alignnone' !== align[0] ) {
-						c = c.replace( /><img/, ' class="' + align[0] + '"><img' );
-					}
+				if ( ! w || ! cap ) {
 					return c;
 				}
 
 				id = b.match( /id="([^"]*)"/ );
 				id = ( id && id[1] ) ? id[1] : '';
 
-				classes = classes.replace( /wp-caption ?|align[a-z]+ ?/gi, '' );
+				cls = b.match( /class="([^"]*)"/ );
+				cls = ( cls && cls[1] ) ? cls[1] : '';
+				cls = cls.match( /align[a-z]+/ ) || 'alignnone';
 
-				if ( classes ) {
-					classes = ' class="' + classes + '"';
-				}
-
-				caption = caption.replace( /\r\n|\r/g, '\n' ).replace( /<[a-zA-Z0-9]+( [^<>]+)?>/g, function( a ) {
+				cap = cap.replace( /\r\n|\r/g, '\n' ).replace( /<[a-zA-Z0-9]+( [^<>]+)?>/g, function( a ) {
 					// no line breaks inside HTML tags
 					return a.replace( /[\r\n\t]+/, ' ' );
 				});
 
 				// convert remaining line breaks to <br>
-				caption = caption.replace( /\s*\n\s*/g, '<br />' );
+				cap = cap.replace( /\s*\n\s*/g, '<br />' );
 
-				return '[caption id="' + id + '" align="' + align + '" width="' + width + '"' + classes + ']' + c + ' ' + caption + '[/caption]';
+				return '[caption id="'+ id +'" align="'+ cls +'" width="'+ w +'"]'+ c +' '+ cap +'[/caption]';
 			});
 
-			if ( out.indexOf('[caption') === -1 ) {
+			if ( out.indexOf('[caption') !== 0 ) {
 				// the caption html seems broken, try to find the image that may be wrapped in a link
 				// and may be followed by <p> with the caption text.
-				out = dl.replace( /[\s\S]*?((?:<a [^>]+>)?<img [^>]+>(?:<\/a>)?)(<p>[\s\S]*<\/p>)?[\s\S]*/gi, '<p>$1</p>$2' );
+				out = b.replace( /[\s\S]*?((?:<a [^>]+>)?<img [^>]+>(?:<\/a>)?)(<p>[\s\S]*<\/p>)?[\s\S]*/gi, '<p>$1</p>$2' );
 			}
 
 			return out;
@@ -236,7 +115,6 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 
 	function extractImageData( imageNode ) {
 		var classes, extraClasses, metadata, captionBlock, caption, link, width, height,
-			captionClassName = [],
 			dom = editor.dom,
 			isIntRegExp = /^\d+$/;
 
@@ -302,12 +180,8 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 			tinymce.each( classes, function( name ) {
 				if ( /^align/.test( name ) ) {
 					metadata.align = name.replace( 'align', '' );
-				} else if ( name && name !== 'wp-caption' ) {
-					captionClassName.push( name );
 				}
 			} );
-
-			metadata.captionClassName = captionClassName.join( ' ' );
 
 			caption = dom.select( 'dd.wp-caption-dd', captionBlock );
 			if ( caption.length ) {
@@ -331,33 +205,14 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 	}
 
 	function hasTextContent( node ) {
-		return node && !! ( node.textContent || node.innerText ).replace( /\ufeff/g, '' );
+		return node && !! ( node.textContent || node.innerText );
 	}
 
-	// Verify HTML in captions
-	function verifyHTML( caption ) {
-		if ( ! caption || ( caption.indexOf( '<' ) === -1 && caption.indexOf( '>' ) === -1 ) ) {
-			return caption;
-		}
-
-		if ( ! serializer ) {
-			serializer = new tinymce.html.Serializer( {}, editor.schema );
-		}
-
-		return serializer.serialize( editor.parser.parse( caption, { forced_root_block: false } ) );
-	}
-
-	function updateImage( $imageNode, imageData ) {
-		var classes, className, node, html, parent, wrap, linkNode, imageNode,
-			captionNode, dd, dl, id, attrs, linkAttrs, width, height, align,
-			$imageNode, srcset, src,
+	function updateImage( imageNode, imageData ) {
+		var classes, className, node, html, parent, wrap, linkNode,
+			captionNode, dd, dl, id, attrs, linkAttrs, width, height,
 			dom = editor.dom;
 
-		if ( ! $imageNode || ! $imageNode.length ) {
-			return;
-		}
-
-		imageNode = $imageNode[0];
 		classes = tinymce.explode( imageData.extraClasses, ' ' );
 
 		if ( ! classes ) {
@@ -387,14 +242,12 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 			src: imageData.url,
 			width: width || null,
 			height: height || null,
+			alt: imageData.alt,
 			title: imageData.title || null,
 			'class': classes.join( ' ' ) || null
 		};
 
 		dom.setAttribs( imageNode, attrs );
-
-		// Preserve empty alt attributes.
-		$imageNode.attr( 'alt', imageData.alt || '' );
 
 		linkAttrs = {
 			href: imageData.linkUrl,
@@ -432,15 +285,9 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 		}
 
 		if ( imageData.caption ) {
-			imageData.caption = verifyHTML( imageData.caption );
 
 			id = imageData.attachment_id ? 'attachment_' + imageData.attachment_id : null;
-			align = 'align' + ( imageData.align || 'none' );
-			className = 'wp-caption ' + align;
-
-			if ( imageData.captionClassName ) {
-				className += ' ' + imageData.captionClassName.replace( /[<>&]+/g,  '' );
-			}
+			className = 'wp-caption align' + ( imageData.align || 'none' );
 
 			if ( ! editor.getParam( 'wpeditimage_html5_captions' ) ) {
 				width = parseInt( width, 10 );
@@ -469,20 +316,18 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 
 				// should create a new function for generating the caption markup
 				html =  '<dl ' + id + 'class="' + className +'" style="width: '+ width +'px">' +
-					'<dt class="wp-caption-dt"></dt><dd class="wp-caption-dd">'+ imageData.caption +'</dd></dl>';
-
-				wrap = dom.create( 'div', { 'class': 'mceTemp' }, html );
+					'<dt class="wp-caption-dt">' + dom.getOuterHTML( node ) + '</dt><dd class="wp-caption-dd">'+ imageData.caption +'</dd></dl>';
 
 				if ( parent = dom.getParent( node, 'p' ) ) {
+					wrap = dom.create( 'div', { 'class': 'mceTemp' }, html );
 					parent.parentNode.insertBefore( wrap, parent );
+					dom.remove( node );
+
+					if ( dom.isEmpty( parent ) ) {
+						dom.remove( parent );
+					}
 				} else {
-					node.parentNode.insertBefore( wrap, node );
-				}
-
-				editor.$( wrap ).find( 'dt.wp-caption-dt' ).append( node );
-
-				if ( parent && dom.isEmpty( parent ) ) {
-					dom.remove( parent );
+					dom.setOuterHTML( node, '<div class="mceTemp">' + html + '</div>' );
 				}
 			}
 		} else if ( captionNode ) {
@@ -491,19 +336,6 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 			captionNode.parentNode.insertBefore( parent, captionNode );
 			parent.appendChild( node );
 			dom.remove( captionNode );
-		}
-
-		$imageNode = editor.$( imageNode );
-		srcset = $imageNode.attr( 'srcset' );
-		src = $imageNode.attr( 'src' );
-
-		// Remove srcset and sizes if the image file was edited or the image was replaced.
-		if ( srcset && src ) {
-			src = src.replace( /[?#].*/, '' );
-
-			if ( srcset.indexOf( src ) === -1 ) {
-				$imageNode.attr( 'srcset', null ).attr( 'sizes', null );
-			}
 		}
 
 		if ( wp.media.events ) {
@@ -515,10 +347,12 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 		}
 
 		editor.nodeChanged();
+		// Refresh the toolbar
+		addToolbar( imageNode );
 	}
 
 	function editImage( img ) {
-		var frame, callback, metadata, imageNode;
+		var frame, callback, metadata;
 
 		if ( typeof wp === 'undefined' || ! wp.media ) {
 			editor.execCommand( 'mceImage' );
@@ -526,9 +360,6 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 		}
 
 		metadata = extractImageData( img );
-
-		// Mark the image node so we can select it later.
-		editor.$( img ).attr( 'data-wp-editing', 1 );
 
 		// Manipulate the metadata by reference that is fed into the PostImage model used in the media modal
 		wp.media.events.trigger( 'editor:image-edit', {
@@ -546,8 +377,9 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 		wp.media.events.trigger( 'editor:frame-create', { frame: frame } );
 
 		callback = function( imageData ) {
+			editor.focus();
 			editor.undoManager.transact( function() {
-				updateImage( imageNode, imageData );
+				updateImage( img, imageData );
 			} );
 			frame.detach();
 		};
@@ -557,22 +389,18 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 		frame.on( 'close', function() {
 			editor.focus();
 			frame.detach();
-
-			// `close` fires first...
-			// To be able to update the image node, we need to find it here,
-			// and use it in the callback.
-			imageNode = editor.$( 'img[data-wp-editing]' )
-			imageNode.removeAttr( 'data-wp-editing' );
 		});
 
 		frame.open();
 	}
 
 	function removeImage( node ) {
-		var wrap = editor.dom.getParent( node, 'div.mceTemp' );
+		var wrap;
 
-		if ( ! wrap && node.nodeName === 'IMG' ) {
-			wrap = editor.dom.getParent( node, 'a' );
+		if ( node.nodeName === 'DIV' && editor.dom.hasClass( node, 'mceTemp' ) ) {
+			wrap = node;
+		} else if ( node.nodeName === 'IMG' || node.nodeName === 'DT' || node.nodeName === 'A' ) {
+			wrap = editor.dom.getParent( node, 'div.mceTemp' );
 		}
 
 		if ( wrap ) {
@@ -585,13 +413,74 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 			}
 
 			editor.selection.collapse( true );
+			editor.nodeChanged();
 			editor.dom.remove( wrap );
 		} else {
 			editor.dom.remove( node );
 		}
+		removeToolbar();
+	}
 
-		editor.nodeChanged();
-		editor.undoManager.add();
+	function addToolbar( node ) {
+		var rectangle, toolbarHtml, toolbar, left,
+			dom = editor.dom;
+
+		removeToolbar();
+
+		// Don't add to placeholders
+		if ( ! node || node.nodeName !== 'IMG' || isPlaceholder( node ) ) {
+			return;
+		}
+
+		dom.setAttrib( node, 'data-wp-imgselect', 1 );
+		rectangle = dom.getRect( node );
+
+		toolbarHtml = '<div class="dashicons dashicons-edit edit" data-mce-bogus="1"></div>' +
+			'<div class="dashicons dashicons-no-alt remove" data-mce-bogus="1"></div>';
+
+		toolbar = dom.create( 'div', {
+			'id': 'wp-image-toolbar',
+			'data-mce-bogus': '1',
+			'contenteditable': false
+		}, toolbarHtml );
+
+		if ( editor.rtl ) {
+			left = rectangle.x + rectangle.w - 82;
+		} else {
+			left = rectangle.x;
+		}
+
+		editor.getBody().appendChild( toolbar );
+		dom.setStyles( toolbar, {
+			top: rectangle.y,
+			left: left
+		});
+
+		toolbarActive = true;
+	}
+
+	function removeToolbar() {
+		var toolbar = editor.dom.get( 'wp-image-toolbar' );
+
+		if ( toolbar ) {
+			editor.dom.remove( toolbar );
+		}
+
+		editor.dom.setAttrib( editor.dom.select( 'img[data-wp-imgselect]' ), 'data-wp-imgselect', null );
+
+		toolbarActive = false;
+	}
+
+	function isPlaceholder( node ) {
+		var dom = editor.dom;
+
+		if ( dom.hasClass( node, 'mceItem' ) || dom.getAttrib( node, 'data-mce-placeholder' ) ||
+			dom.getAttrib( node, 'data-mce-object' ) ) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	editor.on( 'init', function() {
@@ -599,6 +488,245 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 			captionClass = editor.getParam( 'wpeditimage_html5_captions' ) ? 'html5-captions' : 'html4-captions';
 
 		dom.addClass( editor.getBody(), captionClass );
+
+		// Add caption field to the default image dialog
+		editor.on( 'wpLoadImageForm', function( event ) {
+			if ( editor.getParam( 'wpeditimage_disable_captions' ) ) {
+				return;
+			}
+
+			var captionField = {
+				type: 'textbox',
+				flex: 1,
+				name: 'caption',
+				minHeight: 60,
+				multiline: true,
+				scroll: true,
+				label: 'Image caption'
+			};
+
+			event.data.splice( event.data.length - 1, 0, captionField );
+		});
+
+		// Fix caption parent width for images added from URL
+		editor.on( 'wpNewImageRefresh', function( event ) {
+			var parent, captionWidth;
+
+			if ( parent = dom.getParent( event.node, 'dl.wp-caption' ) ) {
+				if ( ! parent.style.width ) {
+					captionWidth = parseInt( event.node.clientWidth, 10 ) + 10;
+					captionWidth = captionWidth ? captionWidth + 'px' : '50%';
+					dom.setStyle( parent, 'width', captionWidth );
+				}
+			}
+		});
+
+		editor.on( 'wpImageFormSubmit', function( event ) {
+			var data = event.imgData.data,
+				imgNode = event.imgData.node,
+				caption = event.imgData.caption,
+				captionId = '',
+				captionAlign = '',
+				captionWidth = '',
+				wrap, parent, node, html, imgId;
+
+			// Temp image id so we can find the node later
+			data.id = '__wp-temp-img-id';
+			// Cancel the original callback
+			event.imgData.cancel = true;
+
+			if ( ! data.style ) {
+				data.style = null;
+			}
+
+			if ( ! data.src ) {
+				// Delete the image and the caption
+				if ( imgNode ) {
+					if ( wrap = dom.getParent( imgNode, 'div.mceTemp' ) ) {
+						dom.remove( wrap );
+					} else if ( imgNode.parentNode.nodeName === 'A' ) {
+						dom.remove( imgNode.parentNode );
+					} else {
+						dom.remove( imgNode );
+					}
+
+					editor.nodeChanged();
+				}
+				return;
+			}
+
+			if ( caption ) {
+				caption = caption.replace( /\r\n|\r/g, '\n' ).replace( /<\/?[a-zA-Z0-9]+( [^<>]+)?>/g, function( a ) {
+					// No line breaks inside HTML tags
+					return a.replace( /[\r\n\t]+/, ' ' );
+				});
+
+				// Convert remaining line breaks to <br>
+				caption = caption.replace( /(<br[^>]*>)\s*\n\s*/g, '$1' ).replace( /\s*\n\s*/g, '<br />' );
+			}
+
+			if ( ! imgNode ) {
+				// New image inserted
+				html = dom.createHTML( 'img', data );
+
+				if ( caption ) {
+					node = editor.selection.getNode();
+
+					if ( data.width ) {
+						captionWidth = parseInt( data.width, 10 );
+
+						if ( ! editor.getParam( 'wpeditimage_html5_captions' ) ) {
+							captionWidth += 10;
+						}
+
+						captionWidth = ' style="width: ' + captionWidth + 'px"';
+					}
+
+					html = '<dl class="wp-caption alignnone"' + captionWidth + '>' +
+						'<dt class="wp-caption-dt">'+ html +'</dt><dd class="wp-caption-dd">'+ caption +'</dd></dl>';
+
+					if ( node.nodeName === 'P' ) {
+						parent = node;
+					} else {
+						parent = dom.getParent( node, 'p' );
+					}
+
+					if ( parent && parent.nodeName === 'P' ) {
+						wrap = dom.create( 'div', { 'class': 'mceTemp' }, html );
+						parent.parentNode.insertBefore( wrap, parent );
+						editor.selection.select( wrap );
+						editor.nodeChanged();
+
+						if ( dom.isEmpty( parent ) ) {
+							dom.remove( parent );
+						}
+					} else {
+						editor.selection.setContent( '<div class="mceTemp">' + html + '</div>' );
+					}
+				} else {
+					editor.selection.setContent( html );
+				}
+			} else {
+				// Edit existing image
+
+				// Store the original image id if any
+				imgId = imgNode.id || null;
+				// Update the image node
+				dom.setAttribs( imgNode, data );
+				wrap = dom.getParent( imgNode, 'dl.wp-caption' );
+
+				if ( caption ) {
+					if ( wrap ) {
+						if ( parent = dom.select( 'dd.wp-caption-dd', wrap )[0] ) {
+							parent.innerHTML = caption;
+						}
+					} else {
+						if ( imgNode.className ) {
+							captionId = imgNode.className.match( /wp-image-([0-9]+)/ );
+							captionAlign = imgNode.className.match( /align(left|right|center|none)/ );
+						}
+
+						if ( captionAlign ) {
+							captionAlign = captionAlign[0];
+							imgNode.className = imgNode.className.replace( /align(left|right|center|none)/g, '' );
+						} else {
+							captionAlign = 'alignnone';
+						}
+
+						captionAlign = ' class="wp-caption ' + captionAlign + '"';
+
+						if ( captionId ) {
+							captionId = ' id="attachment_' + captionId[1] + '"';
+						}
+
+						captionWidth = data.width || imgNode.clientWidth;
+
+						if ( captionWidth ) {
+							captionWidth = parseInt( captionWidth, 10 );
+
+							if ( ! editor.getParam( 'wpeditimage_html5_captions' ) ) {
+								captionWidth += 10;
+							}
+
+							captionWidth = ' style="width: '+ captionWidth +'px"';
+						}
+
+						if ( imgNode.parentNode && imgNode.parentNode.nodeName === 'A' ) {
+							html = dom.getOuterHTML( imgNode.parentNode );
+							node = imgNode.parentNode;
+						} else {
+							html = dom.getOuterHTML( imgNode );
+							node = imgNode;
+						}
+
+						html = '<dl ' + captionId + captionAlign + captionWidth + '>' +
+							'<dt class="wp-caption-dt">'+ html +'</dt><dd class="wp-caption-dd">'+ caption +'</dd></dl>';
+
+						if ( parent = dom.getParent( imgNode, 'p' ) ) {
+							wrap = dom.create( 'div', { 'class': 'mceTemp' }, html );
+							dom.insertAfter( wrap, parent );
+							editor.selection.select( wrap );
+							editor.nodeChanged();
+
+							// Delete the old image node
+							dom.remove( node );
+
+							if ( dom.isEmpty( parent ) ) {
+								dom.remove( parent );
+							}
+						} else {
+							editor.selection.setContent( '<div class="mceTemp">' + html + '</div>' );
+						}
+					}
+				} else {
+					if ( wrap ) {
+						// Remove the caption wrapper and place the image in new paragraph
+						if ( imgNode.parentNode.nodeName === 'A' ) {
+							html = dom.getOuterHTML( imgNode.parentNode );
+						} else {
+							html = dom.getOuterHTML( imgNode );
+						}
+
+						parent = dom.create( 'p', {}, html );
+						dom.insertAfter( parent, wrap.parentNode );
+						editor.selection.select( parent );
+						editor.nodeChanged();
+						dom.remove( wrap.parentNode );
+					}
+				}
+			}
+
+			imgNode = dom.get('__wp-temp-img-id');
+			dom.setAttrib( imgNode, 'id', imgId );
+			event.imgData.node = imgNode;
+		});
+
+		editor.on( 'wpLoadImageData', function( event ) {
+			var parent,
+				data = event.imgData.data,
+				imgNode = event.imgData.node;
+
+			if ( parent = dom.getParent( imgNode, 'dl.wp-caption' ) ) {
+				parent = dom.select( 'dd.wp-caption-dd', parent )[0];
+
+				if ( parent ) {
+					data.caption = editor.serializer.serialize( parent )
+						.replace( /<br[^>]*>/g, '$&\n' ).replace( /^<p>/, '' ).replace( /<\/p>$/, '' );
+				}
+			}
+		});
+
+		dom.bind( editor.getDoc(), 'dragstart', function( event ) {
+			var node = editor.selection.getNode();
+
+			// Prevent dragging images out of the caption elements
+			if ( node.nodeName === 'IMG' && dom.getParent( node, '.wp-caption' ) ) {
+				event.preventDefault();
+			}
+
+			// Remove toolbar to avoid an orphaned toolbar when dragging an image to a new location
+			removeToolbar();
+		});
 
 		// Prevent IE11 from making dl.wp-caption resizable
 		if ( tinymce.Env.ie && tinymce.Env.ie > 10 ) {
@@ -613,141 +741,100 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 					event.target.focus();
 				}
 			});
+
+			editor.on( 'click', function( event ) {
+				if ( event.target.nodeName === 'IMG' && dom.getAttrib( event.target, 'data-wp-imgselect' ) &&
+					dom.getParent( event.target, 'dl.wp-caption' ) ) {
+
+					editor.getBody().focus();
+				}
+			});
 		}
 	});
 
 	editor.on( 'ObjectResized', function( event ) {
-		var node = event.target;
+        var parent, width,
+			node = event.target,
+			dom = editor.dom;
 
 		if ( node.nodeName === 'IMG' ) {
-			editor.undoManager.transact( function() {
-				var parent, width,
-					dom = editor.dom;
+			node.className = node.className.replace( /\bsize-[^ ]+/, '' );
 
-				node.className = node.className.replace( /\bsize-[^ ]+/, '' );
+			if ( parent = dom.getParent( node, '.wp-caption' ) ) {
+				width = event.width || dom.getAttrib( node, 'width' );
 
-				if ( parent = dom.getParent( node, '.wp-caption' ) ) {
-					width = event.width || dom.getAttrib( node, 'width' );
+				if ( width ) {
+					width = parseInt( width, 10 );
 
-					if ( width ) {
-						width = parseInt( width, 10 );
-
-						if ( ! editor.getParam( 'wpeditimage_html5_captions' ) ) {
-							width += 10;
-						}
-
-						dom.setStyle( parent, 'width', width + 'px' );
+					if ( ! editor.getParam( 'wpeditimage_html5_captions' ) ) {
+						width += 10;
 					}
+
+					dom.setStyle( parent, 'width', width + 'px' );
 				}
-			});
+			}
+			// refresh toolbar
+			addToolbar( node );
 		}
-	});
-
-	editor.on( 'pastePostProcess', function( event ) {
-		// Pasting in a caption node.
-		if ( editor.dom.getParent( editor.selection.getNode(), 'dd.wp-caption-dd' ) ) {
-			// Remove "non-block" elements that should not be in captions.
-			editor.$( 'img, audio, video, object, embed, iframe, script, style', event.node ).remove();
-
-			editor.$( '*', event.node ).each( function( i, node ) {
-				if ( editor.dom.isBlock( node ) ) {
-					// Insert <br> where the blocks used to be. Makes it look better after pasting in the caption.
-					if ( tinymce.trim( node.textContent || node.innerText ) ) {
-						editor.dom.insertAfter( editor.dom.create( 'br' ), node );
-						editor.dom.remove( node, true );
-					} else {
-						editor.dom.remove( node );
-					}
-				}
-			});
-
-			// Trim <br> tags.
-			editor.$( 'br',  event.node ).each( function( i, node ) {
-				if ( ! node.nextSibling || node.nextSibling.nodeName === 'BR' ||
-					! node.previousSibling || node.previousSibling.nodeName === 'BR' ) {
-
-					editor.dom.remove( node );
-				}
-			} );
-
-			// Pasted HTML is cleaned up for inserting in the caption.
-			pasteInCaption = true;
-		}
-	});
+    });
 
 	editor.on( 'BeforeExecCommand', function( event ) {
-		var node, p, DL, align, replacement, captionParent,
+		var node, p, DL, align,
 			cmd = event.command,
 			dom = editor.dom;
 
-		if ( cmd === 'mceInsertContent' || cmd === 'Indent' || cmd === 'Outdent' ) {
-			node = editor.selection.getNode();
-			captionParent = dom.getParent( node, 'div.mceTemp' );
+		if ( cmd === 'mceInsertContent' ) {
+			// When inserting content, if the caret is inside a caption create new paragraph under
+			// and move the caret there
+			if ( node = dom.getParent( editor.selection.getNode(), 'div.mceTemp' ) ) {
+				p = dom.create( 'p' );
+				dom.insertAfter( p, node );
+				editor.selection.setCursorLocation( p, 0 );
+				editor.nodeChanged();
 
-			if ( captionParent ) {
-				if ( cmd === 'mceInsertContent' ) {
-					if ( pasteInCaption ) {
-						pasteInCaption = false;
-						// We are in the caption element, and in 'paste' context,
-						// and the pasted HTML was cleaned up on 'pastePostProcess' above.
-						// Let it be pasted in the caption.
-						return;
-					}
+				if ( tinymce.Env.ie > 8 ) {
+					setTimeout( function() {
+						editor.selection.setCursorLocation( p, 0 );
+						editor.selection.setContent( event.value );
+					}, 500 );
 
-					// The paste is somewhere else in the caption DL element.
-					// Prevent pasting in there as it will break the caption.
-					// Make new paragraph under the caption DL and move the caret there.
-					p = dom.create( 'p' );
-					dom.insertAfter( p, captionParent );
-					editor.selection.setCursorLocation( p, 0 );
-
-					// If the image is selected and the user pastes "over" it,
-					// replace both the image and the caption elements with the pasted content.
-					// This matches the behavior when pasting over non-caption images.
-					if ( node.nodeName === 'IMG' ) {
-                        editor.$( captionParent ).remove();
-                    }
-
-					editor.nodeChanged();
-				} else {
-					// Clicking Indent or Outdent while an image with a caption is selected breaks the caption.
-					// See #38313.
-					event.preventDefault();
-					event.stopImmediatePropagation();
 					return false;
 				}
 			}
-		} else if ( cmd === 'JustifyLeft' || cmd === 'JustifyRight' || cmd === 'JustifyCenter' || cmd === 'wpAlignNone' ) {
+		} else if ( cmd === 'JustifyLeft' || cmd === 'JustifyRight' || cmd === 'JustifyCenter' ) {
 			node = editor.selection.getNode();
-			align = 'align' + cmd.slice( 7 ).toLowerCase();
-			DL = editor.dom.getParent( node, '.wp-caption' );
+			align = cmd.substr(7).toLowerCase();
+			align = 'align' + align;
 
-			if ( node.nodeName !== 'IMG' && ! DL ) {
-				return;
-			}
+			removeToolbar();
 
-			node = DL || node;
-
-			if ( editor.dom.hasClass( node, align ) ) {
-				replacement = ' alignnone';
+			if ( dom.is( node, 'dl.wp-caption' ) ) {
+				DL = node;
 			} else {
-				replacement = ' ' + align;
+				DL = dom.getParent( node, 'dl.wp-caption' );
 			}
 
-			node.className = trim( node.className.replace( / ?align(left|center|right|none)/g, '' ) + replacement );
+			if ( DL ) {
+				// When inside an image caption, set the align* class on dl.wp-caption
+				if ( dom.hasClass( DL, align ) ) {
+					dom.removeClass( DL, align );
+					dom.addClass( DL, 'alignnone' );
+				} else {
+					DL.className = DL.className.replace( /align[^ ]+/g, '' );
+					dom.addClass( DL, align );
+				}
 
-			editor.nodeChanged();
-			event.preventDefault();
-
-			if ( toolbar ) {
-				toolbar.reposition();
+				return false;
 			}
 
-			editor.fire( 'ExecCommand', {
-				command: cmd,
-				ui: event.ui,
-				value: event.value
-			} );
+			if ( node.nodeName === 'IMG' ) {
+				if ( dom.hasClass( node, align ) ) {
+					// The align class is being removed
+					dom.addClass( node, 'alignnone' );
+				} else {
+					dom.removeClass( node, 'alignnone' );
+				}
+			}
 		}
 	});
 
@@ -755,10 +842,9 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 		var node, wrap, P, spacer,
 			selection = editor.selection,
 			keyCode = event.keyCode,
-			dom = editor.dom,
-			VK = tinymce.util.VK;
+			dom = editor.dom;
 
-		if ( keyCode === VK.ENTER ) {
+		if ( keyCode === tinymce.util.VK.ENTER ) {
 			// When pressing Enter inside a caption move the caret to a new parapraph under it
 			node = selection.getNode();
 			wrap = dom.getParent( node, 'div.mceTemp' );
@@ -785,7 +871,7 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 				editor.nodeChanged();
 				selection.setCursorLocation( P, 0 );
 			}
-		} else if ( keyCode === VK.DELETE || keyCode === VK.BACKSPACE ) {
+		} else if ( keyCode === tinymce.util.VK.DELETE || keyCode === tinymce.util.VK.BACKSPACE ) {
 			node = selection.getNode();
 
 			if ( node.nodeName === 'DIV' && dom.hasClass( node, 'mceTemp' ) ) {
@@ -799,19 +885,64 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 				removeImage( node );
 				return false;
 			}
+
+			removeToolbar();
+		}
+
+		// Key presses will replace the image so we need to remove the toolbar
+		if ( toolbarActive ) {
+			if ( event.ctrlKey || event.metaKey || event.altKey ||
+				( keyCode < 48 && keyCode > 90 ) || keyCode > 186 ) {
+				return;
+			}
+
+			removeToolbar();
 		}
 	});
 
-	// After undo/redo FF seems to set the image height very slowly when it is set to 'auto' in the CSS.
-	// This causes image.getBoundingClientRect() to return wrong values and the resize handles are shown in wrong places.
-	// Collapse the selection to remove the resize handles.
-	if ( tinymce.Env.gecko ) {
-		editor.on( 'undo redo', function() {
-			if ( editor.selection.getNode().nodeName === 'IMG' ) {
-				editor.selection.collapse();
+	editor.on( 'mousedown', function( event ) {
+		if ( editor.dom.getParent( event.target, '#wp-image-toolbar' ) ) {
+			if ( tinymce.Env.ie ) {
+				// Stop IE > 8 from making the wrapper resizable on mousedown
+				event.preventDefault();
 			}
-		});
-	}
+		} else if ( event.target.nodeName !== 'IMG' ) {
+			removeToolbar();
+		}
+	});
+
+	editor.on( 'mouseup', function( event ) {
+		var image,
+			node = event.target,
+			dom = editor.dom;
+
+		// Don't trigger on right-click
+		if ( event.button && event.button > 1 ) {
+			return;
+		}
+
+		if ( node.nodeName === 'DIV' && dom.getParent( node, '#wp-image-toolbar' ) ) {
+			image = dom.select( 'img[data-wp-imgselect]' )[0];
+
+			if ( image ) {
+				editor.selection.select( image );
+
+				if ( dom.hasClass( node, 'remove' ) ) {
+					removeImage( image );
+				} else if ( dom.hasClass( node, 'edit' ) ) {
+					editImage( image );
+				}
+			}
+		} else if ( node.nodeName === 'IMG' && ! editor.dom.getAttrib( node, 'data-wp-imgselect' ) && ! isPlaceholder( node ) ) {
+			addToolbar( node );
+		} else if ( node.nodeName !== 'IMG' ) {
+			removeToolbar();
+		}
+	});
+
+	editor.on( 'cut', function() {
+		removeToolbar();
+	});
 
 	editor.wpSetImgCaption = function( content ) {
 		return parseShortcode( content );
@@ -821,68 +952,17 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 		return getShortcode( content );
 	};
 
-	editor.on( 'beforeGetContent', function( event ) {
-		if ( event.format !== 'raw' ) {
-			editor.$( 'img[id="__wp-temp-img-id"]' ).removeAttr( 'id' );
-		}
-	});
-
 	editor.on( 'BeforeSetContent', function( event ) {
-		if ( event.format !== 'raw' ) {
-			event.content = editor.wpSetImgCaption( event.content );
-		}
+		event.content = editor.wpSetImgCaption( event.content );
 	});
 
 	editor.on( 'PostProcess', function( event ) {
 		if ( event.get ) {
 			event.content = editor.wpGetImgCaption( event.content );
+			event.content = event.content.replace( / data-wp-imgselect="1"/g, '' );
 		}
 	});
 
-	( function() {
-		var wrap;
-
-		editor.on( 'dragstart', function() {
-			var node = editor.selection.getNode();
-
-			if ( node.nodeName === 'IMG' ) {
-				wrap = editor.dom.getParent( node, '.mceTemp' );
-
-				if ( ! wrap && node.parentNode.nodeName === 'A' && ! hasTextContent( node.parentNode ) ) {
-					wrap = node.parentNode;
-				}
-			}
-		} );
-
-		editor.on( 'drop', function( event ) {
-			var dom = editor.dom,
-				rng = tinymce.dom.RangeUtils.getCaretRangeFromPoint( event.clientX, event.clientY, editor.getDoc() );
-
-			// Don't allow anything to be dropped in a captioned image.
-			if ( rng && dom.getParent( rng.startContainer, '.mceTemp' ) ) {
-				event.preventDefault();
-			} else if ( wrap ) {
-				event.preventDefault();
-
-				editor.undoManager.transact( function() {
-					if ( rng ) {
-						editor.selection.setRng( rng );
-					}
-
-					editor.selection.setNode( wrap );
-					dom.remove( wrap );
-				} );
-			}
-
-			wrap = null;
-		} );
-	} )();
-
-	// Add to editor.wp
-	editor.wp = editor.wp || {};
-	editor.wp.isPlaceholder = isPlaceholder;
-
-	// Back-compat.
 	return {
 		_do_shcode: parseShortcode,
 		_get_shcode: getShortcode
