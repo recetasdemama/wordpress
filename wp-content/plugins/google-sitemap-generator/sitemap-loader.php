@@ -15,7 +15,7 @@ class GoogleSitemapGeneratorLoader {
 	/**
 	 * @var Version of the generator in SVN
 	 */
-	private static $svnVersion = '$Id: sitemap-loader.php 552243 2012-06-02 15:41:16Z arnee $';
+	private static $svnVersion = '$Id: sitemap-loader.php 891809 2014-04-12 11:06:34Z arnee $';
 
 
 	/**
@@ -41,6 +41,9 @@ class GoogleSitemapGeneratorLoader {
 		//Listen to ping request
 		add_action('sm_ping', array(__CLASS__, 'CallSendPing'), 10, 1);
 
+		//Listen to daily ping
+		add_action('sm_ping_daily', array(__CLASS__, 'CallSendPingDaily'), 10, 1);
+
 		//Existing page was published
 		add_action('publish_post', array(__CLASS__, 'SchedulePing'), 999, 1);
 		add_action('publish_page', array(__CLASS__, 'SchedulePing'), 9999, 1);
@@ -52,18 +55,19 @@ class GoogleSitemapGeneratorLoader {
 		//Help topics for context sensitive help
 		//add_filter('contextual_help_list', array(__CLASS__, 'CallHtmlShowHelpList'), 9999, 2);
 
-		//Set up hooks for adding permalinks, query vars
-		self::SetupQueryVars();
-		self::SetupRewriteHooks();
-
 		//Check if the result of a ping request should be shown
 		if(!empty($_GET["sm_ping_service"])) {
 			self::CallShowPingResult();
 		}
 
 		//Fix rewrite rules if not already done on activation hook. This happens on network activation for example.
-		if(get_option("sm_rewrite_done", null) != self::$svnVersion) {
-			self::ActivateRewrite();
+		if (get_option("sm_rewrite_done", null) != self::$svnVersion) {
+			add_action('wp_loaded', array(__CLASS__, 'ActivateRewrite'), 9999, 1);
+		}
+
+		//Schedule daily ping
+		if (!wp_get_schedule('sm_ping_daily')) {
+			wp_schedule_event(time() + (60 * 60), 'daily', 'sm_ping_daily');
 		}
 	}
 
@@ -80,7 +84,7 @@ class GoogleSitemapGeneratorLoader {
 
 		add_filter('template_redirect', array(__CLASS__, 'DoTemplateRedirect'), 1, 0);
 
-		add_filter('parse_request', array(__CLASS__, 'KillFrontpageQuery'), 1, 0);
+		//add_filter('parse_request', array(__CLASS__, 'KillFrontpageQuery'), 1, 0);
 	}
 
 	/**
@@ -110,6 +114,21 @@ class GoogleSitemapGeneratorLoader {
 			'sitemap(-+([a-zA-Z0-9_-]+))?\.html.gz$' => 'index.php?xml_sitemap=params=$matches[2];html=true;zip=true'
 		);
 		return array_merge($smRules,$wpRules);
+	}
+
+	/**
+	 * Returns the rules required for Nginx permalinks
+	 *
+	 * @return string[]
+	 */
+	public static function GetNginXRules() {
+		return array(
+			'rewrite ^/sitemap(-+([a-zA-Z0-9_-]+))?\.xml$ "/index.php?xml_sitemap=params=$2" last;',
+			'rewrite ^/sitemap(-+([a-zA-Z0-9_-]+))?\.xml\.gz$ "/index.php?xml_sitemap=params=$2;zip=true" last;',
+			'rewrite ^/sitemap(-+([a-zA-Z0-9_-]+))?\.html$ "/index.php?xml_sitemap=params=$2;html=true" last;',
+			'rewrite ^/sitemap(-+([a-zA-Z0-9_-]+))?\.html.gz$ "/index.php?xml_sitemap=params=$2;html=true;zip=true" last;'
+		);
+
 	}
 
 	/**
@@ -162,6 +181,7 @@ class GoogleSitemapGeneratorLoader {
 	 */
 	public static function DeactivatePlugin() {
 		delete_option("sm_rewrite_done");
+		wp_clear_scheduled_hook('sm_ping_daily');
 	}
 
 
@@ -180,11 +200,11 @@ class GoogleSitemapGeneratorLoader {
 		}
 	}
 
-	function KillFrontpageQuery() {
-		add_filter('posts_request', array('GoogleSitemapGeneratorLoader', 'KillFrontpagePosts'), 1000, 2);
+	public static function KillFrontpageQuery() {
+		//add_filter('posts_request', array('GoogleSitemapGeneratorLoader', 'KillFrontpagePosts'), 1000, 2);
 	}
 
-	function KillFrontpagePosts($sql, &$query) {
+	public static function KillFrontpagePosts($sql, &$query) {
 		// The main query is running on the front page
 		// And the currently running query is that main query
 		if(!empty($query->query_vars["xml_sitemap"])) {
@@ -196,7 +216,8 @@ class GoogleSitemapGeneratorLoader {
 			$query->is_home = false;
 			//Prevent sending of 404 (it would happen because we didn't find any posts). Setting is_404 to true skips that check.
 			$query->is_404 = true;
-			return "SELECT SQL_CALC_FOUND_ROWS ID FROM {$GLOBALS['wpdb']->posts} WHERE ID = 0"; // Kill the query doesnt work anymore. Now try to select no matching posts :(
+
+			return "SELECT ID FROM {$GLOBALS['wpdb']->posts} WHERE 1=2"; // Kill the query doesnt work anymore. Now try to select no matching posts :(
 		}
 		return $sql;
 	}
@@ -278,13 +299,25 @@ class GoogleSitemapGeneratorLoader {
 	}
 
 	/**
-	 * Invokes the ShowPingResult method of the generator
+	 * Invokes the SendPing method of the generator
 	 * @uses GoogleSitemapGeneratorLoader::LoadPlugin()
 	 * @uses GoogleSitemapGenerator::SendPing()
 	 */
 	public static function CallSendPing() {
 		if(self::LoadPlugin()) {
 			GoogleSitemapGenerator::GetInstance()->SendPing();
+		}
+	}
+
+	/**
+	 * Invokes the SendPingDaily method of the generator
+	 * @uses GoogleSitemapGeneratorLoader::LoadPlugin()
+	 * @uses GoogleSitemapGenerator::SendPingDaily()
+	 */
+	public static function CallSendPingDaily()
+	{
+		if (self::LoadPlugin()) {
+			GoogleSitemapGenerator::GetInstance()->SendPingDaily();
 		}
 	}
 
@@ -429,8 +462,13 @@ class GoogleSitemapGeneratorLoader {
 
 //Enable the plugin for the init hook, but only if WP is loaded. Calling this php file directly will do nothing.
 if(defined('ABSPATH') && defined('WPINC')) {
-	add_action("init", array("GoogleSitemapGeneratorLoader", "Enable"), 1000, 0);
+	add_action("init", array("GoogleSitemapGeneratorLoader", "Enable"), 15, 0);
 	register_activation_hook(sm_GetInitFile(), array('GoogleSitemapGeneratorLoader', 'ActivatePlugin'));
 	register_deactivation_hook(sm_GetInitFile(), array('GoogleSitemapGeneratorLoader', 'DeactivatePlugin'));
+
+	//Set up hooks for adding permalinks, query vars.
+	//Don't wait until unit with this, since other plugins might flush the rewrite rules in init already...
+	GoogleSitemapGeneratorLoader::SetupQueryVars();
+	GoogleSitemapGeneratorLoader::SetupRewriteHooks();
 }
 
