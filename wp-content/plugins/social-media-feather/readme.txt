@@ -3,7 +3,7 @@ Contributors: Synved
 Donate link: http://synved.com/wordpress-social-media-feather/
 Tags: shortcode, shortcodes, link, links, url, permalink, permalinks, time, icons, button, buttons, free, content, plugin, Share, sharing, social share, social sharing, page, pages, widget, CSS, list, media, profile, shortlinks, social, social media, Like, twitter, google, Facebook, Reddit, youtube, vimeo, tumblr, instagram, flickr, foursquare, bookmark, bookmarks, bookmarking, pinterest, linkedin, image, edit, manage, mail, Post, posts, Style, seo, title, filter, follow, following, social follow, social following, high resolution, retina, ipad
 Requires at least: 3.1
-Tested up to: 3.8.1
+Tested up to: 3.9.1
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -125,6 +125,28 @@ You can achieve this by using *Custom Fields*. Simply set a custom field of `syn
 7. This shows the available social sharing and following widgets and their settings 
 
 == Changelog ==
+
+= 1.6 =
+* Added alignment options for both sharing and following buttons
+* Minor adjustments
+
+= 1.5.10 =
+* Added date variable
+* Minor adjustments
+
+= 1.5.9 =
+* Fix for RSS feeds displaying double resolution images 
+* Minor adjustments
+
+= 1.5.8 =
+* Attempt suggesting meta values to Facebook (it seems to ignore them at this time though)
+* Fix for esc_url strictness
+* Minor adjustments
+
+= 1.5.7 =
+* Fixed escaping of quote and double quote characters
+* Added mail as follow provider for "contact us" buttons
+* Minor adjustments
 
 = 1.5.6 =
 * Added %%author%% template variable for URL substitution
