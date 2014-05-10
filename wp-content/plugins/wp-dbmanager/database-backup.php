@@ -1,22 +1,4 @@
 <?php
-/*
-+----------------------------------------------------------------+
-|																							|
-|	WordPress 2.8 Plugin: WP-DBManager 2.63								|
-|	Copyright (c) 2009 Lester "GaMerZ" Chan									|
-|																							|
-|	File Written By:																	|
-|	- Lester "GaMerZ" Chan															|
-|	- http://lesterchan.net															|
-|																							|
-|	File Information:																	|
-|	- Database Backup																|
-|	- wp-content/plugins/wp-dbmanager/database-backup.php			|
-|																							|
-+----------------------------------------------------------------+
-*/
-
-
 ### Check Whether User Can Manage Database
 if(!current_user_can('manage_database')) {
 	die('Access Denied');
@@ -36,8 +18,9 @@ $backup['path'] = $backup_options['path'];
 $backup['password'] = str_replace('$', '\$', DB_PASSWORD);
 $backup['charset'] = ' --default-character-set="utf8"';
 
-### Form Processing 
-if($_POST['do']) {
+### Form Processing
+if(!empty($_POST['do'])) {
+	$text = '';
 	// Decide What To Do
 	switch($_POST['do']) {
 		case __('Backup', 'wp-dbmanager'):
@@ -45,7 +28,7 @@ if($_POST['do']) {
 			$brace = (substr(PHP_OS, 0, 3) == 'WIN') ? '"' : '';
 			$backup['host'] = DB_HOST;
 			$backup['port'] = '';
-			$backup['sock'] = '';	
+			$backup['sock'] = '';
 			if(strpos(DB_HOST, ':') !== false) {
 				$db_host = explode(':', DB_HOST);
 				$backup['host'] = $db_host[0];
@@ -94,7 +77,6 @@ $stats_function_disabled = 0;
 <?php if(!empty($text)) { echo '<!-- Last Action --><div id="message" class="updated fade"><p>'.$text.'</p></div>'; } ?>
 <!-- Checking Backup Status -->
 <div class="wrap">
-	<div id="icon-wp-dbmanager" class="icon32"><br /></div>
 	<h2><?php _e('Backup Database', 'wp-dbmanager'); ?></h2>
 	<h3><?php _e('Checking Backup Status', 'wp-dbmanager'); ?></h3>
 	<p>
@@ -114,8 +96,8 @@ $stats_function_disabled = 0;
 			}
 		?>
 	</p>
-	<p>		
-		<?php			
+	<p>
+		<?php
 			if(@file_exists(stripslashes($backup['mysqldumppath']))) {
 				echo __('Checking MYSQL Dump Path', 'wp-dbmanager').' <span dir="ltr">(<strong>'.stripslashes($backup['mysqldumppath']).'</strong>)</span> ...<br />';
 				echo '<font color="green">'.__('MYSQL dump path exists.', 'wp-dbmanager').'</font>';
@@ -160,7 +142,7 @@ $stats_function_disabled = 0;
 				echo '<font color="red"><span dir="ltr">exec()</span> '.__('disabled', 'wp-dbmanager').'.</font>';
 				$stats_function_disabled++;
 			}
-		?>	
+		?>
 	</p>
 	<p>
 		<?php
