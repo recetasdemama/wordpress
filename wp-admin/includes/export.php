@@ -30,7 +30,14 @@ function export_wp( $args = array() ) {
 	);
 	$args = wp_parse_args( $args, $defaults );
 
-	do_action( 'export_wp' );
+	/**
+	 * Fires at the beginning of an export, before any headers are sent.
+	 *
+	 * @since 2.3.0
+	 *
+	 * @param array $args An array of export arguments.
+	 */
+	do_action( 'export_wp', $args );
 
 	$sitename = sanitize_key( get_bloginfo( 'name' ) );
 	if ( ! empty($sitename) ) $sitename .= '.';
@@ -350,7 +357,10 @@ function export_wp( $args = array() ) {
 <?php endforeach; ?>
 <?php if ( 'all' == $args['content'] ) wxr_nav_menu_terms(); ?>
 
-	<?php do_action( 'rss2_head' ); ?>
+	<?php
+	/** This action is documented in wp-includes/feed-rss2.php */
+	do_action( 'rss2_head' );
+	?>
 
 <?php if ( $post_ids ) {
 	global $wp_query;
@@ -374,12 +384,30 @@ function export_wp( $args = array() ) {
 		<dc:creator><?php echo wxr_cdata( get_the_author_meta( 'login' ) ); ?></dc:creator>
 		<guid isPermaLink="false"><?php the_guid(); ?></guid>
 		<description></description>
-		<wp:post_image><?php echo wp_get_attachment_url(get_post_thumbnail_id($post->ID)); ?></wp:post_image>
-		<content:encoded><?php echo wxr_cdata( apply_filters( 'the_content_export', $post->post_content ) ); ?></content:encoded>
-		<excerpt:encoded><?php echo wxr_cdata( apply_filters( 'the_excerpt_export', $post->post_excerpt ) ); ?></excerpt:encoded>
+		<content:encoded><?php
+			/**
+			 * Filter the post content used for WXR exports.
+			 *
+			 * @since 2.5.0
+			 *
+			 * @param string $post_content Content of the current post.
+			 */
+			echo wxr_cdata( apply_filters( 'the_content_export', $post->post_content ) );
+		?></content:encoded>
+		<excerpt:encoded><?php
+			/**
+			 * Filter the post excerpt used for WXR exports.
+			 *
+			 * @since 2.6.0
+			 *
+			 * @param string $post_excerpt Excerpt for the current post.
+			 */
+			echo wxr_cdata( apply_filters( 'the_excerpt_export', $post->post_excerpt ) );
+		?></excerpt:encoded>
 		<wp:post_id><?php echo $post->ID; ?></wp:post_id>
 		<wp:post_date><?php echo $post->post_date; ?></wp:post_date>
 		<wp:post_date_gmt><?php echo $post->post_date_gmt; ?></wp:post_date_gmt>
+		<wp:comment_status><?php echo $post->comment_status; ?></wp:comment_status>
 		<wp:ping_status><?php echo $post->ping_status; ?></wp:ping_status>
 		<wp:post_name><?php echo $post->post_name; ?></wp:post_name>
 		<wp:status><?php echo $post->post_status; ?></wp:status>
@@ -394,6 +422,18 @@ function export_wp( $args = array() ) {
 <?php 	wxr_post_taxonomy(); ?>
 <?php	$postmeta = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE post_id = %d", $post->ID ) );
 		foreach ( $postmeta as $meta ) :
+			/**
+			 * Filter whether to selectively skip post meta used for WXR exports.
+			 *
+			 * Returning a truthy value to the filter will skip the current meta
+			 * object from being exported.
+			 *
+			 * @since 3.3.0
+			 *
+			 * @param bool   $skip     Whether to skip the current post meta. Default false.
+			 * @param string $meta_key Current meta key.
+			 * @param object $meta     Current meta object.
+			 */
 			if ( apply_filters( 'wxr_export_skip_postmeta', false, $meta->meta_key, $meta ) )
 				continue;
 		?>
@@ -402,7 +442,30 @@ function export_wp( $args = array() ) {
 			<wp:meta_value><?php echo wxr_cdata( $meta->meta_value ); ?></wp:meta_value>
 		</wp:postmeta>
 <?php	endforeach; ?>
-
+<?php	$comments = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_approved <> 'spam'", $post->ID ) );
+		foreach ( $comments as $c ) : ?>
+		<wp:comment>
+			<wp:comment_id><?php echo $c->comment_ID; ?></wp:comment_id>
+			<wp:comment_author><?php echo wxr_cdata( $c->comment_author ); ?></wp:comment_author>
+			<wp:comment_author_email><?php echo $c->comment_author_email; ?></wp:comment_author_email>
+			<wp:comment_author_url><?php echo esc_url_raw( $c->comment_author_url ); ?></wp:comment_author_url>
+			<wp:comment_author_IP><?php echo $c->comment_author_IP; ?></wp:comment_author_IP>
+			<wp:comment_date><?php echo $c->comment_date; ?></wp:comment_date>
+			<wp:comment_date_gmt><?php echo $c->comment_date_gmt; ?></wp:comment_date_gmt>
+			<wp:comment_content><?php echo wxr_cdata( $c->comment_content ) ?></wp:comment_content>
+			<wp:comment_approved><?php echo $c->comment_approved; ?></wp:comment_approved>
+			<wp:comment_type><?php echo $c->comment_type; ?></wp:comment_type>
+			<wp:comment_parent><?php echo $c->comment_parent; ?></wp:comment_parent>
+			<wp:comment_user_id><?php echo $c->user_id; ?></wp:comment_user_id>
+<?php		$c_meta = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->commentmeta WHERE comment_id = %d", $c->comment_ID ) );
+			foreach ( $c_meta as $meta ) : ?>
+			<wp:commentmeta>
+				<wp:meta_key><?php echo $meta->meta_key; ?></wp:meta_key>
+				<wp:meta_value><?php echo wxr_cdata( $meta->meta_value ); ?></wp:meta_value>
+			</wp:commentmeta>
+<?php		endforeach; ?>
+		</wp:comment>
+<?php	endforeach; ?>
 	</item>
 <?php
 	}

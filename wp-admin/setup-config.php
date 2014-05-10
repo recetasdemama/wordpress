@@ -13,8 +13,6 @@
 
 /**
  * We are installing.
- *
- * @package WordPress
  */
 define('WP_INSTALLING', true);
 
@@ -94,8 +92,6 @@ $step = isset( $_GET['step'] ) ? (int) $_GET['step'] : 0;
  *
  * @ignore
  * @since 2.3.0
- * @package WordPress
- * @subpackage Installer_WP_Config
  */
 function setup_config_display_header() {
 	global $wp_version;
@@ -105,6 +101,7 @@ function setup_config_display_header() {
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"<?php if ( is_rtl() ) echo ' dir="rtl"'; ?>>
 <head>
+<meta name="viewport" content="width=device-width" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php _e( 'WordPress &rsaquo; Setup Configuration File' ); ?></title>
 <link rel="stylesheet" href="css/install.css?ver=<?php echo preg_replace( '/[^0-9a-z\.-]/i', '', $wp_version ); ?>" type="text/css" />
@@ -112,7 +109,7 @@ function setup_config_display_header() {
 
 </head>
 <body class="wp-core-ui<?php if ( is_rtl() ) echo ' rtl'; ?>">
-<h1 id="logo"><a href="<?php esc_attr_e( 'http://wordpress.org/' ); ?>"><?php _e( 'WordPress' ); ?></a></h1>
+<h1 id="logo"><a href="<?php esc_attr_e( 'https://wordpress.org/' ); ?>"><?php _e( 'WordPress' ); ?></a></h1>
 <?php
 } // end function setup_config_display_header();
 
