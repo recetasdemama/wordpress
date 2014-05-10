@@ -1,22 +1,4 @@
 <?php
-/*
-+----------------------------------------------------------------+
-|																							|
-|	WordPress 2.8 Plugin: WP-DBManager 2.63								|
-|	Copyright (c) 2009 Lester "GaMerZ" Chan									|
-|																							|
-|	File Written By:																	|
-|	- Lester "GaMerZ" Chan															|
-|	- http://lesterchan.net															|
-|																							|
-|	File Information:																	|
-|	- Database Manager																|
-|	- wp-content/plugins/wp-dbmanager/database-manager.php		|
-|																							|
-+----------------------------------------------------------------+
-*/
-
-
 ### Check Whether User Can Manage Database
 if(!current_user_can('manage_database')) {
 	die('Access Denied');
@@ -40,7 +22,6 @@ $sqlversion = $wpdb->get_var("SELECT VERSION() AS version");
 <?php if(!empty($text)) { echo '<!-- Last Action --><div id="message" class="updated fade"><p>'.$text.'</p></div>'; } ?>
 <!-- Database Information -->
 <div class="wrap">
-	<div id="icon-wp-dbmanager" class="icon32"><br /></div>
 	<h2><?php _e('Database', 'wp-dbmanager'); ?></h2>
 	<h3><?php _e('Database Information', 'wp-dbmanager'); ?></h3>
 	<br style="clear" />
@@ -58,7 +39,7 @@ $sqlversion = $wpdb->get_var("SELECT VERSION() AS version");
 		<tr class="alternate">
 			<td><?php _e('Database Name', 'wp-dbmanager'); ?></td>
 			<td><?php echo DB_NAME; ?></td>
-		</tr>	
+		</tr>
 		<tr>
 			<td><?php _e('Database User', 'wp-dbmanager'); ?></td>
 			<td><?php echo DB_USER; ?></td>
@@ -66,11 +47,11 @@ $sqlversion = $wpdb->get_var("SELECT VERSION() AS version");
 		<tr class="alternate">
 			<td><?php _e('Database Type', 'wp-dbmanager'); ?></td>
 			<td>MYSQL</td>
-		</tr>	
+		</tr>
 		<tr>
 			<td><?php _e('Database Version', 'wp-dbmanager'); ?></td>
 			<td>v<?php echo $sqlversion; ?></td>
-		</tr>	
+		</tr>
 	</table>
 </div>
 <p>&nbsp;</p>
@@ -92,6 +73,11 @@ $sqlversion = $wpdb->get_var("SELECT VERSION() AS version");
 <?php
 // If MYSQL Version More Than 3.23, Get More Info
 if($sqlversion >= '3.23') {
+	$no = 0;
+	$row_usage = 0;
+	$data_usage = 0;
+	$index_usage = 0;
+	$overhead_usage = 0;
 	$tablesstatus = $wpdb->get_results("SHOW TABLE STATUS");
 	foreach($tablesstatus as  $tablestatus) {
 		if($no%2 == 0) {
@@ -112,7 +98,7 @@ if($sqlversion >= '3.23') {
 		$index_usage +=  $tablestatus->Index_length;
 		$overhead_usage += $tablestatus->Data_free;
 		echo '</tr>'."\n";
-	}	
+	}
 	echo '<tr class="thead">'."\n";
 	echo '<th>'.__('Total:', 'wp-dbmanager').'</th>'."\n";
 	echo '<th>'.sprintf(_n('%s Table', '%s Tables', $no, 'wp-dbmanager'), number_format_i18n($no)).'</th>'."\n";
