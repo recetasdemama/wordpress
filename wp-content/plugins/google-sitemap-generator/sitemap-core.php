@@ -1,7 +1,7 @@
 <?php
 /*
 
- $Id: sitemap-core.php 552243 2012-06-02 15:41:16Z arnee $
+ $Id: sitemap-core.php 899565 2014-04-21 16:30:49Z arnee $
 
 */
 
@@ -191,27 +191,27 @@ class GoogleSitemapGeneratorPage {
 	/**
 	 * @var string $_url Sets the URL or the relative path to the blog dir of the page
 	 */
-	protected $_url;
+	public $_url;
 
 	/**
 	 * @var float $_priority Sets the priority of this page
 	 */
-	protected $_priority;
+	public $_priority;
 
 	/**
 	 * @var string $_changeFreq Sets the chanfe frequency of the page. I want Enums!
 	 */
-	protected $_changeFreq;
+	public $_changeFreq;
 
 	/**
 	 * @var int $_lastMod Sets the lastMod date as a UNIX timestamp.
 	 */
-	protected $_lastMod;
+	public $_lastMod;
 
 	/**
 	 * @var int $_postID Sets the post ID in case this item is a WordPress post or page
 	 */
-	protected $_postID;
+	public $_postID;
 
 	/**
 	 * Initialize a new page object
@@ -452,12 +452,56 @@ class GoogleSitemapGeneratorSitemapEntry {
 }
 
 /**
- * Base class for all priority providers
+ * Interface for all priority providers
  * @author Arne Brachhold
  * @package sitemap
  * @since 3.0
  */
-abstract class GoogleSitemapGeneratorPrioProviderBase {
+interface GoogleSitemapGeneratorPrioProviderBase {
+
+	/**
+	 * Initializes a new priority provider
+	 *
+	 * @param $totalComments int The total number of comments of all posts
+	 * @param $totalPosts int The total number of posts
+	 * @since 3.0
+	 */
+	function __construct($totalComments, $totalPosts);
+
+	/**
+	 * Returns the (translated) name of this priority provider
+	 *
+	 * @since 3.0
+	 * @return string The translated name
+	 */
+	static function GetName();
+
+	/**
+	 * Returns the (translated) description of this priority provider
+	 *
+	 * @since 3.0
+	 * @return string The translated description
+	 */
+	static function GetDescription();
+
+	/**
+	 * Returns the priority for a specified post
+	 *
+	 * @param $postID int The ID of the post
+	 * @param $commentCount int The number of comments for this post
+	 * @since 3.0
+	 * @return int The calculated priority
+	 */
+	function GetPostPriority($postID, $commentCount);
+}
+
+/**
+ * Priority Provider which calculates the priority based on the number of comments
+ * @author Arne Brachhold
+ * @package sitemap
+ * @since 3.0
+ */
+class GoogleSitemapGeneratorPrioByCountProvider implements GoogleSitemapGeneratorPrioProviderBase {
 
 	/**
 	 * @var int $_totalComments The total number of comments of all posts
@@ -488,42 +532,7 @@ abstract class GoogleSitemapGeneratorPrioProviderBase {
 	 * @since 3.0
 	 * @return string The translated name
 	 */
-	public abstract function GetName();
-
-	/**
-	 * Returns the (translated) description of this priority provider
-	 *
-	 * @since 3.0
-	 * @return string The translated description
-	 */
-	public abstract function GetDescription();
-
-	/**
-	 * Returns the priority for a specified post
-	 *
-	 * @param $postID int The ID of the post
-	 * @param $commentCount int The number of comments for this post
-	 * @since 3.0
-	 * @return int The calculated priority
-	 */
-	public abstract function GetPostPriority($postID, $commentCount);
-}
-
-/**
- * Priority Provider which calculates the priority based on the number of comments
- * @author Arne Brachhold
- * @package sitemap
- * @since 3.0
- */
-class GoogleSitemapGeneratorPrioByCountProvider extends GoogleSitemapGeneratorPrioProviderBase {
-
-	/**
-	 * Returns the (translated) name of this priority provider
-	 *
-	 * @since 3.0
-	 * @return string The translated name
-	 */
-	public function GetName() {
+	public static function GetName() {
 		return __("Comment Count", 'sitemap');
 	}
 
@@ -533,19 +542,8 @@ class GoogleSitemapGeneratorPrioByCountProvider extends GoogleSitemapGeneratorPr
 	 * @since 3.0
 	 * @return string The translated description
 	 */
-	public function GetDescription() {
+	public static function GetDescription() {
 		return __("Uses the number of comments of the post to calculate the priority", 'sitemap');
-	}
-
-	/**
-	 * Initializes a new priority provider which calculates the post priority based on the number of comments
-	 *
-	 * @param $totalComments int The total number of comments of all posts
-	 * @param $totalPosts int The total number of posts
-	 * @since 3.0
-	 */
-	public function __construct($totalComments, $totalPosts) {
-		parent::__construct($totalComments, $totalPosts);
 	}
 
 	/**
@@ -573,7 +571,18 @@ class GoogleSitemapGeneratorPrioByCountProvider extends GoogleSitemapGeneratorPr
  * @package sitemap
  * @since 3.0
  */
-class GoogleSitemapGeneratorPrioByAverageProvider extends GoogleSitemapGeneratorPrioProviderBase {
+class GoogleSitemapGeneratorPrioByAverageProvider implements  GoogleSitemapGeneratorPrioProviderBase {
+
+
+	/**
+	 * @var int $_totalComments The total number of comments of all posts
+	 */
+	protected $_totalComments = 0;
+
+	/**
+	 * @var int $_totalComments The total number of posts
+	 */
+	protected $_totalPosts = 0;
 
 	/**
 	 * @var int $_average The average number of comments per post
@@ -586,7 +595,7 @@ class GoogleSitemapGeneratorPrioByAverageProvider extends GoogleSitemapGenerator
 	 * @since 3.0
 	 * @return string The translated name
 	 */
-	public function GetName() {
+	public static function GetName() {
 		return __("Comment Average", 'sitemap');
 	}
 
@@ -596,7 +605,7 @@ class GoogleSitemapGeneratorPrioByAverageProvider extends GoogleSitemapGenerator
 	 * @since 3.0
 	 * @return string The translated description
 	 */
-	public function GetDescription() {
+	public static function GetDescription() {
 		return __("Uses the average comment count to calculate the priority", 'sitemap');
 	}
 
@@ -608,7 +617,6 @@ class GoogleSitemapGeneratorPrioByAverageProvider extends GoogleSitemapGenerator
 	 * @since 3.0
 	 */
 	public function __construct($totalComments, $totalPosts) {
-		parent::__construct($totalComments, $totalPosts);
 
 		if($this->_totalComments > 0 && $this->_totalPosts > 0) {
 			$this->_average = (double) $this->_totalComments / $this->_totalPosts;
@@ -640,81 +648,6 @@ class GoogleSitemapGeneratorPrioByAverageProvider extends GoogleSitemapGenerator
 		}
 
 		return round($prio, 1);
-	}
-}
-
-/**
- * Priority Provider which calculates the priority based on the popularity by the PopularityContest Plugin
- * @author Arne Brachhold
- * @package sitemap
- * @since 3.0
- */
-class GoogleSitemapGeneratorPrioByPopularityContestProvider extends GoogleSitemapGeneratorPrioProviderBase {
-
-	/**
-	 * Returns the (translated) name of this priority provider
-	 *
-	 * @since 3.0
-	 * @return string The translated name
-	 */
-	public function GetName() {
-		return __("Popularity Contest", 'sitemap');
-	}
-
-	/**
-	 * Returns the (translated) description of this priority provider
-	 *
-	 * @since 3.0
-	 * @return string The translated description
-	 */
-	public function GetDescription() {
-		return str_replace("%4", "index.php?page=popularity-contest.php", str_replace("%3", "options-general.php?page=popularity-contest.php", str_replace("%2", "http://www.alexking.org/", str_replace("%1", "http://www.alexking.org/index.php?content=software/wordpress/content.php", __("Uses the activated <a href=\"%1\">Popularity Contest Plugin</a> from <a href=\"%2\">Alex King</a>. See <a href=\"%3\">Settings</a> and <a href=\"%4\">Most Popular Posts</a>", 'sitemap')))));
-	}
-
-	/**
-	 * Initializes a new priority provider which calculates the post priority based on the popularity by the PopularityContest Plugin
-	 *
-	 * @param $totalComments int The total number of comments of all posts
-	 * @param $totalPosts int The total number of posts
-	 * @since 3.0
-	 */
-	public function __construct($totalComments, $totalPosts) {
-		parent::__construct($totalComments, $totalPosts);
-	}
-
-	/**
-	 * Returns the priority for a specified post
-	 *
-	 * @param $postID int The ID of the post
-	 * @param $commentCount int The number of comments for this post
-	 * @since 3.0
-	 * @return int The calculated priority
-	 */
-	public function GetPostPriority($postID, $commentCount) {
-		//$akpc is the global instance of the Popularity Contest Plugin
-		global $akpc, $posts;
-
-		$res = 0;
-		//Better check if its there
-		if(!empty($akpc) && is_object($akpc)) {
-			//Is the method we rely on available?
-			if(method_exists($akpc, "get_post_rank")) {
-				if(!is_array($posts) || !$posts) $posts = array();
-				if(!isset($posts[$postID])) $posts[$postID] = get_post($postID);
-				//popresult comes as a percent value
-				$popresult = $akpc->get_post_rank($postID);
-				if(!empty($popresult) && strpos($popresult, "%") !== false) {
-					//We need to parse it to get the priority as an int (percent)
-					$matches = null;
-					preg_match("/([0-9]{1,3})\%/si", $popresult, $matches);
-					if(!empty($matches) && is_array($matches) && count($matches) == 2) {
-						//Divide it so 100% = 1, 10% = 0.1
-						$res = round(intval($matches[1]) / 100, 1);
-					}
-				}
-			}
-		}
-		return $res;
 	}
 }
 
@@ -781,6 +714,11 @@ final class GoogleSitemapGenerator {
 	 */
 	private $simData = array("sitemaps" => array(), "content" => array());
 
+	/**
+	 * @var bool Defines if the options have been loaded
+	 */
+	private $optionsLoaded = false;
+
 
 	/*************************************** CONSTRUCTION AND INITIALIZING ***************************************/
 
@@ -810,7 +748,7 @@ final class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 */
-	public function Enable() {
+	public static function Enable() {
 		if(!isset($GLOBALS["sm_instance"])) {
 			$GLOBALS["sm_instance"] = new GoogleSitemapGenerator();
 		}
@@ -957,7 +895,7 @@ final class GoogleSitemapGenerator {
 	 * @return true if compressed
 	 */
 	public function IsGzipEnabled() {
-		return ($this->GetOption("b_gzip") === true && function_exists("gzwrite"));
+		return (function_exists("gzwrite"));
 	}
 
 	/**
@@ -969,6 +907,20 @@ final class GoogleSitemapGenerator {
 	public function IsXslEnabled() {
 		return (class_exists("DomDocument") && class_exists("XSLTProcessor"));
 	}
+
+	/**
+	 * Returns if Nginx is used as the server software
+	 * @since 4.0.3
+	 *
+	 * @return bool
+	 */
+	function IsNginx() {
+		if ( isset( $_SERVER['SERVER_SOFTWARE'] ) && stristr( $_SERVER['SERVER_SOFTWARE'], 'nginx' ) !== false ) {
+			return true;
+		}
+		return false;
+	}
+
 
 
 	/*************************************** TAXONOMIES AND CUSTOM POST TYPES ***************************************/
@@ -1038,6 +990,35 @@ final class GoogleSitemapGenerator {
 		return $activePostTypes;
 	}
 
+	/**
+	 * Returns an array with all excluded post IDs
+	 *
+	 * @since 4.0b11
+	 * @return int[] Array with excluded post IDs
+	 */
+	public function GetExcludedPostIDs() {
+
+		$excludes = (array)$this->GetOption('b_exclude');
+
+		//Exclude front page page if defined
+		if (get_option('show_on_front') == 'page' && get_option('page_on_front')) {
+			$excludes[] = get_option('page_on_front');
+			return $excludes;
+		}
+
+		return array_filter(array_map('intval',$excludes),array($this,'IsGreaterZero'));
+	}
+
+	/**
+	 * Returns an array with all excluded category IDs.
+	 *
+	 * @since 4.0b11
+	 * @return int[] Array with excluded category IDs
+	 */
+	public function GetExcludedCategoryIDs() {
+		$exclCats = (array)$this->GetOption("b_exclude_cats");
+		return array_filter(array_map('intval',$exclCats),array($this,'IsGreaterZero'));
+	}
 
 	/*************************************** PRIORITY PROVIDERS ***************************************/
 
@@ -1142,7 +1123,7 @@ final class GoogleSitemapGenerator {
 		$this->options = array();
 		$this->options["sm_b_prio_provider"] = "GoogleSitemapGeneratorPrioByCountProvider"; //Provider for automatic priority calculation
 		$this->options["sm_b_ping"] = true; //Auto ping Google
-		$this->options["sm_b_pingask"] = true; //Auto ping Ask.com
+		$this->options["sm_b_stats"] = false; //Send anonymous stats
 		$this->options["sm_b_pingmsn"] = true; //Auto ping MSN
 		$this->options["sm_b_memory"] = ''; //Set Memory Limit (e.g. 16M)
 		$this->options["sm_b_time"] = -1; //Set time limit in seconds, 0 for unlimited, -1 for disabled
@@ -1189,6 +1170,8 @@ final class GoogleSitemapGenerator {
 		$this->options["sm_i_hide_note"] = false; //Hide the note which appears after 30 days
 		$this->options["sm_i_hide_works"] = false; //Hide the "works?" message which appears after 15 days
 		$this->options["sm_i_hide_donors"] = false; //Hide the list of donations
+		$this->options["sm_i_hash"] = substr(sha1(sha1(get_bloginfo('url'))),0,20); //Partial hash for GA stats, NOT identifiable!
+		$this->options["sm_i_lastping"] = 0; //When was the last ping
 	}
 
 	/**
@@ -1197,6 +1180,8 @@ final class GoogleSitemapGenerator {
 	 * @since 3.0
 	 */
 	private function LoadOptions() {
+
+		if($this->optionsLoaded) return;
 
 		$this->InitOptions();
 
@@ -1208,6 +1193,8 @@ final class GoogleSitemapGenerator {
 				$this->options[$k] = $v;
 			}
 		} else update_option("sm_options", $this->options); //First time use, store default values
+
+		$this->optionsLoaded = true;
 	}
 
 	/**
@@ -1360,6 +1347,18 @@ final class GoogleSitemapGenerator {
 	}
 
 	/**
+	 * Returns of Permalinks are used
+	 *
+	 * @return bool
+	 */
+	public function IsUsingPermalinks() {
+		/** @var $wp_rewrite WP_Rewrite */
+		global $wp_rewrite;
+
+		return $wp_rewrite->using_mod_rewrite_permalinks();
+	}
+
+	/**
 	 * Returns the URL for the sitemap file
 	 *
 	 * @since 3.0
@@ -1371,7 +1370,7 @@ final class GoogleSitemapGenerator {
 	public function GetXmlUrl($type = "", $params = "", $buildOptions = array()) {
 		global $wp_rewrite;
 
-		$pl = $wp_rewrite->using_mod_rewrite_permalinks();
+		$pl = $this->IsUsingPermalinks();
 		$options = "";
 		if(!empty($type)) {
 			$options .= $type;
@@ -1383,13 +1382,14 @@ final class GoogleSitemapGenerator {
 		$buildOptions = array_merge($this->buildOptions, $buildOptions);
 
 		$html = (isset($buildOptions["html"]) ? $buildOptions["html"] : false);
+		$zip = (isset($buildOptions["zip"]) ? $buildOptions["zip"] : false);
 
 		if($pl) {
 			return trailingslashit(get_bloginfo('url')) . "sitemap" . ($options ? "-" . $options : "") . ($html
-					? ".html" : ".xml");
+					? ".html" : ".xml") . ($zip? ".gz" : "");
 		} else {
 			return trailingslashit(get_bloginfo('url')) . "index.php?xml_sitemap=params=" . $options . ($html
-					? ";html=true" : "");
+					? ";html=true" : "") . ($zip? ";zip=true" : "");
 		}
 	}
 
@@ -1541,20 +1541,42 @@ final class GoogleSitemapGenerator {
 
 		$this->buildOptions = $options;
 
-
-		$pack = (isset($options['zip']) ? $options['zip'] : true);
-		if(empty($_SERVER['HTTP_ACCEPT_ENCODING']) || strpos('gzip', $_SERVER['HTTP_ACCEPT_ENCODING']) === NULL || !$this->IsGzipEnabled() || headers_sent()) $pack = false;
-		if($pack) ob_start('ob_gzhandler');
+		//Do not index the actual XML pages, only process them.
+		//This avoids that the XML sitemaps show up in the search results.
+		if(!headers_sent()) header('X-Robots-Tag: noindex', true);
 
 		$this->Initate();
+
+		$html = (isset($options["html"]) ? $options["html"] : false) && $this->IsXslEnabled();
+		if($html && !$this->GetOption('b_html')) {
+			$GLOBALS['wp_query']->is_404 = true;
+			return;
+		}
+
+		//Don't zip if anything happened before which could break the output or if the client does not support gzip.
+		//If there are already other output filters, there might be some content on another
+		//filter level already, which we can't detect. Zipping then would lead to invalid content.
+		$pack = (isset($options['zip']) ? $options['zip'] : true);
+		if(
+			empty($_SERVER['HTTP_ACCEPT_ENCODING']) //No encondig support
+			|| strpos($_SERVER['HTTP_ACCEPT_ENCODING'],'gzip') === false //or no gzip
+			|| !$this->IsGzipEnabled() //No PHP gzip support
+			|| headers_sent() //Headers already sent
+			|| ob_get_contents() //there was already some output...
+			|| in_array('ob_gzhandler', ob_list_handlers()) //Some other plugin (or PHP) is already gzipping
+			|| in_array(strtolower(ini_get("zlib.output_compression")),array('yes', 'on', 'true', 1, true)) //Zlib compression in php.ini enabled
+			|| ob_get_level() > 1 //Another plugin is using an output filter already
+		) $pack = false;
+
+		$packed = false;
+
+		if($pack) $packed = @ob_start('ob_gzhandler');
 
 		$builders = array('sitemap-builder.php');
 		foreach($builders AS $b) {
 			$f = trailingslashit(dirname(__FILE__)) . $b;
 			if(file_exists($f)) require_once($f);
 		}
-
-		$html = (isset($options["html"]) ? $options["html"] : false) && $this->IsXslEnabled();
 
 		if($html) {
 			ob_start();
@@ -1612,7 +1634,7 @@ final class GoogleSitemapGenerator {
 			foreach($domTranObj->childNodes as $node) echo $domTranObj->saveXML($node) . "\n";
 		}
 
-		if($pack) ob_end_flush();
+		if($packed) ob_end_flush();
 		$this->isActive = false;
 		exit;
 	}
@@ -1698,7 +1720,7 @@ final class GoogleSitemapGenerator {
 		}
 		$endTime = microtime(true);
 		$endTime = round($endTime - $startTime, 2);
-		$this->AddElement(new GoogleSitemapGeneratorDebugEntry("Request ID: " . md5(microtime()) . "; Queries for sitemap: " . ($GLOBALS["wpdb"]->num_queries - $startQueries) . "; Seconds: $endTime; Memory for sitemap: " . ((memory_get_peak_usage(true) - $startMemory) / 1024 / 1024) . "MB" . "; Total memory: " . (memory_get_peak_usage(true) / 1024 / 1024) . "MB"));
+		$this->AddElement(new GoogleSitemapGeneratorDebugEntry("Request ID: " . md5(microtime()) . "; Queries for sitemap: " . ($GLOBALS["wpdb"]->num_queries - $startQueries) . "; Total queries: " . $GLOBALS["wpdb"]->num_queries . "; Seconds: $endTime; Memory for sitemap: " . ((memory_get_peak_usage(true) - $startMemory) / 1024 / 1024) . "MB" . "; Total memory: " . (memory_get_peak_usage(true) / 1024 / 1024) . "MB"));
 	}
 
 	/**
@@ -1810,14 +1832,6 @@ final class GoogleSitemapGenerator {
 				);
 			}
 
-			if($this->GetOption("b_pingask")) {
-				$pings["ask"] = array(
-					"name" => "Ask.com",
-					"url" => "http://submissions.ask.com/ping?sitemap=%s",
-					"check" => "successfully received and added"
-				);
-			}
-
 			if($this->GetOption("b_pingmsn")) {
 				$pings["bing"] = array(
 					"name" => "Bing",
@@ -1839,6 +1853,9 @@ final class GoogleSitemapGenerator {
 					$status->EndPing($serviceId, true);
 				}
 			}
+
+			$this->SetOption('i_lastping',time());
+			$this->SaveOptions();
 		}
 
 		$status->End();
@@ -1938,6 +1955,49 @@ final class GoogleSitemapGenerator {
 		return $response['body'];
 	}
 
+	/**
+	 * Sends anonymous statistics
+	 */
+	private function SendStats() {
+		global $wp_version;
+		$postData = array(
+			"v" => 1,
+			"tid" => "UA-65990-26",
+			"cid" => $this->GetOption('i_hash'),
+			"aip" => 1, //Anonymize
+			"t" => "event",
+			"ec" => "ping",
+			"ea" => "auto",
+			"ev" => 1,
+			"cd1" => $wp_version,
+			"cd2" => $this->GetVersion(),
+			"cd3" => PHP_VERSION,
+			"ul" => get_bloginfo('language'),
+		);
+
+		$this->RemoteOpen('http://www.google-analytics.com/collect', 'post', $postData);
+	}
+
+	/**
+	 * Handles daily ping
+	 */
+	public function SendPingDaily() {
+
+		$this->LoadOptions();
+
+		$blogUpdate = strtotime(get_lastpostdate('blog'));
+		$lastPing = $this->GetOption('i_lastping');
+		$yesterday = time() - (60 * 60 * 24);
+
+		if($blogUpdate >= $yesterday && ($lastPing==0 || $lastPing <= $yesterday)) {
+			$this->SendPing();
+		}
+
+		if($this->GetOption('b_stats')) {
+			$this->SendStats();
+		}
+	}
+
 
 	/*************************************** USER INTERFACE ***************************************/
 
@@ -1988,5 +2048,18 @@ final class GoogleSitemapGenerator {
 		}
 
 		return false;
+	}
+
+	/*************************************** HELPERS ***************************************/
+
+	/**
+	 * Returns if the given value is greater than zero
+	 *
+	 * @param $value int The value to check
+	 * @since 4.0b10
+	 * @return bool True if greater than zero
+	 */
+	public function IsGreaterZero($value) {
+		return ($value > 0);
 	}
 }

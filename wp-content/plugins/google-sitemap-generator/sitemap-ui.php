@@ -1,7 +1,7 @@
 <?php
 /*
 
- $Id: sitemap-ui.php 541050 2012-05-07 19:31:58Z arnee $
+ $Id: sitemap-ui.php 898212 2014-04-19 17:05:40Z arnee $
 
 */
 
@@ -690,9 +690,14 @@ class GoogleSitemapGeneratorUI {
 						$this->HtmlPrintBoxHeader('sm_rebuild',$head); ?>
 
 						<div style="border-left: 1px #DFDFDF solid; float:right; padding-left:15px; margin-left:10px;">
-							<iframe src="http://plugin-ae.arnebrachhold.de/show_1.html#pv=<?php echo $this->sg->GetVersion(); ?>&wpv=<?php echo $wp_version; ?>&cn=sitemap&cm=admin" width="290" height="150" allowtransparency="true" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" style="border:0;"></iframe>
+							<?php
+								if($this->sg->GetOption('b_stats')) {
+									echo '<iframe src="http://plugin-ae.arnebrachhold.de/show_1.html" width="290" height="150" allowtransparency="true" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" style="border:0;"></iframe>';
+								} else {
+									echo '<div style="width:290px; height:150px;"></div>';
+								}
+							?>
 						</div>
-
 
 						<div style="min-height:150px;">
 							<ul>
@@ -726,10 +731,32 @@ class GoogleSitemapGeneratorUI {
 								}
 								if(is_super_admin()) echo "<li>" . str_replace("%d",wp_nonce_url($this->sg->GetBackLink() . "&sm_rebuild=true&sm_do_debug=true",'sitemap'),__('If you encounter any problems with your sitemap you can use the <a href="%d">debug function</a> to get more information.','sitemap')) . "</li>";
 								?>
+								<li>
+									<?php _e('Version 4 of the XML Sitemap Generator introduces a new, more efficient format for your sitemap.','sitemap'); ?> <a href="<?php echo $this->sg->GetRedirectLink('sitemap-newformat'); ?>"><?php _e('Learn more','sitemap'); ?></a>
+								</li>
 
 							</ul>
 						</div>
 					<?php $this->HtmlPrintBoxFooter(); ?>
+
+
+
+					<?php if($this->sg->IsNginx() && $this->sg->IsUsingPermalinks()): ?>
+						<?php $this->HtmlPrintBoxHeader('ngin_x',__('Webserver Configuration', 'sitemap')); ?>
+						<?php _e('Since you are using Nginx as your web-server, please configure the following rewrite rules in case you get 404 Not Found errors for your sitemap:','sitemap'); ?>
+						<p>
+							<code style="display:block; overflow-x:auto; white-space: nowrap;">
+								<?php
+								$rules = GoogleSitemapGeneratorLoader::GetNginXRules();
+								foreach($rules AS $rule) {
+									echo $rule . "<br />";
+								}
+								?>
+							</code>
+						</p>
+						<?php $this->HtmlPrintBoxFooter(); ?>
+					<?php endif; ?>
+
 
 					<!-- Basic Options -->
 					<?php $this->HtmlPrintBoxHeader('sm_basic_options',__('Basic Options', 'sitemap')); ?>
@@ -745,11 +772,6 @@ class GoogleSitemapGeneratorUI {
 							<input type="checkbox" id="sm_b_pingmsn" name="sm_b_pingmsn" <?php echo ($this->sg->GetOption("b_pingmsn")==true?"checked=\"checked\"":"") ?> />
 							<label for="sm_b_pingmsn"><?php _e('Notify Bing (formerly MSN Live Search) about updates of your Blog', 'sitemap') ?></label><br />
 							<small><?php echo str_replace("%s",$this->sg->GetRedirectLink('sitemap-lwt'),__('No registration required, but you can join the <a href="%s">Bing Webmaster Tools</a> to check crawling statistics.','sitemap')); ?></small>
-						</li>
-						<li>
-							<input type="checkbox" id="sm_b_pingask" name="sm_b_pingask" <?php echo ($this->sg->GetOption("b_pingask")==true?"checked=\"checked\"":"") ?> />
-							<label for="sm_b_pingask"><?php _e('Notify Ask.com about updates of your Blog', 'sitemap') ?></label><br />
-							<small><?php _e('No registration required.','sitemap'); ?></small>
 						</li>
 						<li>
 							<label for="sm_b_robots">
@@ -777,9 +799,15 @@ class GoogleSitemapGeneratorUI {
 							</li>
 							<li>
 								<label for="sm_b_html">
-									<input type="checkbox" id="sm_b_html" name="sm_b_html"  <?php echo ($this->sg->GetOption("b_html")==true?"checked=\"checked\"":"") ?> />
-									<?php _e('Include sitemap in HTML format', 'sitemap') ?>
+									<input type="checkbox" id="sm_b_html" name="sm_b_html" <?php if(!$this->sg->IsXslEnabled()) echo 'disabled="disabled"'; ?>  <?php echo ($this->sg->GetOption("b_html")==true && $this->sg->IsXslEnabled()?"checked=\"checked\"":"") ?> />
+									<?php _e('Include sitemap in HTML format', 'sitemap') ?>  <?php if(!$this->sg->IsXslEnabled()) _e('(The required PHP XSL Module is not installed)', 'sitemap') ?>
 								</label>
+							</li>
+							<li>
+								<label for="sm_b_stats">
+									<input type="checkbox" id="sm_b_stats" name="sm_b_stats" <?php echo ($this->sg->GetOption("b_stats")==true?"checked=\"checked\"":"") ?> />
+									<?php _e('Allow anonymous statistics (no personal information)', 'sitemap') ?>
+								</label> <label><a href="<?php echo $this->sg->GetRedirectLink('sitemap-help-options-adv-stats'); ?>"><?php _e('Learn more','sitemap'); ?></a></label>
 							</li>
 						</ul>
 					<?php endif; ?>
