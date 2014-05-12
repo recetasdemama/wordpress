@@ -49,11 +49,6 @@ if ( $action ) {
 			}
 
 			if ( ! is_network_admin() ) {
-				if ( is_network_only_plugin( $plugin ) ) {
-					wp_redirect( self_admin_url("plugins.php?plugin_status=$status&paged=$page&s=$s") );
-					exit;
-				}
-
 				$recent = (array) get_option( 'recently_activated' );
 				unset( $recent[ $plugin ] );
 				update_option( 'recently_activated', $recent );

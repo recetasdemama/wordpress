@@ -339,20 +339,6 @@ var photostorage = false;
 	/** This action is documented in wp-admin/admin-header.php */
 	do_action( 'admin_head' );
 ?>
-	<style type="text/css">
-	#message {
-		margin: 10px 0;
-	}
-	#title,
-	.press-this #wphead {
-		margin-left: 0;
-		margin-right: 0;
-	}
-	.rtl.press-this #header-logo,
-	.rtl.press-this #wphead h1 {
-		float: right;
-	}
-	</style>
 	<script type="text/javascript">
 	var wpActiveEditor = 'content';
 
