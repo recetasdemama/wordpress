@@ -3,7 +3,7 @@
 Plugin Name: Private Only
 Plugin URI: http://www.pixert.com/
 Description: Redirects all non-logged in users to login form with custom login capability
-Version: 3.4
+Version: 3.5.1
 Author: Kate Mag (Pixel Insert)
 Author URI: http://www.pixert.com
 */
@@ -49,7 +49,7 @@ if ( is_admin() )
 	global $po_login;
 		echo '<!-- Private Only -->' . "\n\n";
 ?>
-<?php if (isset($po_login[ 'use_wp_logo' ]) && $po_login[ 'use_wp_logo' ] == true ) {} else { ?> 
+<?php if (isset($po_login[ 'use_wp_logo' ]) && $po_login[ 'use_wp_logo' ] == "true" ) {} else { ?> 
 <?php if (isset($po_login[ 'po_logo' ]) && !empty($po_login[ 'po_logo']) ) { ?>
 <style>
 #loginform { margin-top: 0; }
@@ -62,12 +62,18 @@ if ( is_admin() )
 #login h1 a{ display: none !important; }
 </style>
 <?php } } ?>
-<?php if (isset($po_login[ 'remove_backtoblog' ]) && $po_login[ 'remove_backtoblog' ] == true ) { ?>
+<?php if (isset($po_login[ 'remove_lost_password' ]) && $po_login[ 'remove_lost_password' ] == "true" ) { ?>
 <style>
-#login p#backtoblog{ display: none !important; }
+.login #nav a { display: none !important; }
 </style>
 <?php } ?>
-<?php if (isset($po_login['use_custom_css'])) { ?>
+<?php if (isset($po_login[ 'remove_backtoblog' ]) && $po_login[ 'remove_backtoblog' ] == "true" ) { ?>
+<style>
+#login p#backtoblog{ display: none !important; }
+.login #backtoblog a { display: none !important; }
+</style>
+<?php } ?>
+<?php if (isset($po_login['use_custom_css']) && $po_login['use_custom_css'] == "true") { ?>
 <link rel="stylesheet" type="text/css" href="<?php echo get_bloginfo('stylesheet_directory') ?>/custom.css" />
 <?php } ?>
 <?php
@@ -114,7 +120,11 @@ function custom_login_message() {
 $settings = get_option( 'po_login_settings' );
 $pagetitle = get_the_title($settings['public_pages']);
 $pagelink = get_permalink($settings['public_pages']);
+if (isset($settings['login_message']) && !empty($settings['login_message'])) {
+$message = '<p class="message">'.$settings['login_message'].'<br />';
+} else {
 $message = '<p class="message">'.__('Only registered and logged in users are allowed to view this site. Please login now','private-only').'<br />';
+}
 if (isset($settings['public_pages']) && $settings['public_pages']) {
 $message .= __('Visit our public page:','private-only') .' <a href='.$pagelink.'>'.$pagetitle.'</a></p>';
 } else {
@@ -136,17 +146,9 @@ function change_login_headertitle(){
 // Use your own external URL logo link
 function wpc_url_login(){
 global $po_login;
-if (isset($po_login['logo_url']) && $po_login['logo_url']) {
+if (isset($po_login['logo_url']) && $po_login['logo_url'] == true) {
 	return $po_login['logo_url']; // your URL here
 }
-}
-//Remove Lost Your Password? on WP-Admin Login Page
-function remove_lostpassword_text ( $text ) {
-	 if ($text == 'Lost your password?'){$text = '';}
-		return $text;
-}
-if (isset($po_login[ 'remove_lost_password' ]) && $po_login[ 'remove_lost_password' ] == true ) {
-add_filter( 'gettext', 'remove_lostpassword_text' );
 }
 add_filter('login_headertitle', 'change_login_headertitle');
 add_filter('login_headerurl', 'wpc_url_login');

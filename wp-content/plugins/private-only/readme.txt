@@ -3,8 +3,8 @@ Contributors: katemag
 Donate Link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L3J4LBDGP533Q   
 Tags: private access, login, remove feed  
 Requires at least: 3.0  
-Tested up to: 3.8  
-Stable tag: 3.1
+Tested up to: 3.9.1  
+Stable tag: 3.5
 
 Redirects all non-logged in users to login form.
 
@@ -23,23 +23,26 @@ Follow our developer, Kate Mag on Twitter! http://twitter.com/katemag
 
 Features:  
 1. Redirect all non-logged in users to login form  
-2. Updated feature! Custom Logo on Login Page. You can change WordPress Logo  
+2. Custom Logo on Login Page. You can change WordPress Logo  
 3. Sub plugin name Disable Feed that allow you to choose disable or enable feed.  
 4. Single public page  
 5. Localization  
 6. Custom CSS                                              
 7. Custom Logo Link and custom Logo height                                
-8. Remove Forgot Your Password? on WP-Admin login page   
+8. Remove Register and Forgot Your Password? on WP-Admin login page   
 9. Remove Back to Blog link on WP-Admin login page      
 10. The plugin redirect logged-in users to Homepage     
-11. Fix for shrink logo in WordPress 3.8
+11. Fix for shrink logo in WordPress 3.8  
+12. Detect Search Engine Visibility settings          
+13. Custom Login Message
 
 ==Installation==  
-1. Download The Private Only package file, extract the private-only directory from ZIP file, upload it to WordPress Plugins directory '/wp-content/plugins/'  
-2. Activate Private Only via Plugin page, See Private Only, Disable Feed below the Private Only.  
-3. See Settings tab on WP Admin, look for Private Only Custom Login settings
+1. Download The Private Only package file, extract the private-only directory from ZIP file, upload it to WordPress Plugins directory '/wp-content/plugins/' or install plugin from Plugin panel in WordPress Dashboard  
+2. Activate Private Only via Plugin page                 
+3. Activate Disable Feed if you want to disable feed 
+4. See Settings tab on WP Admin, look for Private Only Custom Login settings
 
 If you are new to WordPress : http://codex.wordpress.org/Managing_Plugins#Installing_Plugins
 
-==Screenshot==  
-Screnshots are available at http://pixert.com/blog
+==Screenshots==  
+Screenshots are available at http://pixert.com/blog

@@ -1,6 +1,6 @@
 <?php
 /*
-Private Only 3.4
+Private Only 3.5.1
 Website: http://pixert.com
 */
 ?>
@@ -41,6 +41,21 @@ Website: http://pixert.com
 </div> <!-- /float:right -->
 
 <div style="float:left; width:66%;">
+
+<div class="postbox open">
+<?php $visibility = get_option('blog_public'); 
+$visibilityadminpage = get_admin_url('', 'options-reading.php');
+if ($visibility == 0) { ?>
+<div class="error">
+<h3><?php _e('This site is hidden from Search Engine. <a href="'.$visibilityadminpage.'">WordPress block access to Robots</a>','private-only'); ?></h3>
+</div>
+<?php }  ?>
+<?php if ($visibility == 1)  { ?>
+<div class="error">
+<h3><?php _e('This site is visible to search engines, go to the <a href="'.$visibilityadminpage.'">reading settings</a> page and select the "Discourage search engines from indexing this site" box to hide this site.','private-only'); ?></h3>
+</div>
+<?php } ?>
+</div>
 
 <div class="postbox open">
 
@@ -84,8 +99,8 @@ Website: http://pixert.com
             	<label for="<?php echo $data['po_logo']; ?>"><?php _e('Logo:','private-only'); ?></label> 
             </th>
             <td>
-               <input id="<?php echo $data['po_logo']; ?>" name="<?php echo $data['po_logo']; ?>" value="<?php echo $val['po_logo']; ?>" size="40" /><br />
-                <?php _e('Upload an image with Media Library or FTP and put the full path here, http://yourdomainname.com/logo.jpg','private-on;y'); ?><br />
+               <input id="<?php echo $data['po_logo']; ?>" name="<?php echo $data['po_logo']; ?>" value="<?php if (isset($val['po_logo']) && !empty($val['po_logo'])) echo $val['po_logo']; ?>" size="40" /><br />
+                <?php _e('Upload an image with Media Library or FTP and put the full path here, http://yourdomainname.com/logo.jpg','private-only'); ?><br />
                 <?php _e('We do not provide upload tool here, because it is free for you upload it wherever you want to','private-only'); ?><br />
             </td>
    		</tr>
@@ -94,7 +109,7 @@ Website: http://pixert.com
             	<label for="<?php echo $data['po_logo_height']; ?>"><?php _e('Logo Height:','private-only'); ?></label> 
             </th>
             <td>
-               <input id="<?php echo $data['po_logo_height']; ?>" name="<?php echo $data['po_logo_height']; ?>" value="<?php echo $val['po_logo_height']; ?>" size="40" /><br />
+               <input id="<?php echo $data['po_logo_height']; ?>" name="<?php echo $data['po_logo_height']; ?>" value="<?php if (isset($val['po_logo_height']) && !empty($val['po_logo_height'])) echo $val['po_logo_height']; ?>" size="40" /><br />
                 <?php _e('What is your logo height','private-only'); ?>
             </td>
    		</tr>
@@ -111,7 +126,8 @@ Website: http://pixert.com
             	<label for="<?php echo $data['use_wp_logo']; ?>"><?php _e('Use WordPress logo','private-only'); ?>:</label> 
             </th>
             <td>
-                <input id="<?php echo $data['use_wp_logo']; ?>" name="<?php echo $data['use_wp_logo']; ?>" type="checkbox" <?php if ( $val['use_wp_logo'] ) echo 'checked="checked"'; ?> value="true" /><br />
+                <input name="<?php echo $data['use_wp_logo']; ?>" type="hidden" value="no" />
+                <input id="<?php echo $data['use_wp_logo']; ?>" name="<?php echo $data['use_wp_logo']; ?>" type="checkbox" <?php if (isset($val['use_wp_logo']) && $val['use_wp_logo'] == "true") echo 'checked="checked"'; ?> value="true" /><br />
                 <?php _e('Check this box to use WordPress Logo, leave unchecked to disable it.','private-only'); ?>
             </td>
    		</tr>
@@ -120,18 +136,29 @@ Website: http://pixert.com
             	<label for="<?php echo $data['logo_url']; ?>"><?php _e('Change WordPress logo link','private-only'); ?>:</label> 
             </th>
             <td>
-               <input id="<?php echo $data['logo_url']; ?>" name="<?php echo $data['logo_url']; ?>" value="<?php echo $val['logo_url']; ?>" size="40" /><br />
-                <?php _e('Change WordPress logo link from wordpress.org to your domain, http://yourdomainname.com','private-on;y'); ?><br />
+               <input id="<?php echo $data['logo_url']; ?>" name="<?php echo $data['logo_url']; ?>" value="<?php if (isset($val['logo_url']) && !empty($val['logo_url'])) echo $val['logo_url']; ?>" size="40" /><br />
+                <?php _e('Change WordPress logo link from wordpress.org to your domain, http://yourdomainname.com','private-only'); ?><br />
             </td>
 
    		</tr>
    		<tr>
             <th>
-            	<label for="<?php echo $data['remove_lost_password']; ?>"><?php _e('Remove Lost Password Text?','private-only'); ?>:</label> 
+            	<label for="<?php echo $data['login_message']; ?>"><?php _e('Your Custom Login Message','private-only'); ?>:</label> 
             </th>
             <td>
-                <input id="<?php echo $data['remove_lost_password']; ?>" name="<?php echo $data['remove_lost_password']; ?>" type="checkbox" <?php if ( $val['remove_lost_password'] ) echo 'checked="checked"'; ?> value="true" /><br />
-                <?php _e('Check this box to remove Lost Password text on WP-Admin login, leave unchecked to disable it.','private-only'); ?>
+               <textarea id="<?php echo $data['login_message']; ?>" name="<?php echo $data['login_message']; ?>" rows="3" cols="50"><?php if (isset($val['login_message']) && !empty($val['login_message'])) echo $val['login_message']; ?></textarea><br />
+                <?php _e('Change default login message to your own','private-only'); ?><br />
+            </td>
+
+   		</tr>
+   		<tr>
+            <th>
+            	<label for="<?php echo $data['remove_lost_password']; ?>"><?php _e('Remove Register and Lost Your Password? text','private-only'); ?>:</label> 
+            </th>
+            <td>
+                <input name="<?php echo $data['remove_lost_password']; ?>" type="hidden" value="no" />
+                <input id="<?php echo $data['remove_lost_password']; ?>" name="<?php echo $data['remove_lost_password']; ?>" type="checkbox" <?php if (isset($val['remove_lost_password']) && $val['remove_lost_password'] == "true") echo 'checked="checked"'; ?> value="true" /><br />
+                <?php _e('Check this box to remove Register and Lost Your Password? text on WP-Admin login, leave unchecked to disable it.','private-only'); ?>
             </td>
    		</tr>
    		<tr>
@@ -139,7 +166,8 @@ Website: http://pixert.com
             	<label for="<?php echo $data['remove_backtoblog']; ?>"><?php _e('Remove Back to Blog link?','private-only'); ?>:</label> 
             </th>
             <td>
-                <input id="<?php echo $data['remove_backtoblog']; ?>" name="<?php echo $data['remove_backtoblog']; ?>" type="checkbox" <?php if ( $val['remove_backtoblog'] ) echo 'checked="checked"'; ?> value="true" /><br />
+                <input name="<?php echo $data['remove_backtoblog']; ?>" type="hidden" value="no" />
+                <input id="<?php echo $data['remove_backtoblog']; ?>" name="<?php echo $data['remove_backtoblog']; ?>" type="checkbox" <?php if (isset($val['remove_backtoblog']) && $val['remove_backtoblog'] == "true") echo 'checked="checked"'; ?> value="true" /><br />
                 <?php _e('Check this box to remove Back to Blog link on WP-Admin login, leave unchecked to disable it.','private-only'); ?>
             </td>
    		</tr>
@@ -155,7 +183,8 @@ Website: http://pixert.com
             	<label for="<?php echo $data['use_custom_css']; ?>"><?php _e('Use Custom CSS','private-only'); ?>:</label> 
             </th>
             <td>
-                <input id="<?php echo $data['use_custom_css']; ?>" name="<?php echo $data['use_custom_css']; ?>" type="checkbox" <?php if ( $val['use_custom_css'] ) echo 'checked="checked"'; ?> value="true" /><br />
+                <input name="<?php echo $data['use_custom_css']; ?>" type="hidden" value="no" />
+                <input id="<?php echo $data['use_custom_css']; ?>" name="<?php echo $data['use_custom_css']; ?>" type="checkbox" <?php if (isset($val['use_custom_css']) && $val['use_custom_css'] == "true") echo 'checked="checked"'; ?> value="true" /><br />
                 <?php _e('Check this box to use Custom CSS, leave unchecked to disable it. You should have custom css in your active theme','private-only'); ?>
             </td>
    		</tr>

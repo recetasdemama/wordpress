@@ -1,6 +1,6 @@
 <?php
 /*
-Private Only 3.4
+Private Only 3.5.1
 Website: http://pixert.com
 */
 function po_login_settings_args() {
@@ -11,6 +11,7 @@ function po_login_settings_args() {
 		'use_wp_logo' => '',
 		'logo_url' => '',	
 		'public_pages' => '',
+		'login_message' => '',
 		'use_custom_css' => '',
 		'remove_lost_password' => '',
 		'remove_backtoblog' => ''
@@ -57,6 +58,7 @@ function po_login_page() {
 	$settings = get_option( 'po_login_settings' );
 
 	foreach ( $settings_arr as $key => $value ) :
+	  if (isset($settings[$key]) && !empty($settings[$key])) 
 		$val[$key] = $settings[$key];
 	endforeach;
 
@@ -92,12 +94,12 @@ function po_login_page() {
 	elseif (isset($_POST['po_submit']) && $_POST['po_submit'] == 'R') :
 
 		foreach($settings_arr as $key => $value) :
+		if (!isset($settings[$key]) && empty($settings[$key])) 
 			$settings[$key] = $val[$key] = $_POST[$data[$key]];
 		endforeach;
-
-		delete_option( 'po_login_settings', $settings );
-
 		
+		delete_option( 'po_login_settings', $settings );
+	
 		/*
 		* Output the settings page
 		*/
@@ -105,7 +107,7 @@ function po_login_page() {
 		if ( function_exists('screen_icon') ) screen_icon();
 		echo '<h2>' . $settings_page_title . '</h2>';
 		echo '<div class="updated" style="margin:15px 0;">';
-		echo '<p><strong>'.__('Settings have been reset','private-only').'</strong></p>';
+		echo '<p><strong>'.__('Settings have been reset. Please refresh this page','private-only').'</strong></p>';
 		echo '</div>';
 		
 
