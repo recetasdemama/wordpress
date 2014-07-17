@@ -68,7 +68,9 @@ if (!class_exists('EzAdmin')) {
       $yesTitle = __('Get the Pro version now!', 'easy-common');
       $noTip = __('Continue using the Lite version, and hide this message. After clicking this button, please remember to save your options to hide this box for good.', 'easy-common');
       $noTitle = __('Stay Lite', 'easy-common');
-      $hideTip = __('Click the link to hide this box. After clicking this link, please remember to save your options to hide this box for good.', 'easy-common');
+      $plgKey = $this->getPlgKey();
+      $onClick = addslashes("onclick=\"popupwindow('http://www.thulasidas.com/promo.php?key=$plgKey','Get Pro', 1024, 768);return false;\"");
+      $hideTip = htmlspecialchars(__('Click the link to hide this box. After clicking this link, please remember to save your options to hide this box for good.', 'easy-common') . "<br /><a style=\"color:red;font-weight:bold\" href=\"http://www.thulasidas.com/promo.php?key=$plgKey\" target=_blank $onClick>" . __("Limited Time Offer. Get the Pro version for less than a dollar!", 'easy-common') . "</a>");
       if (empty($plg['benefits'])) {
         return;
       }
@@ -96,7 +98,7 @@ $benefits
 $s4 $s5<br />
 <input onmouseover="Tip('$yesTip', WIDTH, 200, CLICKCLOSE, true, TITLE, '$yesTitle')" onmouseout="UnTip()" type = "button" id = "ybutton" value = "$s6" onclick = "buttonwhich('Yes')" />
 <input onmouseover="Tip('$noTip', WIDTH, 200, CLICKCLOSE, true, TITLE, '$noTitle')" onmouseout="UnTip()" type = "button" id = "nbutton" value = "$s7" onclick = "buttonwhich('No')" />
-<small style='font-weight:normal;'><a id='hideInvite' href='#' style='float:right; display:block; border:none;'  onmouseover="Tip('$hideTip', WIDTH, 200, CLICKCLOSE, true, TITLE, 'Hide this Box')" onmouseout="UnTip()" onclick = "buttonwhich('No')">
+<small style='font-weight:normal;'><a id='hideInvite' href='#' style='float:right; display:block; border:none;'  onmouseover="Tip('$hideTip', WIDTH, 200, CLOSEBTN, true, CLICKCLOSE, true, FIX, [this, 5, 5], TITLE, 'Hide this Box')" onclick = "buttonwhich('No')">
 $s8</a></small>
 <script type = "text/javascript">
 function hideInvite() {
@@ -137,16 +139,16 @@ ENDINVITE;
       $plg = $this->plg;
       $plgCTime = filemtime($plgFile);
       $plgLongName = $plg['value'];
-      $hideTip = __('Click the link to hide this box. After clicking this link, please remember to save your options to hide this box for good.', 'easy-common');
+      $plgKey = $this->getPlgKey();
+      $onClick = addslashes("onclick=\"popupwindow('http://www.thulasidas.com/promo.php?key=$plgKey','Get Pro', 1024, 768);return false;\"");
+      $hideTip = htmlspecialchars(__('Click the link to hide this box. After clicking this link, please remember to save your options to hide this box for good.', 'easy-common') . "<br /><a style=\"color:red;font-weight:bold\" href=\"http://www.thulasidas.com/promo.php?key=$plgKey\" target=_blank $onClick>" . __("Limited Time Offer. Get the Pro version for less than a dollar!", 'easy-common') . "</a>");
+
       if (time() > $plgCTime + (60 * 60 * 24 * 30)) {
         $msg = __("You've installed this plugin over a month ago.", 'easy-common');
-        ;
       }
       else {
         $msg = __("You will find it feature-rich and robust.", 'easy-common');
-        ;
       }
-      $plgKey = $this->getPlgKey();
       $display = '';
       if (!$killable) {
         $display = "style='display:none'";
@@ -161,7 +163,7 @@ ENDINVITE;
 <div class='updated' id='rating'>
 <p>Thanks for using <i><b>$plgLongName</b></i>! $msg <br />
 $s1 <a href='http://wordpress.org/extend/plugins/$plgKey/' onclick="popupwindow('http://wordpress.org/extend/plugins/$plgKey/','$s2', 1024, 768);return false;">$s2</a>
-<small style='font-weight:normal;'><a id='hideRating' $display href='#' style='float:right; display:block; border:none;'  onmouseover="Tip('$hideTip', WIDTH, 200, CLICKCLOSE, true, TITLE, 'Hide this Box')" onmouseout="UnTip()" onclick = "hideme()">
+<small style='font-weight:normal;'><a id='hideRating' $display href='#' style='float:right; display:block; border:none;'  onmouseover="Tip('$hideTip', WIDTH, 200, CLOSEBTN, true, CLICKCLOSE, true, FIX, [this, 5, 5], TITLE, 'Hide this Box')" onclick = "hideme()">
 $s3</a></small></p></div>
 <input type="hidden" id="kill_rating" name="kill_rating" value="" />
 <script type = "text/javascript">
@@ -198,6 +200,11 @@ ENDRATING;
       $s6 = sprintf(__('You are using the %s version of %s, which is available in two versions:', 'easy-common'), $version, $value);
       $s7 = sprintf(__('And it costs only $%.2f!', 'easy-common'), $price);
       $s8 = __('Get the Pro version now!', 'easy-common');
+
+      $plgKey = $this->getPlgKey();
+      $promoClick = "onclick=\"popupwindow('http://www.thulasidas.com/promo.php?key=$plgKey','Get Pro', 1024, 768);return false;\"";
+      $promoTip = "<a style=\"color:red;font-weight:bold\" href=\"http://www.thulasidas.com/promo.php?key=$plgKey\" target=_blank $promoClick>" . __("Limited Time Offer. Get the Pro version for less than a dollar!", 'easy-common') . "</a>";
+
       echo "<b>$s8</b>
 <a href='http://buy.thulasidas.com/$slug' title='$s3. $s4' $onclick><img src='$plgURL/ezpaypal.png' alt='ezPayPal' class='alignright'/></a>
 <br />
@@ -206,7 +213,7 @@ $s6
 $moreInfo
 </li>
 <li>$why $s7</li>
-</ul>";
+</ul>$promoTip";
     }
 
     function renderProText() {
@@ -235,15 +242,18 @@ $moreInfo
 
       $moreInfo = "&nbsp; <a href='http://buy.thulasidas.com/lite/$slug.zip' title='$s1'>$s2 </a>&nbsp; <a href='http://buy.thulasidas.com/$slug' title='$s3' $onclick>$s4</a>";
       $toolTip .= addslashes('<br />' . $moreInfo);
-      echo "<div style='background-color:#ffcccc;padding:5px;border: solid 1px;text-align:center;'>
-<span style='font-size:14px;color:#a48;font-variant: small-caps;text-decoration:underline;text-align:center;' $onclick onmouseover=\"TagToTip('pro', WIDTH, 300, TITLE, '$s5',STICKY, 1, CLOSEBTN, true, CLICKCLOSE, true, FIX, [this, 5, 5])\"><b>$s4</b></span><br />";
+      echo "<div style='background-color:#ffcccc;padding:5px;border: solid 1px;'>
+<div style='font-size:14px;color:#a48;font-variant: small-caps;text-decoration:underline;text-align:center;' $onclick onmouseover=\"TagToTip('pro', WIDTH, 300, TITLE, '$s5',STICKY, 1, CLOSEBTN, true, CLICKCLOSE, true, FIX, [this, 5, 5])\"><b>$s4</b></div>";
 
       $s8 = sprintf(__('It costs only $%.2f!', 'easy-common'), $price);
       $s9 = __('Instant download link.', 'easy-common');
       $value .= '<b><i> Lite</i></b>';
       $s10 = sprintf(__('Thank you for using %s. The "Pro" version gives you more options.', 'easy-common'), $value);
       $s11 = __("Consider buying it.", 'easy-common');
-      echo "$s10 $filter $s11 <a href='http://buy.thulasidas.com/$slug' title='$s3. $s9'>$s8</a>";
+      $plgKey = $this->getPlgKey();
+      $promoClick = addslashes("onclick=\"popupwindow('http://www.thulasidas.com/promo.php?key=$plgKey','Get Pro', 1024, 768);return false;\"");
+      $promoTip = htmlspecialchars("$s3. $s9<br /><a style=\"color:red;font-weight:bold\" href=\"http://www.thulasidas.com/promo.php?key=$plgKey\" target=_blank $promoClick>" . __("Limited Time Offer. Get the Pro version for less than a dollar!", 'easy-common') . "</a>");
+      echo "$s10 $filter $s11 <br /><a href='http://buy.thulasidas.com/$slug' title='$s3. $s9' onmouseover=\"Tip('$promoTip', WIDTH, 200, CLOSEBTN, true, CLICKCLOSE, true, FIX, [this, 5, 5], TITLE, 'Limited Time Offer')\">$s8</a>";
       echo "</div>";
     }
 
@@ -252,7 +262,19 @@ $moreInfo
         return;
       }
       $plgURL = $this->plgURL;
-      echo "<div style='padding:0px;border:none; width:300px;text-align:center' id='support' onmouseover=\"Tip('<b>ezAffiliates</b>: The most affiliate-centric revenue sharing model on the Web. Finally, you can make some serious returns on your web presence.<br /><b>Generous 50% Commission</b>: perhaps the highest rate of revenue sharing on the web. With just a couple of sales of this plugin, you will have recovered your purchase price!<br /><b>$10 Minimum Payout</b> so that you will not be waiting forever before you qualify for payment.<br /><b>Lifetime Tracking</b>: ezAffiliates uses cookie-less tracking technology to attribute every purchase of your lead to your account. Whatever your leads buy from us, whenever they do, will earn you commission. No cookie expiry!<br /><b>High Quality Products</b> such as this plugin, and other premium plugins and PHP packages.<br /><b>Diverse Markets</b>: Bloggers who blog about plugins, PayPal integration, affiliate marketing, MacOS apps and even eBooks will find ezAffiliates attractive and more effective that their current ad campaigns.', WIDTH, 295, TITLE, 'ezAffiliates', FIX, [this, 0, 0])\" onmouseout=\"UnTip()\" ><a href='http://affiliates.thulasidas.com'><img src='$plgURL/invite.gif' alt='ezAffiliates' onclick=\"popupwindow('http://affiliates.thulasidas.com/','50-50 Revenue Share', 1024, 768);return false;\"/></a></div>";
+      $select = rand(0, 2);
+      switch ($select) {
+        case 0:
+          echo "<div style='padding:0px;border:none;text-align:center' id='support' onmouseover=\"TagToTip('maxcdn', WIDTH, 295, TITLE, 'MaxCDN', FIX, [this, 0, 0])\" onmouseout=\"UnTip()\" ><a href='http://tracking.maxcdn.com/c/95082/3964/378' target='_blank'><img src='$plgURL/maxcdn.jpg' border='0' alt='MaxCDN Content Delivery Network' /></a></div>";
+          break;
+        case 1:
+          echo "<div style='padding:0px;border:none;text-align:center' id='support' onmouseover=\"TagToTip('arvixe', WIDTH, 295, TITLE, 'Arvixe', FIX, [this, 0, 0])\" onmouseout=\"UnTip()\" ><a href='http://www.arvixe.com/1933-0-1-357.html' target='_blank'><img border='0' src='$plgURL/arvixe.gif' alt='Advanced Web Hosting for only $4/month'></a></div>";
+          break;
+        case 2:
+        default:
+          echo "<div style='padding:0px;border:none; width:300px;text-align:center' id='support' onmouseover=\"Tip('<b>ezAffiliates</b>: The most affiliate-centric revenue sharing model on the Web. Finally, you can make some serious returns on your web presence.<br /><b>Generous 50% Commission</b>: perhaps the highest rate of revenue sharing on the web. With just a couple of sales of this plugin, you will have recovered your purchase price!<br /><b>$10 Minimum Payout</b> so that you will not be waiting forever before you qualify for payment.<br /><b>Lifetime Tracking</b>: ezAffiliates uses cookie-less tracking technology to attribute every purchase of your lead to your account. Whatever your leads buy from us, whenever they do, will earn you commission. No cookie expiry!<br /><b>High Quality Products</b> such as this plugin, and other premium plugins and PHP packages.<br /><b>Diverse Markets</b>: Bloggers who blog about plugins, PayPal integration, affiliate marketing, MacOS apps and even eBooks will find ezAffiliates attractive and more effective that their current ad campaigns.', WIDTH, 295, TITLE, 'ezAffiliates', FIX, [this, 0, 0])\" onmouseout=\"UnTip()\" ><a href='http://affiliates.thulasidas.com'><img src='$plgURL/invite.gif' alt='ezAffiliates' onclick=\"popupwindow('http://affiliates.thulasidas.com/','50-50 Revenue Share', 1024, 768);return false;\"/></a></div>";
+          break;
+      }
     }
 
     function renderSupportText() {
@@ -265,12 +287,12 @@ $moreInfo
       $value = '<em><strong>' . $plg['value'] . '</strong></em>';
       $supportText = "<div style=\"background-color:#cff;padding:5px;border: solid 1px\" id=\"support\"><b>Support $value. <a href=\"http://buy.thulasidas.com/$slug\" title=\"Pro version of this plugin. Instant download link.\" onclick=\"popupwindow('http://buy.thulasidas.com/$slug','Get {$plg['value']}', 1024, 768);return false;\">Go Pro!</a></b>";
       if ($long) {
-        $longText = "How about ";
+        $longText = "Speed up your blog: ";
       }
       else {
         $longText = '';
       }
-      $supportText .= "<br />$longText<span onmouseover=\"TagToTip('dropbox', WIDTH, 440, TITLE, 'What is DropBox?',STICKY, 1, CLOSEBTN, true, FIX, [this, -150, 2])\"><a href='http://db.tt/qsogWB1' title='Sign up for Dropbox -- free 2GB online storage on the cloud!' target='_blank'>2GB of <em>free</em> online storage</a></span>?";
+      $supportText .= "<br />$longText<span onmouseover=\"TagToTip('maxcdn', WIDTH, 300, TITLE, 'What is MaxCDN?',STICKY, 1, CLOSEBTN, true, FIX, [this, -150, 2])\"><a href='http://tracking.maxcdn.com/c/95082/3964/378' target='_blank'>Use MaxCDN!</a></span>";
       if ($long) {
         $longText = "WordPress Hosting for ";
       }
@@ -293,8 +315,12 @@ $moreInfo
       $plgURL = $this->plgURL;
       echo <<<ENDDIVS
 <div id="arvixe" style='display:none;'>
-  <a href="http://www.arvixe.com/1933-27-1-310.html" target="_blank">Arvixe</a> is my favorite hosting provider. Friendly service, extremely competitive rates, and of course a great affiliate program.
+  <a href="http://www.arvixe.com/1933-27-1-310.html" target="_blank"><b>Arvixe</b></a> is my favorite hosting provider. Friendly service, extremely competitive rates, and of course a great affiliate program. My own WordPress blog and a dozen websites are hosted on their VPS. If you are looking for a new hosting provider, do check them out!
 </div>
+
+ <span id="maxcdn" style='display:none;'>
+  <a href='http://tracking.maxcdn.com/c/95082/3964/378' target='_blank'><b>MaxCDN</b></a> is a professional content delivery network. Easiest and most effective way to optimize your blog performance. Compatible with caching plugins, 24x7 professional support. Faster than most CDN providers in the continental US. Cheaper and better than most. Check it out now!
+</span>
 
 <span id="dropbox" style='display:none;'>
   Dropbox! gives you 2GB of network (cloud) storage for free, which I find quite adequate for any normal user. (That sounds like the famous last words by Bill Gates, doesn’t it? “64KB of memory should be enough for anyone!”) And, you can get 250MB extra for every successful referral you make. That brings me to my ulterior motive – please use this link to sign up. When you do, I get 500MB extra. Don’t worry, you get 500MB extra as well. So I can grow my online storage up to 18GB, which should keep me happy for a long time. Thank you!
