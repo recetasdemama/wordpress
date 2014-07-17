@@ -211,6 +211,11 @@ if (!class_exists("EzTran")) {
             $poName = $slug;
           }
           $zip = new ZipStream($file);
+          if ($this->isEmbedded
+                  && $slug != 'easy-translator'
+                  && $slug != 'easy-translator-lite') {
+            $zip->add_file("readme.txt", "Please edit the included PO files using appropriate tools such as poedit (or any text editor) and email them to the plugin author. If you are translating one of my plugins, the email address is manoj@thulasidas.com.");
+          }
           foreach ($potArray as $d => $str) {
             if (empty($d)) { // skip strings with no domain -- they are WP core ones
               continue;

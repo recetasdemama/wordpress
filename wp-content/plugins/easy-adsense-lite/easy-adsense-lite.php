@@ -4,7 +4,7 @@
   Plugin Name: Easy AdSense
   Plugin URI: http://www.thulasidas.com/adsense
   Description: Easiest way to show AdSense and make money from your blog. Configure it at <a href="options-general.php?page=easy-adsense-lite.php">Settings &rarr; Easy AdSense</a>.
-  Version: 7.21
+  Version: 7.22
   Author: Manoj Thulasidas
   Author URI: http://www.thulasidas.com
  */
@@ -70,7 +70,7 @@ if (!class_exists("EzAdSense")) {
       $this->border = '';
     }
 
-    static function showUnreal($print = false) {
+    static function showUnreal($print = true) {
       $unreal = "<div style='text-align:center;margin-left:auto;margin-right:auto;font-size:0.6em'><a href='http://www.thulasidas.com/adsense/' target='_blank' title='The simplest way to put AdSense to work for you!'> Easy AdSense</a> by <a href='http://www.Thulasidas.com/' target='_blank' title='Unreal Blog proudly brings you Easy AdSense'>Unreal</a></div>";
       if ($print) {
         echo $unreal;
@@ -577,45 +577,55 @@ if (!class_exists("EzAdSense")) {
     }
 
     function getMetaOptions() {
-      if (empty($this->metaOptions)) {
+      if (empty($this->metaOptions) || $this->mayBeExcerpt()) {
         global $post;
-        $lookup = array('adsense' => 'adsense',
-            'adsense-top' => 'show_leadin',
-            'adsense-middle' => 'show_midtext',
-            'adsense-bottom' => 'show_leadout',
-            'adsense-widget' => 'show_widget',
-            'adsense-search' => 'title_gsearch',
-            'adsense-linkunits' => 'show_lu');
+        if (is_object($post)) {
+          $postID = $post->ID;
+        }
+        else {
+          global $wp;
+          $url = home_url(add_query_arg(array(), $wp->request));
+          $postID = url_to_postid($url);
+        }
         $metaOptions = array();
-        foreach ($lookup as $metaKey => $optKey) {
-          if (!empty($this->options[$optKey])) {
-            $metaOptions[$optKey] = $this->options[$optKey];
-          }
-          else {
-            $metaOptions[$optKey] = '';
-          }
-          $customStyle = get_post_custom_values($metaKey, $post->ID, true);
-          if (is_array($customStyle)) {
-            $metaStyle = strtolower($customStyle[0]);
-          }
-          else {
-            $metaStyle = strtolower($customStyle);
-          }
-          $style = '';
-          if ($metaStyle == 'left') {
-            $style = 'float:left;display:block;';
-          }
-          else if ($metaStyle == 'right') {
-            $style = 'float:right;display:block;';
-          }
-          else if ($metaStyle == 'center') {
-            $style = 'text-align:center;display:block;';
-          }
-          else {
-            $style = $metaStyle;
-          }
-          if (!empty($style)) {
-            $metaOptions[$optKey] = $style;
+        if (!empty($postID)) {
+          $lookup = array('adsense' => 'adsense',
+              'adsense-top' => 'show_leadin',
+              'adsense-middle' => 'show_midtext',
+              'adsense-bottom' => 'show_leadout',
+              'adsense-widget' => 'show_widget',
+              'adsense-search' => 'title_gsearch',
+              'adsense-linkunits' => 'show_lu');
+          foreach ($lookup as $metaKey => $optKey) {
+            if (!empty($this->options[$optKey])) {
+              $metaOptions[$optKey] = $this->options[$optKey];
+            }
+            else {
+              $metaOptions[$optKey] = '';
+            }
+            $customStyle = get_post_custom_values($metaKey, $postID, true);
+            if (is_array($customStyle)) {
+              $metaStyle = strtolower($customStyle[0]);
+            }
+            else {
+              $metaStyle = strtolower($customStyle);
+            }
+            $style = '';
+            if ($metaStyle == 'left') {
+              $style = 'float:left;display:block;';
+            }
+            else if ($metaStyle == 'right') {
+              $style = 'float:right;display:block;';
+            }
+            else if ($metaStyle == 'center') {
+              $style = 'text-align:center;display:block;';
+            }
+            else {
+              $style = $metaStyle;
+            }
+            if (!empty($style)) {
+              $metaOptions[$optKey] = $style;
+            }
           }
         }
         $this->metaOptions = $metaOptions;
@@ -637,6 +647,10 @@ if (!class_exists("EzAdSense")) {
         $paras[] = $lastpos;
       }
       return $paras;
+    }
+
+    function mayBeExcerpt() {
+      return is_home() || is_category() || is_tag() || is_archive();
     }
 
     function mkBorder() {
@@ -668,7 +682,7 @@ if (!class_exists("EzAdSense")) {
         $inline = 'style="' . $show . ';margin:' .
                 $margin . 'px;' . $border . '"';
       }
-      $unreal = self::showUnreal();
+      $unreal = self::showUnreal(false);
       $info = $this->info();
       $adBlock = stripslashes($linebreak . $info . $linebreak .
               "<!-- [$slot: {$this->ezCount} urCount: {$this->urCount} urMax: {$this->urMax}] -->$linebreak" .
@@ -676,6 +690,7 @@ if (!class_exists("EzAdSense")) {
               $this->options["text_$slot"] .
               ($this->urCount++ < $this->urMax ? $unreal : '') .
               "</div>" . $linebreak . $info . $linebreak);
+      $this->ezCount++;
       return $adBlock;
     }
 
@@ -703,11 +718,12 @@ if (!class_exists("EzAdSense")) {
                 . "is not less than {$this->ezMax}] -->";
       }
       if (strpos($content, "<!--noadsense-->") !== false) {
-        return $content;
+        $this->metaOptions['adsense'] = 'no';
+        return "$content <!-- Easy AdSense Unfiltered [suppressed by noadsense comment] -->";
       }
       $metaOptions = $this->getMetaOptions();
       if (isset($metaOptions['adsense']) && $metaOptions['adsense'] == 'no') {
-        return $content;
+        return "$content <!-- Easy AdSense Unfiltered [suppressed by meta option adsense = no] -->";
       }
 
       if (!in_the_loop()) {
@@ -719,9 +735,10 @@ if (!class_exists("EzAdSense")) {
 
       $show_leadin = $metaOptions['show_leadin'];
       $leadin = '';
-      if ($show_leadin != 'no' && $wc > $this->options['wc_leadin']) {
+      if ($show_leadin != 'no'
+              && empty($this->options['header_leadin'])
+              && $wc > $this->options['wc_leadin']) {
         if ($this->ezCount < $this->ezMax) {
-          $this->ezCount++;
           $leadin = $this->mkAdBlock("leadin");
         }
       }
@@ -740,7 +757,6 @@ if (!class_exists("EzAdSense")) {
             $split = $paras[floor(sizeof($paras) / 2)];
           }
           if ($this->options['force_midad'] || $half > 10) {
-            $this->ezCount++;
             $midtext = $this->mkAdBlock("midtext");
             $content = substr($content, 0, $split) . $midtext . substr($content, $split);
           }
@@ -751,7 +767,6 @@ if (!class_exists("EzAdSense")) {
       $leadout = '';
       if ($show_leadout != 'no' && $wc > $this->options['wc_leadout']) {
         if ($this->ezCount < $this->ezMax) {
-          $this->ezCount++;
           if (strpos($show_leadout, "float") !== false) {
             $paras = $this->findParas($content);
             $split = array_pop($paras);
@@ -763,7 +778,7 @@ if (!class_exists("EzAdSense")) {
           $leadout = $this->mkAdBlock("leadout");
         }
       }
-      if ($this->options['header_leadin']) {
+      if (!empty($this->options['header_leadin'])) {
         $this->leadin = $leadin;
         $leadin = '';
       }
@@ -780,19 +795,8 @@ if (!class_exists("EzAdSense")) {
       return $content;
     }
 
-    function footer_action() {
-      self::showUnreal(true);
-    }
-
     // This is add_action target to either the_content, loop_start or send_headers.
-    function header_leadin($arg) {
-      if (is_object($arg)) {
-        $content = '';
-      }
-      else {
-        $content = $arg;
-      }
-      // if it is an admin page, don't show ads
+    function filterHeader($arg) {
       if (is_admin()) {
         return $arg;
       }
@@ -805,14 +809,18 @@ if (!class_exists("EzAdSense")) {
       }
       $show_leadin = $this->options['show_leadin'];
       if ($show_leadin != 'no') {
-        $this->metaOptions['show_leadin'] = '';
-        echo $this->mkAdBlock("leadin");
-        unset($this->metaOptions);
-        return $arg;
+        $metaOptions = $this->getMetaOptions();
+        if (empty($metaOptions['adsense']) ||
+                (!empty($metaOptions['adsense']) && $metaOptions['adsense'] != 'no')) {
+          $this->metaOptions['show_leadin'] = '';
+          echo $this->mkAdBlock("leadin");
+          unset($this->metaOptions);
+        }
       }
+      return $arg;
     }
 
-    function footer_leadout($arg) {
+    function filterFooter($arg) {
       if (is_admin()) {
         return $arg;
       }
@@ -871,7 +879,6 @@ if (class_exists("EzAdSense")) {
           if ($ezAdSense->ezCount >= $ezAdSense->ezMax) {
             return;
           }
-          $ezAdSense->ezCount++;
         }
 
         $title = empty($ezAdSense->options['title_widget']) ?
@@ -1035,18 +1042,18 @@ if (class_exists("EzAdSense")) {
 
     add_filter('the_content', array($ezAdSense, 'filterContent'));
     if ($ezAdSense->options['max_link'] === -1) {
-      add_action('wp_footer', array($ezAdSense, 'footer_action', 1));
+      add_action('wp_footer', array($ezAdSense, 'showUnreal', 1));
     }
     else {
-      remove_action('wp_footer', array($ezAdSense, 'footer_action'));
+      remove_action('wp_footer', array($ezAdSense, 'showUnreal'));
     }
 
-    if ($ezAdSense->options['header_leadin']) {
-      add_action($ezAdSense->options['header_leadin'], array($ezAdSense, 'header_leadin'));
+    if (!empty($ezAdSense->options['header_leadin'])) {
+      add_action($ezAdSense->options['header_leadin'], array($ezAdSense, 'filterHeader'));
     }
 
     if ($ezAdSense->options['footer_leadout']) {
-      add_action($ezAdSense->options['footer_leadout'], array($ezAdSense, 'footer_leadout'));
+      add_action($ezAdSense->options['footer_leadout'], array($ezAdSense, 'filterFooter'));
     }
     register_activation_hook(__FILE__, array($ezAdSense, 'migrateOptions'));
   }
