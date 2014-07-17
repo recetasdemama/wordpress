@@ -78,10 +78,10 @@ The next shortcode will create a list of social following buttons that allow vis
 If you don't want to use shortcodes but instead prefer to use PHP directly, there are 2 PHP functions/template tags you can use.
 
 For sharing buttons you can use:
-`if (function_exists('synved_social_share_markup')) synved_social_share_markup();`
+`if (function_exists('synved_social_share_markup')) echo synved_social_share_markup();`
 
 For following buttons you can use:
-`if (function_exists('synved_social_follow_markup')) synved_social_follow_markup();`
+`if (function_exists('synved_social_follow_markup')) echo synved_social_follow_markup();`
 
 
 = Related Links: =
@@ -125,6 +125,22 @@ You can achieve this by using *Custom Fields*. Simply set a custom field of `syn
 7. This shows the available social sharing and following widgets and their settings 
 
 == Changelog ==
+
+= 1.6.5 =
+* Fixed issue for correct detection of home page
+
+= 1.6.4 =
+* Added two filters for shortcode parameters: synved_social_shortcode_variable_list and synved_social_shortcode_parameter_list
+* Minor adjustments
+
+= 1.6.3 =
+* Additional fix for "ghost" prefixes appearing in odd cases for non-single pages
+
+= 1.6.2 =
+* Fix for "ghost" prefixes appearing in certain cases for non-single pages
+
+= 1.6.1 =
+* Adjusted some descriptions
 
 = 1.6 =
 * Added alignment options for both sharing and following buttons
