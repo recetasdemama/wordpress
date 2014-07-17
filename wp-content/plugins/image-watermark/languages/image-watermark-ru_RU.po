@@ -1,0 +1,470 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WordPress Watermark\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-14 11:41+0100\n"
+"PO-Revision-Date: 2014-06-01 13:40+0400\n"
+"Last-Translator: Bartosz Arendt <info@dfactory.eu>\n"
+"Language-Team: Digital Factory <info@digitalfactory.pl>\n"
+"Language: pl_PL\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e;_n:1,2;esc_attr__;"
+"esc_attr_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.6.3\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../image-watermark.php:29
+msgid ""
+"Sorry, Image Watermark plugin requires at least PHP 5.0 and WP 3.5 or higher."
+msgstr ""
+"Извините, данный плагин работает только с версией PHP 5.0 и выше, WordPress "
+"- с версии 3.5 и выше."
+
+#: ../image-watermark.php:218
+msgid ""
+"Watermark could not be applied to selected files or no valid images (JPEG, "
+"PNG) were selected."
+msgstr ""
+"Ватермарк не может быть применен к выделенным файлам, либо были выбраны "
+"неверные изображения (JPEG, PNG)."
+
+#: ../image-watermark.php:218 ../image-watermark.php:222
+msgid "Skipped files"
+msgstr "Пропущенные файлы"
+
+#: ../image-watermark.php:222
+#, php-format
+msgid "Watermark was succesfully applied to 1 image."
+msgid_plural "Watermark was succesfully applied to %s images."
+msgstr[0] "Ватермарк был успешно применен к 1 изображению."
+msgstr[1] "Ватермарк был успешно применен к %s изображениям."
+
+#: ../image-watermark.php:265
+msgid "Support"
+msgstr "Поддержка"
+
+#: ../image-watermark.php:287
+msgid "Settings"
+msgstr "Настройки"
+
+#: ../image-watermark.php:318
+msgid "Apply watermark"
+msgstr "Применить ватермарк"
+
+#: ../image-watermark.php:338
+msgid "Select watermark"
+msgstr "Выбрать ватермарк"
+
+#: ../image-watermark.php:339 ../image-watermark.php:834
+msgid "Original size"
+msgstr "Исходный размер (оригинальный)"
+
+#: ../image-watermark.php:340 ../image-watermark.php:828
+msgid "Watermak has not been selected yet."
+msgstr "Ватермарк еще не был выбран"
+
+#: ../image-watermark.php:341
+msgid "This image is not supported as watermark. Use JPEG, PNG or GIF."
+msgstr ""
+"Данное изображение нелья установить как ватермарк. Используйте JPEG, PNG или "
+"GIF."
+
+#: ../image-watermark.php:343
+msgid "Add watermark"
+msgstr "Добавить ватермарк"
+
+#: ../image-watermark.php:360
+msgid "Are you sure you want to reset settings to defaults?"
+msgstr "Вы уверены, что хотите вернуть настройки по-умолчанию?"
+
+#: ../image-watermark.php:417
+msgid "Image Watermark Options"
+msgstr "Настройки плагина Image Watermark"
+
+#: ../image-watermark.php:418
+msgid "Watermark"
+msgstr "Ватермарк"
+
+#: ../image-watermark.php:444
+msgid "Image Watermark will not work properly without GD PHP extension."
+msgstr "Image Watermark не будет корректно работать без дополнения GD PHP."
+
+#: ../image-watermark.php:586
+msgid "Settings saved."
+msgstr "Настройки сохранены."
+
+#: ../image-watermark.php:599
+msgid "Settings restored to defaults."
+msgstr "Настройки успешно сброшены."
+
+#: ../image-watermark.php:619
+msgid "Watermark will not be applied when <b>watermark image is not set</b>."
+msgstr ""
+"Ватермарк не будет применен, пока <b>картинка-ватермарк не будет задана</b>."
+
+#: ../image-watermark.php:622
+msgid "Watermark will not be applied when <b>no image sizes are selected</b>."
+msgstr "Ватермарк не будет применен пока <b>не выбраны размеры картинки</b>."
+
+#: ../image-watermark.php:628
+msgid ""
+"Watermark will not be applied while frontend image upload if <b>watermark "
+"image is not set</b>."
+msgstr ""
+"Ватермарк не будет применен пока <b>картинка-ватермарк не будет установлена</"
+"b>."
+
+#: ../image-watermark.php:631
+msgid ""
+"Watermark will not be applied while frontend image upload if <b>no image "
+"sizes are selected</b>."
+msgstr "Ватермарк не будет применен пока <b>не выбраны размеры картинки</b>."
+
+#: ../image-watermark.php:638
+msgid "Image Watermark Settings"
+msgstr "Настройки Image Watermark"
+
+#: ../image-watermark.php:642
+msgid "Image Watermark"
+msgstr "Image Watermark"
+
+#: ../image-watermark.php:644
+msgid "Need support?"
+msgstr "Нуждаетесь в помощи?"
+
+#: ../image-watermark.php:645
+msgid ""
+"If you are having problems with this plugin, please talk about them in the"
+msgstr "Если у Вас возникли проблемы с плагином, обращайтесь на"
+
+#: ../image-watermark.php:645
+msgid "Support forum"
+msgstr "Форум поддержки"
+
+#: ../image-watermark.php:647
+msgid "Do you like this plugin?"
+msgstr "Вам нравится плагин?"
+
+#: ../image-watermark.php:648
+msgid "Rate it 5"
+msgstr "Оценить на 5"
+
+#: ../image-watermark.php:648
+msgid "on WordPress.org"
+msgstr "на WordPress.org"
+
+#: ../image-watermark.php:649
+msgid "Blog about it & link to the"
+msgstr "Блог и ссылка на"
+
+#: ../image-watermark.php:649
+msgid "plugin page"
+msgstr "страница плагина"
+
+#: ../image-watermark.php:650
+msgid "Check out our other"
+msgstr "Подтвердите остальное"
+
+#: ../image-watermark.php:650
+msgid "WordPress plugins"
+msgstr "Плагины WordPress"
+
+#: ../image-watermark.php:653
+msgid "Created by"
+msgstr "Создано"
+
+#: ../image-watermark.php:658
+msgid "General settings"
+msgstr "Основные настройки"
+
+#: ../image-watermark.php:661
+msgid "Automatic watermarking"
+msgstr "Автоматическое добавление ватермарка"
+
+#: ../image-watermark.php:665 ../image-watermark.php:681
+#: ../image-watermark.php:728 ../image-watermark.php:744
+msgid "on"
+msgstr "включить"
+
+#: ../image-watermark.php:667 ../image-watermark.php:683
+#: ../image-watermark.php:730 ../image-watermark.php:746
+msgid "off"
+msgstr "выключить"
+
+#: ../image-watermark.php:670
+msgid "Enable or disable watermark for uploaded images."
+msgstr ""
+"Активировать или деактивировать добавления ватермарка на загруженные "
+"изображения."
+
+#: ../image-watermark.php:677
+msgid "Manual watermarking"
+msgstr "Наложение ватермарка на все изображения"
+
+#: ../image-watermark.php:686
+msgid "Enable or disable Apply Watermark option for images in Media Library."
+msgstr ""
+"Активировать или деактивировать применение настроек ватермарка для "
+"изображений в библиотеки медиафайлов"
+
+#: ../image-watermark.php:693
+msgid "Enable watermark for"
+msgstr "Применить ватермарк для"
+
+#: ../image-watermark.php:702
+msgid ""
+"Check image sizes on which watermark should appear.<br /><strong>IMPORTANT:</"
+"strong> checking full size is NOT recommended as it's the original image. "
+"You may need it later - for removing or changing watermark, image sizes "
+"regeneration or any other image manipulations. Use it only if you know what "
+"you are doing."
+msgstr ""
+"Выберите размеры изображения на которых должен отображаться ватермарк. "
+
+#: ../image-watermark.php:708
+msgid "everywhere"
+msgstr "на всех изображениях"
+
+#: ../image-watermark.php:709
+msgid "on selected post types only"
+msgstr "только в выбранных типах постов"
+
+#: ../image-watermark.php:717
+msgid ""
+"Check custom post types on which watermark should be applied to uploaded "
+"images."
+msgstr ""
+"Выберите любые типы постов, в которых необходимо отображение ватермарка. "
+"(Страницы, Посты..)"
+
+#: ../image-watermark.php:724
+msgid "Automatic frontend watermarking"
+msgstr ""
+"Автоматическое наложение ватермарка на изображения, загруженные "
+"нестандартным способом."
+
+#: ../image-watermark.php:733
+msgid ""
+"Enable or disable watermark for frontend image uploading. (uploading script "
+"is not included, but you may use a plugin or custom code). <strong>Notice:</"
+"strong> This functionality works only if uploaded images are processed using "
+"WordPress native upload methods."
+msgstr ""
+"Активирование или деактивирование ватермарка для изображений, загруженных "
+"нестандартным способом. (загрузочный скрипт не включен, но Вы можете "
+"использовать плагин или простой код). "
+
+#: ../image-watermark.php:740
+msgid "Plugin deactivation"
+msgstr "Деактивация плагина"
+
+#: ../image-watermark.php:749
+msgid "Delete all database settings on plugin deactivation."
+msgstr "Удалить все настройки в базе данных при деактивации плагина."
+
+#: ../image-watermark.php:755
+msgid "Watermark position"
+msgstr "Позиция ватермарка"
+
+#: ../image-watermark.php:758
+msgid "Watermark alignment"
+msgstr "Выравнивание ватермарка"
+
+#: ../image-watermark.php:773
+msgid "Choose the position of watermark image."
+msgstr "Выбирите позицию ватермарка"
+
+#: ../image-watermark.php:778
+msgid "Watermark offset"
+msgstr "Смещение ватермарка"
+
+#: ../image-watermark.php:781 ../image-watermark.php:861
+msgid "x:"
+msgstr "x:"
+
+#: ../image-watermark.php:781 ../image-watermark.php:783
+#: ../image-watermark.php:861 ../image-watermark.php:863
+msgid "px"
+msgstr "пиксели"
+
+#: ../image-watermark.php:783 ../image-watermark.php:863
+msgid "y:"
+msgstr "y:"
+
+#: ../image-watermark.php:799 ../image-watermark.php:803
+msgid "Watermark image"
+msgstr "Изображение-ватермарк"
+
+#: ../image-watermark.php:800
+msgid ""
+"Configure your watermark image. Allowed file formats are: JPEG, PNG, GIF."
+msgstr ""
+"Настройте ваше изображение-ватермарк. Допускаются следующий форматы: JPEG, "
+"PNG, GIF."
+
+#: ../image-watermark.php:806
+msgid "Select image"
+msgstr "Выбрать изображение"
+
+#: ../image-watermark.php:807
+msgid "Turn off image"
+msgstr "Удалить изображение"
+
+#: ../image-watermark.php:808
+msgid "You have to save changes after the selection or removal of the image."
+msgstr ""
+"Вам необходимо сохранить изменения после выбора или удаления изображения."
+
+#: ../image-watermark.php:812
+msgid "Watermark preview"
+msgstr "Превью ватермарка"
+
+#: ../image-watermark.php:842
+msgid "Watermark size"
+msgstr "Размер ватермарка"
+
+#: ../image-watermark.php:846
+msgid "original"
+msgstr "исходный"
+
+#: ../image-watermark.php:848
+msgid "custom"
+msgstr "выборочный"
+
+#: ../image-watermark.php:850
+msgid "scaled"
+msgstr "процентное соотношение"
+
+#: ../image-watermark.php:853
+msgid "Select method of aplying watermark size."
+msgstr "Выберите метод применения размера ватермарка."
+
+#: ../image-watermark.php:858
+msgid "Watermark custom size"
+msgstr "Выборочный размер ватермарка"
+
+#: ../image-watermark.php:865
+msgid "Those dimensions will be used if \"custom\" method is selected above."
+msgstr "Эти размеры будут использованы если \"выборочный\" метод выбран выше. "
+
+#: ../image-watermark.php:869
+msgid "Scale of watermark in relation to image width"
+msgstr "Процентное соотношение ватермарка и загруженного изображения"
+
+#: ../image-watermark.php:879
+msgid ""
+"This value will be used if \"scaled\" method if selected above. <br />Enter "
+"a number ranging from 0 to 100. 100 makes width of watermark image equal to "
+"width of the image it is applied to."
+msgstr ""
+"Это значение будет использовано если  \"процентное соотношение\" было "
+"выбрано выше. <br />Введите число в диапазоне от 0 до 100. 100 - это "
+"ватермарк на все изображение. "
+
+#: ../image-watermark.php:883
+msgid "Watermark transparency / opacity"
+msgstr "Прозрачность ватермарка"
+
+#: ../image-watermark.php:893
+msgid ""
+"Enter a number ranging from 0 to 100. 0 makes watermark image completely "
+"transparent, 100 shows it as is."
+msgstr ""
+"Выберите значение в диапазоне от 0 до 100. 100 - это без прозрачности. 0 - "
+"полная прозрачность."
+
+#: ../image-watermark.php:897
+msgid "Image quality"
+msgstr "Качество изображения"
+
+#: ../image-watermark.php:907
+msgid "Set output image quality."
+msgstr "Установить качество изображения, которое мы получим на выходе"
+
+#: ../image-watermark.php:911
+msgid "Image format"
+msgstr "Формат изображения"
+
+#: ../image-watermark.php:915
+msgid "baseline"
+msgstr "базовое"
+
+#: ../image-watermark.php:917
+msgid "progressive"
+msgstr "прогрессивное"
+
+#: ../image-watermark.php:921
+msgid "Select baseline or progressive image format."
+msgstr "Выберите базовый или прогрессивный формат"
+
+#: ../image-watermark.php:927
+msgid "Image protection"
+msgstr "Защита изображения"
+
+#: ../image-watermark.php:930
+msgid "Disable right mouse click on images"
+msgstr "Отключить правую кнопку мыши при нажатии на изображения"
+
+#: ../image-watermark.php:934
+msgid "Prevent drag and drop"
+msgstr "Запретить метод drag and drop"
+
+#: ../image-watermark.php:938
+msgid "Enable image protection for logged-in users also"
+msgstr ""
+"Активировать защиту изображения для зарегистрированных посетителей тоже."
+
+#: ../image-watermark.php:943
+msgid "Save Changes"
+msgstr "Сохранить изменения"
+
+#: ../image-watermark.php:944
+msgid "Reset to defaults"
+msgstr "Сбросить настройки"
+
+#~ msgid ""
+#~ "Check image sizes on which watermark should appear. <b>Notice:</b> "
+#~ "checking full size is not recommened as it's the original image."
+#~ msgstr ""
+#~ "Zaznacz wielkości obazków dla których będzie dodany znak wodny. <b>Uwaga:"
+#~ "</b> zaznaczenie pełnej wielkości nie jest rekomendowane, ponieważ jest "
+#~ "to oryginał obrazka."
+
+#, fuzzy
+#~ msgid "Enable or disable watermark for uploaded images on frontend."
+#~ msgstr "Włącz lub wyłącz dodawanie znaku wodnego do wgrywanych obrazków."
+
+#~ msgid "Check image sizes on which watermark should appear."
+#~ msgstr "Zaznacz wielkości obrazków dla których ma być dodawany znak wodny."
+
+#~ msgid "Width"
+#~ msgstr "Szerokość"
+
+#~ msgid "Watermark Preview"
+#~ msgstr "Podgląd obrazka"
+
+#~ msgid "WordPress Watermark"
+#~ msgstr "Znak wodny"
+
+#~ msgid "Options updated."
+#~ msgstr "Ustawienia zostały zaktualizowane"
+
+#~ msgid "Watermark image URL"
+#~ msgstr "Ścieżka do obrazka"
+
+#~ msgid "Upload Image"
+#~ msgstr "Wgraj obrazek"
+
+#~ msgid ""
+#~ "Enter an URL, upload an image or select image from media library.<br /"
+#~ "><b>Important:</b> You must select a <b>file URL</b> while inserting "
+#~ "image."
+#~ msgstr ""
+#~ "Podaj adres URL, wgraj obrazek lub wybierz obrazek z biblioteki mediów."
+#~ "<br /><b>Ważne:</b> Dodając obrazek musisz zaznaczyć <b>Adres URL pliku</"
+#~ "b>."
