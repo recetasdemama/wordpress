@@ -915,6 +915,7 @@ add_action( 'admin_print_styles-edit-tags.php', 'taxonomy_image_plugin_css_thick
  * @since     0.7
  * @access    private
  */
+/*
 function taxonomy_image_plugin_css_public() {
 	if ( apply_filters( 'taxonomy-images-disable-public-css', false ) )
 		return;
@@ -928,7 +929,7 @@ function taxonomy_image_plugin_css_public() {
 	);
 }
 add_action( 'wp_print_styles', 'taxonomy_image_plugin_css_public' );
-
+*/
 
 /**
  * Activation.
