@@ -83,7 +83,7 @@ class SwfObj {
 			// Wordpress < 3.0 uses the older swfobject.js version (2.1)
 			// Use the plugin version of swfobject as it is current
 			wp_deregister_script('swfobject');
-			wp_register_script('swfobject', plugins_url().'/swfobj/swfobject.js', false, NULL);
+			wp_register_script('swfobject', plugins_url().'/swfobj/swfobject.js', false, NULL, true);
 			wp_enqueue_script('swfobject');
 		}
 	}
