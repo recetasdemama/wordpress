@@ -3,16 +3,18 @@ Contributors: llocally
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZEWW5LKK5995J
 Tags: User Enumeration, Security, WPSCAN, fail2ban
 Requires at least: 3.4
-Tested up to: 3.9
-Stable tag: 1.2.4
+Tested up to: 3.9.1
+Stable tag: 1.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 User Enumeration is a method hackers and scanners use to get your username. This plugin stops it.
 == Description ==
 Even if you are careful and set your blogging nickname differently from your login id, if you are using permalinks it only takes a few seconds
-to discover your real user name. This plugin stops user enumeration dead (like in use by WPSCAN), and additionally it will log an event
-in your system log so you can use (optionally) fail2ban to block the probing IP.
+to discover your real user name. This plugin stops user enumeration by and produces a 'forbidden' page. 
+
+This pulgin goes a step further than can be achieved with .htaccess alone, as it writes the enumeration attempt 
+in your system log so you can use (optionally) fail2ban (or other log monitoring tools) to block the probing IP.
 == Installation ==
 
 1. Upload `plugin-name.php` to the `/wp-content/plugins/` directory
@@ -41,6 +43,12 @@ Adjusted to your own requirements.
 
 == Changelog ==
 = 
+= 1.2.5 =
+
+* Added protection against bypass using null bytes  (thanks to vunerbality identification and solution by cvcrcky )
+* Added protection angainst POST bypass (thanks to vunerbaility identification by urbanadventurer and solution ideas from Ov3rfly and Malivuk )
+
+
 = 1.2.4 =
 
 * Added code to check whether not admin (to stop admin features failing) and changed trailing slash code to trap situation where not posts are found and user is displayed in title
