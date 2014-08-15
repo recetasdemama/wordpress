@@ -4,7 +4,7 @@
   Plugin Name: Easy AdSense
   Plugin URI: http://www.thulasidas.com/adsense
   Description: Easiest way to show AdSense and make money from your blog. Configure it at <a href="options-general.php?page=easy-adsense-lite.php">Settings &rarr; Easy AdSense</a>.
-  Version: 7.22
+  Version: 7.31
   Author: Manoj Thulasidas
   Author URI: http://www.thulasidas.com
  */
@@ -440,11 +440,20 @@ if (!class_exists("EzAdSense")) {
     }
 
     function migrateOptions() {
-      $update = false;
       $lookup = array('info' => '',
           'limit_lu' => '',
           'allow_exitjunction' => '',
           'policy' => '',
+          'mc' => '',
+          'allow_feeds' => '',
+          'suspend_ads' => '',
+          'gFilter' => '',
+          'kill_mobile' => '',
+          'filterValue' => '',
+          'bannedIPs' => '',
+          'compatMode' => '',
+          'excerptNumber' => '',
+          'shortCodeMode' => '',
           'kill_pages' => 'kill_page',
           'kill_attach' => 'kill_attachment',
           'kill_front' => 'kill_front_page',
@@ -455,12 +464,10 @@ if (!class_exists("EzAdSense")) {
             $this->options[$v] = $this->options[$k];
           }
           unset($this->options[$k]);
-          $update = true;
         }
       }
-      if ($update) {
-        update_option($this->optionName, $this->options);
-      }
+      $this->options['kill_author'] = false;
+      update_option($this->optionName, $this->options);
     }
 
     function mkDefaultOptions() { // TODO: Merge this with mkEzOptions
@@ -735,9 +742,7 @@ if (!class_exists("EzAdSense")) {
 
       $show_leadin = $metaOptions['show_leadin'];
       $leadin = '';
-      if ($show_leadin != 'no'
-              && empty($this->options['header_leadin'])
-              && $wc > $this->options['wc_leadin']) {
+      if ($show_leadin != 'no' && empty($this->options['header_leadin']) && $wc > $this->options['wc_leadin']) {
         if ($this->ezCount < $this->ezMax) {
           $leadin = $this->mkAdBlock("leadin");
         }

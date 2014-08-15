@@ -250,9 +250,11 @@ $moreInfo
       $value .= '<b><i> Lite</i></b>';
       $s10 = sprintf(__('Thank you for using %s. The "Pro" version gives you more options.', 'easy-common'), $value);
       $s11 = __("Consider buying it.", 'easy-common');
+
       $plgKey = $this->getPlgKey();
       $promoClick = addslashes("onclick=\"popupwindow('http://www.thulasidas.com/promo.php?key=$plgKey','Get Pro', 1024, 768);return false;\"");
       $promoTip = htmlspecialchars("$s3. $s9<br /><a style=\"color:red;font-weight:bold\" href=\"http://www.thulasidas.com/promo.php?key=$plgKey\" target=_blank $promoClick>" . __("Limited Time Offer. Get the Pro version for less than a dollar!", 'easy-common') . "</a>");
+
       echo "$s10 $filter $s11 <br /><a href='http://buy.thulasidas.com/$slug' title='$s3. $s9' onmouseover=\"Tip('$promoTip', WIDTH, 200, CLOSEBTN, true, CLICKCLOSE, true, FIX, [this, 5, 5], TITLE, 'Limited Time Offer')\">$s8</a>";
       echo "</div>";
     }
@@ -262,19 +264,9 @@ $moreInfo
         return;
       }
       $plgURL = $this->plgURL;
-      $select = rand(0, 2);
-      switch ($select) {
-        case 0:
-          echo "<div style='padding:0px;border:none;text-align:center' id='support' onmouseover=\"TagToTip('maxcdn', WIDTH, 295, TITLE, 'MaxCDN', FIX, [this, 0, 0])\" onmouseout=\"UnTip()\" ><a href='http://tracking.maxcdn.com/c/95082/3964/378' target='_blank'><img src='$plgURL/maxcdn.jpg' border='0' alt='MaxCDN Content Delivery Network' /></a></div>";
-          break;
-        case 1:
-          echo "<div style='padding:0px;border:none;text-align:center' id='support' onmouseover=\"TagToTip('arvixe', WIDTH, 295, TITLE, 'Arvixe', FIX, [this, 0, 0])\" onmouseout=\"UnTip()\" ><a href='http://www.arvixe.com/1933-0-1-357.html' target='_blank'><img border='0' src='$plgURL/arvixe.gif' alt='Advanced Web Hosting for only $4/month'></a></div>";
-          break;
-        case 2:
-        default:
-          echo "<div style='padding:0px;border:none; width:300px;text-align:center' id='support' onmouseover=\"Tip('<b>ezAffiliates</b>: The most affiliate-centric revenue sharing model on the Web. Finally, you can make some serious returns on your web presence.<br /><b>Generous 50% Commission</b>: perhaps the highest rate of revenue sharing on the web. With just a couple of sales of this plugin, you will have recovered your purchase price!<br /><b>$10 Minimum Payout</b> so that you will not be waiting forever before you qualify for payment.<br /><b>Lifetime Tracking</b>: ezAffiliates uses cookie-less tracking technology to attribute every purchase of your lead to your account. Whatever your leads buy from us, whenever they do, will earn you commission. No cookie expiry!<br /><b>High Quality Products</b> such as this plugin, and other premium plugins and PHP packages.<br /><b>Diverse Markets</b>: Bloggers who blog about plugins, PayPal integration, affiliate marketing, MacOS apps and even eBooks will find ezAffiliates attractive and more effective that their current ad campaigns.', WIDTH, 295, TITLE, 'ezAffiliates', FIX, [this, 0, 0])\" onmouseout=\"UnTip()\" ><a href='http://affiliates.thulasidas.com'><img src='$plgURL/invite.gif' alt='ezAffiliates' onclick=\"popupwindow('http://affiliates.thulasidas.com/','50-50 Revenue Share', 1024, 768);return false;\"/></a></div>";
-          break;
-      }
+
+      $select = rand(1,4);
+      echo "<div style='padding:0px;border:none;text-align:center' id='support' onmouseover=\"TagToTip('superlinks', WIDTH, 295, TITLE, 'Superlinks', FIX, [this, 25, 0])\" onmouseout=\"UnTip()\" ><a href='http://superlinks.com/ezad.php' target='_blank'><img src='$plgURL/300x250-0$select.jpg' border='0' alt='Superlinks Advertising to access Google AdX' /></a></div>";
     }
 
     function renderSupportText() {
@@ -317,6 +309,10 @@ $moreInfo
 <div id="arvixe" style='display:none;'>
   <a href="http://www.arvixe.com/1933-27-1-310.html" target="_blank"><b>Arvixe</b></a> is my favorite hosting provider. Friendly service, extremely competitive rates, and of course a great affiliate program. My own WordPress blog and a dozen websites are hosted on their VPS. If you are looking for a new hosting provider, do check them out!
 </div>
+
+ <span id="superlinks" style='display:none;'>
+  <a href='http://superlinks.com' target='_blank'><b>Superlinks</b></a> is an advertising network that can give AdSense a run for its money. It gives you access to Google AdExchange program, normally reserved for very high volume publishers. I have partnered with Superlinks to give you access to their offerings. If your site qualifies for Google AdX, you stand to make significantly higher returns than AdSense. Give it a shot!
+</span>
 
  <span id="maxcdn" style='display:none;'>
   <a href='http://tracking.maxcdn.com/c/95082/3964/378' target='_blank'><b>MaxCDN</b></a> is a professional content delivery network. Easiest and most effective way to optimize your blog performance. Compatible with caching plugins, 24x7 professional support. Faster than most CDN providers in the continental US. Cheaper and better than most. Check it out now!
