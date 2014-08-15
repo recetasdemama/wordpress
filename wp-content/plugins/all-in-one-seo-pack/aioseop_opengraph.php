@@ -100,7 +100,10 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Opengraph' ) ) {
 				"title"					=> __( "This is the Open Graph title of this Page or Post.<br /><a href='http://semperplugins.com/documentation/social-meta-module/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),
 				"desc"					=> __( "This is the Open Graph description of this Page or Post.<br /><a href='http://semperplugins.com/documentation/social-meta-module/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),
 				"category"				=> __( "Select the Open Graph type that best describes the content of this Page or Post.<br /><a href='http://semperplugins.com/documentation/social-meta-module/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),
-				"tag"				=> __( "This Open Graph meta allows you to add a list of keywords that best describe this content.<br /><a href='http://semperplugins.com/documentation/social-meta-module/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' )
+				"tag"					=> __( "This Open Graph meta allows you to add a list of keywords that best describe this content.<br /><a href='http://semperplugins.com/documentation/social-meta-module/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),
+				"facebook_publisher"	=> __( "Link articles to the Facebook page associated with your website.<br /><a href='http://semperplugins.com/documentation/social-meta-module/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),
+				"facebook_author"		=> __( "Allows your authors to be identified by their Facebook pages as content authors on the Opengraph meta for their articles.<br /><a href='http://semperplugins.com/documentation/social-meta-module/' target='_blank'>Click here for documentation on this setting</a>", 'all_in_one_seo_pack' ),				
+				
 			);
 			$count_desc = __( " characters. Open Graph allows up to a maximum of %s chars for the %s.", 'all_in_one_seo_pack' );
 			$this->default_options = array(
@@ -153,6 +156,9 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Opengraph' ) ) {
 										),
 					'tag'			=> Array(	'name'			=> __( 'Article Tags', 'all_in_one_seo_pack' ),
 												'type'			=> 'text', 'default' => '',  'condshow' => Array( 'aioseop_opengraph_settings_category' => 'article' ) ),
+					'facebook_publisher'=>Array('name'			=> __( 'Show Facebook Publisher on Articles', 'all_in_one_seo_pack' ), 'type' => 'text', 'default' => '' ),
+					'facebook_author'=>Array(	'name'			=> __( 'Show Facebook Author on Articles', 'all_in_one_seo_pack' ) ),
+					
 			);
 			
 			if ( !empty( $help_text ) )
@@ -167,7 +173,7 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Opengraph' ) ) {
 
 			$this->locations = array(
 				'opengraph'	=> 	Array( 'name' => $this->name, 'prefix' => 'aiosp_', 'type' => 'settings',
-									   'options' => Array('scan_header', 'setmeta', 'key', 'sitename', 'hometitle', 'description', 'homeimage', 'disable_jetpack', 'generate_descriptions', 'defimg', 'fallback', 'dimg', 'meta_key', 'categories', 'defcard', 'twitter_site', 'twitter_creator', 'twitter_domain', 'types') ),
+									   'options' => Array('scan_header', 'setmeta', 'key', 'sitename', 'hometitle', 'description', 'homeimage', 'disable_jetpack', 'generate_descriptions', 'defimg', 'fallback', 'dimg', 'meta_key', 'categories', 'defcard', 'twitter_site', 'twitter_creator', 'twitter_domain', 'types', 'facebook_publisher', 'facebook_author' ) ),
 				'settings'	=>	Array(	'name'		=> __('Social Settings', 'all_in_one_seo_pack'),
 														  'type'		=> 'metabox', 'help_link' => 'http://semperplugins.com/documentation/social-meta-module/#pagepost_settings',
 														  'options'	=> Array( 'title', 'desc', 'image', 'customimg', 'imagewidth', 'imageheight', 'category', 'tag', 'setcard' ),
@@ -177,10 +183,31 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Opengraph' ) ) {
 			
 			$this->layout = Array(
 				'default' => Array(
-						'name' => __( 'Social Meta', 'all_in_one_seo_pack' ),
+						'name' => __( 'General Settings', 'all_in_one_seo_pack' ),
 						'help_link' => 'http://semperplugins.com/documentation/social-meta-module/',
 						'options' => Array() // this is set below, to the remaining options -- pdb
 					),
+				'home' => Array(
+						'name' => __( 'Home Page Settings', 'all_in_one_seo_pack' ),
+						'help_link' => 'http://semperplugins.com/documentation/social-meta-module/',
+						'options' => Array( 'setmeta', 'sitename', 'hometitle', 'description', 'homeimage' )
+					),
+				'image' => Array(
+						'name' => __( 'Image Settings', 'all_in_one_seo_pack' ),
+						'help_link' => 'http://semperplugins.com/documentation/social-meta-module/',
+						'options' => Array( 'defimg', 'fallback', 'dimg', 'meta_key' )
+					),				
+				'facebook' => Array(
+						'name' => __( 'Facebook Settings', 'all_in_one_seo_pack' ),
+						'help_link' => 'http://semperplugins.com/documentation/social-meta-module/',
+						'options' => Array( 'key', 'types', 'categories', 'facebook_publisher', 'facebook_author' )
+					),
+				'twitter' => Array(
+						'name' => __( 'Twitter Settings', 'all_in_one_seo_pack' ),
+						'help_link' => 'http://semperplugins.com/documentation/social-meta-module/',
+						'options' => Array( 'defcard', 'setcard', 'twitter_site', 'twitter_creator', 'twitter_domain' )
+					),
+				
 				'scan_meta'  => Array(
 						'name' => __( 'Scan Social Meta', 'all_in_one_seo_pack' ),
 						'help_link' => 'http://semperplugins.com/documentation/social-meta-module/#scan_meta',
@@ -384,6 +411,15 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Opengraph' ) ) {
 				if ( $type == 'article' && ( !empty( $metabox['aioseop_opengraph_settings_tag'] ) ) ) {
 					$tag = $metabox['aioseop_opengraph_settings_tag'];
 				}
+				if ( $type == 'article' && ( !empty( $this->options['aiosp_opengraph_facebook_publisher'] ) ) ) {
+					$publisher = $this->options['aiosp_opengraph_facebook_publisher'];
+				}
+				
+				if ( !empty( $this->options['aiosp_opengraph_twitter_domain'] ) )
+					$domain = $this->options['aiosp_opengraph_twitter_domain'];
+
+				if ( $type == 'article' && !empty( $post ) && isset( $post->post_author ) && !empty( $this->options['aiosp_opengraph_facebook_author'] ) )
+					$author = get_the_author_meta( 'facebook', $post->post_author );
 				
 				$image = $metabox['aioseop_opengraph_settings_image'];
 				$title = $metabox['aioseop_opengraph_settings_title'];
@@ -489,7 +525,9 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Opengraph' ) ) {
 						'sitename'		=> 'og:site_name',
 						'key'			=> 'fb:admins',
 						'description'	=> 'og:description',
-						'tag'			=> 'article:tag'
+						'tag'			=> 'article:tag',
+						'publisher'		=> 'article:publisher',
+						'author'		=> 'article:author'
 					),
 				'twitter'	=> Array(
 						'card'			=> 'twitter:card',
@@ -550,7 +588,9 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Opengraph' ) ) {
 		}
 		
 		function do_opengraph( ) {
-			add_filter( 'language_attributes', Array( $this, 'add_attributes' ) );
+			global $aioseop_options;
+			if ( !empty( $aioseop_options ) && !empty( $aioseop_options['aiosp_schema_markup'] ) )
+				add_filter( 'language_attributes', Array( $this, 'add_attributes' ) );
 			if ( !defined( 'DOING_AJAX' ) )
 				add_action( 'aioseop_modules_wp_head', Array( $this, 'add_meta' ), 5 );	
 		}
@@ -575,7 +615,7 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Opengraph' ) ) {
 						'condshow' => Array( 'aiosp_opengraph_types\[\]' => $slug )
 				);
 				$this->locations['opengraph']['options'][] = $field;
-				$this->layout['default']['options'][] = $field;
+				$this->layout['facebook']['options'][] = $field;
 			}
 			$this->setting_options();
 		}

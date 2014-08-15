@@ -83,6 +83,10 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Module_Manager' ) ) {
 			$v = $this->modules[ $mod ];
 			if ( $v !== null ) return false;	// already loaded
 			if ( $mod == 'performance' && !is_super_admin() ) return false;
+			if ( $mod == 'file_editor' && ( ( ( defined( 'DISALLOW_FILE_EDIT' ) && DISALLOW_FILE_EDIT ) 
+										   || ( defined( 'DISALLOW_FILE_MODS' ) && DISALLOW_FILE_MODS )
+										   || !is_super_admin() ) ) )
+				return false;
 			$mod_enable = false;
 			$fm_page = ( $this->module_settings_update && wp_verify_nonce( $_POST['nonce-aioseop'], 'aioseop-nonce' ) && 
 				 		 isset($_REQUEST['page']) && $_REQUEST['page'] == trailingslashit( AIOSEOP_PLUGIN_DIRNAME ) . 'aioseop_feature_manager.php' );
