@@ -17,22 +17,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-echo '<td style="width:30%">';
+echo '<td style="width:15%">';
 
-if (rand(0, 2) % 2
-        || $ez->slug == "easy-ads"
-        || $ez->slug == "easy-chitika"
-        || $ez->slug == "google-adsense") {
-  $ez->renderSupportText();
-}
-else {
-  $ez->renderAffiliate();
-}
-$ez->renderTipDivs();
+$ez->renderProText();
 
 echo '</td>';
 echo '<td style="width:30%">';
 
-$ez->renderProText();
+$ez->renderAffiliate();
+$ez->renderTipDivs();
 
 echo '</td>';
