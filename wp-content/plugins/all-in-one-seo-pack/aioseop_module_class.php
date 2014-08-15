@@ -945,6 +945,7 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Module' ) ) {
 			if ( empty( $screen ) ) return;
 			if ( ( $screen->base != 'post' ) && ( $screen->base != 'edit-tags' ) && ( $screen->base != 'toplevel_page_shopp-products' ) ) return;
 			if ( $screen->base == 'edit-tags' ) $this->form = 'edittag';
+			if ( $screen->base == 'toplevel_page_shopp-products' ) $this->form = 'product';
 			foreach( $this->locations as $k => $v ) {
 				if ( $v['type'] === 'metabox' ) {
 					if ( isset( $v['display'] ) && !empty( $v['display'] ) ) {
