@@ -3,7 +3,7 @@
 Plugin Name: Stop User Enumeration
 Plugin URI: http://llocally.com/wordpress-plugins/stop-user-enumeration
 Description: User enumeration is a technique used by hackers to get your login name if you are using permalinks. This plugin stops that.
-Version: 1.2.5
+Version: 1.2.9
 Author: llocally
 Author URI: http://llocally.com/wordpress-plugins/
 License: GPLv2 or later
@@ -25,10 +25,24 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+ 
+
 if ( ! is_admin()){
-    if (preg_match('/author=([0-9]*)/', $_SERVER['QUERY_STRING'])===1) ll_kill_enumeration();
+    if ( ! is_admin()){
+      if(preg_match('/(wp-comments-post)/', $_SERVER['REQUEST_URI']) === 0 ) {
+         if (!empty($_POST[author])) {
+            ll_kill_enumeration();
+         }
+      }
+
+    if(preg_match('/author=([0-9]*)/', $_SERVER['QUERY_STRING']) === 1)
+    ll_kill_enumeration();
+
     add_filter('redirect_canonical','ll_detect_enumeration', 10,2);
-    }
+	}
+}
+
+
 
 add_filter('redirect_canonical','ll_detect_enumeration', 10,2);
 function ll_detect_enumeration ($redirect_url, $requested_url) {
