@@ -198,7 +198,7 @@ function ewww_image_optimizer_import_loop() {
 	}
 	$import_count = $import_status['media'];
 	//nextgen import
-	if ( $import_finished && isset( $import_status['nextgen'] ) ) {
+	if ( $import_finished && isset( $import_status['nextgen'] ) && class_exists( 'C_Component_Registry' ) ) {
 		$import_finished = false;
 		$images = $wpdb->get_results("SELECT pid,meta_data,filename,galleryid FROM $wpdb->nggpictures WHERE meta_data LIKE '%ewww_image_optimizer%' LIMIT {$import_status['nextgen']}, 100", ARRAY_N);
 		if ( count( $images ) === 0 ) {
@@ -220,7 +220,12 @@ function ewww_image_optimizer_import_loop() {
 					$gallery_path = trailingslashit($gallery[1]);
 				}
 			}
-			$meta = unserialize( $image[1] );
+			if (class_exists('Ngg_Serializable')) {
+		        	$serializer = new Ngg_Serializable();
+		        	$meta = $serializer->unserialize( $image[1] );
+			} else {
+				$meta = unserialize( $image[1] );
+			}
 			// get an array of sizes available for the $image
 			foreach ($sizes as $size) {
 				// get the absolute path
@@ -689,6 +694,4 @@ add_action('wp_ajax_bulk_aux_images_loop', 'ewww_image_optimizer_aux_images_loop
 add_action('wp_ajax_bulk_aux_images_cleanup', 'ewww_image_optimizer_aux_images_cleanup');
 add_action('wp_ajax_bulk_import_init', 'ewww_image_optimizer_import_init');
 add_action('wp_ajax_bulk_import_loop', 'ewww_image_optimizer_import_loop');
-// TODO: I think this can be removed
-add_action('wp_ajax_bulk_import_cleanup', 'ewww_image_optimizer_import_cleanup');
 ?>
