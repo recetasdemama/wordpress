@@ -1,13 +1,13 @@
-=== Plugin Name ===
+=== Newsletter Sign-Up ===
 Contributors: DvanKooten
-Donate link: http://dannyvankooten.com/donate/
+Donate link: https://dannyvankooten.com/donate/
 Tags: newsletter,sign-up,mailchimp,aweber,newsletter signup,checkbox,ymlp,email,phplist,icontact,mailinglist,checkbox,form widget,widget,newsletter widget,subscribe widget,form shortcode,mailchimp api
-Requires at least: 3.1
-Tested up to: 3.6.1
-Stable tag: 2.0.3
+Requires at least: 3.6
+Tested up to: 4.0
+Stable tag: 2.0.4
 License: GPL2
 
-Ultimate newsletter plugin. Works with 3rd-party newsletter services like Aweber and YMLP. includes sign-up checkboxes, widget forms and form shortcodes.
+Integrate your WordPress site with 3rd-party newsletter services like Aweber and YMLP. Adds various sign-up methods to your site.
 
 == Description ==
 
@@ -15,9 +15,12 @@ Ultimate newsletter plugin. Works with 3rd-party newsletter services like Aweber
 
 This plugin adds various sign-up methods to your WordPress website, like sign-up checkboxes in your comment form and a sign-up form to show in posts, pages or widget areas.
 
-> MailChimp user? Use my newer plugin instead: [MailChimp for WordPress](http://wordpress.org/plugins/mailchimp-for-wp/).
+<blockquote>
+    <h3 style="margin-top:0;">MailChimp user?</h3>
+    <p>Use <a href="https://wordpress.org/plugins/mailchimp-for-wp/">MailChimp for WordPress</a> instead. It's much better.</p>
+</blockquote>
 
-This plugin works with *almost all* third-party email marketing services including MailChimp, ConstantContact, YMLP, Aweber, iContact, PHPList and Feedblitz. With the right configuration settings, you can make this plugin work with *any* newsletter service around.
+This plugin works with *almost all* third-party email marketing services including MailChimp, CampaignMonitor, ConstantContact, YMLP, Aweber, iContact, PHPList and Feedblitz. With the right configuration settings, you can make this plugin work with *any* newsletter service around.
 
 **Features:**
 
@@ -31,10 +34,10 @@ This plugin works with *almost all* third-party email marketing services includi
 
 **More information**
 
-* [MailChimp for WordPress plugin](http://wordpress.org/plugins/mailchimp-for-wp/)
-* [Newsletter Sign-Up for WordPress](http://dannyvankooten.com/wordpress-plugins/newsletter-sign-up/)
-* Check out more [WordPress plugins](http://dannyvankooten.com/wordpress-plugins/) by Danny van Kooten
-* You should follow [@DannyvanKooten](http://twitter.com/DannyvanKooten) on Twitter
+* [MailChimp for WordPress plugin](https://wordpress.org/plugins/mailchimp-for-wp/)
+* [Newsletter Sign-Up for WordPress](https://dannyvankooten.com/wordpress-plugins/newsletter-sign-up/)
+* Check out more [WordPress plugins](https://dannyvankooten.com/wordpress-plugins/) by Danny van Kooten
+* Follow [@DannyvanKooten](https://twitter.com/DannyvanKooten) on Twitter
 
 = Sign-up checkboxes =
 Most of your commenters will be interested in your newsletter as well. This plugin makes it extremely easie for them to subscribe to your mailinglist. With the sign-up checkbox, all they have to do is check it and the plugin will subscribe them to your mailinglist.
@@ -50,7 +53,7 @@ You can set your own messages and even choose to redirect the visitor to a certa
 
 1. Upload the contents of newsletter-sign-up.zip to your plugins directory.
 1. Activate the plugin
-1. Specify your newsletter service settings. For more info head over to: [Newsletter Sign-Up for WordPress](http://dannyvankooten.com/wordpress-plugins/newsletter-sign-up/)
+1. Specify your newsletter service settings. For more info head over to: [Newsletter Sign-Up for WordPress](https://dannyvankooten.com/wordpress-plugins/newsletter-sign-up/)
 1. That's all. You're done!
 
 == Frequently Asked Questions ==
@@ -90,6 +93,11 @@ For more questions and answers go have a look at the [Newsletter Sign-Up](http:/
 3. The sign-up checkbox in the Twenty Eleven theme
 
 == Changelog ==
+
+= 2.0.4 - October 4, 2014 =
+
+* Minor code improvements and WP 4.0+ compatibility.
+* Prevent direct file access
 
 = 2.0.3 =
 * Fixed broken link to settings pages after widget form
@@ -190,103 +198,3 @@ For more questions and answers go have a look at the [Newsletter Sign-Up](http:/
 * Added: Option to redirect to a given url after signing-up
 * Added: More elegant error handling.
 * Fix: "Hide checkbox for subscribers" did not work after version 1.5.1
-
-= 1.5.2 =
-* Fix: Fixed widget, it was broken after v1.5.1.
-
-= 1.5.1 =
-* Improvement: Minor code improvements
-* Improvement: Minor backend changes
-
-= 1.5.0 =
-* Added: Config Extractor, a tool that helps you extract the right configuration settings when manually configuring.
-* Improvement: Some code refactoring, more to come..
-
-= 1.4.3 =
-* Improvement: Added CSS classes to the form's label's and input fields.
-* Improvement: Added unique ID's to each form and input field
-* Added: Compatibilty with [WYSIWYG Widgets Plugin](http://dannyvankooten.com/wordpress-plugins/wysiwyg-widgets/) . Install that plugin if you want to be able 
-to easily edit the widget's text. :)
-
-= 1.4.2 =
-* Improvement: Made the label at comment form and registration forms clickable so it checks the checkbox.
-* Improvement: Made 'email' a required field when submitting the sign-up form.
-* Improvement: Made 'name' an optionally required field when submitting the sign-up form.
-
-= 1.4.1 =
-* Added: the function `nsu_signup_form()` which you can call from your theme files to output a sign-up form, just like the shortcode.
-
-= 1.4 =
-* Improvement: Hide metaboxes in the NSU configuration screen
-* Improvement: Edit all widget labels in NSU configuration screen instead of widget options. (You might have to reconfigure some of your settings, sorry!)
-* Added: Ability to add a sign-up form to your posts or pages using the shortcode `[nsu_form]`
-* Some more restructuring of the code.
-
-= 1.3.3 =
-* Improvement: Users can now edit the widget labels for the email and name input fields.
-* Improvement: You can now use some common HTML-codes in the widget text's
-* Improvement: Linebreaks (\n) are now converted to HTML linebreaks in frontend.
-* Fixed: Widget typo in the label for the email input field.
-
-= 1.3.2 =
-* Fixed bug: not loading the widget's default CSS after submitting option page.
-* Fixed bug: 404 error after submitting the widget using API and 'subscribe with name'.
-* Improvement: Added id's to the input fields in the widget.
-
-= 1.3.1 =
-* Fixed: parse error, unexpected T_FUNCTION for older versions of PHP which do not support anonymous functions.
-
-= 1.3 =
-* Added a widget: adds a sign-up form to your widget areas
-
-= 1.2 =
-* Fixed critical bug causing all custom form requests to fail (iow no sign-up request was made). Sorry!
-* Fixed bug in backend: empty aweber list id field
-
-= 1.1.2 =
-* Re-added the predefined form values for Aweber, iContact and MailChimp
-* Fixed PHPList fatal error
-* Added additional data support when using YMLP API
-
-= 1.1.1 =
-* Fixed small bug for YMLP or MailChimp API users
-
-= 1.1 =
-* Changed the backend for different newsletters
-* Added YMLP API support
-* Added MailChimp API support
-* Now uses the WordPress HTTP API
-* Removed the ReadOnly attribute of prefilled fields
-* Now works with MultiSite registration forms too
-* Fixed inline CSS, now uses optional stylesheet
-* Better documentation
-
-= 1.0.6 =
-* Fixed a missing argument error.
-
-= 1.0.5 =
-* Fixed some undefined indexes notices in the frontend
-
-= 1.0.4 =
-* Small change in seconds before timeout when making the POST request.
-* Fixed bug with addititional data not being properly saved.
-
-= 1.0.3 =
-* Changed the plugin's backend structure
-* Added the <a href="http://dannyvankooten.com">DannyvanKooten.com</a> dashboard widget.
-
-= 1.0.2 =
-* Added option to send custom data along with the sign-up request. 
-
-= 1.0.1 =
-* Improved script and stylesheet loading - now only loads on NS options page.
-* Added option to show checkbox at the BuddyPress register form
-
-= 1.0 =
-* Stable release
-* Added CURL support
-* Added option to show a checkbox at WP registration form
-* Added option to subscribe commenters with their name
-
-= 0.1 =
-Beta release

@@ -1,3 +1,4 @@
+<?php defined( 'ABSPATH' ) or exit; ?>
 <div class="wrap" id="nsu-admin">
 
   <?php include_once NSU_PLUGIN_DIR . 'includes/views/parts/navigation.php'; ?>
@@ -37,7 +38,7 @@
             <tr valign="top"><th scope="row">Where to show the sign-up checkbox?</th>
               <td>
                 <?php foreach($this->get_checkbox_compatible_plugins() as $code => $name) { ?>
-                <input type="checkbox" id="add_to_<?php echo $code; ?>" name="nsu_checkbox[add_to_<?php echo $code; ?>]" value="1" <?php checked($opts['add_to_'.$code], '1'); ?> /> <label for="add_to_<?php echo $code; ?>"><?php echo $name; ?></label> &nbsp; 
+                <input type="checkbox" id="add_to_<?php echo $code; ?>" name="nsu_checkbox[add_to_<?php echo esc_attr( $code ); ?>]" value="1" <?php checked($opts['add_to_'.$code], '1'); ?> /> <label for="add_to_<?php echo $code; ?>"><?php echo $name; ?></label> &nbsp;
                 <?php } ?>
               </td>
             </tr>

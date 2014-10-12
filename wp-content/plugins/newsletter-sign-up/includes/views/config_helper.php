@@ -1,3 +1,4 @@
+<?php defined( 'ABSPATH' ) or exit; ?>
 <div class="wrap" id="nsu-admin">
 
 
@@ -8,7 +9,7 @@
    
   <div id="nsu-main">   
 
-   <?php if(isset($result) && !is_array($result)) { ?>
+   <?php if( isset( $result ) && ! is_array( $result ) ) { ?>
     <div id="message" class="notice updated"><p>Oops, I couldn't make any sense of that. Are you sure you submitted a form snippet?</p></div>
    <?php } ?>
 
@@ -36,8 +37,8 @@
       </tr>
     <?php foreach($result['additional_data'] as $data) { ?>
         <tr valign="top">
-          <td><?php echo $data[0]; ?></th>
-          <td><?php echo $data[1]; ?></td>
+          <td><?php echo esc_html( $data[0] ); ?></td>
+          <td><?php echo esc_html( $data[1] ); ?></td>
         </tr>
      <?php } ?>
    <?php } ?>
@@ -48,7 +49,7 @@
    configure Newsletter Sign-up.</p>
 
    <p>The form code below is a stripped down version of your sign-up form which will make it easier for you to extract the right    values. Please also use this form when asking for support.</p>
-   <textarea class="widefat" rows="10"><?php echo $result['simpler_form']; ?></textarea>
+   <textarea class="widefat" rows="10"><?php echo esc_textarea( $result['simpler_form'] ); ?></textarea>
 
    <?php } else { ?>
 
