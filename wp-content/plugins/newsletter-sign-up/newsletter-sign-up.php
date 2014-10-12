@@ -1,15 +1,15 @@
 <?php
 /*
 Plugin Name: Newsletter Sign-Up
-Plugin URI: http://DannyvanKooten.com/wordpress-plugins/newsletter-sign-up/
+Plugin URI: https://dannyvankooten.com/wordpress-plugins/newsletter-sign-up/
 Description: Adds various ways for your visitors to sign-up to your mailinglist (checkbox, widget, form)
-Version: 2.0.3
+Version: 2.0.4
 Author: Danny van Kooten
-Author URI: http://dannyvankooten.com
+Author URI: https://dannyvankooten.com
 License: GPL2
 */
 
-/*  Copyright 2010  Danny van Kooten  (email : danny@vkimedia.com)
+/*  Copyright 2010-2014  Danny van Kooten (email: hi@dannyvankooten.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 
@@ -25,7 +25,11 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('NSU_VERSION_NUMBER', "2.0.3");
+if( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+define('NSU_VERSION_NUMBER', "2.0.4");
 define("NSU_PLUGIN_DIR", plugin_dir_path(__FILE__)); 
 
 require_once NSU_PLUGIN_DIR . 'includes/NSU.php';

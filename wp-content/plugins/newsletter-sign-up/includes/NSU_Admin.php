@@ -144,18 +144,19 @@ if (!class_exists('NSU_Admin')) {
         public function options_page_config_helper() {
             $tab = 'config-helper';
             
-            if (isset($_POST['form']) && !empty($_POST['form'])) {
+            if ( isset( $_POST['form'] ) && ! empty( $_POST['form'] ) ) {
 
-                $result = $this->extract_form_config($_POST['form']);
+                $result = $this->extract_form_config( $_POST['form'] );
                 
             }
 
             require_once NSU_PLUGIN_DIR . 'includes/views/config_helper.php';
         }
 
-        private function extract_form_config($form_html) {
+        private function extract_form_config( $form_html ) {
+
             // strip unneccessary tags
-            $form = strip_tags($form_html, '<form><label><input><select><textarea><button>');
+            $form = stripslashes( strip_tags($form_html, '<form><label><input><select><textarea><button>') );
 
             // set defaults
             $form_action = '';
@@ -165,19 +166,23 @@ if (!class_exists('NSU_Admin')) {
 
             preg_match_all("'<(.*?)>'si", $form, $matches);
 
-            if (is_array($matches) && isset($matches[0])) {
+            if( is_array( $matches ) && isset($matches[0])) {
                 $matches = $matches[0];
-                $html = stripslashes(join('', $matches));
+                $html = join('', $matches);
             } else {
                 $html = $form;
             }
 
+            // fake wrap in html and body tags
+            $html = '<html><body>' . $html . '</body></html>';
+
             $doc = new DOMDocument();
-            $doc->strictErrorChecking = FALSE;
-            $doc->loadHTML($html);
+            $doc->strictErrorChecking = false;
+            $doc->loadHTML( $html);
+
             $xml = simplexml_import_dom($doc);
 
-            if ($xml) {
+            if ( is_object( $xml ) ) {
                 $form = $xml->body->form;
 
                 if ($form) {
@@ -185,7 +190,7 @@ if (!class_exists('NSU_Admin')) {
                     $form_action = (isset($form['action'])) ? $form['action'] : 'Can\'t help you on this one..';
 
 
-                    if ($form->input) {
+                    if ( $form->input ) {
 
                         /* Loop trough input fields */
                         foreach ($form->input as $input) {
@@ -228,6 +233,8 @@ if (!class_exists('NSU_Admin')) {
             $doc->replaceChild($doc->firstChild->firstChild->firstChild, $doc->firstChild);
 
             $simpler_form = $doc->saveHTML();
+
+            // add tabs for improved readability
             $simpler_form = str_replace(array('><', '<input'), array(">\n<", "\t<input"), $simpler_form);
             
 

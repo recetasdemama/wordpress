@@ -1,3 +1,4 @@
+<?php defined( 'ABSPATH' ) or exit; ?>
 <div class="wrap" id="nsu-admin">
 
     <?php include_once 'parts/navigation.php'; ?>

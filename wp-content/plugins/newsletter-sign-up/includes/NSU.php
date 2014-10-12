@@ -12,25 +12,29 @@ class NSU {
 
 		$opts = $this->get_options();
 
-		// widget hooks
-		add_action( 'widgets_init', array( $this, 'register_widget' ) );
-
 		self::checkbox();
 		self::form();
 
+		// widget hooks
+		add_action( 'widgets_init', array( $this, 'register_widget' ) );
+
+		// check if this is an AJAX request
 		if ( !defined( "DOING_AJAX" ) || !DOING_AJAX ) {
-			// regular request
+
 			if ( is_admin() ) {
 
 				// backend only
 				require_once NSU_PLUGIN_DIR . 'includes/NSU_Admin.php';
 				new NSU_Admin();
+
 			} else {
+
 				// frontend only
 				require_once NSU_PLUGIN_DIR . 'includes/functions.php';
 
 				add_action( 'wp_enqueue_scripts', array( $this, 'load_stylesheets' ) );
 				add_action( 'login_enqueue_scripts',  array( $this, 'load_stylesheets' ) );
+
 			}
 		}
 	}
