@@ -3,7 +3,7 @@
  * Plugin Name: Acunetix WP Security
  * Plugin URI: http://www.acunetix.com/websitesecurity/wordpress-security-plugin/
  * Description: The Acunetix WP Security plugin is the ultimate must-have tool when it comes to WordPress security. The plugin is free and monitors your website for security weaknesses that hackers might exploit and tells you how to easily fix them.
- * Version: 4.0.3
+ * Version: 4.0.4
  * Author: Acunetix
  * Author URI: http://www.acunetix.com/
  * License: GPLv2 or later
