@@ -177,6 +177,9 @@ if (!class_exists("EzTran")) {
       $locale = get_locale();
       $this->locale = str_replace('-', '_', $locale);
       $this->target = $this->locale;
+      if (!is_admin()) {
+        return;
+      }
       if (!session_id()) {
         session_start();
       }
