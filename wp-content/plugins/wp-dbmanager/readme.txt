@@ -3,14 +3,16 @@ Contributors: GamerZ
 Donate link: http://lesterchan.net/site/donation/  
 Tags: database, manage, wp-dbmanager, manager, table, optimize, backup, queries, query, drop, empty, tables, table, run, repair, cron, schedule, scheduling, automatic  
 Requires at least: 3.9  
-Tested up to: 3.9  
-Stable tag: 2.70  
+Tested up to: 4.0  
+Stable tag: 2.71  
 
 Manages your WordPress database.
 
 == Description ==
-
 Allows you to optimize database, repair database, backup database, restore database, delete backup database , drop/empty tables and run selected queries. Supports automatic scheduling of backing up, optimizing and repairing of database.
+
+= Build Status =
+[![Build Status](https://travis-ci.org/lesterchan/wp-dbmanager.svg?branch=master)](https://travis-ci.org/lesterchan/wp-dbmanager)
 
 = Development =
 * [https://github.com/lesterchan/wp-dbmanager](https://github.com/lesterchan/wp-dbmanager "https://github.com/lesterchan/wp-dbmanager")
@@ -19,13 +21,15 @@ Allows you to optimize database, repair database, backup database, restore datab
 * [http://dev.wp-plugins.org/browser/wp-dbmanager/i18n/](http://dev.wp-plugins.org/browser/wp-dbmanager/i18n/ "http://dev.wp-plugins.org/browser/wp-dbmanager/i18n/")
 
 = Credits =
-* __ngetext() by [Anna Ozeritskaya](http://hweia.ru/ "Anna Ozeritskaya")
-* Right To Left Language Support by [Kambiz R. Khojasteh](http://persian-programming.com/ "Kambiz R. Khojasteh")
+* Plugin icon by [Freepik](http://www.freepik.com) from [Flaticon](http://www.flaticon.com)
 
 = Donations =
 * I spent most of my free time creating, updating, maintaining and supporting these plugins, if you really love my plugins and could spare me a couple of bucks, I will really appericiate it. If not feel free to use it without any obligations.
 
 == Changelog ==
+= Version 2.71 =
+* NEW: Bump to 4.0
+
 = Version 2.70 =
 * New: Uses WordPress 3.9 Dashicons
 * NEW: Allow you to hide admin notices in the DB Options page
