@@ -52,9 +52,13 @@ if ( !function_exists( 'aioseop_update_settings_check' ) ) {
 				unset( $aioseop_options['aiosp_archive_noindex'] );
 				$update_options = true;
 			}
-			if ( !empty( $aioseop_options['archive_title_format'] ) && empty( $aioseop_options['date_title_format'] ) ) {
-				$aioseop_options['date_title_format'] = $aioseop_options['archive_title_format'];
-				unset( $aioseop_options['archive_title_format'] );
+			if ( !empty( $aioseop_options['aiosp_archive_title_format'] ) && empty( $aioseop_options['aiosp_date_title_format'] ) ) {
+				$aioseop_options['aiosp_date_title_format'] = $aioseop_options['aiosp_archive_title_format'];
+				unset( $aioseop_options['aiosp_archive_title_format'] );
+				$update_options = true;
+			}
+			if ( !empty( $aioseop_options['aiosp_archive_title_format'] ) && ( $aioseop_options['aiosp_archive_title_format'] == '%date% | %blog_title%' ) ) {
+				$aioseop_options['aiosp_archive_title_format'] = '%archive_title% | %blog_title%';
 				$update_options = true;
 			}
 			if ( $update_options )

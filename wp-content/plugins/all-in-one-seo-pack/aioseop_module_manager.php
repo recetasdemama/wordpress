@@ -36,7 +36,8 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Module_Manager' ) ) {
 			if ( $class == get_class( $aiosp ) )	return $aiosp;
 			if ( $class == get_class( $this ) )		return $this;
 			foreach( $this->modules as $m )
-				if ( $class == get_class( $m ) )	return $m;
+				if ( is_object( $m ) && ( $class == get_class( $m ) ) )
+					return $m;
 			return false;
 		}
 		
