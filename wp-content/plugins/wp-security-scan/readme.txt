@@ -4,7 +4,7 @@ Author: Acunetix
 Tags: security, securityscan, chmod, permissions, admin, administration, authentication, database, dashboard, post, notification, password, plugin, posts,
 plugins, private, protection, tracking, wordpress
 Requires at least: 3.0
-Tested up to: 3.7.1
+Tested up to: 4.0
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -142,6 +142,10 @@ on the <a href="http://wordpress.org/support/plugin/wp-security-scan" target="_b
 
 
 == Changelog ==
+
+= 4.0.4 =
+* Add support for WordPress 4.0
+
 
 = 4.0.3 =
 * New Feature: Added support for MultiSite

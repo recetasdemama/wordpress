@@ -46,7 +46,7 @@ class WpsSettings
     /**
      * Set the path to the acunetix.com feed
      */
-    const BLOG_FEED = 'http://www.acunetix.com/blog/';
+    const BLOG_FEED = 'http://feeds.acunetix.com/acunetixwebapplicationsecurityblog';
 
     /** Holds the name of the option that will hold the WP Scan settings */
     const WP_FILE_SCAN_OPTION_NAME = 'wps_plugin_wp_scan';
