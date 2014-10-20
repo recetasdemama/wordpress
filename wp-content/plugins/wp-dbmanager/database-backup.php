@@ -42,24 +42,24 @@ if(!empty($_POST['do'])) {
 			if($gzip == 1) {
 				$backup['filename'] = $backup['date'].'_-_'.DB_NAME.'.sql.gz';
 				$backup['filepath'] = $backup['path'].'/'.$backup['filename'];
-				$backup['command'] = $brace.$backup['mysqldumppath'].$brace.' --force --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].$backup['charset'].' --add-drop-table --skip-lock-tables '.DB_NAME.' | gzip > '.$brace.$backup['filepath'].$brace;
+				$backup['command'] = escapeshellcmd( $brace.$backup['mysqldumppath'].$brace.' --force --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].$backup['charset'].' --add-drop-table --skip-lock-tables '.DB_NAME ).' | gzip > '.escapeshellcmd( $brace.$backup['filepath'].$brace );
 			} else {
 				$backup['filename'] = $backup['date'].'_-_'.DB_NAME.'.sql';
 				$backup['filepath'] = $backup['path'].'/'.$backup['filename'];
-				$backup['command'] = $brace.$backup['mysqldumppath'].$brace.' --force --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].$backup['charset'].' --add-drop-table --skip-lock-tables '.DB_NAME.' > '.$brace.$backup['filepath'].$brace;
+				$backup['command'] = escapeshellcmd( $brace.$backup['mysqldumppath'].$brace.' --force --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].$backup['charset'].' --add-drop-table --skip-lock-tables '.DB_NAME ).' > '.escapeshellcmd( $brace.$backup['filepath'].$brace );
 			}
 			$error = execute_backup($backup['command']);
 			if(!is_writable($backup['path'])) {
-				$text = '<font color="red">'.sprintf(__('Database Failed To Backup On \'%s\'. Backup Folder Not Writable.', 'wp-dbmanager'), $current_date).'</font>';
+				$text = '<p style="color: red;">'.sprintf(__('Database Failed To Backup On \'%s\'. Backup Folder Not Writable.', 'wp-dbmanager'), $current_date).'</p>';
 			} elseif(filesize($backup['filepath']) == 0) {
 				unlink($backup['filepath']);
-				$text = '<font color="red">'.sprintf(__('Database Failed To Backup On \'%s\'. Backup File Size Is 0KB.', 'wp-dbmanager'), $current_date).'</font>';
+				$text = '<p style="color: red;">'.sprintf(__('Database Failed To Backup On \'%s\'. Backup File Size Is 0KB.', 'wp-dbmanager'), $current_date).'</p>';
 			} elseif(!is_file($backup['filepath'])) {
-				$text = '<font color="red">'.sprintf(__('Database Failed To Backup On \'%s\'. Invalid Backup File Path.', 'wp-dbmanager'), $current_date).'</font>';
+				$text = '<p style="color: red;">'.sprintf(__('Database Failed To Backup On \'%s\'. Invalid Backup File Path.', 'wp-dbmanager'), $current_date).'</p>';
 			} elseif($error) {
-				$text = '<font color="red">'.sprintf(__('Database Failed To Backup On \'%s\'.', 'wp-dbmanager'), $current_date).'</font>';
+				$text = '<p style="color: red;">'.sprintf(__('Database Failed To Backup On \'%s\'.', 'wp-dbmanager'), $current_date).'</p>';
 			} else {
-				$text = '<font color="green">'.sprintf(__('Database Backed Up Successfully On \'%s\'.', 'wp-dbmanager'), $current_date).'</font>';
+				$text = '<p style="color: green;">'.sprintf(__('Database Backed Up Successfully On \'%s\'.', 'wp-dbmanager'), $current_date).'</p>';
 			}
 			break;
 	}
@@ -82,41 +82,56 @@ $stats_function_disabled = 0;
 	<p>
 		<?php _e('Checking Backup Folder', 'wp-dbmanager'); ?> <span dir="ltr">(<strong><?php echo stripslashes($backup['path']); ?></strong>)</span> ...<br />
 		<?php
-			if(@is_dir(stripslashes($backup['path']))) {
-				echo '<font color="green">'.__('Backup folder exists', 'wp-dbmanager').'</font><br />';
+			if( realpath( $backup['path'] ) === false ) {
+				echo '<p style="color: red;">' . sprintf( __( '%s is not a valid backup path', 'wp-dbmanager' ), stripslashes( $backup['path'] ) ) . '</p>';
 				$status_count++;
 			} else {
-				echo '<font color="red">'.sprintf(__('Backup folder does NOT exist. Please create \'backup-db\' folder in \'%s\' folder and CHMOD it to \'777\' or change the location of the backup folder under DB Option.', 'wp-dbmanager'), WP_CONTENT_DIR).'</font><br />';
-			}
-			if(@is_writable(stripslashes($backup['path']))) {
-				echo '<font color="green">'.__('Backup folder is writable', 'wp-dbmanager').'</font>';
-				$status_count++;
-			} else {
-				echo '<font color="red">'.__('Backup folder is NOT writable. Please CHMOD it to \'777\'.', 'wp-dbmanager').'</font>';
-			}
-		?>
-	</p>
-	<p>
-		<?php
-			if(@file_exists(stripslashes($backup['mysqldumppath']))) {
-				echo __('Checking MYSQL Dump Path', 'wp-dbmanager').' <span dir="ltr">(<strong>'.stripslashes($backup['mysqldumppath']).'</strong>)</span> ...<br />';
-				echo '<font color="green">'.__('MYSQL dump path exists.', 'wp-dbmanager').'</font>';
-				$status_count++;
-			} else {
-				echo __('Checking MYSQL Dump Path', 'wp-dbmanager').' ...<br />';
-				echo '<font color="red">'.__('MYSQL dump path does NOT exist. Please check your mysqldump path under DB Options. If uncertain, contact your server administrator.', 'wp-dbmanager').'</font>';
+				if (@is_dir(stripslashes($backup['path']))) {
+					echo '<p style="color: green;">' . __('Backup folder exists', 'wp-dbmanager') . '</p>';
+					$status_count++;
+				} else {
+					echo '<p style="color: red;">' . sprintf(__('Backup folder does NOT exist. Please create \'backup-db\' folder in \'%s\' folder and CHMOD it to \'777\' or change the location of the backup folder under DB Option.', 'wp-dbmanager'), WP_CONTENT_DIR) . '</p>';
+				}
+				if (@is_writable(stripslashes($backup['path']))) {
+					echo '<p style="color: green;">' . __('Backup folder is writable', 'wp-dbmanager') . '</p>';
+					$status_count++;
+				} else {
+					echo '<p style="color: red;">' . __('Backup folder is NOT writable. Please CHMOD it to \'777\'.', 'wp-dbmanager') . '</p>';
+				}
 			}
 		?>
 	</p>
 	<p>
 		<?php
-			if(@file_exists(stripslashes($backup['mysqlpath']))) {
-				echo __('Checking MYSQL Path', 'wp-dbmanager').' <span dir="ltr">(<strong>'.stripslashes($backup['mysqlpath']).'</strong>)</span> ...<br />';
-				echo '<font color="green">'.__('MYSQL path exists.', 'wp-dbmanager').'</font>';
+			if( dbmanager_is_valid_path( $backup['mysqldumppath'] ) === 0 ) {
+				echo '<p style="color: red;">' . sprintf( __( '%s is not a valid backup mysqldump path', 'wp-dbmanager' ), stripslashes( $backup['mysqldumppath'] ) ) . '</p>';
 				$status_count++;
 			} else {
-				echo __('Checking MYSQL Path', 'wp-dbmanager').' ...<br />';
-				echo '<font color="red">'.__('MYSQL path does NOT exist. Please check your mysql path under DB Options. If uncertain, contact your server administrator.', 'wp-dbmanager').'</font>';
+				if (@file_exists(stripslashes($backup['mysqldumppath']))) {
+					echo __('Checking MYSQL Dump Path', 'wp-dbmanager') . ' <span dir="ltr">(<strong>' . stripslashes($backup['mysqldumppath']) . '</strong>)</span> ...<br />';
+					echo '<p style="color: green;">' . __('MYSQL dump path exists.', 'wp-dbmanager') . '</p>';
+					$status_count++;
+				} else {
+					echo __('Checking MYSQL Dump Path', 'wp-dbmanager') . ' ...<br />';
+					echo '<p style="color: red;">' . __('MYSQL dump path does NOT exist. Please check your mysqldump path under DB Options. If uncertain, contact your server administrator.', 'wp-dbmanager') . '</p>';
+				}
+			}
+		?>
+	</p>
+	<p>
+		<?php
+			if( dbmanager_is_valid_path( $backup['mysqlpath'] ) === 0 ) {
+				echo '<p style="color: red;">' . sprintf( __( '%s is not a valid backup mysql path', 'wp-dbmanager' ), stripslashes( $backup['mysqlpath'] ) ) . '</p>';
+				$status_count++;
+			} else {
+				if (@file_exists(stripslashes($backup['mysqlpath']))) {
+					echo __('Checking MYSQL Path', 'wp-dbmanager') . ' <span dir="ltr">(<strong>' . stripslashes($backup['mysqlpath']) . '</strong>)</span> ...<br />';
+					echo '<p style="color: green;">' . __('MYSQL path exists.', 'wp-dbmanager') . '</p>';
+					$status_count++;
+				} else {
+					echo __('Checking MYSQL Path', 'wp-dbmanager') . ' ...<br />';
+					echo '<p style="color: red;">' . __('MYSQL path does NOT exist. Please check your mysql path under DB Options. If uncertain, contact your server administrator.', 'wp-dbmanager') . '</p>';
+				}
 			}
 		?>
 	</p>
@@ -124,22 +139,22 @@ $stats_function_disabled = 0;
 		<?php _e('Checking PHP Functions', 'wp-dbmanager'); ?> <span dir="ltr">(<strong>passthru()</strong>, <strong>system()</strong> <?php _e('and', 'wp-dbmanager'); ?> <strong>exec()</strong>)</span> ...<br />
 		<?php
 			if(function_exists('passthru')) {
-				echo '<font color="green"><span dir="ltr">passthru()</span> '.__('enabled', 'wp-dbmanager').'.</font><br />';
+				echo '<p style="color: green;"><span dir="ltr">passthru()</span> '.__('enabled', 'wp-dbmanager').'.</p>';
 				$status_count++;
 			} else {
-				echo '<font color="red"><span dir="ltr">passthru()</span> '.__('disabled', 'wp-dbmanager').'.</font><br />';
+				echo '<p style="color: red;"><span dir="ltr">passthru()</span> '.__('disabled', 'wp-dbmanager').'.</p>';
 				$stats_function_disabled++;
 			}
 			if(function_exists('system')) {
-				echo '<font color="green"><span dir="ltr">system()</span> '.__('enabled', 'wp-dbmanager').'.</font><br />';
+				echo '<p style="color: green;"><span dir="ltr">system()</span> '.__('enabled', 'wp-dbmanager').'.</p>';
 			} else {
-				echo '<font color="red"><span dir="ltr">system()</span> '.__('disabled', 'wp-dbmanager').'.</font><br />';
+				echo '<p style="color: red;"><span dir="ltr">system()</span> '.__('disabled', 'wp-dbmanager').'.</p>';
 				$stats_function_disabled++;
 			}
 			if(function_exists('exec')) {
-				echo '<font color="green"><span dir="ltr">exec()</span> '.__('enabled', 'wp-dbmanager').'.</font>';
+				echo '<p style="color: green;"><span dir="ltr">exec()</span> '.__('enabled', 'wp-dbmanager').'.</p>';
 			} else {
-				echo '<font color="red"><span dir="ltr">exec()</span> '.__('disabled', 'wp-dbmanager').'.</font>';
+				echo '<p style="color: red;"><span dir="ltr">exec()</span> '.__('disabled', 'wp-dbmanager').'.</p>';
 				$stats_function_disabled++;
 			}
 		?>
@@ -147,11 +162,11 @@ $stats_function_disabled = 0;
 	<p>
 		<?php
 			if($status_count == 5) {
-				echo '<strong><font color="green">'.__('Excellent. You Are Good To Go.', 'wp-dbmanager').'</font></strong>';
+				echo '<strong><p style="color: green;">'.__('Excellent. You Are Good To Go.', 'wp-dbmanager').'</p></strong>';
 			} else if($stats_function_disabled == 3) {
-				echo '<strong><font color="red">'.__('I\'m sorry, your server administrator has disabled passthru(), system() and exec(), thus you cannot use this backup script. You may consider using the default WordPress database backup script instead.', 'wp-dbmanager').'</font></strong>';
+				echo '<strong><p style="color: red;">'.__('I\'m sorry, your server administrator has disabled passthru(), system() and exec(), thus you cannot use this backup script. You may consider using the default WordPress database backup script instead.', 'wp-dbmanager').'</p></strong>';
 			} else {
-				echo '<strong><font color="red">'.__('Please Rectify The Error Highlighted In Red Before Proceeding On.', 'wp-dbmanager').'</font></strong>';
+				echo '<strong><p style="color: red;">'.__('Please Rectify The Error Highlighted In Red Before Proceeding On.', 'wp-dbmanager').'</p></strong>';
 			}
 		?>
 	</p>
