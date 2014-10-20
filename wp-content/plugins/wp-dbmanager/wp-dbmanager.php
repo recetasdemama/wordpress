@@ -3,7 +3,7 @@
 Plugin Name: WP-DBManager
 Plugin URI: http://lesterchan.net/portfolio/programming/php/
 Description: Manages your WordPress database. Allows you to optimize database, repair database, backup database, restore database, delete backup database , drop/empty tables and run selected queries. Supports automatic scheduling of backing up, optimizing and repairing of database.
-Version: 2.71
+Version: 2.72
 Author: Lester 'GaMerZ' Chan
 Author URI: http://lesterchan.net
 Text Domain: wp-dbmanager
@@ -60,11 +60,9 @@ add_action('dbmanager_cron_backup', 'cron_dbmanager_backup');
 add_action('dbmanager_cron_optimize', 'cron_dbmanager_optimize');
 add_action('dbmanager_cron_repair', 'cron_dbmanager_repair');
 function cron_dbmanager_backup() {
-	global $wpdb;
 	$backup_options = get_option('dbmanager_options');
 	$backup_email = stripslashes($backup_options['backup_email']);
 	if(intval($backup_options['backup_period']) > 0) {
-		$current_date = mysql2date(sprintf(__('%s @ %s', 'wp-dbmanager'), get_option('date_format'), get_option('time_format')), gmdate('Y-m-d H:i:s', current_time('timestamp')));
 		$backup = array();
 		$backup['date'] = current_time('timestamp');
 		$backup['mysqldumppath'] = $backup_options['mysqldumppath'];
@@ -88,14 +86,14 @@ function cron_dbmanager_backup() {
 		if(intval($backup_options['backup_gzip']) == 1) {
 			$backup['filename'] = $backup['date'].'_-_'.DB_NAME.'.sql.gz';
 			$backup['filepath'] = $backup['path'].'/'.$backup['filename'];
-			$backup['command'] = $brace.$backup['mysqldumppath'].$brace.' --force --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].' --add-drop-table --skip-lock-tables '.DB_NAME.' | gzip > '.$brace.$backup['filepath'].$brace;
+			$backup['command'] = escapeshellcmd( $brace.$backup['mysqldumppath'].$brace.' --force --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].' --add-drop-table --skip-lock-tables '.DB_NAME ). ' | gzip > '.escapeshellcmd( $brace.$backup['filepath'].$brace );
 		} else {
 			$backup['filename'] = $backup['date'].'_-_'.DB_NAME.'.sql';
 			$backup['filepath'] = $backup['path'].'/'.$backup['filename'];
-			$backup['command'] = $brace.$backup['mysqldumppath'].$brace.' --force --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].' --add-drop-table --skip-lock-tables '.DB_NAME.' > '.$brace.$backup['filepath'].$brace;
+			$backup['command'] = escapeshellcmd( $brace.$backup['mysqldumppath'].$brace.' --force --host="'.$backup['host'].'" --user="'.DB_USER.'" --password="'.$backup['password'].'"'.$backup['port'].$backup['sock'].' --add-drop-table --skip-lock-tables '.DB_NAME ). ' > '.escapeshellcmd( $brace.$backup['filepath'].$brace );
 		}
 		execute_backup($backup['command']);
-		if( !empty( $backup_email ) )
+		if( ! empty( $backup_email ) )
 		{
 			dbmanager_email_backup( $backup_email, $backup['filepath'] );
 		}
@@ -105,7 +103,6 @@ function cron_dbmanager_backup() {
 function cron_dbmanager_optimize() {
 	global $wpdb;
 	$backup_options = get_option('dbmanager_options');
-	$optimize = intval($backup_options['optimize']);
 	$optimize_period = intval($backup_options['optimize_period']);
 	if($optimize_period > 0) {
 		$optimize_tables = array();
@@ -120,7 +117,6 @@ function cron_dbmanager_optimize() {
 function cron_dbmanager_repair() {
 	global $wpdb;
 	$backup_options = get_option('dbmanager_options');
-	$repair = intval($backup_options['repair']);
 	$repair_period = intval($backup_options['repair_period']);
 	if($repair_period > 0) {
 		$repair_tables = array();
@@ -211,18 +207,32 @@ function detect_mysql() {
 function execute_backup($command) {
 	$backup_options = get_option('dbmanager_options');
 	check_backup_files();
-	if(substr(PHP_OS, 0, 3) == 'WIN') {
+
+	if( realpath( $backup_options['path'] ) === false ) {
+		return sprintf( __( '%s is not a valid backup path', 'wp-dbmanager' ), stripslashes( $backup_options['path'] ) );
+	} else if( dbmanager_is_valid_path( $backup_options['mysqldumppath'] ) === 0 ) {
+		return sprintf( __( '%s is not a valid mysqldump path', 'wp-dbmanager' ), stripslashes( $backup_options['mysqldumppath'] ) );
+	} else if( dbmanager_is_valid_path( $backup_options['mysqlpath'] ) === 0 ) {
+		return sprintf( __( '%s is not a valid mysql path', 'wp-dbmanager' ), stripslashes( $backup_options['mysqlpath'] ) );
+	}
+
+	if( substr( PHP_OS, 0, 3 ) === 'WIN' ) {
 		$writable_dir = $backup_options['path'];
 		$tmpnam = $writable_dir.'/wp-dbmanager.bat';
-		$fp = fopen($tmpnam, 'w');
-		fwrite($fp, $command);
-		fclose($fp);
-		system($tmpnam.' > NUL', $error);
-		unlink($tmpnam);
+		$fp = fopen( $tmpnam, 'w' );
+		fwrite ($fp, $command );
+		fclose( $fp );
+		system( $tmpnam.' > NUL', $error );
+		unlink( $tmpnam );
 	} else {
-		passthru($command, $error);
+		passthru( $command, $error );
 	}
 	return $error;
+}
+
+### Function: Check for valid file path
+function dbmanager_is_valid_path( $path ) {
+	return preg_match( '/^[^*?"<>|;]*$/', $path );
 }
 
 ### Function: Email database backup
@@ -467,6 +477,7 @@ function download_database() {
 function dbmanager_options() {
 	$text = '';
 	$backup_options = get_option('dbmanager_options');
+	$old_backup_options = $backup_options;
 	if(!empty($_POST['Submit'])) {
 		check_admin_referer('wp-dbmanager_options');
 		$backup_options['mysqldumppath']            = sanitize_text_field( $_POST['db_mysqldumppath'] );
@@ -486,29 +497,40 @@ function dbmanager_options() {
 		$backup_options['repair_period']            = intval( $_POST['db_repair_period'] );
 		$backup_options['hide_admin_notices']       = intval( $_POST['db_hide_admin_notices'] );
 
-		$update_db_options = update_option('dbmanager_options', $backup_options);
-		if($update_db_options) {
-			$text = '<font color="green">'.__('Database Options Updated', 'wp-dbmanager').'</font>';
+		if( realpath( $backup_options['path'] ) === false ) {
+			$text = '<div id="message" class="error"><p>' . sprintf( __( '%s is not a valid backup path', 'wp-dbmanager' ), stripslashes( $backup_options['path'] ) ) . '</p></div>';
+			$backup_options['path'] = $old_backup_options['path'];
+		} else if( dbmanager_is_valid_path( $backup_options['mysqldumppath'] ) === 0 ) {
+			$text = '<div id="message" class="error"><p>' . sprintf( __( '%s is not a valid mysqldump path', 'wp-dbmanager' ), stripslashes( $backup_options['mysqldumppath'] ) ) . '</p></div>';
+			$backup_options['mysqldumppath'] = $old_backup_options['mysqldumppath'];
+		} else if( dbmanager_is_valid_path( $backup_options['mysqlpath'] ) === 0 ) {
+			$text = '<div id="message" class="error"><p>' . sprintf( __( '%s is not a valid mysql path', 'wp-dbmanager' ), stripslashes( $backup_options['mysqlpath'] ) ) . '</p></div>';
+			$backup_options['mysqlpath'] = $old_backup_options['mysqlpath'];
 		}
-		if(empty($text)) {
-			$text = '<font color="red">'.__('No Database Option Updated', 'wp-dbmanager').'</font>';
+
+		$update_db_options = update_option( 'dbmanager_options', $backup_options );
+		if( $update_db_options ) {
+			$text = '<div id="message" class="updated"><p>' . __( 'Database Options Updated', 'wp-dbmanager' ) . '</p></div>';
 		}
-		wp_clear_scheduled_hook('dbmanager_cron_backup');
-		if($backup_options['backup_period'] > 0) {
-			if (!wp_next_scheduled('dbmanager_cron_backup')) {
-				wp_schedule_event(time(), 'dbmanager_backup', 'dbmanager_cron_backup');
+		if( empty( $text ) ) {
+			$text = '<div id="message" class="error"><p>' . __( 'No Database Option Updated', 'wp-dbmanager' ) . '</p></div>';
+		}
+		wp_clear_scheduled_hook( 'dbmanager_cron_backup' );
+		if( $backup_options['backup_period'] > 0 ) {
+			if ( ! wp_next_scheduled( 'dbmanager_cron_backup' ) ) {
+				wp_schedule_event( time(), 'dbmanager_backup', 'dbmanager_cron_backup' );
 			}
 		}
-		wp_clear_scheduled_hook('dbmanager_cron_optimize');
-		if($backup_options['optimize_period'] > 0) {
-			if (!wp_next_scheduled('dbmanager_cron_optimize')) {
-				wp_schedule_event(time(), 'dbmanager_optimize', 'dbmanager_cron_optimize');
+		wp_clear_scheduled_hook( 'dbmanager_cron_optimize' );
+		if( $backup_options['optimize_period'] > 0 ) {
+			if ( ! wp_next_scheduled('dbmanager_cron_optimize' ) ) {
+				wp_schedule_event( time(), 'dbmanager_optimize', 'dbmanager_cron_optimize' );
 			}
 		}
-		wp_clear_scheduled_hook('dbmanager_cron_repair');
-		if($backup_options['repair_period'] > 0) {
-			if (!wp_next_scheduled('dbmanager_cron_repair')) {
-				wp_schedule_event(time(), 'dbmanager_repair', 'dbmanager_cron_repair');
+		wp_clear_scheduled_hook( 'dbmanager_cron_repair' );
+		if( $backup_options['repair_period'] > 0 ) {
+			if ( ! wp_next_scheduled( 'dbmanager_cron_repair' ) ) {
+				wp_schedule_event( time(), 'dbmanager_repair', 'dbmanager_cron_repair' );
 			}
 		}
 	}
@@ -543,7 +565,7 @@ function dbmanager_options() {
 	}
 /* ]]> */
 </script>
-<?php if(!empty($text)) { echo '<!-- Last Action --><div id="message" class="updated fade"><p>'.$text.'</p></div>'; } ?>
+<?php if( ! empty( $text ) ) { echo $text; } ?>
 <!-- Database Options -->
 <form method="post" action="<?php echo admin_url('admin.php?page='.plugin_basename(__FILE__)); ?>">
 	<?php wp_nonce_field('wp-dbmanager_options'); ?>
