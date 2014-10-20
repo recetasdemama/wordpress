@@ -48,12 +48,12 @@ if (!class_exists('EzAdmin')) {
       else {
         echo "<input type='hidden' name='kill_rating' value='true' />";
       }
-      if (empty($options['kill_invites'])) {
-        $this->renderInvite();
-      }
-      else {
-        echo "<input type='hidden' name='kill_invites' value='true' />";
-      }
+//      if (empty($options['kill_invites'])) {
+//        $this->renderInvite();
+//      }
+//      else {
+//        echo "<input type='hidden' name='kill_invites' value='true' />";
+//      }
     }
 
     function renderInvite() {
@@ -255,7 +255,7 @@ $moreInfo
       $promoClick = addslashes("onclick=\"popupwindow('http://www.thulasidas.com/promo.php?key=$plgKey','Get Pro', 1024, 768);return false;\"");
       $promoTip = htmlspecialchars("$s3. $s9<br /><a style=\"color:red;font-weight:bold\" href=\"http://www.thulasidas.com/promo.php?key=$plgKey\" target=_blank $promoClick>" . __("Limited Time Offer. Get the Pro version for less than a dollar!", 'easy-common') . "</a>");
 
-      echo "$s10 $filter $s11 <br /><a href='http://buy.thulasidas.com/$slug' title='$s3. $s9' onmouseover=\"Tip('$promoTip', WIDTH, 200, CLOSEBTN, true, CLICKCLOSE, true, FIX, [this, 5, 5], TITLE, 'Limited Time Offer')\">$s8</a>";
+      echo "$s10 $filter $s11 <br /><a $onclick href='http://buy.thulasidas.com/$slug' title='$s3. $s9' onmouseover=\"Tip('$promoTip', WIDTH, 200, CLOSEBTN, true, CLICKCLOSE, true, FIX, [this, 5, 5], TITLE, 'Limited Time Offer')\" target=_blank>$s8</a>";
       echo "</div>";
     }
 
@@ -265,8 +265,8 @@ $moreInfo
       }
       $plgURL = $this->plgURL;
 
-      $select = rand(1,4);
-      echo "<div style='padding:0px;border:none;text-align:center' id='support' onmouseover=\"TagToTip('superlinks', WIDTH, 295, TITLE, 'Superlinks', FIX, [this, 25, 0])\" onmouseout=\"UnTip()\" ><a href='http://superlinks.com/ezad.php' target='_blank'><img src='$plgURL/300x250-0$select.jpg' border='0' alt='Superlinks Advertising to access Google AdX' /></a></div>";
+      $select = rand(0,4);
+      echo "<div style='padding:0px;border:none;text-align:center' id='support' onmouseover=\"TagToTip('proservices', WIDTH, 295, TITLE, 'Professional Services', FIX, [this, 25, 0], CLICKCLOSE, true, CLOSEBTN, true)\" ><a href='http://www.thulasidas.com/professional-php-services/' target='_blank'><img src='$plgURL/300x250-0$select.jpg' border='0' alt='Professional Services from the Plugin Author' /></a></div>";
     }
 
     function renderSupportText() {
@@ -309,6 +309,10 @@ $moreInfo
 <div id="arvixe" style='display:none;'>
   <a href="http://www.arvixe.com/1933-27-1-310.html" target="_blank"><b>Arvixe</b></a> is my favorite hosting provider. Friendly service, extremely competitive rates, and of course a great affiliate program. My own WordPress blog and a dozen websites are hosted on their VPS. If you are looking for a new hosting provider, do check them out!
 </div>
+
+ <span id="proservices" style='display:none;'>
+      The author of this plugin may be able to help you with your WordPress or plugin customization needs and other PHP related development. <a href='http://www.thulasidas.com/professional-php-services/' target='_blank'>Contact me</a> if you find a plugin that almost, but not quite, does what you are looking for, or if you need any other professional services. If you would like to see my credentials, take a look at <a href='http://www.thulasidas.com/col/Manoj-CV.pdf' target='_blank'>my CV</a>.
+</span>
 
  <span id="superlinks" style='display:none;'>
   <a href='http://superlinks.com' target='_blank'><b>Superlinks</b></a> is an advertising network that can give AdSense a run for its money. It gives you access to Google AdExchange program, normally reserved for very high volume publishers. I have partnered with Superlinks to give you access to their offerings. If your site qualifies for Google AdX, you stand to make significantly higher returns than AdSense. Give it a shot!
