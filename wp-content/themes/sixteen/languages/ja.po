@@ -1,0 +1,545 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Sixteen\n"
+"POT-Creation-Date: 2013-10-19 02:19+0530\n"
+"PO-Revision-Date: 2013-10-19 02:20+0530\n"
+"Last-Translator: ROhit <rohit@rohitink.com>\n"
+"Language-Team: Rohitink <rohit@rohitink.com>\n"
+"Language: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: /Users/mac/Documents/Developer/Theme-Development/wp-"
+"content/themes/sixteen\n"
+"X-Poedit-SearchPath-1: /Users/mac/Documents/Developer/Theme-Development/wp-"
+"content/themes/sixteen/inc\n"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/404.php:44
+#, php-format
+msgid "Try looking in the monthly archives. %1$s"
+msgstr "月別アーカイブで探してみてください。 %1$s"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/archive.php:31
+#, php-format
+msgid "Author: %s"
+msgstr "著者： %s"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/archive.php:39
+#, php-format
+msgid "Day: %s"
+msgstr "デイ： %s"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/archive.php:42
+#, php-format
+msgid "Month: %s"
+msgstr "月： %s"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/archive.php:45
+#, php-format
+msgid "Year: %s"
+msgstr "年： %s"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/comments.php:37
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/comments.php:57
+msgid "&larr; Older Comments"
+msgstr "←古いコメント"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/comments.php:38
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/comments.php:58
+msgid "Newer Comments &rarr;"
+msgstr "新しいコメント→"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content-page.php:18
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content-single.php:25
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content.php:27
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/image.php:58
+msgid "Pages:"
+msgstr "ページ："
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content-page.php:23
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content-single.php:64
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content.php:61
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/image.php:32
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/image.php:64
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/template-tags.php:71
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/template-tags.php:90
+msgid "Edit"
+msgstr "編集"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content-single.php:34
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content-single.php:37
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content.php:38
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content.php:48
+msgid ", "
+msgstr "、"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content-single.php:42
+#, php-format
+msgid "This entry was tagged %2$s."
+msgstr "このエントリは、タグ付けされた%2$s 。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content-single.php:50
+#, php-format
+msgid "This entry was posted in %1$s and tagged %2$s."
+msgstr "このエントリはに投稿されました%1$sとタグ付けされた%2$s 。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content-single.php:52
+#, php-format
+msgid "This entry was posted in %1$s."
+msgstr "このエントリはに投稿されました%1$s 。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content.php:24
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr "<span class=\"meta-nav\">→</ span>の続きを読む"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content.php:42
+#, php-format
+msgid "Posted in %1$s"
+msgstr "で掲示される%1$s"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content.php:52
+#, php-format
+msgid "Tagged %1$s"
+msgstr "タグ付けされた%1$s"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content.php:58
+msgid "Leave a comment"
+msgstr "コメントを残す"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content.php:58
+msgid "1 Comment"
+msgstr "1つのコメント"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/content.php:58
+msgid "% Comments"
+msgstr "％コメント"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/footer.php:19
+#, php-format
+msgid "Proudly powered by %s"
+msgstr "誇らしげによって供給%s"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/footer.php:21
+#, php-format
+msgid "Theme by %1$s."
+msgstr "がテーマ%1$s 。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/functions.php:30
+msgid "Primary Menu"
+msgstr "メインメニュー"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/functions.php:44
+msgid "Sidebar"
+msgstr "サイドバー"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/image.php:22
+#, php-format
+msgid ""
+"Published <span class=\"entry-date\"><time class=\"entry-date\" datetime="
+"\"%1$s\">%2$s</time></span> at <a href=\"%3$s\">%4$s &times; %5$s</a> in <a "
+"href=\"%6$s\" rel=\"gallery\">%7$s</a>"
+msgstr "公開さ<span class=\"entry-date\"> <時のクラス= \ "エントリーの日付\"日時= \ " %1$s \ "> %2$s </時刻> </ span>の<aにおけるHREF = \ " %3$s \ "> %4$s × ％5 %5$s </ A>にある<hrefが= \ " %6$s \ "REL = \"ギャラリー\ "> %7$s </ A>"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/image.php:37
+msgid "<span class=\"meta-nav\">&larr;</span> Previous"
+msgstr "<span class=\"meta-nav\">←</ span>の前"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/image.php:38
+msgid "Next <span class=\"meta-nav\">&rarr;</span>"
+msgstr "次の<span class=\"meta-nav\">→</ span>の"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/no-results.php:19
+#, php-format
+msgid ""
+"Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr "あなたの最初の投稿を公開する準備はできましたか？ <HREF = \ " %1$s \ "> </ a>を始めましょう。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:37
+msgid "Basic Settings"
+msgstr "基本設定"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:42
+msgid "Custom Code in Header"
+msgstr "ヘッダー内のカスタムコード"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:43
+msgid ""
+"Insert scripts or code before the closing &lt;/head&gt; tag in the document "
+"source:"
+msgstr "ドキュメント·ソースの</ head>終了タグの前にスクリプトやコードを挿入します。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:49
+msgid "Custom Code in Footer"
+msgstr "フッターでのカスタムコード"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:50
+msgid ""
+"Insert scripts or code before the closing &lt;/body&gt; tag in the document "
+"source:"
+msgstr "ドキュメント·ソースの終了</ body>タグの前に、スクリプトやコードを挿入します。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:56
+msgid "Copyright Text"
+msgstr "著作権テキスト"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:57
+msgid ""
+"Some Text regarding copyright of your site, you would like to display in the "
+"footer."
+msgstr "あなたのサイトの著作権に関するいくつかのテキストは、あなたがフッタに表示したいと思います。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:65
+msgid "Layout Settings"
+msgstr "レイアウト設定"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:80
+msgid "Custom CSS"
+msgstr "カスタムCSS"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:81
+msgid ""
+"Some Custom Styling for your site. Place any css codes here instead of the "
+"style.css file."
+msgstr "あなたのサイトのいくつかのカスタムスタイリング。代わりのstyle.cssファイルのここにはCSSのコードを配置します。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:89
+msgid "Slider Settings"
+msgstr "スライダーの設定"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:93
+msgid "Enable Slider"
+msgstr "スライダーを有効にする"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:94
+msgid "Check this to Enable Slider."
+msgstr "スライダーを有効にするために、これをチェックしてください。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:100
+msgid "Using the Slider"
+msgstr "スライダーを使用して、"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:101
+msgid ""
+"This Slider supports upto 5 Images. To show only 3 Slides in the slider, "
+"upload only 3 images. Leave the rest Blank. For best results, upload images "
+"of size 1180x500px."
+msgstr "このスライダは5イメージ件までサポートしています。スライダーのみ3スライドを表示するには、唯一の3画像をアップロードする。残りは空白のままにします。最良の結果を得るには、サイズ1180x500pxの画像をアップロードしてください。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:105
+msgid "Slider Image 1"
+msgstr "スライダー画像1"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:106
+msgid "First Slide"
+msgstr "最初のスライド"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:112
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:137
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:162
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:187
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:212
+msgid "Title"
+msgstr "タイトル"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:118
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:143
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:168
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:193
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:218
+msgid "Description or Tagline"
+msgstr "説明またはタグライン"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:124
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:149
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:174
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:199
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:224
+msgid "Url"
+msgstr "URL"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:130
+msgid "Slider Image 2"
+msgstr "スライダー画像2"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:131
+msgid "Second Slide"
+msgstr "第二スライド"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:155
+msgid "Slider Image 3"
+msgstr "スライダ画像3"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:156
+msgid "Third Slide"
+msgstr "第3のスライド"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:180
+msgid "Slider Image 4"
+msgstr "スライダーイメージ4"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:181
+msgid "Fourth Slide"
+msgstr "第四スライド"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:205
+msgid "Slider Image 5"
+msgstr "スライダ画像5"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:206
+msgid "Fifth Slide"
+msgstr "第五スライド"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:232
+msgid "Social Settings"
+msgstr "社会的環境"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:236
+msgid "Facebook"
+msgstr "フェイスブック"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:237
+msgid "Facebook Profile or Page URL i.e. http://facebook.com/username/ "
+msgstr "FacebookのプロフィールやページのURLすなわちhttp://facebook.com/username/"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:244
+msgid "Twitter"
+msgstr "ツイッター"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:245
+msgid "Twitter Username"
+msgstr "Twitterのユーザー名"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:252
+msgid "Google Plus"
+msgstr "Googleプラス"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:253
+msgid "Google Plus profile url, including \"http://\""
+msgstr "を含むGoogleプラスのプロフィールのURL、\ "http://を\""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:260
+msgid "Feeburner"
+msgstr "Feeburner"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:261
+msgid "URL for your RSS Feeds"
+msgstr "あなたのRSSフィードのURL"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:268
+msgid "Support"
+msgstr "サポート"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:272
+msgid ""
+"Sixteen WordPress theme has been Designed and Created by <a href=\"http://"
+"rohitink.com\" target=\"_blank\">Rohit Tripathi</a>. For any Queries or help "
+"regarding this theme, <a href=\"http://rohitink.com/2013/10/05/sixteen-"
+"wordpress-theme/\" target=\"_blank\">comment on this page.</a> You can also "
+"ask questions about this theme on WordPress.org Support Forums. I will "
+"answer your queries there too."
+msgstr "十六ワードプレスのテーマは、<a href=\"http://rohitink.com\" target=\"_blank\">のRohit Tripathiさん</ a>をによって設計され、作成されています。このテーマに関するご質問やヘルプを表示するには、このページの<a href=\"http://rohitink.com/2013/10/05/sixteen-wordpress-theme/\" target=\"_blank\">コメント。 </ A>また、WordPress.orgのサポートフォーラムで、このテーマについての質問をすることができます。私もそこにあなたのクエリに応答します。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:276
+msgid ""
+"<a href=\"http://twitter.com/rohitinked\" target=\"_blank\">Follow Me on "
+"Twitter</a> to know about my upcoming themes."
+msgstr "もし、ごhref=\"http://twitter.com/rohitinked\" target=\"_blank\">私の今後のテーマについて知っているTwitterの</ A>で私に従ってください。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:280
+msgid "Regenerating Post Thumbnails"
+msgstr "投稿サムネイルの再生成"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:281
+msgid ""
+"If you are using Sixteen Theme on a New Wordpress Installation, then you can "
+"skip this section.<br />But if you have just switched to this theme from "
+"some other theme, or just updated to the current version of Sixteen, then "
+"you are requested regenerate all the post thumbnails. It will fix all the "
+"isses you are facing with distorted & ugly homepage thumbnail Images. "
+msgstr "あなたは新しくWordPressのインストールにシックスティーンテーマを使用している場合は、このセクションをスキップすることができます。<br />しかし、あなたはいくつかの他のテーマから、このテーマに切り替えるか、単にシックスティーンの現在のバージョンにアップデートしている場合は、アール要求されたすべてのポストのサムネイルを再生成します。それはあなたが歪ん＆醜いホームページのサムネイル画像と直面しているすべてのissesを修正します。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:285
+msgid ""
+"To Regenerate all Thumbnail images, Install and Activate the <a href="
+"\"http://wordpress.org/plugins/regenerate-thumbnails/\" target=\"_blank"
+"\">Regenerate Thumbnails</a> WP Pugin. Then from <strong>Tools &gt; Regen. "
+"Thumbnails</strong>, re-create thumbnails for all your existing images. And "
+"your blog will look even more stylish with Sixteen theme.<br /> "
+msgstr "すべてのサムネイル画像を再生するために、もし、href=\"http://wordpress.org/plugins/regenerate-thumbnails/\" target=\"_blank\">再生成サムネイル</ A> WPピュージンをインストールし、アクティブにします。するとある[ツール]から>リジェネ。 </ strong>のサムネイル、すべての既存のイメージの再作成のサムネイル。そして、あなたのブログがより一層スタイリッシュシックスティーンをテーマにしていきます。<br />"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:290
+msgid ""
+"<strong>Note:</strong> Regenerating the thumbnails, will not affect your "
+"original images. It will just generate a separate image file for those "
+"images."
+msgstr "<strong>注：</ strong>のサムネイルを再生成は、元の画像に影響を与えません。それはちょうどそれらのイメージのために別々の画像ファイルを生成します。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:295
+msgid "Theme Credits"
+msgstr "テーマクレジット"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/options.php:296
+msgid ""
+"Check this if you want to you do not want to give us credit in your site "
+"footer."
+msgstr "あなたがしたい場合は、これを確認し、サイトのフッターに私達に信用を与えたくない。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/search.php:16
+#, php-format
+msgid "Search Results for: %s"
+msgstr "の検索結果： %s"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/extras.php:66
+#, php-format
+msgid "Page %s"
+msgstr "ページ%s"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-framework.php:147
+msgid "Sixteen Theme Options"
+msgstr "十六テーマオプション"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-framework.php:148
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-framework.php:377
+msgid "Sixteen Settings"
+msgstr "シックスティーン設定"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-framework.php:193
+msgid "Clear"
+msgstr "明確な"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-framework.php:194
+msgid "Default"
+msgstr "デフォルト"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-framework.php:195
+msgid "Select Color"
+msgstr "色を選択"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-framework.php:241
+msgid "Click OK to reset. Any theme settings will be lost!"
+msgstr "リセットするには、[OK]をクリックします。任意のテーマの設定は失われます！"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-framework.php:273
+msgid "Default options restored."
+msgstr "デフォルトのオプションが復元。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-framework.php:327
+msgid "Options saved."
+msgstr "オプションが保存。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-media-uploader.php:51
+msgid "No file chosen"
+msgstr "選択したファイルがありません"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-media-uploader.php:54
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-media-uploader.php:113
+msgid "Upload"
+msgstr "アップロード"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-media-uploader.php:56
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-media-uploader.php:114
+msgid "Remove"
+msgstr "削除する"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-media-uploader.php:59
+msgid "Upgrade your version of WordPress for full media support."
+msgstr "フルメディアサポートのためのワードプレスのバージョンをアップグレードします。"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-media-uploader.php:83
+msgid "View File"
+msgstr "ビューファイル"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:239
+msgid "No Repeat"
+msgstr "いいえ繰り返さない"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:240
+msgid "Repeat Horizontally"
+msgstr "水平繰り返し"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:241
+msgid "Repeat Vertically"
+msgstr "縦に繰り返し"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:242
+msgid "Repeat All"
+msgstr "すべてを繰り返します"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:255
+msgid "Top Left"
+msgstr "左上"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:256
+msgid "Top Center"
+msgstr "中央上部"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:257
+msgid "Top Right"
+msgstr "右上"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:258
+msgid "Middle Left"
+msgstr "左中"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:259
+msgid "Middle Center"
+msgstr "真ん中センター"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:260
+msgid "Middle Right"
+msgstr "右中央"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:261
+msgid "Bottom Left"
+msgstr "左下"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:262
+msgid "Bottom Center"
+msgstr "ボトムセンター"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:263
+msgid "Bottom Right"
+msgstr "右下"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:276
+msgid "Scroll Normally"
+msgstr "スクロール通常、"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:277
+msgid "Fixed in Place"
+msgstr "所定の位置に固定"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:351
+msgid "Normal"
+msgstr "通常の"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:352
+msgid "Italic"
+msgstr "イタリック"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:353
+msgid "Bold"
+msgstr "大胆な"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/options-sanitize.php:354
+msgid "Bold Italic"
+msgstr "太字斜体"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/template-tags.php:44
+msgid "<span class=\"meta-nav\">&larr;</span> Older posts"
+msgstr "<span class=\"meta-nav\">←</ span>の古い投稿"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/template-tags.php:48
+msgid "Newer posts <span class=\"meta-nav\">&rarr;</span>"
+msgstr "新しい投稿<span class=\"meta-nav\">→</ span>の"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/sixteen/inc/template-tags.php:185
+#, php-format
+msgid ""
+"<span class=\"posted-on\">Published %1$s</span><span class=\"byline\"> by "
+"%2$s</span>"
+msgstr "<span class=\"posted-on\">発行%1$s </ span>の<span class=\"byline\">によって%2$s </ span>の"
+
