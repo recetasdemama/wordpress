@@ -1,0 +1,158 @@
+Version 1.0
+
+	i) Intial Release
+	
+Version 1.0.1
+
+	i) Transparent #content backgroung
+	ii) Fixed Long Words overflowing container problem.
+	iii) Updated Screenshot	
+	
+Version 1.0.2 
+
+	i) Updated Screenshot
+
+Version 1.0.3 
+
+	i) Fixed text-domain problems.
+	ii) Escaped Social Links	
+
+Version 1.0.5
+
+	i) Fixed and Issue which caused theme to be initialized with white background.
+	ii) Minor Bug fixes.
+	iii) Fixed Issues with Static Front Pages. Now sidebar shows at desingated position.
+	
+Version 1.0.6
+
+	i) Fixed and Issue which caused the main.css file to not load in the demo, thus breaking the entire site.	
+	
+Version 1.0.7
+
+	i) Fixed and issue which arised due to previous updates, resulting in homepage posts not being shown.	
+	
+Version 1.0.8
+
+	i) Fixed Translation Issues.
+	ii) Added Support for French and Spanish.	
+	
+Version 1.0.9
+	
+	i) Corrected the contents of sixteen.pot and sixteen.po	
+	
+Version 1.1
+
+	i) This is a major update. 
+	ii) Footer Siderbar added.
+	iii) Social Icons added.
+	iv) Responsive Designed enhanced.
+	v) Minor bug fixes.
+	vi) Associated with pro version.	
+	
+Version 1.1.1
+
+	i) Fixed bug with Nivo Slider.
+	ii) Added link to Demo Blog.
+	iii) Other Minor Bug Fixes.
+	
+Version 1.1.2 & 1.1.2.1
+
+	i) Fixed Bugs
+	ii) Edited Options Panel
+	iii) Provided Solution to Social Network Icon issue
+	iv) Fixed Style Issue
+	
+Version 1.1.3
+
+	i) Using a Fully GPL Screenshot
+	ii) Social Links open in new Window
+	iii) Updated Pro Version Details	
+		
+Version 1.1.3.1
+
+	i) Updated Discount Details
+	ii) Added User translated .po files for Arabic, Russian & Japanese.	
+	
+Version 1.2
+
+	i) Updated Theme Tags(Added all tags, this theme supports)
+	ii)	Updated Coupon Terms, added Expiry date.
+	iii) Default Image Issues Fixed. 
+	iv) Switched a Different Default Image.	
+	
+Version 1.2.0.1
+
+	i) Fixed overflow Issue with Full Width Pages	
+	ii) Removed Search Widget from Default Sidebar
+	iii) Reduced the Superfish Menu Disappearance time.
+	iv) Removed Expired Coupon Details	
+	
+Version 1.2.0.2
+
+	i) Fixed a Major Issue, which was causing Sidebar to not load in Child Themes.	
+	
+Version 1.2.1 
+
+	i) Major Security Updated.
+		- Theme was found to be vulnerable to Dangerous Javascript Insertion via Theme Options.
+		To Avoid that issue,
+		   - Custom Header/Footer Scripts Removed.
+		   - Textarea Field Santization Done.
+		   - All Output URL properly escaped.
+		   - Tested against all the recent guidelines.	
+		   
+Version 1.2.1.3
+
+	i) Extended support for Child Themes, Removed Filter on Header		
+	
+Version 1.2.1.4
+
+	i) Minor Changes to CSS Code
+	ii) Improved Behaviour when Header Text is disabled.	 
+	
+Version 1.2.1.5
+
+	i) Changed the way Slider is rendered	  
+	
+Version 1.2.1.6
+
+	i) Relocated Code for Social Icons.
+	
+Version 1.2.1.7
+
+	i) Added Developer Reference for Nivo Slider
+	ii) Added Numbered Page Navigation for Search Results	
+	
+Version 1.2.1.8
+
+	i) Removed image.php to Make Image Attachments render using default template.	
+		
+Version 1.2.1.9
+
+	i) Optimized Default Images for Faster Loading of Default Content and Demo Blogs.
+	
+Version 1.2.2
+
+	i) Fixed $content_width Issues.
+	ii) Fixed Issues with Font on Some Browsers.
+	
+Version 1.3 (Major Update)
+
+	i) WooCommerce Integrated.
+	ii) Slider Rebuilt with Better Animations.
+	iii) Social Icons ReDone.
+	iv) Fixed Display Issues on iPhone 5/5s.	
+	v) Other Minor Fixes.
+	vi) Fixed Issue with Header Image.	
+	vii) Added defaults.		
+	
+Version 1.3.0.2
+
+	i) Bug Fix for WooCommerce Cart Page, Cross Sells Item do not Collapse anymore.
+	ii) Style for WooCommerce Buttons Added.
+	
+Version 1.3.0.3
+
+	i) Removed Codekit.config
+	ii) Fixed Slider Pagination Bug. Background Appeared different on Some Screens.
+	iii) Added New Page Template, for Page without Titles.		
