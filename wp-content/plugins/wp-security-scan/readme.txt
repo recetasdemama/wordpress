@@ -143,6 +143,10 @@ on the <a href="http://wordpress.org/support/plugin/wp-security-scan" target="_b
 
 == Changelog ==
 
+= 4.0.5 =
+* Added CSRF prevention mechanism
+
+
 = 4.0.4 =
 * Add support for WordPress 4.0
 
