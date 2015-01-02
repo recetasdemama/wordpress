@@ -3,18 +3,20 @@ Contributors: Synved
 Donate link: http://synved.com/wordpress-social-media-feather/
 Tags: shortcode, shortcodes, link, links, url, permalink, permalinks, time, icons, button, buttons, free, content, plugin, Share, sharing, social share, social sharing, page, pages, widget, CSS, list, media, profile, shortlinks, social, social media, Like, twitter, google, Facebook, Reddit, youtube, vimeo, tumblr, instagram, flickr, foursquare, bookmark, bookmarks, bookmarking, pinterest, linkedin, image, edit, manage, mail, Post, posts, Style, seo, title, filter, follow, following, social follow, social following, high resolution, retina, ipad
 Requires at least: 3.1
-Tested up to: 4.0
+Tested up to: 4.1
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Super lightweight, simple, nice, modern looking and effective social sharing and following buttons and icons on your site without the extra burden
+Super lightweight, simple, nice, modern looking and effective social media sharing and following buttons and icons on your site quick and easy
 
 == Description ==
 
 [WordPress Social Media Feather](http://synved.com/wordpress-social-media-feather/ "Lightweight WordPress social sharing and following") is a super lightweight free social media WordPress plugin that allows you to quickly and painlessly add **social sharing and following** features to all your posts, pages and custom post types.
 
 Check out this introductory tutorial on [how to install and get started with Social Media for WordPress](http://youtu.be/iJAq2nJi6BM) by a helpful user of Social Media Feather!
+
+https://www.youtube.com/watch?v=iJAq2nJi6BM
 
 Now the only social sharing and bookmarking plugin with full support for the **Retina and high resolution displays** as used in iPad 5 and other devices!
 
@@ -60,6 +62,12 @@ You can disable automatic rendering of social icons for specific posts by using 
 This shortcode will create a list of social sharing buttons to share content on your site:
 `[feather_share]`
 
+This shortcode will create a list of social media sharing buttons to share content on your site, only showing Google+, Twitter and Facebook, in that specific order:
+`[feather_share show="google_plus, twitter, facebook" hide="reddit, pinterest, linkedin, tumblr, mail"]`
+
+You can change the order of displayed buttons by changing the order of keywords:
+`[feather_share show="twitter, google_plus, facebook" hide="reddit, pinterest, linkedin, tumblr, mail"]`
+
 This shortcode will create a list of social sharing buttons to share content on your site using the "Wheel" icons skin:
 `[feather_share skin="wheel"]`
 
@@ -91,6 +99,7 @@ For following buttons you can use:
 * [WordPress Social Media Plugin Official Page](http://synved.com/wordpress-social-media-feather/ "WordPress Social Media Feather – lightweight social sharing and following")
 * [Extra Social Icons Skins](http://synved.com/product/feather-extra-social-icons/ "Add 8 extra social icon skins to the Social Media Feather plugin!")
 * [Grey Fade addon that can grey out and fade out any social icons set](http://synved.com/product/feather-grey-fade/ "Customize any of the available social icon skins with 2 cool effects!")
+* [Light Prompt that adds counts for social shares](http://synved.com/product/feather-light-prompt/ "Add counters for social shares using Light Prompt")
 * [Our own site](http://synved.com/) where you can see social sharing and following in action
 * [Stripefolio theme demo](http://wpdemo.synved.com/stripefolio/) where you can see some of the social sharing and following features in action
 * [The free Stripefolio WordPress portfolio theme](http://synved.com/stripefolio-free-wordpress-portfolio-theme/ "A free WordPress theme that serves as a readable blog and a full-screen portfolio showcase") the Official page for the theme in the above demo link
@@ -127,6 +136,17 @@ You can achieve this by using *Custom Fields*. Simply set a custom field of `syn
 7. This shows the available social sharing and following widgets and their settings 
 
 == Changelog ==
+
+= 1.7 =
+* Performance improvements
+
+= 1.6.15 =
+* Fix for PHP notice in rare cases
+* Prevent certain fancybox plugins from trying to open fancybox on share/follow icons
+
+= 1.6.14 =
+* Adjusted description
+* Added documentation
 
 = 1.6.13 =
 * Added author_wp variable for built-in WordPress author name
