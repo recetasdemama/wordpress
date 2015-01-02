@@ -3,7 +3,7 @@
 Plugin Name: All In One SEO Pack
 Plugin URI: http://semperfiwebdesign.com
 Description: Out-of-the-box SEO for your WordPress blog. <a href="admin.php?page=all-in-one-seo-pack/aioseop_class.php">Options configuration panel</a> | <a href="http://semperplugins.com/plugins/all-in-one-seo-pack-pro-version/?loc=plugins" target="_blank">Upgrade to Pro Version</a> | <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=mrtorbert%40gmail%2ecom&item_name=All%20In%20One%20SEO%20Pack&item_number=Support%20Open%20Source&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8">Donate</a> | <a href="http://semperplugins.com/support/" >Support</a> |  <a href="https://www.amazon.com/wishlist/1NFQ133FNCOOA/ref=wl_web" target="_blank" title="Amazon Wish List">Amazon Wishlist</a>
-Version: 2.2.3.1
+Version: 2.2.4
 Author: Michael Torbert
 Author URI: http://michaeltorbert.com
 */
@@ -30,11 +30,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * @package All-in-One-SEO-Pack
- * @version 2.2.3.1
+ * @version 2.2.4
  */
 
+global $aioseop_plugin_name;
+$aioseop_plugin_name = __( 'All in One SEO Pack', 'all_in_one_seo_pack' );
+if ( ! defined( 'AIOSEOP_PLUGIN_NAME' ) )
+    define( 'AIOSEOP_PLUGIN_NAME', $aioseop_plugin_name );
+
 if ( ! defined( 'AIOSEOP_VERSION' ) )
-    define( 'AIOSEOP_VERSION', '2.2.3.1' );
+    define( 'AIOSEOP_VERSION', '2.2.4' );
 
 if ( ! defined( 'AIOSEOP_PLUGIN_DIR' ) ) {
     define( 'AIOSEOP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -125,18 +130,47 @@ if ( class_exists( 'All_in_One_SEO_Pack' ) ) {
 	return;	
 }
 
-require_once( AIOSEOP_PLUGIN_DIR . 'aioseop_functions.php' );
-
-require_once( AIOSEOP_PLUGIN_DIR . 'aioseop_class.php' );
-
-$aiosp = new All_in_One_SEO_Pack();
+/**
+ * Check if we just got activated.
+ */
+if ( !function_exists( 'aioseop_activate' ) ) {
+	function aioseop_activate() {
+	  global $aiosp_activation;
+	  $aiosp_activation = true;
+	  delete_transient( "aioseop_oauth_current" );
+	}
+}
 
 register_activation_hook( __FILE__, 'aioseop_activate' );
 
+add_action( 'plugins_loaded', 'aioseop_init_class' );
+
+if ( !function_exists( 'aioseop_init_class' ) ) {
+	function aioseop_init_class() {
+		global $aiosp;
+		require_once( AIOSEOP_PLUGIN_DIR . 'aioseop_functions.php' );
+		require_once( AIOSEOP_PLUGIN_DIR . 'aioseop_class.php' );
+		$aiosp = new All_in_One_SEO_Pack();
+		
+		if ( aioseop_option_isset( 'aiosp_unprotect_meta' ) )
+			add_filter( 'is_protected_meta', 'aioseop_unprotect_meta', 10, 3 );
+		
+		add_action( 'init', array( $aiosp, 'add_hooks' ) );
+		
+		if ( defined( 'DOING_AJAX' ) && !empty( $_POST ) && !empty( $_POST['action'] ) && ( $_POST['action'] === 'aioseop_ajax_scan_header' ) ) {
+			remove_action( 'init', array( $aiosp, 'add_hooks' ) );
+			add_action('admin_init', 'aioseop_scan_post_header' );
+			add_action('shutdown', 'aioseop_ajax_scan_header' ); // if the action doesn't run -- pdb
+			include_once(ABSPATH . 'wp-admin/includes/screen.php');
+			global $current_screen;
+			if ( class_exists( 'WP_Screen' ) )
+				$current_screen = WP_Screen::get( 'front' );
+		}
+	}
+}
+
 add_action( 'init', 'aioseop_load_modules', 1 );
 //add_action( 'after_setup_theme', 'aioseop_load_modules' );
-
-add_action( 'init', array( $aiosp, 'add_hooks' ) );
 
 if ( is_admin() ) {
 	add_action( 'wp_ajax_aioseop_ajax_save_meta',	'aioseop_ajax_save_meta' );
@@ -146,9 +180,6 @@ if ( is_admin() ) {
 	add_action( 'wp_ajax_aioseop_ajax_save_settings', 'aioseop_ajax_save_settings');
 	add_action( 'wp_ajax_aioseop_ajax_get_menu_links', 'aioseop_ajax_get_menu_links');
 }
-
-if ( aioseop_option_isset( 'aiosp_unprotect_meta' ) )
-	add_filter( 'is_protected_meta', 'aioseop_unprotect_meta', 10, 3 );
 	
 if ( !function_exists( 'aioseop_scan_post_header' ) ) {
 	function aioseop_scan_post_header() {
@@ -158,14 +189,4 @@ if ( !function_exists( 'aioseop_scan_post_header' ) ) {
 		query_posts('post_type=post&posts_per_page=1');
 		if (have_posts()) the_post();
 	}
-}
-
-if ( defined( 'DOING_AJAX' ) && !empty( $_POST ) && !empty( $_POST['action'] ) && ( $_POST['action'] === 'aioseop_ajax_scan_header' ) ) {
-	remove_action( 'init', array( $aiosp, 'add_hooks' ) );
-	add_action('admin_init', 'aioseop_scan_post_header' );
-	add_action('shutdown', 'aioseop_ajax_scan_header' ); // if the action doesn't run -- pdb
-	include_once(ABSPATH . 'wp-admin/includes/screen.php');
-	global $current_screen;
-	if ( class_exists( 'WP_Screen' ) )
-		$current_screen = WP_Screen::get( 'front' );
 }
