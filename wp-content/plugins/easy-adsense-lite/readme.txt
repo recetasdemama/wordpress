@@ -1,37 +1,37 @@
-=== Easy AdSense ===
+=== Easy Plugin for AdSense ===
 Contributors: manojtd
 Donate link: http://buy.thulasidas.com/easy-adsense
 Tags: adsense, google adsense, ads, advertising, easy adsense, google, adsense plugin
 Requires at least: 2.6
 Tested up to: 4.0
-Stable tag: 7.43
+Stable tag: 7.51
 License: GPL2 or later
 
-Easy AdSense manages all aspects of AdSense: insert ads into posts and sidebar, and add a Google Search box. Easiest and most complete AdSense Plugin!
+Easy Plugin for AdSense manages all aspects of AdSense: insert ads into posts and sidebar, and add a Google Search box. Easiest and most complete AdSense Plugin!
 
 == Description ==
 
-Easy AdSense provides a very easy way to generate revenue from your blog using Google AdSense. With its full set of features, Easy AdSense is perhaps the first plugin to give you a complete solution for everything AdSense-related.
+Easy Plugin for AdSense provides a very easy way to generate revenue from your blog using Google AdSense. With its full set of features, Easy Plugin for AdSense is perhaps the first plugin to give you a complete solution for everything AdSense-related.
 
 = Features =
 
-1. Easy AdSense enforces the Google AdSense policy of not more than three adsense blocks per page.
+1. Easy Plugin for AdSense enforces the Google AdSense policy of not more than three adsense blocks per page.
 2. Easy Adsense provides Sidebar Widgets:
  - For AdSense for content with custom title.
  - For search with customizable text or image title.
  - For Link Units.
-3. Easy AdSense has a rich set of Options:
+3. Easy Plugin for AdSense has a rich set of Options:
  - Put Link Units or AdSense Blocks in header or footer.
  - Suppress ads on all pages (as opposed to posts), or on the front/home page.
  - Add a customizable mouse-over border decoration on ad blocks.
  - Display adsense blocks based on the post length.
-4. Easy AdSense lets you control over the positioning and display of AdSense blocks in each post or page.
-5. Easy AdSense sports the simplest possible configuration interface -- nothing more than cutting and pasting AdSense code, and with sensible defaults for the few options present, all with clear instructions.
-6. Easy AdSense is internationalized with multiple languages supported.
+4. Easy Plugin for AdSense lets you control over the positioning and display of AdSense blocks in each post or page.
+5. Easy Plugin for AdSense sports the simplest possible configuration interface -- nothing more than cutting and pasting AdSense code, and with sensible defaults for the few options present, all with clear instructions.
+6. Easy Plugin for AdSense is internationalized with multiple languages supported.
 
 = Pro Version =
 
-Easy AdSense is the freely distributed version of a premium plugin. The [Pro version](http://buy.thulasidas.com/easy-adsense "Pro version of the Easy AdSense plugin") gives you more features. Here is a list of the Pro features:
+Easy Plugin for AdSense is the freely distributed version of a premium plugin. The [Pro version](http://buy.thulasidas.com/easy-adsense "Pro version of the Easy Plugin for AdSense plugin") gives you more features. Here is a list of the Pro features:
 
 1. Safe Content filter: To ensure that your Google AdSense ads show only on those pages that seem to comply with Google AdSense policies, which can be important since some comments may render your pages inconsistent with those policies.
 2. IP filter: Ability to specify a list of computers where your ads will not be shown, in order to prevent accidental clicks on your own ads -- one of the main reasons AdSense bans you. These features will minimize your chance of getting banned.
@@ -42,23 +42,23 @@ Easy AdSense is the freely distributed version of a premium plugin. The [Pro ver
 
 == Upgrade Notice ==
 
-Admin page changes.
+Renaming the plugin as requested by Google.
 
 == Screenshots ==
 
-1. How to set the options for Easy AdSense
-2. Easy AdSense in action - on my own blog.
+1. How to set the options for Easy Plugin for AdSense
+2. Easy Plugin for AdSense in action - on my own blog.
 
 == Installation ==
 
-1. Upload the Easy AdSense plugin (the whole easy-adsense folder) to the '/wp-content/plugins/' directory.
+1. Upload the Easy Plugin for AdSense plugin (the whole easy-adsense folder) to the '/wp-content/plugins/' directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Go to the Setup -> Easy AdSense and enter your AdSense code and options.
+3. Go to the Setup -> Easy Plugin for AdSense and enter your AdSense code and options.
 4. Go to Themes -> Widgets to add widgets to your side bar(s).
 
 = Tips =
 
-Although the Easy AdSense plugin is designed to handle Google AdSense efficiently, there is nothing preventing you from using the text boxes to place any other kind of text in your blog posts and pages. In particular, you can use ad text from other providers, especially in the header and footer.
+Although the Easy Plugin for AdSense plugin is designed to handle Google AdSense efficiently, there is nothing preventing you from using the text boxes to place any other kind of text in your blog posts and pages. In particular, you can use ad text from other providers, especially in the header and footer.
 
 == Frequently Asked Questions ==
 
@@ -66,7 +66,7 @@ Although the Easy AdSense plugin is designed to handle Google AdSense efficientl
 
 Ads are inserted by attaching a filter to the contents. If your home/front page is made up of full posts, the content filter will apply and you will see ads. On the other hand, if your home/front page is made up of excerpts (snippets of post contents), the content filter doesn't apply.
 
-It is possible to apply the filter on excerpts as well. But then, we have to make sure that it applies only to the first three excerpts (to comply with Google policy). This feature is implemented in the [Pro version](http://buy.thulasidas.com/easy-adsense "Pro version of the Easy AdSense plugin") of the plugin.
+It is possible to apply the filter on excerpts as well. But then, we have to make sure that it applies only to the first three excerpts (to comply with Google policy). This feature is implemented in the [Pro version](http://buy.thulasidas.com/easy-adsense "Pro version of the Easy Plugin for AdSense plugin") of the plugin.
 
 = I just activated the plugin. How come I don't see any ads in my blog? =
 
@@ -76,7 +76,7 @@ If you just created the new Google AdSense code, it may not be active yet. Googl
 
 = I activated the plugin, and I see a lot of red boxes on my blog posts your ads will be inserted here. How do I get rid of them? =
 
-Easy AdSense draws a red box on your blog posts to show where the ads would be shown if you entered the ad code on its admin page. This is meant to serve as a reminder for you to go to the admin page and enter the ad code. If you would like to suppress them, check the option "Suppress Placement Boxes" near the bottom of the admin page. The right thing to do, however, would be to enter your ad codes in the text boxes for each ad slot, or suppress the ad slot by selecting the corresponding "Show" option under the ad slot text box.
+Easy Plugin for AdSense draws a red box on your blog posts to show where the ads would be shown if you entered the ad code on its admin page. This is meant to serve as a reminder for you to go to the admin page and enter the ad code. If you would like to suppress them, check the option "Suppress Placement Boxes" near the bottom of the admin page. The right thing to do, however, would be to enter your ad codes in the text boxes for each ad slot, or suppress the ad slot by selecting the corresponding "Show" option under the ad slot text box.
 
 = The admin page is cluttered with links and information about the author. Any way to suppress them? =
 
@@ -88,7 +88,7 @@ Of course not. The option to suppress the ad slots is in the "Show" drop-down me
 
 = What are the different versions of the plugin? =
 
-Easy AdSense is the freely distributed version of a premium plugin. The [Pro version](https://buy.thulasidas.com/easy-adsense "Pro version of the Easy AdSense plugin") gives you more benefits -- lets you activate a filter to ensure that your ads show only on those pages that seem to comply with Google AdSense policies. It also lets you specify a list of computers where your ads will not be shown, in order to prevent accidental clicks on your own ads -- one of the main reasons AdSense bans you. These features will minimize your chance of getting banned. The Pro version costs $4.95, and is appropriate if you expect to make more than $100 of ad revenue from your site.
+Easy Plugin for AdSense is the freely distributed version of a premium plugin. The [Pro version](https://buy.thulasidas.com/easy-adsense "Pro version of the Easy Plugin for AdSense plugin") gives you more benefits -- lets you activate a filter to ensure that your ads show only on those pages that seem to comply with Google AdSense policies. It also lets you specify a list of computers where your ads will not be shown, in order to prevent accidental clicks on your own ads -- one of the main reasons AdSense bans you. These features will minimize your chance of getting banned. The Pro version costs $4.95, and is appropriate if you expect to make more than $100 of ad revenue from your site.
 
 = How can I contact the plugin author if I need help? =
 
@@ -114,11 +114,11 @@ Please copy *all* the files in the zip archive to your plugin directory. The zip
 
 = How can I control the appearance of the adsense using CSS? =
 
-All `<div>`s that Easy AdSense creates have the class attribute `adsense`. Furthermore, they have class attributes like `adsense-leadin`, `adsense-midtext`, `adsense-leadout`, `adsense-widget` and `adsense-lu` depending on the type. You can set the style for these classes in your theme `style.css` to control their appearance.
+All `<div>`s that Easy Plugin for AdSense creates have the class attribute `adsense`. Furthermore, they have class attributes like `adsense-leadin`, `adsense-midtext`, `adsense-leadout`, `adsense-widget` and `adsense-lu` depending on the type. You can set the style for these classes in your theme `style.css` to control their appearance.
 
 = Why does my AdSense code disappear when I switch to a new theme? =
 
-One of my motivations in writing Easy AdSense was the fact that every time I switched between themes, I had to regenerate the AdSense code to match my new colors. Since I often switched back to the original theme (when I would have to regenerate the code again), I wanted to keep the AdSense code *per theme* in my database. Now, with Easy AdSense activated, I can switch among my themes without worrying about the AdSense color mismatch. This is what I meant when I said, "Remembers AdSense code and your options by theme, so that you don't have to re-enter them if you play with multiple themes. [This feature provides a solution to Google's unwillingness to let you modify and customize the AdSense code -- you just store all the code variants in your blog database.]" as the most important feature of Easy AdSense.
+One of my motivations in writing Easy Plugin for AdSense was the fact that every time I switched between themes, I had to regenerate the AdSense code to match my new colors. Since I often switched back to the original theme (when I would have to regenerate the code again), I wanted to keep the AdSense code *per theme* in my database. Now, with Easy Plugin for AdSense activated, I can switch among my themes without worrying about the AdSense color mismatch. This is what I meant when I said, "Remembers AdSense code and your options by theme, so that you don't have to re-enter them if you play with multiple themes. [This feature provides a solution to Google's unwillingness to let you modify and customize the AdSense code -- you just store all the code variants in your blog database.]" as the most important feature of Easy Plugin for AdSense.
 
 But this unfortunately means that you do have to set the code *once* whenever you switch to a new theme. I suppose I could have checked your database for some other AdSense code and presented it as defaults, but such complex logic usually results in less robust programs, and pain and suffering down the road.
 
@@ -128,7 +128,7 @@ Yes! Now, in V2.1+, you have more options (using [Custom Fields](http://codex.wo
 
 = I find this *easy* plugin too complex with too many options. Any alternatives? =
 
-If you feel that the features of Easy AdSense are a bit too much, consider my lean and mean AdSense plugin [AdSense Now!](http://www.thulasidas.com/plugins/adsense-now/ "The simplest possible way to AdSense enable your blog")
+If you feel that the features of Easy Plugin for AdSense are a bit too much, consider my lean and mean AdSense plugin [AdSense Now!](http://www.thulasidas.com/plugins/adsense-now/ "The simplest possible way to AdSense enable your blog")
 
 = I am having a difficult time getting the middle of post ads to show. They show in some posts, but not all of them. Any possible recommendations? =
 
@@ -140,6 +140,8 @@ A big "Thank You" to all my translators. Easy AdSense V2.6+ sports an *Easy Tran
 
 == Change Log ==
 
+* V7.51: Renaming the plugin as requested by Google. [Nov 30, 2014]
+* V7.50: Renaming the plugin as requested by Google. [Nov 30, 2014]
 * V7.43: Admin page changes. [Oct 11, 2014]
 * V7.42: Suppressing a session start error on mobile devices. [Sep 9, 2014]
 * V7.41: Minor change to the admin interface. [Sep 9, 2011]

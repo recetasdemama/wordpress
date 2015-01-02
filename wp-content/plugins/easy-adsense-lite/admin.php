@@ -23,7 +23,7 @@ $this->setOptionValues();
 $this->mkHelpTags();
 ?>
 <div class="wrap" id="wrapper" style="width:1000px">
-  <h2>Easy AdSense Setup</h2>
+  <h2>Easy Plugin for AdSense Setup</h2>
   <table class="form-table">
     <tr style="vertical-align:middle">
       <td style="width:40%">

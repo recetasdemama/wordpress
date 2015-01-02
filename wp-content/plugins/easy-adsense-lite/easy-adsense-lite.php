@@ -1,10 +1,10 @@
 <?php
 
 /*
-  Plugin Name: Easy AdSense
+  Plugin Name: Easy Plugin for AdSense
   Plugin URI: http://www.thulasidas.com/adsense
-  Description: Easiest way to show AdSense and make money from your blog. Configure it at <a href="options-general.php?page=easy-adsense-lite.php">Settings &rarr; Easy AdSense</a>.
-  Version: 7.43
+  Description: Easiest way to show AdSense and make money from your blog. Configure it at <a href="options-general.php?page=easy-adsense-lite.php">Settings &rarr; Easy Plugin for AdSense</a>.
+  Version: 7.51
   Author: Manoj Thulasidas
   Author URI: http://www.thulasidas.com
  */
@@ -48,7 +48,7 @@ if (!class_exists("EzAdSense")) {
     var $ezOptions = array();
 
     function EzAdSense() {
-      parent::__construct("easy-adsense", "Easy AdSense", __FILE__);
+      parent::__construct("easy-adsense", "Easy Plugin for AdSense", __FILE__);
       $this->prefix = 'ezAdSense';
       $this->adminMsg = '';
       $this->defaults = array('defaultText' => 'Please generate and paste your ad code here. If left empty, the ad location will be highlighted on your blog pages with a reminder to enter your code.');
@@ -71,7 +71,7 @@ if (!class_exists("EzAdSense")) {
     }
 
     static function showUnreal($print = true) {
-      $unreal = "<div style='text-align:center;margin-left:auto;margin-right:auto;font-size:0.6em'><a href='http://www.thulasidas.com/adsense/' target='_blank' title='The simplest way to put AdSense to work for you!'> Easy AdSense</a> by <a href='http://www.Thulasidas.com/' target='_blank' title='Unreal Blog proudly brings you Easy AdSense'>Unreal</a></div>";
+      $unreal = "<div style='text-align:center;margin-left:auto;margin-right:auto;font-size:0.6em'><a href='http://www.thulasidas.com/adsense/' target='_blank' title='The simplest way to put AdSense to work for you!'> Easy Plugin for AdSense</a> by <a href='http://www.Thulasidas.com/' target='_blank' title='Unreal Blog proudly brings you Easy Plugin for AdSense'>Unreal</a></div>";
       if ($print) {
         echo $unreal;
       }
@@ -85,7 +85,7 @@ if (!class_exists("EzAdSense")) {
       $o = new EzHelpTag('help0');
       $o->title = __('Click for help', 'easy-adsenser');
       $o->tipTitle = __('How to Set it up', 'easy-adsenser');
-      $o->desc = sprintf(__('A few easy steps to setup %s', 'easy-adsenser'), "<em>Easy AdSense</em>");
+      $o->desc = sprintf(__('A few easy steps to setup %s', 'easy-adsenser'), "<em>Easy Plugin for AdSense</em>");
       $this->helpTags[] = $o;
 
       $o = new EzHelpTag('help1');
@@ -360,7 +360,7 @@ if (!class_exists("EzAdSense")) {
       $this->ezOptions['border_color'] = clone $o;
 
       $o = new EzCheckBox('kill_inline');
-      $o->title = __('All <code>&lt;div&gt;</code>s that <em>Easy AdSense</em> creates have the class attribute <code>adsense</code>. Furthermore, they have class attributes like <code>adsense-leadin</code>, <code>adsense-midtext</code>, <code>adsense-leadout</code>, <code>adsense-widget</code> and <code>adsense-lu</code> depending on the type. You can set the style for these classes in your theme <code>style.css</code> to control their appearance.<br />If this is all Greek to you, please leave the option unchecked.', 'easy-adsenser');
+      $o->title = __('All <code>&lt;div&gt;</code>s that <em>Easy Plugin for AdSense</em> creates have the class attribute <code>adsense</code>. Furthermore, they have class attributes like <code>adsense-leadin</code>, <code>adsense-midtext</code>, <code>adsense-leadout</code>, <code>adsense-widget</code> and <code>adsense-lu</code> depending on the type. You can set the style for these classes in your theme <code>style.css</code> to control their appearance.<br />If this is all Greek to you, please leave the option unchecked.', 'easy-adsenser');
       $o->desc = __('Suppress in-line styles (Control ad-blocks using style.css)', 'easy-adsenser');
       $o->after = "<br />";
       $o->tipWidth = 350;
@@ -432,7 +432,7 @@ if (!class_exists("EzAdSense")) {
       $this->ezOptions['max_link'] = clone $o;
 
       $o = new EzCheckBox('suppressBoxes');
-      $o->title = __('Easy AdSense displays a box with red borders to indicate where an ad would have been placed, but has been suppressed by one of the filters above. If you would like to suppress the boxes, check this option.', 'easy-adsenser');
+      $o->title = __('Easy Plugin for AdSense displays a box with red borders to indicate where an ad would have been placed, but has been suppressed by one of the filters above. If you would like to suppress the boxes, check this option.', 'easy-adsenser');
       $o->desc = __('Suppress Placement Boxes?', 'easy-adsenser');
       $o->between = "&nbsp;";
       $o->after = "<br /><br />";
@@ -538,7 +538,7 @@ if (!class_exists("EzAdSense")) {
           $w = substr($key, 0, $x);
           $h = substr($key, $x + 1);
           $p = (int) (min($w, $h) / 6);
-          $ret = '<div style="width:' . $w . 'px;height:' . $h . 'px;border:1px solid red;"><div style="padding:' . $p . 'px;text-align:center;font-family:arial;font-size:8pt;"><p>Your ads will be inserted here by</p><p><b>Easy AdSense</b>.</p><p>Please go to the plugin admin page to<br /><u title="Generate your ad code from your provider and paste it in the text box for this ad slot">Paste your ad code</u> OR<br /> <u title="Use the dropdown under the text box for this ad slot to suppress it">Suppress this ad slot</u>.</p></div></div>';
+          $ret = '<div style="width:' . $w . 'px;height:' . $h . 'px;border:1px solid red;"><div style="padding:' . $p . 'px;text-align:center;font-family:arial;font-size:8pt;"><p>Your ads will be inserted here by</p><p><b>Easy Plugin for AdSense</b>.</p><p>Please go to the plugin admin page to<br /><u title="Generate your ad code from your provider and paste it in the text box for this ad slot">Paste your ad code</u> OR<br /> <u title="Use the dropdown under the text box for this ad slot to suppress it">Suppress this ad slot</u>.</p></div></div>';
         }
       }
       return $ret;
@@ -721,16 +721,16 @@ if (!class_exists("EzAdSense")) {
         $this->ezMax--;
       }
       if ($this->ezCount >= $this->ezMax) {
-        return "$content <!-- Easy AdSense Unfiltered [count: {$this->ezCount} "
+        return "$content <!-- Easy Plugin for AdSense Unfiltered [count: {$this->ezCount} "
                 . "is not less than {$this->ezMax}] -->";
       }
       if (strpos($content, "<!--noadsense-->") !== false) {
         $this->metaOptions['adsense'] = 'no';
-        return "$content <!-- Easy AdSense Unfiltered [suppressed by noadsense comment] -->";
+        return "$content <!-- Easy Plugin for AdSense Unfiltered [suppressed by noadsense comment] -->";
       }
       $metaOptions = $this->getMetaOptions();
       if (isset($metaOptions['adsense']) && $metaOptions['adsense'] == 'no') {
-        return "$content <!-- Easy AdSense Unfiltered [suppressed by meta option adsense = no] -->";
+        return "$content <!-- Easy Plugin for AdSense Unfiltered [suppressed by meta option adsense = no] -->";
       }
 
       if (!in_the_loop()) {
