@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Stop User Enumeration
-Plugin URI: http://locally.uk
+Plugin URI: http://locally.uk/wordpress-plugins/stop-user-enumeration/
 Description: User enumeration is a technique used by hackers to get your login name if you are using permalinks. This plugin stops that.
-Version: 1.3.0
-Author: Locally
+Version: 1.3.1
+Author: Locally Digital Ltd
 Author URI: http://locally.uk
 License: GPLv2 or later
 */
