@@ -3,7 +3,7 @@
 Plugin Name: WP-DBManager
 Plugin URI: http://lesterchan.net/portfolio/programming/php/
 Description: Manages your WordPress database. Allows you to optimize database, repair database, backup database, restore database, delete backup database , drop/empty tables and run selected queries. Supports automatic scheduling of backing up, optimizing and repairing of database.
-Version: 2.74
+Version: 2.75
 Author: Lester 'GaMerZ' Chan
 Author URI: http://lesterchan.net
 Text Domain: wp-dbmanager
@@ -154,21 +154,34 @@ function dbmanager_admin_notices() {
 	$backup_options = get_option( 'dbmanager_options' );
 	$backup_folder_writable = ( is_dir( $backup_options['path'] ) && wp_is_writable( $backup_options['path'] ) );
 	$htaccess_exists = ( file_exists( $backup_options['path'] . '/.htaccess' ) );
+	$webconfig_exists =  ( file_exists( $backup_options['path'] . '/Web.config' ) );
+	$index_exists =  ( file_exists( $backup_options['path'] . '/index.php' ) );
 
-	if( !isset( $backup_options['hide_admin_notices'] ) || intval( $backup_options['hide_admin_notices'] ) === 0 )
+	if( ! isset( $backup_options['hide_admin_notices'] ) || intval( $backup_options['hide_admin_notices'] ) === 0 )
 	{
-		if( !$backup_folder_writable || !$htaccess_exists ) {
+		if( ! $backup_folder_writable || ! $index_exists || ( is_iis() && ! $webconfig_exists ) || ( ! is_iis() && ! $htaccess_exists ) ) {
+
 			echo '<div class="error">';
-
 			if( !$backup_folder_writable ) {
-				echo '<p style="font-weight: bold;">'.__('Your backup folder is NOT writable', 'wp-postratings').'</p>';
-				echo '<p>'.sprintf( __( 'To correct this issue, make the folder <strong>%s</strong> writable.', 'wp-dbmanager'), $backup_options['path'] ).'</p>';
+				echo '<p style="font-weight: bold;">' . __( 'Your backup folder is NOT writable', 'wp-postratings') . '</p>';
+				echo '<p>'.sprintf( __( 'To correct this issue, make the folder <strong>%s</strong> writable.', 'wp-dbmanager' ), $backup_options['path'] ).'</p>';
 			}
-			if( !$htaccess_exists ) {
-				echo '<p style="font-weight: bold;">'.__('Your backup folder MIGHT be visible to the public', 'wp-dbmanager').'</p>';
-				echo '<p>'.sprintf( __( 'To correct this issue, move the file from <strong>%s</strong> to <strong>%s</strong>', 'wp-dbmanager'), plugin_dir_path( __FILE__ ) . 'htaccess.txt', $backup_options['path'] .'/.htaccess' ).'</p>';
+			if( ! $index_exists || ( is_iis() && ! $webconfig_exists ) || ( ! is_iis() && ! $htaccess_exists ) ) {
+				echo '<p style="font-weight: bold;">'.__( 'Your backup folder MIGHT be visible to the public', 'wp-dbmanager' ).'</p>';
 			}
-
+			if( is_iis() ) {
+				if( ! $webconfig_exists ) {
+					echo '<p>'.sprintf( __( 'To correct this issue, move the file from <strong>%s</strong> to <strong>%s</strong>', 'wp-dbmanager'), plugin_dir_path( __FILE__ ) . 'Web.config.txt', $backup_options['path'] .'/Web.config' ).'</p>';
+				}
+			} else {
+				if( ! $htaccess_exists ) {
+					echo '<p>'.sprintf( __( 'To correct this issue, move the file from <strong>%s</strong> to <strong>%s</strong>', 'wp-dbmanager'), plugin_dir_path( __FILE__ ) . 'htaccess.txt', $backup_options['path'] .'/.htaccess' ).'</p>';
+				}
+			}
+			if( ! $index_exists ) {
+				echo '<p>'.sprintf( __( 'To correct this issue, move the file from <strong>%s</strong> to <strong>%s</strong>', 'wp-dbmanager'), plugin_dir_path( __FILE__ ) . 'index.php', $backup_options['path'] .'/index.php' ).'</p>';
+			}
+			echo '<p>' . sprintf( __( '<a href="%s">Click here</a> to let WP-DBManager try to fix it', 'wp-dbmanager' ), wp_nonce_url( admin_url( 'admin.php?page=wp-dbmanager/database-backup.php&try_fix=1' ), 'wp-dbmanager_fix' ) ) . '</a></p>';
 			echo '</div>';
 		}
 	}
@@ -201,6 +214,15 @@ function detect_mysql() {
 	return $paths;
 }
 
+### Function: Check if WordPress is installed on IIS
+function is_iis() {
+	$server_software = strtolower( $_SERVER['SERVER_SOFTWARE'] );
+	if ( strpos( $server_software, 'microsoft-iis') !== false ) {
+		return true;
+	}
+
+	return false;
+}
 
 ### Executes OS-Dependent mysqldump Command (By: Vlad Sharanhovich)
 function execute_backup($command) {
@@ -422,24 +444,54 @@ function dbmanager_activation( $network_wide )
 }
 
 function dbmanager_activate() {
-	$plugin_path = plugin_dir_path( __FILE__ );
-	$default_backup_folder = WP_CONTENT_DIR . '/backup-db';
-
-	// Create Backup Folder
-	if( is_dir( $default_backup_folder ) && wp_is_writable( $default_backup_folder ) )
-	{
-		if( wp_mkdir_p( $default_backup_folder ) )
-		{
-			@copy( $plugin_path . 'htaccess.txt', $default_backup_folder . '/.htaccess' );
-			@chmod( $default_backup_folder, 0750 );
-		}
-	}
+	dbmanager_create_backup_folder();
 
 	// Set 'manage_database' Capabilities To Administrator
 	$role = get_role( 'administrator' );
-	if( !$role->has_cap( 'manage_database') )
+	if( ! $role->has_cap( 'manage_database') )
 	{
 		$role->add_cap( 'manage_database' );
+	}
+}
+
+function dbmanager_create_backup_folder() {
+	$plugin_path = plugin_dir_path( __FILE__ );
+	$backup_path = WP_CONTENT_DIR . '/backup-db';
+	$backup_options = get_option( 'dbmanager_options' );
+
+	if( ! empty( $backup_options['path'] ) ) {
+		$backup_path = $backup_options['path'];
+	}
+
+	// Create Backup Folder
+	if( is_dir( $backup_path ) && wp_is_writable( $backup_path ) )
+	{
+		if( wp_mkdir_p( $backup_path ) )
+		{
+			if( is_iis() ) {
+				if ( ! is_file( $backup_path . '/Web.config' ) ) {
+					@copy( $plugin_path . 'Web.config.txt', $backup_path . '/Web.config' );
+				}
+			} else {
+				if( ! is_file( $backup_path . '/.htaccess' ) ) {
+					@copy( $plugin_path . 'htaccess.txt', $backup_path . '/.htaccess' );
+				}
+			}
+			if( ! is_file( $backup_path . '/index.php' ) ) {
+				@copy( $plugin_path . 'index.php', $backup_path . '/index.php' );
+			}
+			@chmod( $backup_path, 0750 );
+		}
+	}
+}
+
+add_action( 'init', 'dbmanager_try_fix' );
+function dbmanager_try_fix() {
+	if ( ! empty( $_GET['try_fix'] ) ) {
+		if ( intval( $_GET['try_fix'] ) === 1 ) {
+			check_admin_referer( 'wp-dbmanager_fix' );
+			dbmanager_create_backup_folder();
+		}
 	}
 }
 
@@ -647,7 +699,7 @@ function dbmanager_options() {
 							<option value="3600"<?php selected('3600', $backup_options['backup_period']); ?>><?php _e('Hour(s)', 'wp-dbmanager'); ?></option>
 							<option value="86400"<?php selected('86400', $backup_options['backup_period']); ?>><?php _e('Day(s)', 'wp-dbmanager'); ?></option>
 							<option value="604800"<?php selected('604800', $backup_options['backup_period']); ?>><?php _e('Week(s)', 'wp-dbmanager'); ?></option>
-							<option value="18144000"<?php selected('18144000', $backup_options['backup_period']); ?>><?php _e('Month(s)', 'wp-dbmanager'); ?></option>
+							<option value="2592000"<?php selected('2592000', $backup_options['backup_period']); ?>><?php _e('Month(s)', 'wp-dbmanager'); ?></option>
 						</select>&nbsp;&nbsp;&nbsp;
 						<?php _e('Gzip', 'wp-dbmanager'); ?>
 						<select name="db_backup_gzip" size="1">
@@ -677,7 +729,7 @@ function dbmanager_options() {
 						<option value="3600"<?php selected('3600', $backup_options['optimize_period']); ?>><?php _e('Hour(s)', 'wp-dbmanager'); ?></option>
 						<option value="86400"<?php selected('86400', $backup_options['optimize_period']); ?>><?php _e('Day(s)', 'wp-dbmanager'); ?></option>
 						<option value="604800"<?php selected('604800', $backup_options['optimize_period']); ?>><?php _e('Week(s)', 'wp-dbmanager'); ?></option>
-						<option value="18144000"<?php selected('18144000', $backup_options['optimize_period']); ?>><?php _e('Month(s)', 'wp-dbmanager'); ?></option>
+						<option value="2592000"<?php selected('2592000', $backup_options['optimize_period']); ?>><?php _e('Month(s)', 'wp-dbmanager'); ?></option>
 					</select>
 					</p>
 					<p><?php _e('WP-DBManager can automatically optimize your database after a certain period.', 'wp-dbmanager'); ?></p>
@@ -702,7 +754,7 @@ function dbmanager_options() {
 						<option value="3600"<?php selected('3600', $backup_options['repair_period']); ?>><?php _e('Hour(s)', 'wp-dbmanager'); ?></option>
 						<option value="86400"<?php selected('86400', $backup_options['repair_period']); ?>><?php _e('Day(s)', 'wp-dbmanager'); ?></option>
 						<option value="604800"<?php selected('604800', $backup_options['repair_period']); ?>><?php _e('Week(s)', 'wp-dbmanager'); ?></option>
-						<option value="18144000"<?php selected('18144000', $backup_options['repair_period']); ?>><?php _e('Month(s)', 'wp-dbmanager'); ?></option>
+						<option value="2592000"<?php selected('2592000', $backup_options['repair_period']); ?>><?php _e('Month(s)', 'wp-dbmanager'); ?></option>
 					</select>
 					</p>
 					<p><?php _e('WP-DBManager can automatically repair your database after a certain period.', 'wp-dbmanager'); ?></p>
