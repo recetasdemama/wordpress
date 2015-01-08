@@ -117,13 +117,12 @@ if ( !function_exists( 'aioseop_addmycolumns' ) ) {
 		}
 		if ( !empty( $pagenow ) && ( $pagenow == 'upload.php' ) )
 			$post_type = 'attachment';
-		elseif ( !isset( $_GET['post_type'] ) )
+		elseif ( !isset( $_REQUEST['post_type'] ) )
 			$post_type = 'post';
 		else
-			$post_type = $_GET['post_type'];
-		add_action( 'admin_head', 'aioseop_admin_head' );
-		
+			$post_type = $_REQUEST['post_type'];
 		if( is_array( $aiosp_posttypecolumns ) && in_array( $post_type, $aiosp_posttypecolumns ) ) {
+			add_action( 'admin_head', 'aioseop_admin_head' );
 			if ( $post_type == 'page' )
 				add_filter( 'manage_pages_columns', 'aioseop_mrt_pcolumns' );
 			elseif ( $post_type == 'attachment' )

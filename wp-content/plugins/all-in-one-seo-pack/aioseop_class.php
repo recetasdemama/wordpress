@@ -1390,7 +1390,7 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 			if ( aioseop_option_isset( 'aiosp_google_analytics_id' ) )
 				add_action( 'aioseop_modules_wp_head', array( $this, 'aiosp_google_analytics' ) );
 			add_filter( 'wp_list_pages', 'aioseop_list_pages' );
-			add_action( 'wp_head', array( $this, 'wp_head') );
+			add_action( 'wp_head', array( $this, 'wp_head'), apply_filters( 'aioseop_wp_head_priority', 1 ) );
 			add_action( 'template_redirect', array( $this, 'template_redirect' ), 0 );
 			add_filter( 'wp_list_pages_excludes', 'aioseop_get_pages_start' );
 			add_filter( 'get_pages', 'aioseop_get_pages' );	
@@ -1578,9 +1578,6 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 				if ( ( $aiosp_nofollow == 'on' ) || ( ( !empty( $aioseop_options['aiosp_paginated_nofollow'] ) ) && ( ( $page > 1 ) ) ) ||
 					 ( ( $aiosp_nofollow == '' ) && ( !empty( $aioseop_options['aiosp_cpostnofollow'] ) ) && ( in_array( $post_type, $aioseop_options['aiosp_cpostnofollow'] ) ) ) )
 					$nofollow = "no" . $nofollow;
-				if ( ( $aiosp_noindex == 'on' ) || ( ( !empty( $aioseop_options['aiosp_paginated_noindex'] ) ) && ( ( $page > 1 ) ) ) ||
-					 ( ( $aiosp_noindex == '' ) && ( !empty( $aioseop_options['aiosp_cpostnoindex'] ) ) && ( in_array( $post_type, $aioseop_options['aiosp_cpostnoindex'] ) ) ) )
-					$noindex = "no" . $noindex;
 				if ( ( !empty( $aioseop_options['aiosp_cpostnoodp'] ) && ( in_array( $post_type, $aioseop_options['aiosp_cpostnoodp'] ) ) ) )
 					$aiosp_noodp = true;
 				if ( ( !empty( $aioseop_options['aiosp_cpostnoydir'] ) && ( in_array( $post_type, $aioseop_options['aiosp_cpostnoydir'] ) ) ) )
@@ -1609,6 +1606,10 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 			$description = $this->apply_cf_fields( $description );
 		} else if ( is_single() || is_page() || is_attachment() || is_home() || $this->is_static_posts_page() ) {
 			$description = $this->get_aioseop_description( $post );
+		} else if ( ( is_category() || is_tag() || is_tax() ) && $this->show_page_description() ) {
+			if ( !empty( $opts ) ) $description = $opts['aiosp_description'];
+			if ( empty( $description ) ) $description = term_description();
+			$description = $this->internationalize( $description );
 		}
 		if ( empty( $aioseop_options['aiosp_dont_truncate_descriptions'] ) ) {
 			$description = $this->trim_excerpt_without_filters( $description );				
@@ -2588,7 +2589,7 @@ EOF;
 				if ( ( ( $title_type == 'archive' ) && is_post_type_archive( $wp_post_types ) && $prefix = "aiosp_{$title_type}_" ) ||
 				     ( ( $title_type == 'post' ) && is_singular( $wp_post_types ) && $prefix = "aiosp_" ) ) {
 						$post_type = get_post_type();
-						if ( !empty( $aioseop_options["{$post_type}_title_format"] ) )
+						if ( !empty( $aioseop_options["{$prefix}{$post_type}_title_format"] ) )
 							$title_format = $aioseop_options["{$prefix}{$post_type}_title_format"];					
 				}
 			}
@@ -3048,7 +3049,8 @@ EOF;
 				if ( isset( $$var ) && !empty( $$var ) )
 				    add_post_meta( $id, $field, $$var );
 		    }
-
+		    if (isset( $aiosp_sitemap_exclude ) && !empty( $aiosp_sitemap_exclude ) && $this->is_admin() )
+			    add_post_meta( $id, '_aioseop_sitemap_exclude', $aiosp_sitemap_exclude );
 		    if (isset( $aiosp_disable ) && !empty( $aiosp_disable ) && $this->is_admin() ) {
 			    add_post_meta( $id, '_aioseop_disable', $aiosp_disable );
 			    if (isset( $aiosp_disable_analytics ) && !empty( $aiosp_disable_analytics ) )
