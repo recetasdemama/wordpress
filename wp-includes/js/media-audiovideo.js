@@ -146,7 +146,7 @@
 			}
 
 			if ( 'native' !== t.media.pluginType ) {
-				t.media.remove();
+				t.$media.remove();
 			}
 
 			delete window.mejs.players[t.id];
