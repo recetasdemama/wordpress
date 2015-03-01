@@ -2,7 +2,7 @@
 /*
 Plugin Name: Image Watermark
 Description: Image Watermark allows you to automatically watermark images uploaded to the WordPress Media Library and bulk watermark previously uploaded images.
-Version: 1.3.3
+Version: 1.4.1
 Author: dFactory
 Author URI: http://www.dfactory.eu/
 Plugin URI: http://www.dfactory.eu/plugins/image-watermark/
@@ -69,7 +69,7 @@ class Image_Watermark
 			'draganddrop' => 0,
 			'forlogged' => 0,
 		),
-		'version' => '1.3.3'
+		'version' => '1.4.1'
 	);
 
 
@@ -640,12 +640,18 @@ class Image_Watermark
         
 	        <div class="image-watermark-settings">
 	        	<div class="df-credits">
-		        	<h3 class="hndle"><?php _e('Image Watermark', 'image-watermark'); ?></h3>
+		        	<h3 class="hndle"><?php echo __('Image Watermark', 'image-watermark') .' '.$this->_options['version']; ?></h3>
 		            <div class="inside">
 		                <h4 class="inner"><?php _e('Need support?', 'image-watermark'); ?></h4>
 		                <p class="inner"><?php _e('If you are having problems with this plugin, please talk about them in the', 'image-watermark'); ?> <a href="http://dfactory.eu/support/" target="_blank" title="<?php _e('Support forum', 'image-watermark'); ?>"><?php _e('Support forum', 'image-watermark'); ?></a></p>
 		                <hr />
 		                <h4 class="inner"><?php _e('Do you like this plugin?', 'image-watermark'); ?></h4>
+		                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" class="inner">
+							<input type="hidden" name="cmd" value="_s-xclick">
+							<input type="hidden" name="hosted_button_id" value="DCF3AXC9A5A88">
+							<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+							<img alt="" border="0" src="https://www.paypalobjects.com/pl_PL/i/scr/pixel.gif" width="1" height="1">
+						</form>
 		                <p class="inner"><a href="http://wordpress.org/support/view/plugin-reviews/image-watermark?filter=5" target="_blank" title="<?php _e('Rate it 5', 'image-watermark'); ?>"><?php _e('Rate it 5', 'image-watermark'); ?></a> <?php _e('on WordPress.org', 'image-watermark'); ?><br />
 						<?php _e('Blog about it & link to the','image-watermark'); ?> <a href="http://dfactory.eu/plugins/image-watermark/" target="_blank" title="<?php _e('plugin page', 'image-watermark'); ?>"><?php _e('plugin page', 'image-watermark'); ?></a><br />
 		                <?php _e('Check out our other', 'image-watermark'); ?> <a href="http://dfactory.eu/plugins/" target="_blank" title="<?php _e('WordPress plugins', 'image-watermark'); ?>"><?php _e('WordPress plugins', 'image-watermark'); ?></a>
@@ -1221,7 +1227,7 @@ class Image_Watermark
 	private function imagecopymerge_alpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct)
 	{
 		//creating a cut resource
-		$cut = imagecreateTRUEcolor($src_w, $src_h);
+		$cut = imagecreatetruecolor($src_w, $src_h);
 
 		//copying relevant section from background to the cut resource
 		imagecopy($cut, $dst_im, 0, 0, $dst_x, $dst_y, $src_w, $src_h);
