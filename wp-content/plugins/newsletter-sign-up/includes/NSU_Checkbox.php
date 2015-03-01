@@ -70,7 +70,7 @@ class NSU_Checkbox {
 		}
 
 		?>
-		<!-- Checkbox by Newsletter Sign-Up Checkbox v<?php echo NSU_VERSION_NUMBER; ?> - http://wordpress.org/plugins/newsletter-sign-up/ -->
+		<!-- Checkbox by Newsletter Sign-Up Checkbox v<?php echo NSU_VERSION_NUMBER; ?> - https://wordpress.org/plugins/newsletter-sign-up/ -->
 		<p id="nsu-checkbox">
 			<label for="nsu-checkbox-input" id="nsu-checkbox-label">
 				<input value="1" id="nsu-checkbox-input" type="checkbox" name="newsletter-sign-up-do" <?php checked( $opts['precheck'], 1 ); ?> />

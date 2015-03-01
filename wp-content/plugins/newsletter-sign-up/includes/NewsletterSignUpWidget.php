@@ -85,7 +85,7 @@ if(!class_exists('NewsletterSignUpWidget')) {
 				Configure the sign-up form at the <a href="admin.php?page=newsletter-sign-up-form-settings">Newsletter Sign-Up configuration page</a>.
 			</p>
                
-            <p style="background:#222; color:#eee; padding:10px;">If you like this plugin, consider <a href="http://dannyvankooten.com/donate/">donating $10, $20 or $50</a> as a token of your appreciation.</p>       
+            <p style="background:#222; color:#eee; padding:10px;">If you like this plugin, consider <a href="https://dannyvankooten.com/donate/">donating $10, $20 or $50</a> as a token of your appreciation.</p>
 			<?php 
 		}
 

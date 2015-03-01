@@ -11,7 +11,7 @@
     <form method="post" action="options.php">
         <?php settings_fields('nsu_mailinglist_group'); ?>
 
-        <p>These settings are the most important, without them Newsletter Sign-Up can't do its job. Having trouble finding the right configuration settings? Have a look at <a href="http://dannyvankooten.com/wordpress-plugins/newsletter-sign-up/">this post on my blog</a> or try the <a href="admin.php?page=newsletter-sign-up/config-helper">configuration extractor</a>.</p>
+        <p>These settings are the most important, without them Newsletter Sign-Up can't do its job. Having trouble finding the right configuration settings? Have a look at <a href="https://dannyvankooten.com/wordpress-plugins/newsletter-sign-up/">this post on my blog</a> or try the <a href="admin.php?page=newsletter-sign-up/config-helper">configuration extractor</a>.</p>
 
         <table class="form-table">	
             <tr valign="top">

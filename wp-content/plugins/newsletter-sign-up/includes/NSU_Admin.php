@@ -6,7 +6,7 @@ if (!class_exists('NSU_Admin')) {
         private $hook = 'newsletter-sign-up';
         private $longname = 'Newsletter Sign-Up';
         private $shortname = 'Newsletter Sign-Up';
-        private $plugin_url = 'http://dannyvankooten.com/wordpress-plugins/newsletter-sign-up/';
+        private $plugin_url = 'https://dannyvankooten.com/wordpress-plugins/newsletter-sign-up/';
         private $filename = 'newsletter-sign-up/newsletter-sign-up.php';
         private $accesslvl = 'manage_options';
         private $bp_active = FALSE;
@@ -48,7 +48,7 @@ if (!class_exists('NSU_Admin')) {
             ?>
             <div class="updated">
              <p><strong>Newsletter Sign-Up Notice:</strong> You are using MailChimp, great! Consider switching to <a href="http://dannyvankooten.com/wordpress-plugins/mailchimp-for-wordpress/">MailChimp for WordPress</a>, you will <strong>love</strong> it. 
-                It can be downloaded from the WordPress repository <a href="http://wordpress.org/plugins/mailchimp-for-wp/">here</a>. | <a href="?nsu-hide-mc4wp-notice=1">Hide Notice</a></p>
+                It can be downloaded from the WordPress repository <a href="https://wordpress.org/plugins/mailchimp-for-wp/">here</a>. | <a href="?nsu-hide-mc4wp-notice=1">Hide Notice</a></p>
             </div>
             <?php
         }
