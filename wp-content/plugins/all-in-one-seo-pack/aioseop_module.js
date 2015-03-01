@@ -25,10 +25,30 @@ function toggleVisibility(id) {
 
 function countChars(field,cntfield) {
 	var extra = 0;
+	var field_size;
 	if ( ( field.name == 'aiosp_title' ) && ( typeof aiosp_title_extra !== 'undefined' ) ) {
 		extra = aiosp_title_extra;
 	}
+	
 	cntfield.value = field.value.length + extra;
+	if ( typeof field.size != 'undefined' ) {
+		field_size = field.size;
+	} else {
+		field_size = field.rows * field.cols;
+	}
+	if ( field_size < 10 ) return;
+	if ( cntfield.value > field_size ) {
+		cntfield.style.color = "#fff";
+		cntfield.style.backgroundColor = "#f00";
+	} else {
+		if ( cntfield.value > ( field_size - 6 ) ) {
+			cntfield.style.color = "#515151";
+			cntfield.style.backgroundColor = "#ff0";			
+		} else {
+			cntfield.style.color = "#515151";
+			cntfield.style.backgroundColor = "#eee";			
+		}
+	}
 }
 
 function aioseop_get_field_value( field ) {
