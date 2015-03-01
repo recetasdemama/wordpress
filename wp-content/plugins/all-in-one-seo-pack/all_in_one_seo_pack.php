@@ -3,7 +3,7 @@
 Plugin Name: All In One SEO Pack
 Plugin URI: http://semperfiwebdesign.com
 Description: Out-of-the-box SEO for your WordPress blog. <a href="admin.php?page=all-in-one-seo-pack/aioseop_class.php">Options configuration panel</a> | <a href="http://semperplugins.com/plugins/all-in-one-seo-pack-pro-version/?loc=plugins" target="_blank">Upgrade to Pro Version</a> | <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=mrtorbert%40gmail%2ecom&item_name=All%20In%20One%20SEO%20Pack&item_number=Support%20Open%20Source&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8">Donate</a> | <a href="http://semperplugins.com/support/" >Support</a> |  <a href="https://www.amazon.com/wishlist/1NFQ133FNCOOA/ref=wl_web" target="_blank" title="Amazon Wish List">Amazon Wishlist</a>
-Version: 2.2.4.2
+Version: 2.2.5.1
 Author: Michael Torbert
 Author URI: http://michaeltorbert.com
 */
@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * @package All-in-One-SEO-Pack
- * @version 2.2.4.2
+ * @version 2.2.5.1
  */
 
 global $aioseop_plugin_name;
@@ -39,7 +39,7 @@ if ( ! defined( 'AIOSEOP_PLUGIN_NAME' ) )
     define( 'AIOSEOP_PLUGIN_NAME', $aioseop_plugin_name );
 
 if ( ! defined( 'AIOSEOP_VERSION' ) )
-    define( 'AIOSEOP_VERSION', '2.2.4.2' );
+    define( 'AIOSEOP_VERSION', '2.2.5.1' );
 
 if ( ! defined( 'AIOSEOP_PLUGIN_DIR' ) ) {
     define( 'AIOSEOP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -85,15 +85,18 @@ $aioseop_mem_limit = @ini_get( 'memory_limit' );
 
 if ( !function_exists( 'aioseop_convert_bytestring' ) ) {
 	function aioseop_convert_bytestring( $byteString ) {
+		$num = 0;
 		preg_match( '/^\s*([0-9.]+)\s*([KMGTPE])B?\s*$/i', $byteString, $matches );
-		$num = ( float )$matches[1];
-		switch ( strtoupper( $matches[2] ) ) {
-			case 'E': $num = $num * 1024;
-			case 'P': $num = $num * 1024;
-			case 'T': $num = $num * 1024;
-			case 'G': $num = $num * 1024;
-			case 'M': $num = $num * 1024;
-			case 'K': $num = $num * 1024;
+		if ( !empty( $matches ) ) {
+			$num = ( float )$matches[1];
+			switch ( strtoupper( $matches[2] ) ) {
+				case 'E': $num = $num * 1024;
+				case 'P': $num = $num * 1024;
+				case 'T': $num = $num * 1024;
+				case 'G': $num = $num * 1024;
+				case 'M': $num = $num * 1024;
+				case 'K': $num = $num * 1024;
+			}
 		}
 		return intval( $num );
 	}

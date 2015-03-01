@@ -354,9 +354,6 @@ if ( !function_exists( 'aioseop_ajax_scan_header' ) ) {
 		do_action('wp');
 		global $aioseop_modules;
 		$module = $aioseop_modules->return_module( "All_in_One_SEO_Pack_Opengraph" );
-		if ( !empty( $module ) )
-			if ( $module->option_isset( 'disable_jetpack' ) )
-				remove_action( 'wp_head', 'jetpack_og_tags' );
 		wp_head();
 		$output = ob_get_clean();
 		global $aiosp;

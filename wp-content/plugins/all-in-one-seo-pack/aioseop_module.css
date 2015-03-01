@@ -607,6 +607,7 @@ div#aioseop_snippet {
 }
 div#aioseop_snippet > h3 {
 	font-size: 16px;
+	padding: 8px 0;
 	border: 0px;
 	background: inherit;
 }
