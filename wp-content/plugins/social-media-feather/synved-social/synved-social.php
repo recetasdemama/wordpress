@@ -3,7 +3,7 @@
 Module Name: Synved Social
 Description: Social sharing and following tools
 Author: Synved
-Version: 1.7.1
+Version: 1.7.5
 Author URI: http://synved.com/
 License: GPLv2
 
@@ -18,8 +18,8 @@ In no event shall Synved Ltd. be liable to you or any third party for any direct
 
 
 define('SYNVED_SOCIAL_LOADED', true);
-define('SYNVED_SOCIAL_VERSION', 100070001);
-define('SYNVED_SOCIAL_VERSION_STRING', '1.7.1');
+define('SYNVED_SOCIAL_VERSION', 100070005);
+define('SYNVED_SOCIAL_VERSION_STRING', '1.7.5');
 
 define('SYNVED_SOCIAL_ADDON_PATH', str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, dirname(__FILE__) . '/addons'));
 
@@ -316,28 +316,41 @@ function synved_social_service_provider_list($context, $raw = false)
 	
 	if ($raw == false)
 	{
-		$return_list = array();
+		global $synved_social;
 		
-		foreach ($provider_list as $provider_name => $provider_item)
+		$list_name = 'provider_list' . '_' . $context;
+	
+		if (!isset($synved_social[$list_name]) || $synved_social[$list_name] == null)
 		{
-			$display = synved_option_get('synved_social', $provider_name . '_display');
-			$link = synved_option_get('synved_social', $provider_name . '_' . $context . '_link');
-			$title = synved_option_get('synved_social', $provider_name . '_' . $context . '_title');
+			$return_list = array();
 		
-			if ($display === null || in_array($display, array($context, 'both')))
+			foreach ($provider_list as $provider_name => $provider_item)
 			{
-				if ($link != null)
+				$display = synved_option_get('synved_social', $provider_name . '_display');
+				$link = synved_option_get('synved_social', $provider_name . '_' . $context . '_link');
+				$title = synved_option_get('synved_social', $provider_name . '_' . $context . '_title');
+		
+				if ($display === null || in_array($display, array($context, 'both')))
 				{
-					$provider_item['link'] = $link;
-				}
+					if ($link != null)
+					{
+						$provider_item['link'] = $link;
+					}
 			
-				if ($title != null)
-				{
-					$provider_item['title'] = $title;
-				}
+					if ($title != null)
+					{
+						$provider_item['title'] = $title;
+					}
 			
-				$return_list[$provider_name] = $provider_item;
+					$return_list[$provider_name] = $provider_item;
+				}
 			}
+			
+			$synved_social[$list_name] = $return_list;
+		}
+		else
+		{
+			$return_list = $synved_social[$list_name];
 		}
 	}
 	
@@ -595,10 +608,10 @@ function synved_social_icon_skin_get_image_list($skin, $name_list, $forced_size 
 
 function synved_social_button_list_shortcode($atts, $content = null, $code = '', $context = null)
 {
-	$vars_def = array('url' => null, 'title' => null);
+	$vars_def = array('url' => null, 'image' => null, 'title' => null);
 	$params_def = array('skin' => null, 'size' => null, 'spacing' => null, 'container' => null, 'container_type' => null, 'class' => null, 'show' => null, 'hide' => null, 'prompt' => null, 'custom1' => null, 'custom2' => null, 'custom3' => null);
-	$vars = shortcode_atts($vars_def, $atts);
-	$params = shortcode_atts($params_def, $atts);
+	$vars = shortcode_atts($vars_def, $atts, 'feather_' . $context);
+	$params = shortcode_atts($params_def, $atts, 'feather_' . $context);
 	$vars = array_filter($vars);
 	$params = array_filter($params);
 	
@@ -825,27 +838,10 @@ function synved_social_button_list_markup($context, $vars = null, $buttons = nul
 	
 	if (!isset($vars['title']))
 	{
-		$title_filter = null;
-		
-		if (is_singular('download') && 'download' == get_post_type(intval($id)))
-		{
-			$priority = has_filter('the_title', 'edd_microdata_title');
-			
-			if ($priority !== false)
-			{
-      	$wp_filter = $GLOBALS['wp_filter'];
-      	
-      	$title_filter = array('function' => 'edd_microdata_title', 'priority' => $priority);
-      	remove_filter('the_title', 'edd_microdata_title', $priority);
-			}
-		}
-		
-		$vars['title'] = html_entity_decode(get_the_title());
-		
-		if ($title_filter != null)
-		{
-    	add_filter('the_title', $title_filter['function'], $title_filter['priority'], 2);
-		}
+		$title = get_the_title();
+		// do this encoding to prevent non-tags things, like emoticons, from being stripped, i.e. <8
+		$title = preg_replace('/\\<\\s*([^[:alpha:]\\/])/', '&lt;$1', $title);
+		$vars['title'] = html_entity_decode(wp_strip_all_tags($title));
 	}
 	
 	if (!isset($vars['message']))
@@ -1188,7 +1184,8 @@ function synved_social_button_list_markup($context, $vars = null, $buttons = nul
 				$class_extra = ' ' . implode(' ', $class);
 			}
 			
-			$class_extra .= ' nofancybox';
+			// don't use "nofancybox" because some plugins/themes interpret it as enabling fancybox
+			$class_extra .= ' nolightbox';
 			
 			$out_button = array(
 				'tag' => 'a',
