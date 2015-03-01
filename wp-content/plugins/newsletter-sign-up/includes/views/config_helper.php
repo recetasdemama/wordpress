@@ -45,7 +45,7 @@
 
  </table>
 
- <p>The above settings are there to help you, though they may not be right. Check out <a href="http://dannyvankooten.com/571/configuring-newsletter-sign-up-the-definitive-guide/">this post on my blog</a> for more information on how to manually
+ <p>The above settings are there to help you, though they may not be right. Check out <a href="https://dannyvankooten.com/571/configuring-newsletter-sign-up-the-definitive-guide/">this post on my blog</a> for more information on how to manually
    configure Newsletter Sign-up.</p>
 
    <p>The form code below is a stripped down version of your sign-up form which will make it easier for you to extract the right    values. Please also use this form when asking for support.</p>

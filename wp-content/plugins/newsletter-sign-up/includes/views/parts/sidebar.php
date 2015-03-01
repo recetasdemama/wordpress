@@ -28,7 +28,7 @@
 	<div>
 		<h3>Other WordPress plugins by Danny</h3>
 		<ul class="ul-square">
-			<li class="has-icon mc4wp"><a href="http://wordpress.org/plugins/mailchimp-for-wp/">MailChimp for WordPress</a></li>
+			<li class="has-icon mc4wp"><a href="https://wordpress.org/plugins/mailchimp-for-wp/">MailChimp for WordPress</a></li>
 			<li><a href="https://wordpress.org/plugins/scroll-triggered-boxes/">Scroll Triggered Boxes</a></li>
 			<li><a href="https://wordpress.org/plugins/dvk-social-sharing/">Social Sharing</a></li>
 			<li class="has-icon rfb"><a href="https://wordpress.org/plugins/recent-facebook-posts/">Recent Facebook Posts</a></li>

@@ -3,8 +3,8 @@ Contributors: DvanKooten
 Donate link: https://dannyvankooten.com/donate/
 Tags: newsletter,sign-up,mailchimp,aweber,newsletter signup,checkbox,ymlp,email,phplist,icontact,mailinglist,checkbox,form widget,widget,newsletter widget,subscribe widget,form shortcode,mailchimp api
 Requires at least: 3.6
-Tested up to: 4.0
-Stable tag: 2.0.4
+Tested up to: 4.1.1
+Stable tag: 2.0.5
 License: GPL2
 
 Integrate your WordPress site with 3rd-party newsletter services like Aweber and YMLP. Adds various sign-up methods to your site.
@@ -15,10 +15,10 @@ Integrate your WordPress site with 3rd-party newsletter services like Aweber and
 
 This plugin adds various sign-up methods to your WordPress website, like sign-up checkboxes in your comment form and a sign-up form to show in posts, pages or widget areas.
 
-<blockquote>
-    <h3 style="margin-top:0;">MailChimp user?</h3>
-    <p>Use <a href="https://wordpress.org/plugins/mailchimp-for-wp/">MailChimp for WordPress</a> instead. It's much better.</p>
-</blockquote>
+
+> **MailChimp user?**
+>
+> Use [MailChimp for WordPress](https://wordpress.org/plugins/mailchimp-for-wp/) instead. It's free & so much better.
 
 This plugin works with *almost all* third-party email marketing services including MailChimp, CampaignMonitor, ConstantContact, YMLP, Aweber, iContact, PHPList and Feedblitz. With the right configuration settings, you can make this plugin work with *any* newsletter service around.
 
@@ -34,7 +34,7 @@ This plugin works with *almost all* third-party email marketing services includi
 
 **More information**
 
-* [MailChimp for WordPress plugin](https://wordpress.org/plugins/mailchimp-for-wp/)
+* [MailChimp for WordPress plugin](https://mc4wp.com/)
 * [Newsletter Sign-Up for WordPress](https://dannyvankooten.com/wordpress-plugins/newsletter-sign-up/)
 * Check out more [WordPress plugins](https://dannyvankooten.com/wordpress-plugins/) by Danny van Kooten
 * Follow [@DannyvanKooten](https://twitter.com/DannyvanKooten) on Twitter
@@ -84,7 +84,7 @@ Yes, use the following code snippet in your theme files to display a sign-up for
 
 `if(function_exists('nsu_form')) nsu_form();`
 
-For more questions and answers go have a look at the [Newsletter Sign-Up](http://dannyvankooten.com/wordpress-plugins/newsletter-sign-up/) page on my website.
+For more questions and answers go have a look at the [Newsletter Sign-Up](https://dannyvankooten.com/wordpress-plugins/newsletter-sign-up/) page on my website.
 
 == Screenshots ==
 
@@ -93,6 +93,12 @@ For more questions and answers go have a look at the [Newsletter Sign-Up](http:/
 3. The sign-up checkbox in the Twenty Eleven theme
 
 == Changelog ==
+
+= 2.0.5 - February 19, 2015 =
+
+**Improvements**
+
+- Updated all links to use HTTPS protocol
 
 = 2.0.4 - October 4, 2014 =
 
@@ -142,7 +148,7 @@ For more questions and answers go have a look at the [Newsletter Sign-Up](http:/
 
 = 1.8 =
 * Fixed W3C error because of empty "action" attribute on form tag.
-* Added notice for MailChimp users to switch to my newer plugin, [MailChimp for WordPress](http://dannyvankooten.com/wordpress-plugins/mailchimp-for-wordpress/).
+* Added notice for MailChimp users to switch to my newer plugin, [MailChimp for WordPress](https://mc4wp.com/).
 * Further improved the CSS reset for the comment form checkbox
 
 = 1.7.9 =

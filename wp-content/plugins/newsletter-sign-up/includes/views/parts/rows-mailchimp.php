@@ -22,7 +22,7 @@
 	echo ' style="display:none" ';
 } ?>>
 <tr valign="top">
-	<th scope="row">MailChimp API Key <a target="_blank" href="http://admin.mailchimp.com/account/api">(?)</a></th>
+	<th scope="row">MailChimp API Key <a target="_blank" href="https://admin.mailchimp.com/account/api">(?)</a></th>
 	<td>
 		<input class="widefat" type="text" id="mc_api_key" name="nsu_mailinglist[mc_api_key]" value="<?php if ( isset( $opts['mc_api_key'] ) ) {
 			echo esc_attr( $opts['mc_api_key'] );
