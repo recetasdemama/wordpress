@@ -310,7 +310,7 @@ function optionsframework_options() {
 	
 	$options[] = array(
 		'name' => __('Live Demo Blog', 'sixteen'),
-		'desc' => __('I have created a  <a href="http://wpdemo.rohitink.com/sixteen/" target="_blank">Live Demo Blog</a> of this theme so that you know how it will look once ready.'),
+		'desc' => __('I have created a  <a href="http://demo.inkhive.com/sixteen/" target="_blank">Live Demo Blog</a> of this theme so that you know how it will look once ready.'),
 		'std' => '',
 		'type' => 'info');	
 	
