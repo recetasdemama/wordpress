@@ -10,12 +10,6 @@ msgstr ""
 "X-Generator: GlotPress/1.0-alpha-1000\n"
 "Project-Id-Version: Development\n"
 
-#: views/config.php:97
-msgid "Spam in the <a href=\"%s\">spam folder</a> older than 1 day is deleted automatically."
-msgid_plural "Spam in the <a href=\"%1$s\">spam folder</a> older than %2$d days is deleted automatically."
-msgstr[0] "Spam en la <a href=\"%s\">carpeta spam</a> de más de 1 día de antigüedad es borrado automáticamente."
-msgstr[1] "Spam en la <a href=\"%1$s\">carpeta spam</a> de más de %2$d días de antigüedad es borrado automáticamente."
-
 #: class.akismet-admin.php:700
 msgid "Please check your <a href=\"%s\">Akismet configuration</a> and contact your web host if problems persist."
 msgstr "Por favor, revisa la <a href=\"%s\">Configuración de Akismet</a> y consúltalo con tu porveedor de hosting si el problema se mantiene."
@@ -111,10 +105,6 @@ msgstr "Estás utilizando tu clave de Akismet en más sitios de los que te permi
 #: views/notice.php:98
 msgid "You're using Akismet on far too many sites for your Pro subscription."
 msgstr "Estás usando Akismet en muchos más sitios de los que permitidos por tu suscripción PRO."
-
-#: views/notice.php:96
-msgid "If you would like to use Akismet on more than 10 sites, you will need to <a href=\"%s\" target=\"_blank\">upgrade to an Enterprise subscription</a>. If you have any questions, please <a href=\"%s\" target=\"_blank\">get in touch with our support team</a>"
-msgstr "Si quieres usar Akismet en más de 10 sitios tienes que <a href=\"%s\" target=\"_blank\">actualizar a una suscripción de Empresa</a>. Si tienes alguna pregunta, por favor,  <a href=\"%s\" target=\"_blank\">contacta con nuestro equipo de soporte</a>"
 
 #: views/notice.php:99
 msgid "To continue your service, <a href=\"%s\" target=\"_blank\">upgrade to an Enterprise subscription</a>, which covers an unlimited number of sites. Please <a href=\"%s\" target=\"_blank\">contact our support team</a> with any questions."
@@ -458,6 +448,8 @@ msgstr "Akismet fue incapaz de revisar este comentario (respuesta: %s), se volve
 msgid "View comment history"
 msgstr "Ver historial de comentarios"
 
+#. #-#-#-#-#  akismet.pot (Akismet 3.0.5b1)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
 #: class.akismet-admin.php:76 class.akismet-admin.php:78
 #: class.akismet-admin.php:757 views/config.php:3
 msgid "Akismet"
