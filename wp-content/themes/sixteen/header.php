@@ -23,7 +23,6 @@
 		<div id="header-image"></div>
 	<?php endif; // End header image check. ?>
 <div id="page" class="hfeed site">
-	<?php do_action( 'before' ); ?>
     
     <div id="top-section">	
 		<header id="masthead" class="site-header" role="banner">
