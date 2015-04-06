@@ -3,7 +3,7 @@ Contributors: Synved
 Donate link: http://synved.com/wordpress-social-media-feather/
 Tags: shortcode, shortcodes, link, links, url, permalink, permalinks, time, icons, button, buttons, free, content, plugin, Share, sharing, social share, social sharing, page, pages, widget, CSS, list, media, profile, shortlinks, social, social media, Like, twitter, google, Facebook, Reddit, youtube, vimeo, tumblr, instagram, flickr, foursquare, bookmark, bookmarks, bookmarking, pinterest, linkedin, image, edit, manage, mail, Post, posts, Style, seo, title, filter, follow, following, social follow, social following, high resolution, retina, ipad
 Requires at least: 3.1
-Tested up to: 4.1
+Tested up to: 4.2
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -133,14 +133,20 @@ You can achieve this by using *Custom Fields*. Simply set a custom field of `syn
 == Screenshots ==
 
 1. An example of how the sharing or following buttons appear in the front-end at 64 pixel resolution
-2. An example of how the sharing or following buttons appear in the front-end at 24 pixel resolution
-3. An example of how the sharing or following buttons appear in the front-end using the [Extra Social Icons addon](http://synved.com/product/feather-extra-social-icons/ "Add 8 extra social icon skins to the Social Media Feather plugin!")
+2. An example of how the share or follow icons appear in the front-end at 24 pixel resolution
+3. An example of how the following or sharing links appear in the front-end using the [Extra Social Icons addon](http://synved.com/product/feather-extra-social-icons/ "Add 8 extra social icon skins to the Social Media Feather plugin!")
 4. Showing how using the [Grey Fade addon](http://synved.com/product/feather-grey-fade/ "Customize any of the available social icon skins with 2 cool effects!") transforms the sharing or following buttons in the front-end
-5. A demo of how providers can be customized in the back-end
-6. An view of some of the settings that can be customized in the back-end
+5. A demo of how social media providers can be customized in the back-end
+6. An view of some of the settings that can be customized in Social Media the back-end
 7. This shows the available social sharing and following widgets and their settings 
 
 == Changelog ==
+
+= 1.7.7 =
+* Fixed addon installer's path calculation for rare cases
+
+= 1.7.6 =
+* Minor adjustments
 
 = 1.7.5 =
 * Updated social network links descriptions to be more clear
