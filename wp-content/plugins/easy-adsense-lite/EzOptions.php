@@ -335,7 +335,7 @@ if (!class_exists("EzBaseOption")) {
       echo "{$this->before}\n";
       echo "<span style='text-decoration:underline;cursor:pointer;' "
       . "onmouseover=\"Tip('{$this->title}')\" "
-      . "onclick=\"popupwindow('{$this->name}', 'DontCare', 1024, 1024);"
+      . "onclick=\"popupwindow('{$this->name}', 'DontCare', 1000, 1024);"
       . "return false;\" onmouseout=\"UnTip();\">"
       . "{$this->desc}</span>\n";
       echo "{$this->after}\n";

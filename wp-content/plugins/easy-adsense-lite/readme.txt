@@ -4,7 +4,7 @@ Donate link: http://buy.thulasidas.com/easy-adsense
 Tags: adsense, google adsense, ads, advertising, easy adsense, google, adsense plugin
 Requires at least: 2.6
 Tested up to: 4.1
-Stable tag: 7.60
+Stable tag: 8.20
 License: GPL2 or later
 
 Easy Plugin for AdSense manages all aspects of AdSense: insert ads into posts and sidebar, and add a Google Search box. Easiest and most complete AdSense Plugin!
@@ -36,13 +36,18 @@ Easy Plugin for AdSense is the freely distributed version of a premium plugin. T
 1. Safe Content filter: To ensure that your Google AdSense ads show only on those pages that seem to comply with Google AdSense policies, which can be important since some comments may render your pages inconsistent with those policies.
 2. IP filter: Ability to specify a list of computers where your ads will not be shown, in order to prevent accidental clicks on your own ads -- one of the main reasons AdSense bans you. These features will minimize your chance of getting banned.
 3. Compatibility mode: To solve the issue of the ad insertion messing up your page appearances when using some themes.
-4. Shortcode support: Show the ads only on the pages or posts you want, and exactly where you want them.
-5. Mobile support: Ability to suppress ads on mobile devices.
-6. Ability to show a configurable number of ads on Excerpts (which make up the home page in some themes).
+5. Category/Post Control: Ability to suppress ads on specific categories, posts and pages.
+5. Shortcode Support: Show the ads only on the pages or posts you want, and exactly where you want them.
+6. Mobile Support: Ability to show different sets of ads on mobile devices, or to suppress ads.
+7. Excerpts: Ability to show a configurable number of ads on Excerpts (which make up the home page in some themes).
+8. Option Sets: Multiple option sets can be defined and easily switched between.
+9. Suspend Ads: Ability to temporarily suppress ad serving.
+10. Admin Interface Themes: Multiple color schemes for the admin interface.
+11. Ad Serving Statistics: Keep an eye on your ad serving statistics to make sure that Google is not shortchanging you. (Optional paid module)
 
 == Upgrade Notice ==
 
-Compatibility with WP4.1.
+Reverting back to the non-AJAX version of the plugin.
 
 == Screenshots ==
 
@@ -51,10 +56,17 @@ Compatibility with WP4.1.
 
 == Installation ==
 
-1. Upload the Easy Plugin for AdSense plugin (the whole easy-adsense folder) to the '/wp-content/plugins/' directory.
-2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Go to the Setup -> Easy Plugin for AdSense and enter your AdSense code and options.
-4. Go to Themes -> Widgets to add widgets to your side bar(s).
+= Searching =
+
+The easiest way to install this plugin is to use the WordPress Admin interface. Go to your admin dashboard, find the "Plugins" menu, and click on "Add New". Search for this plugin and click on "Install Now" and follow the WordPress instructions.
+
+= Uploading =
+
+If you want to download it and manually install, you can again use the WordPress dashboard interface. First download the plugin zip file to your local computer. Then go to your admin dashboard, find the "Plugins" menu, and click on "Add New". After clicking on the "Add New" menu item as above, click on "Upload" (below the title "Install Plugins" near the top). Browse for your downloaded zip file, upload it and activate the plugin.
+
+= Using Plugin Interface =
+
+Further updates (and Pro upgrades and module installations) to the plugin can be done easily from the plugin admin page itself, by clicking on the *Updates* button on the top right corner.
 
 = Tips =
 
@@ -70,7 +82,7 @@ It is possible to apply the filter on excerpts as well. But then, we have to mak
 
 = I just activated the plugin. How come I don't see any ads in my blog? =
 
-Note that you have to generate your adsense code from Google, and paste the *entire* code in the text boxes, replacing the existing text. There are three main text boxes corresponding to three ad locations - Lead-in, Mid-text and Lead-out. If you don't want to use a particular location, please suppress it by selecting the appropriate option. Otherwise, the plugin will show a red box indicating where you ad would be shown.
+Note that you have to generate your adsense code from Google, and paste the *entire* code in the text boxes, replacing the existing text. There are three main text boxes corresponding to three ad locations - Lead-in, Mid-text and Lead-out. If you don't want to use a particular location, please suppress it by selecting the appropriate option. Otherwise, the plugin will show a red box indicating where your ad would be shown.
 
 If you just created the new Google AdSense code, it may not be active yet. Google takes about ten minutes or so before serving ads. Please try again later.
 
@@ -84,17 +96,17 @@ Please check the option "Kill author links on the admin page" near the bottom of
 
 = I cannot figure out how to suppress a particular ad slot. Do I have to display all three ad slots all the time? =
 
-Of course not. The option to suppress the ad slots is in the "Show" drop-down menu below the corresponding text boxes. The first option in the menu is to suppress the ad slot.
+Of course not. The option to suppress the ad slots is in the Ad Alignment panel.
 
 = What are the different versions of the plugin? =
 
-Easy Plugin for AdSense is the freely distributed version of a premium plugin. The [Pro version](https://buy.thulasidas.com/easy-adsense "Pro version of the Easy Plugin for AdSense plugin") gives you more benefits -- lets you activate a filter to ensure that your ads show only on those pages that seem to comply with Google AdSense policies. It also lets you specify a list of computers where your ads will not be shown, in order to prevent accidental clicks on your own ads -- one of the main reasons AdSense bans you. These features will minimize your chance of getting banned. The Pro version costs $4.95, and is appropriate if you expect to make more than $100 of ad revenue from your site.
+Easy Plugin for AdSense is the freely distributed version of a premium plugin. The [Pro version](https://buy.thulasidas.com/easy-adsense "Pro version of the Easy Plugin for AdSense plugin") gives you more features -- it lets you activate a filter to ensure that your ads show only on those pages that seem to comply with Google AdSense policies. It also lets you specify a list of computers where your ads will not be shown, in order to prevent accidental clicks on your own ads -- one of the main reasons AdSense bans you. These features will minimize your chance of getting banned. It also has full support of mobile devices, and supports per category and per post ad suppression. The Pro version costs $7.95.
 
 = How can I contact the plugin author if I need help? =
 
 This plugin uses a paid support model in order to manage the support load. Each [support ticket](http://support.thulasidas.com "Ask a support question") will be charged at $0.95 for the Lite version (and for the Pro version after a short free support period). The support ticket is valid for 72 hours, and further follow-up questions will call for a new support ticket.
 
-= I still don't get it. Porn and site block - that you already have during Asdense ad setup? =
+= I don't understand the Pro features. Porn and site block - can't you set those during Asdense ad setup? =
 
 What you have in AdSense is an ability to block ads from certain sites. For instance, if you don't like ads *from* my site "thulasidas.com", you can block them. What the pro version gives you is the ability to block ads *to* certain clients. That is, if you don't want visitors from certain IP addresses see your ads (because they may click on too many of them, getting your AdSense account banned, for instance), you can with my plugin.
 
@@ -128,11 +140,15 @@ Yes! Now, in V2.1+, you have more options (using [Custom Fields](http://codex.wo
 
 = I find this *easy* plugin too complex with too many options. Any alternatives? =
 
-If you feel that the features of Easy Plugin for AdSense are a bit too much, consider my lean and mean AdSense plugin [AdSense Now!](http://www.thulasidas.com/plugins/adsense-now/ "The simplest possible way to AdSense enable your blog")
+If you feel that the features of Easy Plugin for AdSense are a bit too much, consider my lean and mean AdSense plugin [AdSense Now!](http://www.thulasidas.com/plugins/adsense-now "The simplest possible way to AdSense enable your blog")
 
 = I am having a difficult time getting the middle of post ads to show. They show in some posts, but not all of them. Any possible recommendations? =
 
 The middle ads are designed to show up only on long posts (of more than 20 paragraphs). Use the option to force the mid-text ads (in v1.82+) to override this length check.
+
+= What happened to the modern bootstrap/AJAX interface? I really liked it and want it back. =
+
+The bootstrap/AJAX version of the plugin is still available as the [Pro version](http://buy.thulasidas.com/easy-adsense "Pro version of the Easy Plugin for AdSense plugin").
 
 == Translations ==
 
@@ -140,6 +156,23 @@ A big "Thank You" to all my translators. Easy AdSense V2.6+ sports an *Easy Tran
 
 == Change Log ==
 
+* V8.20: Reverting back to the non-AJAX version of the plugin. [Mar 25, 2015]
+* V8.15: Minor bug fix on search widget and ad suppression while not in loop. [Mar 25, 2015]
+* V8.13: Serious bug fix related to multiple passes of the content filter. Introducing a verbosity option. [Mar 22, 2015]
+* V8.12: Minor bug fixes, and adding diagnostic comments. [Mar 21, 2015]
+* V8.11: Providing a downgrade path to the previous, non-AJAX version of the plugin. [Mar 19, 2015]
+* V8.10: Providing a downgrade path to the previous, non-AJAX version of the plugin. [Mar 16, 2015]
+* V8.09: Documentation and usability enhancements. [Mar 13, 2015]
+* V8.08: Documentation and usability enhancements. [Mar 11, 2015]
+* V8.07: More changes for compatibility with PHP5.30. [Mar 11, 2015]
+* V8.06: Various accumulated fixes. [Mar 10, 2015]
+* V8.05: Improvements in the login check functions. [Mar 9, 2015]
+* V8.04: Getting rid of some variables in the global scope for compatibility with some themes. [Mar 8, 2015]
+* V8.03: Killing anonymous functions for compatibility with PHP versions older than 5.3. [Mar 8, 2015]
+* V8.02: Changes to the activation validation checks. [Mar 7, 2015]
+* V8.01: Fixing a textarea overflow issue in the plugin admin page. [Mar 6, 2016]
+* V8.00: Complete rewrite of the plugin with a lot more features. Admin page based on the twitter bootstrap framework. [Mar 1, 2015]
+* V7.61: Changes to prepare for V8.00 - a complete rewrite of the plugin. [Mar 4, 2015]
 * V7.60: Compatibility with WP4.1. [Jan 8, 2015]
 * V7.51: Renaming the plugin as requested by Google. [Nov 30, 2014]
 * V7.50: Renaming the plugin as requested by Google. [Nov 30, 2014]
