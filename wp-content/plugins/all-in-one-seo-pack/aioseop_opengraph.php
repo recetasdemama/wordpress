@@ -78,6 +78,8 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Opengraph' ) ) {
 			$this->help_text = Array(
 				"setmeta" 				=> __( "Checking this box will use the Home Title and Home Description set in All in One SEO Pack, General Settings as the Open Graph title and description for your home page.", 'all_in_one_seo_pack' ),
 				"key"	  				=> __( "Your Profile Admin ID is your Facebook profile ID. You can find out your Facebook ID using the lookup tool here: https://graph.facebook.com/yourusername", 'all_in_one_seo_pack' ),
+				"title_shortcodes"		=> __( "Run shortcodes that appear in social title meta tags.", 'all_in_one_seo_pack' ),
+				"description_shortcodes"=> __( "Run shortcodes that appear in social description meta tags.", 'all_in_one_seo_pack' ),
 				"sitename"				=> __( "The Site Name is the name that is used to identify your website.", 'all_in_one_seo_pack' ),
 				"hometitle"				=> __( "The Home Title is the Open Graph title for your home page.", 'all_in_one_seo_pack' ),
 				"description"			=> __( "The Home Description is the Open Graph description for your home page.", 'all_in_one_seo_pack' ),
@@ -144,6 +146,8 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Opengraph' ) ) {
 					'scan_header'=> Array( 'name' => __( 'Scan Header', 'all_in_one_seo_pack' ), 'type' => 'custom', 'save' => true ),
 					'setmeta'		=> Array( 	'name'			=> __( 'Use AIOSEO Title and Description',  'all_in_one_seo_pack'), 'type' => 'checkbox' ),
 					'key'			=> Array( 	'name'			=> __( 'Profile Admins ID',  'all_in_one_seo_pack'), 'default' => '', 'type' => 'text' ),
+					'title_shortcodes' => Array('name'			=> __( 'Run Shortcodes In Title', 'all_in_one_seo_pack' ) ),
+					'description_shortcodes' => Array('name'	=> __( 'Run Shortcodes In Description', 'all_in_one_seo_pack' ) ),
 					'sitename'		=> Array( 	'name'			=> __( 'Site Name',  'all_in_one_seo_pack' ), 'default'	=> get_bloginfo('name'), 'type' => 'text' ),
 					'hometitle' 	=> Array(	'name'			=> __( 'Home Title',  'all_in_one_seo_pack'),
 												'default'		=> '', 'type' => 'textarea', 'condshow' => Array( 'aiosp_opengraph_setmeta' => Array( 'lhs' => "aiosp_opengraph_setmeta", 'op' => '!=', 'rhs' => 'on' ) ) ),
@@ -215,7 +219,7 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Opengraph' ) ) {
 
 			$this->locations = array(
 				'opengraph'	=> 	Array( 'name' => $this->name, 'prefix' => 'aiosp_', 'type' => 'settings',
-									   'options' => Array('scan_header', 'setmeta', 'key', 'sitename', 'hometitle', 'description', 'homeimage', 'hometag', 'generate_descriptions', 'defimg',
+									   'options' => Array('scan_header', 'setmeta', 'key', 'sitename', 'title_shortcodes', 'description_shortcodes', 'hometitle', 'description', 'homeimage', 'hometag', 'generate_descriptions', 'defimg',
 									   'fallback', 'dimg', 'meta_key', 'categories', 'defcard', 'twitter_site', 'twitter_creator', 'twitter_domain', 'gen_tags', 'gen_keywords', 'gen_categories',
 									   'gen_post_tags', 'types', 'facebook_publisher', 'facebook_author' ) ),
 				'settings'	=>	Array(	'name'		=> __('Social Settings', 'all_in_one_seo_pack'),
@@ -462,16 +466,16 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Opengraph' ) ) {
 				
 				/* If Use AIOSEO Title and Desc Selected */
 				if( $setmeta ) {
-					$title = $aioseop_options['aiosp_home_title'];
+					$title = $aiosp->get_aioseop_title( $post );
 					if ( $first_page )
-						$description = $aioseop_options['aiosp_home_description'];
+						$description = $aiosp->get_aioseop_description( $post );
 				}
 				
 				/* Add some defaults */
 				if( empty($title) ) $title = get_bloginfo('name');
 				if( empty($sitename) ) $sitename = get_bloginfo('name');
 				
-				if ( empty( $description ) && $first_page && ( !empty( $this->options['aiosp_opengraph_generate_descriptions'] ) ) && !empty( $post ) && !empty( $post->post_content ) )
+				if ( empty( $description ) && $first_page && ( !empty( $this->options['aiosp_opengraph_generate_descriptions'] ) ) && !empty( $post ) && !empty( $post->post_content ) && !post_password_required( $post ) )
 					$description = $aiosp->trim_excerpt_without_filters( $aiosp->internationalize( preg_replace( '/\s+/', ' ', $post->post_content ) ), 1000 );
 				
 				if ( empty($description) && $first_page ) $description = get_bloginfo('description');
@@ -523,7 +527,7 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Opengraph' ) ) {
 				
 				/* Add some defaults */
 				if ( empty( $title ) ) $title = get_the_title();
-				if ( empty( $description ) && ( $this->options['aiosp_opengraph_generate_descriptions'] ) )
+				if ( empty( $description ) && ( $this->options['aiosp_opengraph_generate_descriptions'] ) && !post_password_required( $post ) )
 					$description = $post->post_content;
 				if ( empty( $type ) ) $type = 'article';
 			} else return;
@@ -549,9 +553,19 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Opengraph' ) ) {
 				if ( !empty( $tag ) )
 					$tag = $aiosp->clean_keyword_list( $tag );			
 			}
-			if ( !empty( $description ) )
-				$description = $aiosp->trim_excerpt_without_filters( $aiosp->internationalize( preg_replace( '/\s+/', ' ', $description ) ), 1000 );
 			
+			if ( !empty( $this->options['aiosp_opengraph_title_shortcodes'] ) ) {
+				$title = do_shortcode( $title );
+			}
+			
+			if ( !empty( $description ) ) {
+				$description = $aiosp->internationalize( preg_replace( '/\s+/', ' ', $description ) );
+				if ( !empty( $this->options['aiosp_opengraph_description_shortcodes'] ) ) {
+					$description = do_shortcode( $description );
+				}
+				$description = $aiosp->trim_excerpt_without_filters( $description, 1000 );				
+			}
+						
 			$title = $this->apply_cf_fields( $title );
 			$description = $this->apply_cf_fields( $description );
 			

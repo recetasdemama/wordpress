@@ -128,7 +128,7 @@ if ( !class_exists( 'All_in_One_SEO_Pack_Module' ) ) {
 		function convert_case( $str, $mode = 'upper' ) {
 			static $charset = null;
 			if ( $charset == null ) $charset = get_bloginfo( 'charset' );
-
+			$str = (string)$str;
 			if ( $mode == 'title' ) {
 				if ( function_exists( 'mb_convert_case' ) )
 					return mb_convert_case( $str, MB_CASE_TITLE, $charset );
