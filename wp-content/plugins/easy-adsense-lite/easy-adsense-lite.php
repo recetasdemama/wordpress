@@ -4,7 +4,7 @@
   Plugin Name: Easy Plugin for AdSense
   Plugin URI: http://www.thulasidas.com/adsense
   Description: Easiest way to show AdSense and make money from your blog. Configure it at <a href="options-general.php?page=easy-adsense-lite.php">Settings &rarr; Easy Plugin for AdSense</a>.
-  Version: 7.60
+  Version: 8.20
   Author: Manoj Thulasidas
   Author URI: http://www.thulasidas.com
  */
@@ -103,6 +103,12 @@ if (!class_exists("EzAdSense")) {
       $o = new EzHelpPopUp('http://wordpress.org/extend/plugins/easy-adsense-lite/');
       $o->title = __('Click for help', 'easy-adsenser');
       $o->desc = __('Check out the FAQ and rate this plugin.', 'easy-adsenser');
+      $this->helpTags[] = $o;
+
+      $o = new EzHelpPopUp('http://www.thulasidas.com/easy-adsense');
+      $o->title = __('It is still available as a Premium Plugin. When you buy it, you will get both the AJAX and non-AJAX Pro versions! Find out more.', 'easy-adsenser');
+      $o->tipTitle = __('Get the AJAX version', 'easy-adsenser');
+      $o->desc = "<b>" . __('Miss the AJAX version?', 'easy-adsenser') . "</b>";
       $this->helpTags[] = $o;
     }
 
