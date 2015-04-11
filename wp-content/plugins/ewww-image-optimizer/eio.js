@@ -80,7 +80,7 @@ jQuery(document).ready(function($) {
 			ewww_savings_counter: ewww_savings_counter,
 			ewww_savings_todo: ewww_savings_todo,
 		};
-		ewwwLoopSavings();
+//		ewwwLoopSavings();
 		return false;
 	} else {
 	$(function() {
@@ -173,6 +173,7 @@ jQuery(document).ready(function($) {
 		$('#ewww-scanning').show();
 		$.post(ajaxurl, ewww_scan_data, function(response) {
 			ewww_attachpost = response.replace(/&quot;/g, '"');
+			//ewww_attachments = ewww_attachpost;
 			ewww_attachments = $.parseJSON(ewww_attachpost);
 			ewww_init_data = {
 			        action: ewww_init_action,

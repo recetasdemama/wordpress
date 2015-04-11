@@ -437,6 +437,7 @@ function ewww_image_optimizer_image_scan($dir) {
 	if (!is_dir($dir)) {
 		return $images;
 	}
+	$ewww_debug .= "scanning folder for images: $dir<br>";
 	$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::CHILD_FIRST);
 	$start = microtime(true);
 	$query = "SELECT path,image_size FROM $wpdb->ewwwio_images";
@@ -452,6 +453,9 @@ function ewww_image_optimizer_image_scan($dir) {
 			continue;
 		} else {
 			$path = $path->getPathname();
+			if ( preg_match( '/\.(po|mo|php|txt|js|css|html)$/', $path ) ) {
+				continue;
+			}
 			$mimetype = ewww_image_optimizer_mimetype($path, 'i');
 			if (empty($mimetype) || !preg_match('/^image\/(jpeg|png|gif)/', $mimetype)) {
 				$ewww_debug .= "not a usable mimetype: $path<br>";
@@ -535,6 +539,7 @@ function ewww_image_optimizer_aux_images_script($hook) {
 		// retrieve the attachment IDs that have not been finished from the 'bulk attachments' option
 		$attachments = get_option('ewww_image_optimizer_aux_attachments');
 	} else {
+		$attachments = array();
 		// collect a list of images from the current theme
 		$child_path = get_stylesheet_directory();
 		$parent_path = get_template_directory();
@@ -542,6 +547,7 @@ function ewww_image_optimizer_aux_images_script($hook) {
 		if ($child_path !== $parent_path) {
 			$attachments = array_merge($attachments, ewww_image_optimizer_image_scan($parent_path));
 		}
+//	ewww_image_optimizer_debug_log();
 		// collect a list of images for buddypress
 		if (is_plugin_active('buddypress/bp-loader.php') || (function_exists('is_plugin_active_for_network') && is_plugin_active_for_network('buddypress/bp-loader.php'))) {
 			// get the value of the wordpress upload directory
@@ -596,8 +602,17 @@ function ewww_image_optimizer_aux_images_script($hook) {
 							if (preg_match('/resized-/', $backup_size)) {
 								$path = $meta['path'];
 								$image_size = filesize($path);
-								$query = $wpdb->prepare("SELECT id FROM $wpdb->ewwwio_images WHERE BINARY path LIKE %s AND image_size LIKE '$image_size'", $path);
-								$already_optimized = $wpdb->get_results($query);
+								$query = $wpdb->prepare("SELECT id FROM $wpdb->ewwwio_images WHERE path LIKE %s AND image_size LIKE '$image_size'", $path);
+								$optimized_query = $wpdb->get_results($query, ARRAY_A);
+								if (!empty($optimized_query)) {
+									foreach ( $optimized_query as $image ) {
+										if ( $image['path'] != $path ) {
+											$ewww_debug .= "{$image['path']} does not match $path, continuing our search<br>";
+										} else {
+											$already_optimized = $image;
+										}
+									}
+								}
 								$mimetype = ewww_image_optimizer_mimetype($path, 'i');
 								if (preg_match('/^image\/(jpeg|png|gif)/', $mimetype) && empty($already_optimized)) {
 									$slide_paths[] = $path;
@@ -614,6 +629,24 @@ function ewww_image_optimizer_aux_images_script($hook) {
 			foreach ($aux_paths as $aux_path) {
 				$attachments = array_merge($attachments, ewww_image_optimizer_image_scan($aux_path));
 			}
+		}
+		// scan images in two most recent media library folders if the option is enabled, and this is a scheduled optimization
+		if ( 'ewww-image-optimizer-auto' == $hook && ewww_image_optimizer_get_option( 'ewww_image_optimizer_include_media_paths' ) ) {
+			// retrieve the location of the wordpress upload folder
+			$upload_dir = wp_upload_dir();
+			// retrieve the path of the upload folder
+			$upload_path = $upload_dir['basedir'];
+			$this_month = date('m');
+			$this_year = date('Y');
+			$attachments = array_merge($attachments, ewww_image_optimizer_image_scan("$upload_path/$this_year/$this_month/"));
+			if ( class_exists('DateTime') ) {
+				$date = new DateTime();
+				$date->sub(new DateInterval('P1M'));
+				$last_year = $date->format('Y');
+				$last_month = $date->format('m');
+				$attachments = array_merge($attachments, ewww_image_optimizer_image_scan("$upload_path/$last_year/$last_month/"));
+			}
+
 		}
 		// store the filenames we retrieved in the 'bulk_attachments' option so we can keep track of our progress in the database
 		update_option('ewww_image_optimizer_aux_attachments', $attachments);
@@ -640,7 +673,8 @@ function ewww_image_optimizer_aux_images_initialize($auto = false) {
 	global $ewww_debug;
 	$ewww_debug .= "<b>ewww_image_optimizer_aux_images_initialize()</b><br>";
 	// verify that an authorized user has started the optimizer
-	if (!$auto && (!wp_verify_nonce($_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk') || !current_user_can('install_themes'))) {
+	$permissions = apply_filters( 'ewww_image_optimizer_bulk_permissions', '' );
+	if ( ! $auto && ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) || ! current_user_can( $permissions ) ) ) {
 		wp_die(__('Cheatin&#8217; eh?', EWWW_IMAGE_OPTIMIZER_DOMAIN));
 	} 
 	// update the 'aux resume' option to show that an operation is in progress
@@ -663,7 +697,8 @@ function ewww_image_optimizer_aux_images_filename() {
 	global $ewww_debug;
 	$ewww_debug .= "<b>ewww_image_optimizer_aux_images_filename()</b><br>";
 	// verify that an authorized user has started the optimizer
-	if (!wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) || !current_user_can( 'install_themes' ) ) {
+	$permissions = apply_filters( 'ewww_image_optimizer_bulk_permissions', '' );
+	if ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) || ! current_user_can( $permissions ) ) {
 		wp_die(__('Cheatin&#8217; eh?', EWWW_IMAGE_OPTIMIZER_DOMAIN));
 	}
 	// generate the WP spinner image for display
@@ -679,7 +714,8 @@ function ewww_image_optimizer_aux_images_cleanup($auto = false) {
 	global $ewww_debug;
 	$ewww_debug .= "<b>ewww_image_optimizer_aux_images_cleanup()</b><br>";
 	// verify that an authorized user has started the optimizer
-	if (!$auto && (!wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) || !current_user_can( 'install_themes' ))) {
+	$permissions = apply_filters( 'ewww_image_optimizer_bulk_permissions', '' );
+	if ( ! $auto && ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) || ! current_user_can( $permissions ) ) ) {
 		wp_die(__('Cheatin&#8217; eh?', EWWW_IMAGE_OPTIMIZER_DOMAIN));
 	}
 	$stored_last = get_option('ewww_image_optimizer_aux_last');

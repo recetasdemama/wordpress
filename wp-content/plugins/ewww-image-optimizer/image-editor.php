@@ -3,6 +3,7 @@ if ( class_exists( 'Bbpp_Animated_Gif' ) ) {
 	class EWWWIO_GD_Editor extends Bbpp_Animated_Gif {
 		public function save( $filename = null, $mime_type = null ) {
 			global $ewww_debug;
+//TODO: rethink these checks. should we be checking for JPEGTRAN still, or perhaps the CLOUD constant?
 			if (!defined('EWWW_IMAGE_OPTIMIZER_JPEGTRAN'))
 				ewww_image_optimizer_init();
 			$saved = parent::save($filename, $mimetype);
@@ -10,13 +11,14 @@ if ( class_exists( 'Bbpp_Animated_Gif' ) ) {
 				if ( ! $filename ) {
 					$filename = $saved['path'];
 				}
-				ewww_image_optimizer_aux_images_loop($filename, true);
+				ewww_image_optimizer($filename);
+//				ewww_image_optimizer_aux_images_loop($filename, true);
 				$ewww_debug .= "image editor (AGR gd) saved: $filename <br>";
 				$image_size = filesize($filename);
 				$ewww_debug .= "image editor size: $image_size <br>";
 				ewww_image_optimizer_debug_log();
 			}
-	ewwwio_memory( __FUNCTION__ );
+			ewwwio_memory( __FUNCTION__ );
 			return $saved;
 		}
 		public function multi_resize( $sizes ) {
@@ -31,13 +33,14 @@ if ( class_exists( 'Bbpp_Animated_Gif' ) ) {
 			$dir = $info['dirname'];
 			foreach ($metadata as $size) {
 				$filename = trailingslashit( $dir ) . $size['file'];
-				ewww_image_optimizer_aux_images_loop($filename, true);
+				ewww_image_optimizer($filename);
+				//ewww_image_optimizer_aux_images_loop($filename, true);
 				$ewww_debug .= "image editor (AGR gd) saved: $filename <br>";
 				$image_size = filesize($filename);
 				$ewww_debug .= "image editor size: $image_size <br>";
 			}
 			ewww_image_optimizer_debug_log();
-	ewwwio_memory( __FUNCTION__ );
+			ewwwio_memory( __FUNCTION__ );
 			return $metadata;
 		}
 	}
@@ -52,13 +55,14 @@ if ( class_exists( 'Bbpp_Animated_Gif' ) ) {
 				if ( ! $filename ) {
 					$filename = $saved['path'];
 				}
-				ewww_image_optimizer_aux_images_loop($filename, true);
+				ewww_image_optimizer($filename);
+				//ewww_image_optimizer_aux_images_loop($filename, true);
 				$ewww_debug .= "image editor (wpthumb GD) saved : $filename <br>";
 				$image_size = filesize($filename);
 				$ewww_debug .= "image editor size: $image_size <br>";
 				ewww_image_optimizer_debug_log();
 			}
-	ewwwio_memory( __FUNCTION__ );
+			ewwwio_memory( __FUNCTION__ );
 			return $saved;
 		}
 	}
@@ -73,13 +77,14 @@ if ( class_exists( 'Bbpp_Animated_Gif' ) ) {
 				if ( ! $filename ) {
 					$filename = $saved['path'];
 				}
-				ewww_image_optimizer_aux_images_loop($filename, true);
+				ewww_image_optimizer($filename);
+				//ewww_image_optimizer_aux_images_loop($filename, true);
 				$ewww_debug = "$ewww_debug image editor (gd) saved: $filename <br>";
 				$image_size = filesize($filename);
 				$ewww_debug = "$ewww_debug image editor size: $image_size <br>";
 				ewww_image_optimizer_debug_log();
 			}
-	ewwwio_memory( __FUNCTION__ );
+			ewwwio_memory( __FUNCTION__ );
 			return $saved;
 		}
 	}
@@ -95,13 +100,14 @@ if (class_exists('WP_Thumb_Image_Editor_Imagick')) {
 				if ( ! $filename ) {
 					$filename = $saved['path'];
 				}
-				ewww_image_optimizer_aux_images_loop($filename, true);
+				ewww_image_optimizer($filename);
+				//ewww_image_optimizer_aux_images_loop($filename, true);
 				$ewww_debug .= "image editor (wpthumb imagick) saved : $filename <br>";
 				$image_size = filesize($filename);
 				$ewww_debug .= "image editor size: $image_size <br>";
 				ewww_image_optimizer_debug_log();
 			}
-	ewwwio_memory( __FUNCTION__ );
+			ewwwio_memory( __FUNCTION__ );
 			return $saved;
 		}
 	}
@@ -116,13 +122,14 @@ if (class_exists('WP_Thumb_Image_Editor_Imagick')) {
 				if ( ! $filename ) {
 					$filename = $saved['path'];
 				}
-				ewww_image_optimizer_aux_images_loop($filename, true);
+				ewww_image_optimizer($filename);
+				//ewww_image_optimizer_aux_images_loop($filename, true);
 				$ewww_debug .= "image editor (imagick) saved: $filename <br>";
 				$image_size = filesize($filename);
 				$ewww_debug .= "image editor size: $image_size <br>";
 				ewww_image_optimizer_debug_log();
 			}
-	ewwwio_memory( __FUNCTION__ );
+			ewwwio_memory( __FUNCTION__ );
 			return $saved;
 		}
 	}
@@ -138,13 +145,14 @@ if (class_exists('WP_Image_Editor_Gmagick')) {
 				if ( ! $filename ) {
 					$filename = $saved['path'];
 				}
-				ewww_image_optimizer_aux_images_loop($filename, true);
+				ewww_image_optimizer($filename);
+				//ewww_image_optimizer_aux_images_loop($filename, true);
 				$ewww_debug .= "image editor (gmagick) saved : $filename <br>";
 				$image_size = filesize($filename);
 				$ewww_debug .= "image editor size: $image_size <br>";
 				ewww_image_optimizer_debug_log();
 			}
-	ewwwio_memory( __FUNCTION__ );
+			ewwwio_memory( __FUNCTION__ );
 			return $saved;
 		}
 	}
