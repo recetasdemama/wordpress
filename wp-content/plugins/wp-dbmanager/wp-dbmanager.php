@@ -3,7 +3,7 @@
 Plugin Name: WP-DBManager
 Plugin URI: http://lesterchan.net/portfolio/programming/php/
 Description: Manages your WordPress database. Allows you to optimize database, repair database, backup database, restore database, delete backup database , drop/empty tables and run selected queries. Supports automatic scheduling of backing up, optimizing and repairing of database.
-Version: 2.75
+Version: 2.77
 Author: Lester 'GaMerZ' Chan
 Author URI: http://lesterchan.net
 Text Domain: wp-dbmanager
@@ -11,7 +11,7 @@ Text Domain: wp-dbmanager
 
 
 /*
-	Copyright 2014  Lester Chan  (email : lesterchan@gmail.com)
+	Copyright 2015  Lester Chan  (email : lesterchan@gmail.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -85,10 +85,12 @@ function cron_dbmanager_backup() {
 		if(intval($backup_options['backup_gzip']) == 1) {
 			$backup['filename'] = $backup['date'].'_-_'.DB_NAME.'.sql.gz';
 			$backup['filepath'] = $backup['path'].'/'.$backup['filename'];
+			do_action( 'wp_dbmanager_before_escapeshellcmd' );
 			$backup['command'] = escapeshellcmd( $brace . $backup['mysqldumppath'] . $brace ) . ' --force --host=' . escapeshellarg( $backup['host'] ).' --user=' . escapeshellarg( DB_USER ) . ' --password=' . escapeshellarg( DB_PASSWORD ) . $backup['port'] . $backup['sock'] . ' --add-drop-table --skip-lock-tables ' . DB_NAME . ' | gzip > '.escapeshellcmd( $brace . $backup['filepath'] . $brace );
 		} else {
 			$backup['filename'] = $backup['date'].'_-_'.DB_NAME.'.sql';
 			$backup['filepath'] = $backup['path'].'/'.$backup['filename'];
+			do_action( 'wp_dbmanager_before_escapeshellcmd' );
 			$backup['command'] = escapeshellcmd( $brace . $backup['mysqldumppath'] . $brace ) . ' --force --host=' . escapeshellarg( $backup['host'] ).' --user=' . escapeshellarg( DB_USER ). ' --password=' . escapeshellarg( DB_PASSWORD ) . $backup['port'] . $backup['sock'] . ' --add-drop-table --skip-lock-tables ' . DB_NAME . ' > '.escapeshellcmd( $brace . $backup['filepath'] . $brace );
 		}
 		execute_backup($backup['command']);
@@ -196,8 +198,8 @@ function detect_mysql() {
 		$mysql_install = $wpdb->get_row("SHOW VARIABLES LIKE 'basedir'");
 		if($mysql_install) {
 			$install_path = str_replace('\\', '/', $mysql_install->Value);
-			$paths['mysql'] = $install_path.'bin/mysql.exe';
-			$paths['mysqldump'] = $install_path.'bin/mysqldump.exe';
+			$paths['mysql'] = $install_path.'/bin/mysql.exe';
+			$paths['mysqldump'] = $install_path.'/bin/mysqldump.exe';
 		} else {
 			$paths['mysql'] = 'mysql.exe';
 			$paths['mysqldump'] = 'mysqldump.exe';
@@ -497,28 +499,26 @@ function dbmanager_try_fix() {
 
 
 ### Function: Download Database
-add_action('init', 'download_database');
+add_action( 'init', 'download_database' );
 function download_database() {
-	if(isset($_POST['do']) && $_POST['do'] == __('Download', 'wp-dbmanager') && !empty($_POST['database_file'])) {
-		if(strpos($_SERVER['HTTP_REFERER'], admin_url('admin.php?page=wp-dbmanager/database-manage.php')) !== false) {
-			$database_file = trim($_POST['database_file']);
-			if(substr($database_file, strlen($database_file) - 4, 4) == '.sql' || substr($database_file, strlen($database_file) - 7, 7) == '.sql.gz') {
-				check_admin_referer('wp-dbmanager_manage');
-				$backup_options = get_option('dbmanager_options');
-				$clean_file_name = sanitize_file_name($database_file);
-				$clean_file_name = str_replace('sql_.gz', 'sql.gz', $clean_file_name);
-				$file_path = $backup_options['path'].'/'.$clean_file_name;
-				header("Pragma: public");
-				header("Expires: 0");
-				header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-				header("Content-Type: application/force-download");
-				header("Content-Type: application/octet-stream");
-				header("Content-Type: application/download");
-				header("Content-Disposition: attachment; filename=".basename($file_path).";");
-				header("Content-Transfer-Encoding: binary");
-				header("Content-Length: ".filesize($file_path));
-				@readfile($file_path);
-			}
+	if( isset( $_POST['do'] ) && $_POST['do'] === __( 'Download', 'wp-dbmanager' ) && ! empty( $_POST['database_file'] ) ) {
+		check_admin_referer( 'wp-dbmanager_manage' );
+		$database_file = trim( $_POST['database_file'] );
+		if( substr( $database_file, strlen( $database_file ) -4, 4 ) === '.sql' || substr( $database_file, strlen( $database_file ) -7, 7 ) === '.sql.gz' ) {
+			$backup_options = get_option( 'dbmanager_options' );
+			$clean_file_name = sanitize_file_name( $database_file );
+			$clean_file_name = str_replace( 'sql_.gz', 'sql.gz', $clean_file_name );
+			$file_path = $backup_options['path'].'/'.$clean_file_name;
+			header( 'Pragma: public' );
+			header( 'Expires: 0' );
+			header( 'Cache-Control: must-revalidate, post-check=0, pre-check=0' );
+			header( 'Content-Type: application/force-download' );
+			header( 'Content-Type: application/octet-stream' );
+			header( 'Content-Type: application/download' );
+			header( 'Content-Disposition: attachment; filename=' . basename( $file_path ) . ';' );
+			header( 'Content-Transfer-Encoding: binary' );
+			header( 'Content-Length: '.filesize( $file_path ) );
+			@readfile( $file_path );
 		}
 		exit();
 	}
