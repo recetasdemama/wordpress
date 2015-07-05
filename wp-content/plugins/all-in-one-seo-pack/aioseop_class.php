@@ -49,7 +49,7 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 	var $meta_opts = false;
 	var $is_front_page = null;
  	
-	function All_in_One_SEO_Pack() {
+	function __construct() {
 		global $aioseop_options;
 		$this->log_file = dirname( __FILE__ ) . '/all_in_one_seo_pack.log';
 	
@@ -67,6 +67,7 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 		$this->option_name = 'aioseop_options';
 		$this->store_option = true;
 		$this->file = __FILE__;								// the current file
+		$blog_name = esc_attr( get_bloginfo( 'name' ) );
 		parent::__construct();
 		
 		$this->help_text = Array(
@@ -186,6 +187,7 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 			"google_enable_publisher"=> __( "This option allows you to control whether rel=\"publisher\" is displayed on the homepage of your site. Google recommends using this if the site is a business website.", 'all_in_one_seo_pack' ),
 			"google_specify_publisher"=> __( "The Google+ profile you enter here will appear on your homepage only as the rel=\"publisher\" tag. It is recommended that the URL you enter here should be the Google+ profile for your business.", 'all_in_one_seo_pack' ),
 			"google_sitelinks_search"=> __( "Add markup to display the Google Sitelinks Search Box next to your search results in Google.", 'all_in_one_seo_pack' ),
+			"google_set_site_name"   => __( "Add markup to tell Google the preferred name for your website.", 'all_in_one_seo_pack' ),
 			"google_connect"		=> __( "Press the connect button to connect with Google Analytics; or if already connected, press the disconnect button to disable and remove any stored analytics credentials.", 'all_in_one_seo_pack' ),
 			"google_analytics_id"	=> __( "Enter your Google Analytics ID here to track visitor behavior on your site using Google Analytics.", 'all_in_one_seo_pack' ),
 			"ga_use_universal_analytics" => __( "Use the new Universal Analytics tracking code for Google Analytics.", 'all_in_one_seo_pack' ),
@@ -207,6 +209,7 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 			"tags_noindex"			=> __( "Check this to ask search engines not to index Tag Archives. Useful for avoiding duplicate content.", 'all_in_one_seo_pack' ),
 			"search_noindex"		=> 	__( "Check this to ask search engines not to index the Search page. Useful for avoiding duplicate content.", 'all_in_one_seo_pack' ),
 			"404_noindex"		=> 	__( "Check this to ask search engines not to index the 404 page.", 'all_in_one_seo_pack' ),
+			"tax_noindex"			=> __( "Check this to ask search engines not to index custom Taxonomy archive pages. Useful for avoiding duplicate content.", 'all_in_one_seo_pack' ),
 			"paginated_noindex"		=> 	__( "Check this to ask search engines not to index paginated pages/posts. Useful for avoiding duplicate content.", 'all_in_one_seo_pack' ),
 			"paginated_nofollow"		=> 	__( "Check this to ask search engines not to follow links from paginated pages/posts. Useful for avoiding duplicate content.", 'all_in_one_seo_pack' ),
 			'noodp'			 	 => __( 'Check this box to ask search engines not to use descriptions from the Open Directory Project for your entire site.', 'all_in_one_seo_pack' ),
@@ -243,6 +246,7 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 			'dynamic_postspage_keywords' => '#dynamically-generate-keywords-for-posts-page',
 			'rewrite_titles' => '#rewrite-titles',
 			'cap_titles' => '#capitalize-titles',
+			'home_page_title_format' => '#title-format-fields',
 			'page_title_format' => '#title-format-fields',
 			'post_title_format' => '#title-format-fields',
 			'category_title_format' => '#title-format-fields',
@@ -509,6 +513,15 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 			"google_sitelinks_search" => Array(
 					'name' => __( 'Display Sitelinks Search Box:', 'all_in_one_seo_pack' )
 			),
+			"google_set_site_name" => Array(
+					'name' => __( 'Set Preferred Site Name:', 'all_in_one_seo_pack' )
+			),
+			"google_specify_site_name" => Array(
+					'name' => __( 'Specify A Preferred Name:', 'all_in_one_seo_pack' ),
+					'type' => 'text',
+					'placeholder' => $blog_name,
+					'condshow' => Array( 'aiosp_google_set_site_name' => 'on' )
+			),
 			"google_author_advanced" => Array(
 					'name' => __( 'Advanced Authorship Options:', 'all_in_one_seo_pack' ), 
 					'default' => 0, 'type' => 'radio',
@@ -531,8 +544,7 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 					'name' => __( 'Specify Publisher URL:', 'all_in_one_seo_pack' ), 'type' => 'text',
 					'condshow' => Array( 'aiosp_google_author_advanced' => 'on', 'aiosp_google_enable_publisher' => 'on' )
 				),
-			"google_connect"=>Array( 'name' => __( 'Connect With Google Analytics', 'all_in_one_seo_pack' ), 
-				),
+//			"google_connect"=>Array( 'name' => __( 'Connect With Google Analytics', 'all_in_one_seo_pack' ), ),
 			"google_analytics_id"=> Array(
 				'name' => __( 'Google Analytics ID:', 'all_in_one_seo_pack' ),
 				'default' => null, 'type' => 'text', 'placeholder' => 'UA-########-#' ),
@@ -613,6 +625,11 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 			"404_noindex"=> Array(
 				'name' => __( 'Use noindex for the 404 page:', 'all_in_one_seo_pack' ),
 				'default' => 0),
+			"tax_noindex"=> Array(
+				'name' => __( 'Use noindex for Taxonomy Archives:', 'all_in_one_seo_pack' ),
+				'type' => 'multicheckbox', 'default' => array(),
+				'condshow' => Array( 'aiosp_enablecpost' => 'on', 'aiosp_cpostadvanced' => 'on' )
+				),
 			"paginated_noindex"	=> Array(
 				'name' => __( 'Use noindex for paginated pages/posts:', 'all_in_one_seo_pack' ),
 				'default' => 0),
@@ -752,14 +769,14 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 				'google' => Array(
 						'name' => __( 'Google Settings', 'all_in_one_seo_pack' ),
 						'help_link' => 'http://semperplugins.com/documentation/google-settings/',
-						'options' => Array( "google_publisher", "google_disable_profile", "google_sitelinks_search", "google_author_advanced", "google_author_location", "google_enable_publisher" , "google_specify_publisher",
-											"google_connect", 
+						'options' => Array( "google_publisher", "google_disable_profile", "google_sitelinks_search", "google_set_site_name", "google_specify_site_name", "google_author_advanced", "google_author_location", "google_enable_publisher" , "google_specify_publisher",
+										//	"google_connect", 
 											"google_analytics_id", "ga_use_universal_analytics", "ga_advanced_options", "ga_domain", "ga_multi_domain", "ga_addl_domains", "ga_anonymize_ip", "ga_display_advertising", "ga_exclude_users", "ga_track_outbound_links", "ga_link_attribution", "ga_enhanced_ecommerce" )
 					),
 				'noindex' => Array(
 						'name' => __( 'Noindex Settings', 'all_in_one_seo_pack' ),
 						'help_link' => 'http://semperplugins.com/documentation/noindex-settings/',
-						'options' => Array( 'cpostnoindex', 'cpostnofollow', 'cpostnoodp', 'cpostnoydir', 'category_noindex', 'archive_date_noindex', 'archive_author_noindex', 'tags_noindex', 'search_noindex', '404_noindex', 'paginated_noindex', 'paginated_nofollow', 'noodp', 'noydir' )						
+						'options' => Array( 'cpostnoindex', 'cpostnofollow', 'cpostnoodp', 'cpostnoydir', 'category_noindex', 'archive_date_noindex', 'archive_author_noindex', 'tags_noindex', 'search_noindex', '404_noindex', 'tax_noindex', 'paginated_noindex', 'paginated_nofollow', 'noodp', 'noydir' )						
 					),
 				'advanced' => Array(
 						'name' => __( 'Advanced Settings', 'all_in_one_seo_pack' ),
@@ -1032,7 +1049,7 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 	}
 	
 	function add_page_hooks() {
-		$this->oauth_init();
+//		$this->oauth_init();
 		$post_objs = get_post_types( '', 'objects' );
 		$pt = array_keys( $post_objs );
 		$rempost = array( 'revision', 'nav_menu_item' );
@@ -1044,6 +1061,16 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 			else
 				$post_types[$p] = $p;
 		}
+		$taxes = get_taxonomies( '', 'objects' );
+		$tx = array_keys( $taxes );
+		$remtax = array( 'nav_menu', 'link_category', 'post_format' );
+		$tx = array_diff( $tx, $remtax );
+		$tax_types = Array();
+		foreach( $tx as $t )
+			if ( !empty( $taxes[$t]->label ) )
+				$tax_types[$t] = $taxes[$t]->label;
+			else
+				$taxes[$t] = $t;
 		$this->default_options["posttypecolumns"]['initial_options'] = $post_types;
 		$this->default_options["cpostactive"]['initial_options'] = $post_types;
 		$this->default_options["cpostnoindex"]['initial_options'] = $post_types;
@@ -1067,7 +1094,12 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 				$this->help_text[$field] = __( 'The following macros are supported:', 'all_in_one_seo_pack' )
 					. '<ul><li>' . __( '%blog_title% - Your blog title', 'all_in_one_seo_pack' ) . '</li><li>' . 
 					__( '%blog_description% - Your blog description', 'all_in_one_seo_pack' ) . '</li><li>' . 
-					__( '%post_title% - The original title of the post', 'all_in_one_seo_pack' ) . '</li><li>' . 
+					__( '%post_title% - The original title of the post.', 'all_in_one_seo_pack' ) . '</li><li>';
+				$taxes = get_object_taxonomies( $p, 'objects' );
+				if ( !empty( $taxes ) )
+					foreach( $taxes as $n => $t )
+						$this->help_text[$field] .= sprintf( __( "%%tax_%s%% - This post's associated %s taxnomy title", 'all_in_one_seo_pack' ), $n, $t->label ) . '</li><li>';
+				$this->help_text[$field] .= 
 					__( "%post_author_login% - This post's author' login", 'all_in_one_seo_pack' ) . '</li><li>' . 
 					__( "%post_author_nicename% - This post's author' nicename", 'all_in_one_seo_pack' ) . '</li><li>' . 
 					__( "%post_author_firstname% - This post's author' first name (capitalized)", 'all_in_one_seo_pack' ) . '</li><li>' . 
@@ -1085,6 +1117,11 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 		ksort( $role_names );
 		$this->default_options["ga_exclude_users"]['initial_options'] = $role_names;
         
+		unset( $tax_types['category'] );
+		unset( $tax_types['post_tag'] );
+		$this->default_options["tax_noindex"]['initial_options'] = $tax_types;
+		if ( empty( $tax_types ) )
+			unset( $this->default_options["tax_noindex"] );
 		$this->setting_options();
 		$this->add_help_text_links();
 		add_filter( "{$this->prefix}display_options", Array( $this, 'filter_options' ), 10, 2 );
@@ -1258,8 +1295,8 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 		switch ( $meta['id'] ) {
 			case "aioseop-about":
 				?><div class="aioseop_metabox_text">
-							<p><h2 style="display:inline;"><?php echo AIOSEOP_PLUGIN_NAME; ?></h2> by Michael Torbert of <a target="_blank" title="Semper Fi Web Design"
-							href="http://semperfiwebdesign.com/">Semper Fi Web Design</a>.</p>
+							<p><h2 style="display:inline;"><?php echo AIOSEOP_PLUGIN_NAME; ?></h2><?php sprintf( __( "by %s of %s.", 'all_in_one_seo_pack' ), 'Michael Torbert', '<a target="_blank" title="Semper Fi Web Design"
+							href="http://semperfiwebdesign.com/">Semper Fi Web Design</a>' ); ?>.</p>
 							<?php
 							global $current_user;
 							$user_id = $current_user->ID;
@@ -1478,6 +1515,11 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 				$this->log( "another plugin interfering?" );
 				// if we get here there *could* be trouble with another plugin :(
 				$this->ob_start_detected = true;
+				if ( $this->option_isset( "rewrite_titles" ) ) { // try alternate method -- pdb
+					$aioseop_options['aiosp_rewrite_titles'] = 0;
+					$force_rewrites = 0;
+					add_filter( 'wp_title', array( $this, 'wp_title' ), 20 );
+				}
 				if ( function_exists( 'ob_list_handlers' ) ) {
 					foreach ( ob_list_handlers() as $handler ) {
 						$this->log( "detected output handler $handler" );
@@ -1573,8 +1615,9 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 			$author = $googleplus;
 		else if ( !empty( $aioseop_options['aiosp_google_publisher'] ) )
 			$author = $aioseop_options['aiosp_google_publisher'];
-			
 		if ( !empty( $aioseop_options['aiosp_google_author_advanced'] ) && isset( $aioseop_options['aiosp_google_author_location'] ) ) {
+			if ( empty( $aioseop_options['aiosp_google_author_location'] ) )
+				$aioseop_options['aiosp_google_author_location'] = Array();
 			if ( is_front_page() && !in_array( 'front', $aioseop_options['aiosp_google_author_location'] ) ) {
 				$author = '';
 			} else {
@@ -1595,8 +1638,11 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 		global $aioseop_options;
 		$opts = $this->meta_opts;
 		$page = $this->get_page_number();
-		$robots_meta = '';
-				
+		$robots_meta = $tax_noindex = '';
+		if ( isset( $aioseop_options['aiosp_tax_noindex'] ) ) $tax_noindex = $aioseop_options['aiosp_tax_noindex'];
+		
+		if ( empty( $tax_noindex ) || !is_array( $tax_noindex) ) $tax_noindex = Array();
+								
 		$aiosp_noindex = $aiosp_nofollow = $aiosp_noodp = $aiosp_noydir = '';
 		$noindex = "index";
 		$nofollow = "follow";
@@ -1604,7 +1650,8 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 			&& ( ( is_date() && !empty( $aioseop_options['aiosp_archive_date_noindex'] ) ) || ( is_author() && !empty( $aioseop_options['aiosp_archive_author_noindex'] ) ) ) ) 
 			|| ( is_tag() && !empty( $aioseop_options['aiosp_tags_noindex'] ) ) 
 			|| ( is_search() && !empty( $aioseop_options['aiosp_search_noindex'] ) )
-			|| ( is_404() && !empty( $aioseop_options['aiosp_404_noindex'] ) ) ) {
+		 	|| ( is_404() && !empty( $aioseop_options['aiosp_404_noindex'] ) )
+			|| ( is_tax() && in_array( get_query_var( 'taxonomy' ), $tax_noindex ) ) ) {
 				$noindex = 'noindex';
 		} elseif ( ( is_single() || is_page() || $this->is_static_posts_page() || is_attachment() || ( $page > 1 ) ) ) {
 			$post_type = get_post_type();
@@ -1794,7 +1841,7 @@ class All_in_One_SEO_Pack extends All_in_One_SEO_Pack_Module {
 						$meta_string .= '<meta name="' . $v . '" content="' . trim( strip_tags( $aioseop_options["aiosp_{$k}_verify"] ) ) . '" />' . "\n";
 				
 				// sitelinks search
-				if ( !empty( $aioseop_options["aiosp_google_sitelinks_search"] ) )
+				if ( !empty( $aioseop_options["aiosp_google_sitelinks_search"] ) || !empty( $aioseop_options["aiosp_google_set_site_name"] ) )
 					$meta_string .= $this->sitelinks_search_box() . "\n";
 			}
 			// handle extra meta fields
@@ -2280,18 +2327,41 @@ function aiosp_google_analytics() {
 }
 
 	function sitelinks_search_box() {
-		$home_url = get_home_url();
+		global $aioseop_options;
+		$home_url = esc_url( get_home_url() );
+		$name_block = $search_block = '';
+		if ( !empty( $aioseop_options["aiosp_google_set_site_name"] ) ) {
+			if ( !empty( $aioseop_options["aiosp_google_specify_site_name"] ) ) {
+				$blog_name = $aioseop_options["aiosp_google_specify_site_name"];
+			} else {
+				$blog_name = get_bloginfo( 'name' );
+			}
+			$blog_name = esc_attr( $blog_name );
+			$name_block=<<<EOF
+		  "name": "{$blog_name}",
+EOF;
+		}
+
+		if ( !empty( $aioseop_options["aiosp_google_sitelinks_search"] ) ) {
+			$search_block=<<<EOF
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "{$home_url}/?s={search_term}",
+          "query-input": "required name=search_term"
+        }
+EOF;
+		}
+
 		$search_box=<<<EOF
 <script type="application/ld+json">
         {
           "@context": "http://schema.org",
           "@type": "WebSite",
           "url": "{$home_url}/",
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": "{$home_url}/?s={search_term}",
-            "query-input": "required name=search_term"
-          }
+EOF;
+		if ( !empty( $name_block ) )   $search_box .= $name_block;
+		if ( !empty( $search_block ) ) $search_box .= $search_block;
+		$search_box.=<<<EOF
         }
 </script>
 EOF;
@@ -2416,9 +2486,9 @@ EOF;
 	function get_post_description( $post ) {
 		global $aioseop_options;
 		$description = '';
-		if ( !$this->show_page_description() )
-			return '';
-		
+		if ( !$this->show_page_description() ) {
+			return '';			
+		}
 	    $description = trim( stripslashes( $this->internationalize( get_post_meta( $post->ID, "_aioseop_description", true ) ) ) );
 		if ( !empty( $post ) && post_password_required( $post ) ) {
 			return $description;
@@ -2679,45 +2749,58 @@ EOF;
 		return $title;
 	}
 	
-	function apply_post_title_format( $title, $category = '', $p = null ) {
-		if ( $p === null ) {
-			global $post;			
-		} else {
-			$post = $p;
-		}
-		$title_format = $this->get_post_title_format( 'post', $p );
+	function title_placeholder_helper( $title, $post, $type = 'post', $title_format = '', $category = '' ) {
 		if ( !empty( $post ) )
 			$authordata = get_userdata( $post->post_author );
 		else
 			$authordata = new WP_User();
-		$r_title = array( '%blog_title%', '%blog_description%', '%post_title%', '%category%', '%category_title%', '%post_author_login%', '%post_author_nicename%', '%post_author_firstname%', '%post_author_lastname%' );
-		$d_title = array( $this->internationalize( get_bloginfo('name') ), $this->internationalize( get_bloginfo( 'description' ) ), $title, $category, $category, $authordata->user_login, $authordata->user_nicename, $this->ucwords( $authordata->first_name ), $this->ucwords( $authordata->last_name ) );
-		$title = trim( str_replace( $r_title, $d_title, $title_format ) );
+		$new_title = str_replace( "%blog_title%", $this->internationalize( get_bloginfo( 'name' ) ), $title_format );
+        if ( strpos( $new_title, "%blog_description%"			) !== false ) $new_title = str_replace( "%blog_description%", $this->internationalize( get_bloginfo( 'description' ) ), $new_title );
+        if ( strpos( $new_title, "%{$type}_title%"				) !== false ) $new_title = str_replace( "%{$type}_title%", $title, $new_title );
+		if ( $type == 'post' ) {
+	        if ( strpos( $new_title, "%category%"				) !== false ) $new_title = str_replace( "%category%", $category, $new_title );
+	        if ( strpos( $new_title, "%category_title%"			) !== false ) $new_title = str_replace( "%category_title%", $category, $new_title );
+			if ( strpos( $new_title, "%tax_" ) && !empty( $post ) ) {
+				$taxes = get_object_taxonomies( $post, 'objects' );
+				if ( !empty( $taxes ) )
+					foreach( $taxes as $t )
+						if ( strpos( $new_title, "%tax_{$t->name}%" ) ) {
+							$terms = $this->get_all_terms( $post->ID, $t->name );
+							$term = '';
+							if ( count( $terms ) > 0 )
+								$term = $terms[0];
+							$new_title = str_replace( "%tax_{$t->name}%", $term, $new_title );
+						}
+			}
+		}
+        if ( strpos( $new_title, "%{$type}_author_login%"		) !== false ) $new_title = str_replace( "%{$type}_author_login%", $authordata->user_login, $new_title );
+        if ( strpos( $new_title, "%{$type}_author_nicename%"	) !== false ) $new_title = str_replace( "%{$type}_author_nicename%", $authordata->user_nicename, $new_title );
+        if ( strpos( $new_title, "%{$type}_author_firstname%"	) !== false ) $new_title = str_replace( "%{$type}_author_firstname%", $this->ucwords($authordata->first_name ), $new_title );
+        if ( strpos( $new_title, "%{$type}_author_lastname%"	) !== false ) $new_title = str_replace( "%{$type}_author_lastname%", $this->ucwords($authordata->last_name ), $new_title );
+		$title = trim( $new_title );
 		return $title;
+	}
+	
+	function apply_post_title_format( $title, $category = '', $p = null ) {
+		if ( $p === null ) {
+			global $post;
+		} else {
+			$post = $p;
+		}
+		$title_format = $this->get_post_title_format( 'post', $post );		
+		return $this->title_placeholder_helper( $title, $post, 'post', $title_format, $category );
 	}
 	
 	function apply_page_title_format( $title, $p = null, $title_format = '' ) {
 		global $aioseop_options;
 		if ( $p === null ) {
-			global $post;			
+			global $post;
 		} else {
 			$post = $p;
 		}
 		if ( empty( $title_format ) )
 			$title_format = $aioseop_options['aiosp_page_title_format'];
-		if ( !empty( $post ) )
-			$authordata = get_userdata( $post->post_author );
-		else
-			$authordata = new WP_User();
-        $new_title = str_replace( '%blog_title%', $this->internationalize( get_bloginfo( 'name' ) ), $title_format );
-        if ( strpos( $new_title, '%blog_description%'	   ) !== false ) $new_title = str_replace( '%blog_description%', $this->internationalize( get_bloginfo( 'description' ) ), $new_title );
-        if ( strpos( $new_title, '%page_title%'			   ) !== false ) $new_title = str_replace( '%page_title%', $title, $new_title );
-        if ( strpos( $new_title, '%page_author_login%'	   ) !== false ) $new_title = str_replace( '%page_author_login%', $authordata->user_login, $new_title );
-        if ( strpos( $new_title, '%page_author_nicename%'  ) !== false ) $new_title = str_replace( '%page_author_nicename%', $authordata->user_nicename, $new_title );
-        if ( strpos( $new_title, '%page_author_firstname%' ) !== false ) $new_title = str_replace( '%page_author_firstname%', $this->ucwords($authordata->first_name ), $new_title );
-        if ( strpos( $new_title, '%page_author_lastname%'  ) !== false ) $new_title = str_replace( '%page_author_lastname%', $this->ucwords($authordata->last_name ), $new_title );
-		$title = trim( $new_title );
-		return $title;
+		return $this->title_placeholder_helper( $title, $post, 'page', $title_format );
 	}
 
 	/*** Gets the title that will be used by AIOSEOP for title rewrites or returns false. ***/
@@ -3036,6 +3119,15 @@ EOF;
 		return $keywords;
 	}
 	
+	function get_all_terms( $id, $taxnomy ) {
+		$keywords = Array();
+		$terms = get_the_terms( $id, $taxnomy );
+		if ( !empty( $terms ) )
+			foreach ( $terms as $term )
+				$keywords[] = $this->internationalize( $term->name );
+        return $keywords;
+	}
+		
 	/**
 	 * @return comma-separated list of unique keywords
 	 */
@@ -3269,17 +3361,15 @@ EOF;
 					unset( $this->pointers[$k] );
 		
 		$this->filter_pointers();
-		
 		if ( !empty( $this->options['aiosp_enablecpost'] ) && $this->options['aiosp_enablecpost'] ) {
-			if ( !empty( $this->options['aiosp_cpostadvanced'] ) ) {
+			if ( !empty( $this->options['aiosp_cpostactive'] ) ) {
 				$this->locations['aiosp']['display'] = $this->options['aiosp_cpostactive'];
 			} else {
-				$this->locations['aiosp']['display'] = get_post_types( '', 'names' );
+				$this->locations['aiosp']['display'] = Array();
 			}
 		} else {
 			$this->locations['aiosp']['display'] = Array( 'post', 'page' );
 		}
-		
 		if ( $custom_menu_order )
 			add_menu_page( $menu_name, $menu_name, 'manage_options', $file, Array( $this, 'display_settings_page' ) );
 		else
@@ -3293,7 +3383,6 @@ EOF;
 		do_action( 'aioseop_modules_add_menus', $file );
 
 		$metaboxes = apply_filters( 'aioseop_add_post_metabox', Array() );
-
 		if ( !empty( $metaboxes ) ) {
 			if ( $this->tabbed_metaboxes ) {
 				$tabs = Array();
@@ -3405,7 +3494,11 @@ EOF;
 				//]]>
 			</script>
 		<div class="aioseop_advert aioseop_nopad">
-			<a href="https://wp.wincher.com/v1/link" target="_blank"><img src="<?php echo AIOSEOP_PLUGIN_IMAGES_URL; ?>wincherbanner.png"></a>
+			<a href="https://secure1.inmotionhosting.com/cgi-bin/gby/clickthru.cgi?id=internalsemperfi&page=3000" target="_blank"><img src="<?php echo AIOSEOP_PLUGIN_IMAGES_URL; ?>inmotion.gif"></a>
+		</div>
+		<div class="aioseop_advert aioseop_nopad_all">
+				<?php $adid = mt_rand( 1, 4 ); ?>
+				<a href="https://www.wincher.com/?referer=all-in-one-seo-pack&adreferer=banner<?php echo $adid; ?>" target="_blank"><div class=wincherad id=wincher<?php echo $adid; ?>></div></a>
 		</div>
 		<!-- Headway Themes-->
 		<div class="aioseop_advert">

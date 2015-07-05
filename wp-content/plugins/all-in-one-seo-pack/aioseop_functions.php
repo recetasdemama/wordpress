@@ -189,6 +189,11 @@ if ( !function_exists( 'aioseop_admin_head' ) ) {
 		td.seokeywords.column-seokeywords {
 			overflow: visible;
 		}
+		@media screen and (max-width: 782px) {
+			body.wp-admin th.column-seotitle, th.column-seodesc, th.column-seokeywords, td.seotitle.column-seotitle, td.seodesc.column-seodesc, td.seokeywords.column-seokeywords {
+			  display: none;
+			}
+		}
 		</style>
 		<?php wp_print_scripts( Array( 'sack' ) );
 		?><script type="text/javascript">
@@ -284,12 +289,14 @@ if ( !function_exists( 'aioseop_ajax_save_meta' ) ) {
 
 if ( !function_exists( 'aioseop_ajax_init' ) ) {
 	function aioseop_ajax_init() {
-		if ( !empty( $_POST ) && !empty( $_POST['settings'] ) && !empty( $_POST['nonce-aioseop']) && !empty( $_POST['options'] ) ) {
+		if ( !empty( $_POST ) && !empty( $_POST['settings'] ) && (!empty( $_POST['nonce-aioseop'])||(!empty( $_POST['nonce-aioseop-edit']))) && !empty( $_POST['options'] ) ) {
 			$_POST = stripslashes_deep( $_POST );
 			$settings = esc_attr( $_POST['settings'] );
 			if ( ! defined( 'AIOSEOP_AJAX_MSG_TMPL' ) )
 			    define( 'AIOSEOP_AJAX_MSG_TMPL', "jQuery('div#aiosp_$settings').fadeOut('fast', function(){jQuery('div#aiosp_$settings').html('%s').fadeIn('fast');});" );
-			if ( !wp_verify_nonce($_POST['nonce-aioseop'], 'aioseop-nonce') ) die( sprintf( AIOSEOP_AJAX_MSG_TMPL, __( "Unauthorized access; try reloading the page.", 'all_in_one_seo_pack' ) ) );
+
+			if ( !wp_verify_nonce($_POST['nonce-aioseop'], 'aioseop-nonce') )
+				die( sprintf( AIOSEOP_AJAX_MSG_TMPL, __( "Unauthorized access; try reloading the page.", 'all_in_one_seo_pack' ) ) );				
 		} else {
 			die(0);
 		}
