@@ -3,8 +3,8 @@ Contributors: dfactory
 Donate link: http://www.dfactory.eu/
 Tags: image, images, picture, photo, watermark, watermarking, protection, image protection, image security, plugin
 Requires at least: 3.5
-Tested up to: 4.1
-Stable tag: 1.4.1
+Tested up to: 4.2.2
+Stable tag: 1.5.0
 License: MIT License
 License URI: http://opensource.org/licenses/MIT
 
@@ -43,7 +43,6 @@ For more information, check out plugin page at [dFactory](http://www.dfactory.eu
 * Polish - by Bartosz Arendt
 * Russian - by [Sly](http://wpguru.ru)
 
-
 == Installation ==
 
 1. Install Image Watermark either via the WordPress.org plugin directory, or by uploading the files to your server
@@ -61,6 +60,11 @@ No questions yet.
 2. screenshot-2.png
 
 == Changelog ==
+
+= 1.5.0 =
+* Tweak: Plugins setting adjusted to WP settings API
+* Tweak: General code cleanup
+* Tweak: Added Media Library bulk watermarking notice
 
 = 1.4.1 =
 * New: Hungarian translation, thanks to Meszaros Tamas
@@ -139,5 +143,7 @@ Initial release
 
 == Upgrade Notice ==
 
-= 1.4.1 =
-* New: Hungarian translation, thanks to Meszaros Tamas
+= 1.5.0 =
+* Tweak: Plugins setting adjusted to WP settings API
+* Tweak: General code cleanup
+* Tweak: Added Media Library bulk watermarking notice
