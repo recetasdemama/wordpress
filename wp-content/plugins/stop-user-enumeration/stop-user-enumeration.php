@@ -3,7 +3,7 @@
 Plugin Name: Stop User Enumeration
 Plugin URI: http://locally.uk/wordpress-plugins/stop-user-enumeration/
 Description: User enumeration is a technique used by hackers to get your login name if you are using permalinks. This plugin stops that.
-Version: 1.3.1
+Version: 1.3.3
 Author: Locally Digital Ltd
 Author URI: http://locally.uk
 License: GPLv2 or later
@@ -42,18 +42,26 @@ if ( ! is_admin()){
 
 add_filter('redirect_canonical','ll_detect_enumeration', 10,2);
 function ll_detect_enumeration ($redirect_url, $requested_url) {
-if (preg_match('/\?author(%00[0%]*)?=([0-9]*)(\/*)/', $requested_url)===1  | ($_POST['author'])) {
+if (preg_match('/\?author(%00[0%]*)?=([0-9]*)(\/*)/', $requested_url)===1  | isset($_POST['author']) ) {
      ll_kill_enumeration();
    } else {
      return $redirect_url;
    }
-} 
+}
 
 function ll_kill_enumeration() {
      openlog('wordpress('.$_SERVER['HTTP_HOST'].')',LOG_NDELAY|LOG_PID,LOG_AUTH);
      syslog(LOG_INFO,"Attempted user enumeration from {$_SERVER['REMOTE_ADDR']}");
      closelog();
      wp_die('forbidden');
+}
+add_action('plugin_row_meta', 'sue_plugin_row_meta', 10, 2 );
+
+function sue_plugin_row_meta( $links, $file = '' ){
+    if( false !== strpos($file , '/stop-user-enumeration.php') ){
+        $links[] = '<a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4EMTVFMKXRRYY"><strong>Donate</strong></a>';
+      }
+    return $links;
 }
 
 ?>
