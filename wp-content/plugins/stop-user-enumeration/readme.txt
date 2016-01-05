@@ -1,10 +1,9 @@
 === Stop User Enumeration ===
-Contributors: Locally Digital Ltd
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZEWW5LKK5995J
+Contributors: fullworks
 Tags: User Enumeration, Security, WPSCAN, fail2ban
 Requires at least: 3.4
-Tested up to: 4.0.1
-Stable tag: 1.3.1
+Tested up to: 4.3.1
+Stable tag: 1.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,11 +39,14 @@ bantime = 2500000`
 Adjusted to your own requirements.
 
 == Changelog ==
-= 
-= 1.3.0 =
+=
+= 1.3.3 =
 
-* minor descriptive change
-= 1.3.0 =
+* Correct issue of undefined index in certain conditions
+= 1.3.2 =
+
+* Added donate link to plugin listing
+= 1.3.1 =
 
 * code improvement  from Thomas van der Westen
 
@@ -98,8 +100,3 @@ Adjusted to your own requirements.
 *  first release
 
 == Upgrade notice ==
-
-
-
-
-
