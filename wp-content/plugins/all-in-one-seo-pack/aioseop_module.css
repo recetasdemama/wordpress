@@ -118,7 +118,7 @@ div.aioseop_tip_icon:before {
 	color: #5F5F5F;
 	font-weight: bold;
 	line-height: 19px;
-	padding-left: 20px;
+	padding-left: 10px; /*changed from 20px to 10px for certain language support*/
 	display: inline-block;
 	text-align: left;
 	position: absolute;
@@ -216,6 +216,12 @@ div.aioseop_tip_icon:before {
 	width: 423px;
 }
 
+.headwaythemes {
+	background-color: #FFFFFF;
+	padding-bottom: 110px;
+	height: 125px;
+}
+
 .aioseop_nopad {
 	padding-left: 0px;
 	padding-top: 0px;
@@ -241,18 +247,31 @@ div.aioseop_tip_icon:before {
   margin-bottom: 0px;
   border: none;
 }
-#wincher1 {
-	background-image: url(images/wincher1.png);
+/*
+#wincher11 {
+	background-image: url(images/banner11.png);
 }
-#wincher2 {
-	background-image: url(images/wincher2.jpg);
+#wincher12 {
+	background-image: url(images/banner12.png);
 }
-#wincher3 {
-	background-image: url(images/wincher3.png);
+#wincher13 {
+	background-image: url(images/banner13.png);
 }
-#wincher4 {
-	background-image: url(images/wincher4.png);
+#wincher14 {
+	background-image: url(images/banner14.png);
 }
+#wincher15 {
+	background-image: url(images/banner15.png);
+}
+*/
+#wincher21 {
+	background-image: url(images/banner21.jpg);
+}
+#wincher22 {
+	background-image: url(images/banner22.jpg);
+}
+}
+
 .aioseop_content {
 	min-width: 760px;
 	clear: left;
@@ -266,6 +285,9 @@ div.aioseop_tip_icon:before {
 	padding: 7px 10px;
 	margin: 0;
 	line-height: 1;
+}
+.aioseop_options_wrapper .submit input.button-primary {
+	margin-bottom: 5px;
 }
 #aiosp_feature_manager_metabox.postbox {
 	margin-top: 20px;
@@ -328,6 +350,7 @@ div.aioseop_tip_icon:before {
 	max-width: 270px;
 	padding-top: 3px;
 	padding-bottom: 3px;
+	height:67px !important; /*added for certain language support*/
 }
 .aioseop_metabox_text h2 {
 	font-size: 14px;
