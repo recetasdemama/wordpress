@@ -3,7 +3,7 @@
 Plugin Name: WP-DBManager
 Plugin URI: http://lesterchan.net/portfolio/programming/php/
 Description: Manages your WordPress database. Allows you to optimize database, repair database, backup database, restore database, delete backup database , drop/empty tables and run selected queries. Supports automatic scheduling of backing up, optimizing and repairing of database.
-Version: 2.77
+Version: 2.78
 Author: Lester 'GaMerZ' Chan
 Author URI: http://lesterchan.net
 Text Domain: wp-dbmanager
@@ -86,12 +86,12 @@ function cron_dbmanager_backup() {
 			$backup['filename'] = $backup['date'].'_-_'.DB_NAME.'.sql.gz';
 			$backup['filepath'] = $backup['path'].'/'.$backup['filename'];
 			do_action( 'wp_dbmanager_before_escapeshellcmd' );
-			$backup['command'] = escapeshellcmd( $brace . $backup['mysqldumppath'] . $brace ) . ' --force --host=' . escapeshellarg( $backup['host'] ).' --user=' . escapeshellarg( DB_USER ) . ' --password=' . escapeshellarg( DB_PASSWORD ) . $backup['port'] . $backup['sock'] . ' --add-drop-table --skip-lock-tables ' . DB_NAME . ' | gzip > '.escapeshellcmd( $brace . $backup['filepath'] . $brace );
+			$backup['command'] = $brace . escapeshellcmd( $backup['mysqldumppath'] ) . $brace . ' --force --host=' . escapeshellarg( $backup['host'] ).' --user=' . escapeshellarg( DB_USER ) . ' --password=' . escapeshellarg( DB_PASSWORD ) . $backup['port'] . $backup['sock'] . ' --add-drop-table --skip-lock-tables ' . DB_NAME . ' | gzip > '. $brace . escapeshellcmd( $backup['filepath'] ) . $brace;
 		} else {
 			$backup['filename'] = $backup['date'].'_-_'.DB_NAME.'.sql';
 			$backup['filepath'] = $backup['path'].'/'.$backup['filename'];
 			do_action( 'wp_dbmanager_before_escapeshellcmd' );
-			$backup['command'] = escapeshellcmd( $brace . $backup['mysqldumppath'] . $brace ) . ' --force --host=' . escapeshellarg( $backup['host'] ).' --user=' . escapeshellarg( DB_USER ). ' --password=' . escapeshellarg( DB_PASSWORD ) . $backup['port'] . $backup['sock'] . ' --add-drop-table --skip-lock-tables ' . DB_NAME . ' > '.escapeshellcmd( $brace . $backup['filepath'] . $brace );
+			$backup['command'] = $brace . escapeshellcmd( $backup['mysqldumppath'] ) . $brace . ' --force --host=' . escapeshellarg( $backup['host'] ).' --user=' . escapeshellarg( DB_USER ). ' --password=' . escapeshellarg( DB_PASSWORD ) . $backup['port'] . $backup['sock'] . ' --add-drop-table --skip-lock-tables ' . DB_NAME . ' > ' . $brace . escapeshellcmd( $backup['filepath'] ) . $brace;
 		}
 		execute_backup($backup['command']);
 		if( ! empty( $backup_email ) )
@@ -197,9 +197,9 @@ function detect_mysql() {
 	if(substr(PHP_OS,0,3) == 'WIN') {
 		$mysql_install = $wpdb->get_row("SHOW VARIABLES LIKE 'basedir'");
 		if($mysql_install) {
-			$install_path = str_replace('\\', '/', $mysql_install->Value);
-			$paths['mysql'] = $install_path.'/bin/mysql.exe';
-			$paths['mysqldump'] = $install_path.'/bin/mysqldump.exe';
+			$install_path = trailingslashit( str_replace('\\', '/', $mysql_install->Value) );
+			$paths['mysql'] = $install_path.'bin/mysql.exe';
+			$paths['mysqldump'] = $install_path.'bin/mysqldump.exe';
 		} else {
 			$paths['mysql'] = 'mysql.exe';
 			$paths['mysqldump'] = 'mysqldump.exe';
@@ -466,24 +466,21 @@ function dbmanager_create_backup_folder() {
 	}
 
 	// Create Backup Folder
-	if( is_dir( $backup_path ) && wp_is_writable( $backup_path ) )
-	{
-		if( wp_mkdir_p( $backup_path ) )
-		{
-			if( is_iis() ) {
-				if ( ! is_file( $backup_path . '/Web.config' ) ) {
-					@copy( $plugin_path . 'Web.config.txt', $backup_path . '/Web.config' );
-				}
-			} else {
-				if( ! is_file( $backup_path . '/.htaccess' ) ) {
-					@copy( $plugin_path . 'htaccess.txt', $backup_path . '/.htaccess' );
-				}
+	wp_mkdir_p( $backup_path );
+	if( is_dir( $backup_path ) && wp_is_writable( $backup_path ) ) {
+		if( is_iis() ) {
+			if ( ! is_file( $backup_path . '/Web.config' ) ) {
+				@copy( $plugin_path . 'Web.config.txt', $backup_path . '/Web.config' );
 			}
-			if( ! is_file( $backup_path . '/index.php' ) ) {
-				@copy( $plugin_path . 'index.php', $backup_path . '/index.php' );
+		} else {
+			if( ! is_file( $backup_path . '/.htaccess' ) ) {
+				@copy( $plugin_path . 'htaccess.txt', $backup_path . '/.htaccess' );
 			}
-			@chmod( $backup_path, 0750 );
 		}
+		if( ! is_file( $backup_path . '/index.php' ) ) {
+			@copy( $plugin_path . 'index.php', $backup_path . '/index.php' );
+		}
+		@chmod( $backup_path, 0750 );
 	}
 }
 
@@ -641,7 +638,7 @@ function dbmanager_options() {
 			<tr>
 				<td valign="top"><strong><?php _e('Path To Backup:', 'wp-dbmanager'); ?></strong></td>
 				<td>
-					<input type="text" name="db_path" size="60" maxlength="100" value="<?php echo stripslashes($backup_options['path']); ?>" dir="ltr" />
+					<input type="text" name="db_path" size="60" maxlength="105" value="<?php echo stripslashes($backup_options['path']); ?>" dir="ltr" />
 					<p><?php _e('The absolute path to your database backup folder without trailing slash. Make sure the folder is writable.', 'wp-dbmanager'); ?></p>
 				</td>
 			</tr>
