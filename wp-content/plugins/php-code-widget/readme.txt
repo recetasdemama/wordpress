@@ -3,8 +3,8 @@ Contributors: Otto42
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=otto%40ottodestruct%2ecom
 Tags: php, widget, execphp
 Requires at least: 2.8
-Tested up to: 3.7
-Stable tag: 2.2
+Tested up to: 4.3
+Stable tag: 2.3
 License: GPLv2
 License URI: http://www.opensource.org/licenses/GPL-2.0
 
@@ -44,6 +44,9 @@ Code in a template runs in the global context. Code in the widget will run in a 
 2. The output of the widget on the site.
 
 == Changelog ==
+
+= 2.3 =
+* Changed the call to WP_Widget to use the PHP 5 __construct() method. Ref: https://make.wordpress.org/core/2015/07/02/deprecating-php4-style-constructors-in-wordpress-4-3/
 
 = 2.2 =
 * Translation fixes for WP 3.7
