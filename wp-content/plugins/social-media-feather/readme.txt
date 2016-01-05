@@ -1,9 +1,9 @@
 === Social Media Feather - lightweight social media sharing and follow buttons ===
 Contributors: Synved
 Donate link: http://synved.com/wordpress-social-media-feather/
-Tags: shortcode, shortcodes, link, links, url, permalink, permalinks, time, icons, button, buttons, free, content, plugin, Share, sharing, social share, social sharing, page, pages, widget, CSS, list, media, profile, shortlinks, social, social media, Like, twitter, google, Facebook, Reddit, youtube, vimeo, tumblr, instagram, flickr, foursquare, social media buttons, bookmark, bookmarks, bookmarking, pinterest, linkedin, social links, image, edit, manage, mail, Post, posts, Style, seo, title, filter, follow, following, social follow, social following, Social Media Icons, Social Media Widget, high resolution, retina, ipad
+Tags: shortcode, shortcodes, link, links, url, permalink, permalinks, time, icons, button, buttons, free, content, plugin, Share, sharing, social share, social sharing, page, pages, widget, CSS, list, media, profile, shortlinks, social, social media, Like, twitter, google, Facebook, Reddit, youtube, vimeo, tumblr, instagram, flickr, foursquare, pinterest, linkedin, social media buttons, bookmark, bookmarks, bookmarking, social links, image, edit, manage, mail, Post, posts, Style, seo, title, filter, follow, following, social following, social follow, Social Media Icons, Social Media Widget, social widget, retina, iphone, ipad, iOS, high resolution, sidebar
 Requires at least: 3.1
-Tested up to: 4.2
+Tested up to: 4.4
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -34,7 +34,7 @@ On the other hand, given the widespread focus on WordPress social media integrat
 
 The **WordPress social media sharing** offered by the plugin includes all major social sharing buttons providers like Facebook, Twitter, Google+, reddit, Pinterest, tumblr, Linkedin and even e-mail.
 
-It will show social buttons that your users can click to share to facebook or tweet your posts and pages on your site or submit it to reddit and google plus and all other social sharing networks.
+It will show social buttons that your users can click to share to facebook or tweet your posts and pages on your site or submit it to reddit and google plus or publish it on tumblr and all other social sharing networks.
 
 The **WordPress social media following** offered by the plugin includes all major social network providers and tools like Facebook, Twitter, Google+, Pinterest, Linkedin, YouTube, tumblr, instagram, flickr, foursquare, vimeo or RSS.
 
@@ -154,6 +154,28 @@ Go to Settings -> Social Media and under "Automatic Display" uncheck "Display Sh
 
 Go to Settings -> Social Media and under "Automatic Display" uncheck "Display Sharing Buttons" as well as "Display Follow Buttons". Then go under Appearance -> Widgets and add the "Social Media Feather: Follow Us" widget to your sidebar.
 
+= Facebook is not showing the correct title/description/thumbnail, what to I do? =
+
+Social Media Feather always try to communicate to Facebook the correct parameters corresponding to the post being shared, including title and thumbnail but Facebook sometimes decides to ignore this information and instead picks up its own details from the page. This could be because some other plugin on your site is incorrectly specifying some OpenGraph tags in your page, or simply down to a Facebook choice. In both cases the solution is to remove any plugins creating incorrect OpenGraph tags and instead installing a plugin that provides proper OpenGraph tags, like <a href="https://wordpress.org/plugins/wordpress-seo/">Yoast SEO</a>.
+
+= I have an OpenGraph plugin which is creating the proper tags but Facebook is not picking them up, what do I do? =
+
+This could be due to Facebook caching your page information. Go to <a href="https://developers.facebook.com/tools/debug/">Facebook Debug Tools</a> and type in the URL to the post/page, then click "Debug". On the next screen that loads, now click on "Fetch new scraping information"; this should clear Facebook's cache of your page.
+
+= When clicking on any share button, I'm getting an error of "The requested content cannot be loaded. Please try again later." How do I fix it? =
+This is not caused by our plugin but by a lightbox library you are using. This could either be loaded by your theme or one of your other plugins. If you're using Easy Fancybox, please install their [development version](https://downloads.wordpress.org/plugin/easy-fancybox.zip).
+
+= I want to add/remove some margin to the social media buttons, how do I do it? =
+You can achieve this by adding some CSS under Settings -> Social Media, "Extra Style" option. Add something like this inside that text area:
+`.synved-social-button {
+margin-left: 10px !important;
+}`
+
+If you want to just add it to the buttons as a whole instead of each individual button, then set "Buttons in Container" to "Both" and "Buttons Container Type" to "Block" and add this:
+`.synved-social-container {
+margin-left: 10px;
+}`
+
 == Screenshots ==
 
 1. An example of how the sharing or following buttons appear in the front-end at 64 pixel resolution
@@ -165,6 +187,9 @@ Go to Settings -> Social Media and under "Automatic Display" uncheck "Display Sh
 7. This shows the available social sharing and following widgets and their settings 
 
 == Changelog ==
+
+= 1.7.9 =
+* Changed text domain to reflect plugin slug
 
 = 1.7.8 =
 * Disable credit link by default
