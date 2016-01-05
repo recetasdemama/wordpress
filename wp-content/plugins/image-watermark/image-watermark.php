@@ -2,7 +2,7 @@
 /*
 Plugin Name: Image Watermark
 Description: Image Watermark allows you to automatically watermark images uploaded to the WordPress Media Library and bulk watermark previously uploaded images.
-Version: 1.5.0
+Version: 1.5.1
 Author: dFactory
 Author URI: http://www.dfactory.eu/
 Plugin URI: http://www.dfactory.eu/plugins/image-watermark/
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) )
  * Image Watermark class.
  *
  * @class Image_Watermark
- * @version	1.5.0
+ * @version	1.5.1
  */
 class Image_Watermark {
 
@@ -72,7 +72,7 @@ class Image_Watermark {
 				'forlogged'		 => 0,
 			),
 		),
-		'version'	 => '1.5.0'
+		'version'	 => '1.5.1'
 	);
 	public $options = array();
 
@@ -437,7 +437,7 @@ class Image_Watermark {
 						<h3 class="hndle">' . __( 'Image Watermark', 'image-watermark' ) . ' ' . $this->defaults['version'] . '</h3>
 						<div class="inside">
 							<h4 class="inner">' . __( 'Need support?', 'image-watermark' ) . '</h4>
-							<p class="inner">' . __( 'If you are having problems with this plugin, please talk about them in the', 'image-watermark' ) . ' <a href="http://www.dfactory.eu/support/?utm_source=image-watermark-settings&utm_medium=link&utm_campaign=support" target="_blank" title="' . __( 'Support forum', 'image-watermark' ) . '">' . __( 'Support forum', 'image-watermark' ) . '</a></p>
+							<p class="inner">' . __( 'If you are having problems with this plugin, checkout plugin', 'image-watermark' ) . '  <a href="http://www.dfactory.eu/docs/image-watermark-plugin/?utm_source=image-watermark-settings&utm_medium=link&utm_campaign=documentation" target="_blank" title="' . __( 'Documentation', 'image-watermark' ) . '">' . __( 'Documentation', 'image-watermark' ) . '</a> ' . __( 'or talk about them in the', 'image-watermark' ) . ' <a href="http://www.dfactory.eu/support/?utm_source=image-watermark-settings&utm_medium=link&utm_campaign=support" target="_blank" title="' . __( 'Support forum', 'image-watermark' ) . '">' . __( 'Support forum', 'image-watermark' ) . '</a></p>
 							<hr />
 							<h4 class="inner">' . __( 'Do you like this plugin?', 'image-watermark' ) . '</h4>
 							<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" class="inner">
@@ -1199,8 +1199,10 @@ class Image_Watermark {
 
 			case 'image/png':
 				$res = imagecreatefrompng( $filepath );
-				$transparent = imagecolorallocatealpha( $res, 255, 255, 254, 127 );
+				imagesavealpha( $res, true );
+				$transparent = imagecolorallocatealpha( $res, 255, 255, 255, 127 );
 				imagefilledrectangle( $res, 0, 0, imagesx( $res ), imagesy( $res ), $transparent );
+
 				return $res;
 
 			default:

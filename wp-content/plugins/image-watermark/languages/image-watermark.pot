@@ -1,7 +1,8 @@
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: WordPress Watermark\n"
-"POT-Creation-Date: 2015-05-15 19:55+0100\n"
+"POT-Creation-Date: 2015-07-16 20:09+0200\n"
 "PO-Revision-Date: 2015-05-15 19:55+0100\n"
 "Last-Translator: Bartosz Arendt <info@dfactory.eu>\n"
 "Language-Team: dFactory <info@dfactory.pl>\n"
@@ -9,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.2\n"
 "X-Poedit-KeywordsList: gettext;gettext_noop;__;_e;esc_attr__;esc_attr_e;"
 "_n:1,2\n"
 "X-Poedit-Basepath: .\n"
@@ -91,8 +92,15 @@ msgid "Need support?"
 msgstr ""
 
 #: ../image-watermark.php:440
-msgid ""
-"If you are having problems with this plugin, please talk about them in the"
+msgid "If you are having problems with this plugin, checkout plugin"
+msgstr ""
+
+#: ../image-watermark.php:440
+msgid "Documentation"
+msgstr ""
+
+#: ../image-watermark.php:440
+msgid "or talk about them in the"
 msgstr ""
 
 #: ../image-watermark.php:440
@@ -372,10 +380,10 @@ msgstr ""
 msgid "Watermark will not be applied when no image sizes are selected."
 msgstr ""
 
-#: ../image-watermark.php:1247
+#: ../image-watermark.php:1249
 msgid "Support"
 msgstr ""
 
-#: ../image-watermark.php:1270
+#: ../image-watermark.php:1272
 msgid "Settings"
 msgstr ""

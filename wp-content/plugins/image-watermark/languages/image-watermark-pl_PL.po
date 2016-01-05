@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WordPress Watermark\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-15 19:56+0100\n"
-"PO-Revision-Date: 2015-05-15 20:44+0100\n"
+"POT-Creation-Date: 2015-07-16 20:10+0200\n"
+"PO-Revision-Date: 2015-07-16 20:10+0200\n"
 "Last-Translator: Bartosz Arendt <info@dfactory.eu>\n"
 "Language-Team: Digital Factory <info@digitalfactory.pl>\n"
 "Language: pl_PL\n"
@@ -14,7 +14,7 @@ msgstr ""
 "esc_attr_e\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.2\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Poedit-SearchPath-0: ..\n"
 
@@ -97,9 +97,16 @@ msgid "Need support?"
 msgstr "Potrzebujesz pomocy?"
 
 #: ../image-watermark.php:440
-msgid ""
-"If you are having problems with this plugin, please talk about them in the"
-msgstr "Jeśli masz jakiekolwiek problemy z tą wtyczką, powiedz o tym na"
+msgid "If you are having problems with this plugin, checkout plugin"
+msgstr "Jeśli masz jakiekolwiek problemy z tą wtyczką, sprawdź jej"
+
+#: ../image-watermark.php:440
+msgid "Documentation"
+msgstr "Dokumentację"
+
+#: ../image-watermark.php:440
+msgid "or talk about them in the"
+msgstr "lub napisz o nich na"
 
 #: ../image-watermark.php:440
 msgid "Support forum"
@@ -400,13 +407,17 @@ msgid "Watermark will not be applied when no image sizes are selected."
 msgstr ""
 "Znak wodny nie zostanie dodany jeśli nie zostały określone wielkości plików."
 
-#: ../image-watermark.php:1247
+#: ../image-watermark.php:1249
 msgid "Support"
 msgstr "Forum pomocy"
 
-#: ../image-watermark.php:1270
+#: ../image-watermark.php:1272
 msgid "Settings"
 msgstr "Ustawienia"
+
+#~ msgid ""
+#~ "If you are having problems with this plugin, please talk about them in the"
+#~ msgstr "Jeśli masz jakiekolwiek problemy z tą wtyczką, powiedz o tym na"
 
 #~ msgid ""
 #~ "Sorry, Image Watermark plugin requires at least PHP 5.0 and WP 3.5 or "
