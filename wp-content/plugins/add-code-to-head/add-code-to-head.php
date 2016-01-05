@@ -3,7 +3,7 @@
  * Plugin Name: Add Code to Head
  * Plugin URI: http://hbjitney.com/add-code-to-header.html
  * Description: Adds custom html code (javascript, css, etc.) to each public page's head
- * Version: 1.09
+ * Version: 1.11
  * Author: HBJitney, LLC
  * Author URI: http://hbjitney.com/
  * License: GPL3
@@ -45,7 +45,7 @@ if ( !class_exists('AddCodeToHead' ) ) {
 		}
 
 		/**
-		 * Callback for options page - set up page title and instantiate fields
+		 * Callback for options page - set up page title and instantiate field
 		 */
 		function plugin_options_page() {
 ?>
@@ -90,7 +90,7 @@ if ( !class_exists('AddCodeToHead' ) ) {
 		}
 
 		/*
-		 * No validation, just remove leading and trailing spaces
+		 * No validation, just remove leading and trailing space
 		 */
 		function options_validate($input) {
 			$newinput['text_string'] = trim( $input['text_string'] );
