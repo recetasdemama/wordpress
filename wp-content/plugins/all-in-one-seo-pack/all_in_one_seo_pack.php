@@ -66,7 +66,7 @@ if ( ! defined( 'AIOSEOP_PLUGIN_IMAGES_URL' ) )
     define( 'AIOSEOP_PLUGIN_IMAGES_URL', AIOSEOP_PLUGIN_URL . 'images/' );
 
 if ( ! defined( 'AIOSEOP_BASELINE_MEM_LIMIT' ) )
-	define( 'AIOSEOP_BASELINE_MEM_LIMIT', 268435456 ); // 256MB
+	define( 'AIOSEOP_BASELINE_MEM_LIMIT', 67108864 ); // 64MB
 
 if ( ! defined( 'WP_CONTENT_URL' ) )
     define( 'WP_CONTENT_URL', site_url() . '/wp-content' );
@@ -133,7 +133,7 @@ if ( class_exists( 'All_in_One_SEO_Pack' ) ) {
 	add_action( 'admin_notices', create_function( '', 'echo "<div class=\'error\'>The All In One SEO Pack class is already defined";'
 	. "if ( class_exists( 'ReflectionClass' ) ) { \$r = new ReflectionClass( 'All_in_One_SEO_Pack' ); echo ' in ' . \$r->getFileName(); } "
 	. ' echo ", preventing All In One SEO Pack from loading.</div>";' ) );
-	return;	
+	return;
 }
 
 /**
@@ -157,12 +157,12 @@ if ( !function_exists( 'aioseop_init_class' ) ) {
 		require_once( AIOSEOP_PLUGIN_DIR . 'aioseop_functions.php' );
 		require_once( AIOSEOP_PLUGIN_DIR . 'aioseop_class.php' );
 		$aiosp = new All_in_One_SEO_Pack();
-		
+
 		if ( aioseop_option_isset( 'aiosp_unprotect_meta' ) )
 			add_filter( 'is_protected_meta', 'aioseop_unprotect_meta', 10, 3 );
-		
+
 		add_action( 'init', array( $aiosp, 'add_hooks' ) );
-		
+
 		if ( defined( 'DOING_AJAX' ) && !empty( $_POST ) && !empty( $_POST['action'] ) && ( $_POST['action'] === 'aioseop_ajax_scan_header' ) ) {
 			remove_action( 'init', array( $aiosp, 'add_hooks' ) );
 			add_action('admin_init', 'aioseop_scan_post_header' );
@@ -186,7 +186,7 @@ if ( is_admin() ) {
 	add_action( 'wp_ajax_aioseop_ajax_save_settings', 'aioseop_ajax_save_settings');
 	add_action( 'wp_ajax_aioseop_ajax_get_menu_links', 'aioseop_ajax_get_menu_links');
 }
-	
+
 if ( !function_exists( 'aioseop_scan_post_header' ) ) {
 	function aioseop_scan_post_header() {
 		require_once( ABSPATH . WPINC . '/default-filters.php' );
