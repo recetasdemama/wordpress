@@ -9,7 +9,7 @@ jQuery( document ).ready( function ( $ ) {
 		}
 	} );
 
-	$( document ).on( 'click', 'input#watermark-reset', function () {
+	$( document ).on( 'click', '#reset_image_watermark_options', function () {
 		return confirm( iwArgs.resetToDefaults );
 	} );
 

@@ -6,10 +6,10 @@ jQuery( document ).ready( function ( $ ) {
 				return this._frameWatermark;
 
 			this._frameWatermark = wp.media( {
-				title: upload_manager_args.title,
-				frame: upload_manager_args.frame,
-				button: upload_manager_args.button,
-				multiple: upload_manager_args.multiple,
+				title: iwUploadArgs.title,
+				frame: iwUploadArgs.frame,
+				button: iwUploadArgs.button,
+				multiple: iwUploadArgs.multiple,
 				library: {
 					type: 'image'
 				}
@@ -38,7 +38,7 @@ jQuery( document ).ready( function ( $ ) {
 				img.src = attachment.attributes.url;
 
 				img.onload = function () {
-					$( 'p#previewImageInfo' ).html( upload_manager_args.originalSize + ': ' + this.width + ' px / ' + this.height + ' px' );
+					$( 'p#previewImageInfo' ).html( iwUploadArgs.originalSize + ': ' + this.width + ' ' + iwUploadArgs.px + ' / ' + this.height + ' ' + iwUploadArgs.px );
 				}
 				
 			} else {
@@ -46,7 +46,7 @@ jQuery( document ).ready( function ( $ ) {
 				$( '#turn_off_image_button' ).attr( 'disabled', 'true' );
 				$( '#upload_image' ).val( 0 );
 				$( 'div#previewImg_imageDiv img#previewImg_image' ).attr( 'src', '' ).hide();
-				$( 'p#previewImageInfo' ).html( '<strong>' + upload_manager_args.notAllowedImg + '</strong>' );
+				$( 'p#previewImageInfo' ).html( '<strong>' + iwUploadArgs.notAllowedImg + '</strong>' );
 				
 			}
 		},
@@ -64,7 +64,7 @@ jQuery( document ).ready( function ( $ ) {
 		$( this ).attr( 'disabled', 'true' );
 		$( '#upload_image' ).val( 0 );
 		$( 'div#previewImg_imageDiv img#previewImg_image' ).attr( 'src', '' ).hide();
-		$( 'p#previewImageInfo' ).html( upload_manager_args.noSelectedImg );
+		$( 'p#previewImageInfo' ).html( iwUploadArgs.noSelectedImg );
 	} );
 
 } );
