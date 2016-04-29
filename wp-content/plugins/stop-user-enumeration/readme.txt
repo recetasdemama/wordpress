@@ -2,8 +2,8 @@
 Contributors: fullworks
 Tags: User Enumeration, Security, WPSCAN, fail2ban
 Requires at least: 3.4
-Tested up to: 4.3.1
-Stable tag: 1.3.3
+Tested up to: 4.4.2
+Stable tag: 1.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,6 +40,9 @@ Adjusted to your own requirements.
 
 == Changelog ==
 =
+= 1.3.4 =
+
+* Simplify code and deal with undefined request and other argument issues
 = 1.3.3 =
 
 * Correct issue of undefined index in certain conditions
