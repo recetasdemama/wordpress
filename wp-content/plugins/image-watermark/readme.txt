@@ -3,8 +3,8 @@ Contributors: dfactory
 Donate link: http://www.dfactory.eu/
 Tags: image, images, picture, photo, watermark, watermarking, protection, image protection, image security, plugin
 Requires at least: 3.5
-Tested up to: 4.2.2
-Stable tag: 1.5.1
+Tested up to: 4.5
+Stable tag: 1.5.3.1
 License: MIT License
 License URI: http://opensource.org/licenses/MIT
 
@@ -20,6 +20,7 @@ For more information, check out plugin page at [dFactory](http://www.dfactory.eu
 
 * Bulk watermark - Apply watermark option in Media Library actions
 * Watermark images already uploaded to Media Library
+* GD LIbrary and ImageMagic support
 * Choose the position of watermark image
 * Upload custom watermark image
 * Watermark image preview
@@ -60,6 +61,12 @@ No questions yet.
 2. screenshot-2.png
 
 == Changelog ==
+
+= 1.5.3.1 =
+* New: ImageMagic support
+
+= 1.5.2 =
+* Tweak: Switch from wp_get_referer() to DOING_AJAX and is_admin(). 
 
 = 1.5.1 =
 * New: Introducing [plugin documentation](https://www.dfactory.eu/docs/image-watermark-plugin/)
@@ -147,6 +154,5 @@ Initial release
 
 == Upgrade Notice ==
 
-= 1.5.1 =
-* New: Introducing [plugin documentation](https://www.dfactory.eu/docs/image-watermark-plugin/)
-* Tweak: Improved transparent watermark support
+= 1.5.3.1 =
+* New: ImageMagic support
