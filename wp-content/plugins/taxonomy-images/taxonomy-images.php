@@ -4,7 +4,7 @@
 Plugin Name:          Taxonomy Images
 Plugin URI:           https://github.com/benhuson/Taxonomy-Images
 Description:          Associate images from your media library to categories, tags and custom taxonomies.
-Version:              0.9.2
+Version:              0.9.5
 Author:               Michael Fields, Ben Huson
 Author URI:           https://github.com/benhuson
 License:              GNU General Public License v2 or later
@@ -40,7 +40,7 @@ require_once( trailingslashit( dirname( __FILE__ ) ) . 'public-filters.php' );
  * @alter     0.7.4
  */
 function taxonomy_image_plugin_version() {
-	return '0.9.2';
+	return '0.9.5';
 }
 
 
@@ -459,7 +459,7 @@ function taxonomy_image_plugin_get_term_info( $tt_id ) {
 	}
 
 	if ( isset( $data[0]->taxonomy ) ) {
-		$cache[ $tt_id ]['taxonomy'] = sanitize_title_with_dashes( $data[0]->taxonomy );
+		$cache[ $tt_id ]['taxonomy'] = $data[0]->taxonomy;
 	}
 
 	if ( isset( $cache[ $tt_id ] ) ) {
@@ -907,7 +907,8 @@ function taxonomy_image_plugin_css_admin() {
 		'screen'
 	);
 }
-add_action( 'admin_print_styles-edit-tags.php', 'taxonomy_image_plugin_css_admin' );
+add_action( 'admin_print_styles-edit-tags.php', 'taxonomy_image_plugin_css_admin' );  // Pre WordPress 4.5
+add_action( 'admin_print_styles-term.php', 'taxonomy_image_plugin_css_admin' );       // WordPress 4.5+
 add_action( 'admin_print_styles-media-upload-popup', 'taxonomy_image_plugin_css_admin' );
 
 
