@@ -4,6 +4,21 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.9.5] - 2016-04-09
+
+### Fixed
+- Fix loading of admin stylesheet when editing terms in WordPress 4.5
+
+## [0.9.4] - 2016-02-05
+
+### Fixed
+- Fix for taxonomy names that may contain characters other than lowercase and underscores (e.g. uppercase).
+
+## [0.9.3] - 2016-01-21
+
+### Fixed
+- Fix post permissions error when using media modal.
+
 ## [0.9.2] - 2015-12-15
 
 ### Added
@@ -188,7 +203,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Original Release - Works with WordPress 2.9.1.
 
-[Unreleased]: https://github.com/benhuson/Taxonomy-Images/compare/0.9.1...HEAD
+[Unreleased]: https://github.com/benhuson/Taxonomy-Images/compare/0.9.5...HEAD
+[0.9.5]: https://github.com/benhuson/Taxonomy-Images/compare/0.9.4...0.9.5
+[0.9.4]: https://github.com/benhuson/Taxonomy-Images/compare/0.9.3...0.9.4
+[0.9.3]: https://github.com/benhuson/Taxonomy-Images/compare/0.9.2...0.9.3
+[0.9.2]: https://github.com/benhuson/Taxonomy-Images/compare/0.9.1...0.9.2
 [0.9.1]: https://github.com/benhuson/Taxonomy-Images/compare/0.9...0.9.1
 [0.9]: https://github.com/benhuson/Taxonomy-Images/compare/0.8.0...0.9
 [0.8.0]: https://github.com/benhuson/Taxonomy-Images/compare/0.7.3...0.8.0
