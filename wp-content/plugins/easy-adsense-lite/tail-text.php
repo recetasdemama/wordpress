@@ -18,7 +18,7 @@
 
 if (!$ez->killAuthor) {
   ?>
-  <table class="form-table" >
+  <table class="form-table" style="display:none;">
     <tr>
       <td>
         <ul style="padding-left:10px;list-style-type:circle; list-style-position:inside;" >

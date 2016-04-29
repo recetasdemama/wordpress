@@ -15,7 +15,38 @@
   You should have received a copy of the GNU General Public License
   along with the programs.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+ echo '<style type="text/css"> tbody {
+    background-color : white;
+    color: #5D5D5D;
+   }
+   h2, h3 {
+    font-size: 1.4em !important;
+    padding-left: 10px;
+   }
+   h1, h2, h3 {
+    color: #D04545 !important;
+   }
+   u,b{
+	  color:#EB575C;
+   }
+   label{padding: 5px;}
+   .form-table td{    line-height: 1.6;}
+   .form-table th{
+     padding: 0px;
+     line-height:0;
+   }
+   input[type="submit"]{
+     background-color: #FF7579;
+     border: 2px solid #EB575C;
+     color: white;
+   }
+   input[type="submit"]:hover{
+     box-shadow: 6px 6px 11px #C5C5C5;
+     transition: .5s;
+     background-color: white;
+     color: #EB575C;
+   }
+ </style>';
 echo '<script type="text/javascript" src="' . $this->plgURL . '/wz_tooltip.js"></script>';
 
 $this->mkEzOptions();
@@ -23,10 +54,14 @@ $this->setOptionValues();
 $this->mkHelpTags();
 ?>
 <div class="wrap" id="wrapper" style="width:1000px">
-  <h2>Easy Plugin for AdSense Setup</h2>
+  <h2 style="font-size: 2.5em !important;
+    color: #8B1606 !important;
+    font-weight: 600;
+    margin-bottom: 17px;">Easy Plugin for AdSense Setup</h2>
+  <a href="http://adpu.sh/easy-ad-link" target="_blank"><img src="../wp-content/plugins/easy-adsense-lite/banner.gif" style="height:auto;width:100%;"></a>
   <table class="form-table">
     <tr style="vertical-align:middle">
-      <td style="width:40%">
+      <td style="width:40%:">
         <h3>
           <?php
           _e('Instructions', 'easy-adsenser');
@@ -230,7 +265,7 @@ $this->mkHelpTags();
             </tr>
           </table>
 
-          <table class='form-table'>
+          <table class='form-table' style="display:none;">
             <tr style='vertical-align:top'>
               <td style='width:50%;height:250px;vertical-align:middle'>
                 <br style='line-height: 12px;' />
@@ -313,16 +348,17 @@ no', 'easy-adsenser'); ?>
   ?>
 
   <table class="form-table" >
-    <tr><th scope="row"><b><?php _e('Credits', 'easy-adsenser'); ?></b></th></tr>
+    <tr><th scope="row"><h2><?php _e('Credits', 'easy-adsenser'); ?></h2></th></tr>
     <tr><td>
         <ul style="padding-left:10px;list-style-type:circle; list-style-position:inside;" >
           <li>
-            <?php printf(__('%s uses the excellent Javascript/DHTML tooltips by %s', 'easy-adsenser'), '<b>Easy Adsense</b>', '<a href="http://www.walterzorn.com" target="_blank" title="Javascript, DTML Tooltips"> Walter Zorn</a>.');
+            <?php printf(__('%s uses the excellent Javascript/DHTML tooltips by %s', 'easy-adsenser'), '<b>Easy Adsense</b>', '<a href="http://www.walterzorn.com" target="_blank" title="Javascript, DTML Tooltips"> Walter Zorn</a> and original author of the plugin was <a href="http://www.thulasidas.com">Manoj Thulasidas</a>');
             ?>
           </li>
         </ul>
       </td>
     </tr>
   </table>
+  <a href="http://adpu.sh/easy-ad-link" target="_blank"><img src="../wp-content/plugins/easy-adsense-lite/banner.gif" style="height:auto;width:100%;"></a>
 
 </div>
