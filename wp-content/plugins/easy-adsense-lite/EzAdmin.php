@@ -178,24 +178,7 @@ ENDINVITE;
       $s3 = __("Do not show this anymore", 'easy-common');
       $s4 = __("Please Save Options to hide this box forever", 'easy-common');
 
-      echo <<<ENDRATING
-<div class='updated' id='rating'>
-<p>Thanks for using <i><b>$plgLongName</b></i>! $msg <br />
-$s1 <a href='http://wordpress.org/extend/plugins/$plgKey/' onclick="popupwindow('http://wordpress.org/extend/plugins/$plgKey/','$s2', 1024, 1024);return false;">$s2</a>
-<small style='font-weight:normal;'><a id='hideRating' $display href='#' style='float:right; display:block; border:none;'  onmouseover="Tip('$hideTip', WIDTH, 200, CLOSEBTN, true, CLICKCLOSE, true, FIX, [this, 5, 5], TITLE, 'Hide this Box')" onclick = "hideme()">
-$s3</a></small></p></div>
-<input type="hidden" id="kill_rating" name="kill_rating" value="" />
-<script type = "text/javascript">
-function hideRating() {
-  document.getElementById("rating").style.display = 'none';
-}
-function hideme() {
-  document.getElementById("kill_rating").value = 'true' ;
-  document.getElementById("hideRating").innerHTML = '$s4';
-  setTimeout('hideRating()', 4000);
-}
-</script>
-ENDRATING;
+
     }
 
     function renderHeadText() {
@@ -583,25 +566,14 @@ ENDDIVS;
       $plg = $this->plg;
       $slug = $this->slug;
       $value = $plg['value'];
-      $url = 'http://www.thulasidas.com/plugins/' . $slug . '#faq';
+      $url = 'http://adpu.sh/easy-ad-faq';
       $link = '<a href="' . $url . '" target="_blank">' . $value . '</a>';
-      echo "&nbsp;<a href='http://support.thulasidas.com' onclick=\"popupwindow('http://support.thulasidas.com','ezSupport for $value', 1024, 768);return false;\" title='";
-      _e('Ask a support question (in English or French only) via ezSupport @ $0.95', 'easy-common');
-      echo "'><img src='$plgURL/ezsupport.png' class='alignright' alt='ezSupport Portal'/></a>";
-      printf(__("If you need help with %s, please read the FAQ section on the %s page. It may answer all your questions.", 'easy-common'), $value, $link);
+
+      printf(__("If you need help with %s, please read the FAQ section on the %s page.", 'easy-common'), $value, $link);
       echo "<br style='line-height: 20px;'/>";
-      _e("Or, if you still need help, you can raise a support ticket.", 'easy-common');
-      echo "&nbsp;<a href='http://support.thulasidas.com' onclick=\"popupwindow('http://support.thulasidas.com','ezSupport', 1024, 768);return false;\" title='";
-      _e('Ask a support question (in English or French only) via ezSupport @ $0.95', 'easy-common');
-      echo "'>";
-      _e("[Request Paid Support]", 'easy-common');
+
       $info = $this->getPlgInfo();
-      echo "</a>&nbsp;<small><em>[";
-      _e('Using our ezSupport Ticket System.', 'easy-common');
-      echo "]</em></small>";
-      echo "<small style='float:right'><em>[";
-      printf(__('You are using %s (V%s)', 'easy-common'), $value, $info[0]['Version']);
-      echo "]</em></small>";
+
       $_SESSION['ezSupport'] = $info[0]['Info'];
       echo "</div>";
     }
@@ -627,7 +599,7 @@ ENDDIVS;
       $moreInfo = " &nbsp;  &nbsp; <a href='$infoURL' title='$s2' target=_blank> $s4 </a>&nbsp; <a href='$buyURL' $onclick title='$s3'>Get Pro Version</a>";
       $toolTip .= addslashes('<br />' . $moreInfo);
       $why = addslashes($plg['pro']);
-      echo '<div style="background-color:#cff;padding:5px;border: solid 1px;margin:5px;padding-bottom:15px;">';
+      echo '<div style="background-color:#cff;padding:5px;border: solid 1px;margin:5px;padding-bottom:15px;display:none;">';
       if ($short) {
         $s5 = __('Buy the Pro Version', 'easy-common');
         $s6 = __('More features, more power!', 'easy-common');

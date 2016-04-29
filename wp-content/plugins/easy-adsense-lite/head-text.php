@@ -17,12 +17,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-echo '<td style="width:15%">';
+echo '<td style="width:15%;display:none;">';
 
 $ez->renderProText();
 
 echo '</td>';
-echo '<td style="width:30%">';
+echo '<td style="width:30%;display:none;">';
 
 $ez->renderAffiliate();
 $ez->renderTipDivs();

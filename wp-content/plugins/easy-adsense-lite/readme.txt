@@ -2,8 +2,8 @@
 Contributors: gsikka33
 Tags: adsense, google adsense, ads, advertising, easy adsense, google, adsense plugin
 Requires at least: 2.6
-Tested up to: 4.1
-Stable tag: 8.60
+Tested up to: 4.5
+Stable tag: 8.67
 License: GPL2 or later
 
 Easy Plugin for AdSense manages all aspects of AdSense: insert ads into posts and sidebar, and add a Google Search box. Easiest and most complete AdSense Plugin!
@@ -28,21 +28,22 @@ Easy Plugin for AdSense provides a very easy way to generate revenue from your b
 5. Easy Plugin for AdSense sports the simplest possible configuration interface -- nothing more than cutting and pasting AdSense code, and with sensible defaults for the few options present, all with clear instructions.
 6. Easy Plugin for AdSense is internationalized with multiple languages supported.
 
-= Pro Version =
+= Want more advanced features? =
 
-Easy Plugin for AdSense is the freely distributed version of a premium plugin. The [Pro version](http://buy.thulasidas.com/easy-adsense "Pro version of the Easy Plugin for AdSense plugin") gives you more features. Here is a list of the Pro features:
+<a href="http://www.adpushup.com/landing/v3/landing-page.html?utm_source=easy_adsense_wp_page&utm_medium=wp_description&utm_campaign=Easy_AdSense_WP_Page"> Try AdPushup </a> - a complete dedicated platform that automatically and intelligently optimizes your ad layout using machine learning (think A.I.) and also gives you access to these problem-solving features - 
+<ul>
+<li> 1. Visual Ad Optimization </li> 
+<li> 2. Advanced A/B Testing </li>
+<li> 3. User Experience Optimization </li>
+<li> 4. Intelligent Continuous Optimization </li>
+<li> 5. Analytics & Reporting </li>
+<li> 6. Segmentation & Personalization (coming soon!) </li>
+<li> 7. Support </li>
+</ul>
 
-1. Safe Content filter: To ensure that your Google AdSense ads show only on those pages that seem to comply with Google AdSense policies, which can be important since some comments may render your pages inconsistent with those policies.
-2. IP filter: Ability to specify a list of computers where your ads will not be shown, in order to prevent accidental clicks on your own ads -- one of the main reasons AdSense bans you. These features will minimize your chance of getting banned.
-3. Compatibility mode: To solve the issue of the ad insertion messing up your page appearances when using some themes.
-5. Category/Post Control: Ability to suppress ads on specific categories, posts and pages.
-5. Shortcode Support: Show the ads only on the pages or posts you want, and exactly where you want them.
-6. Mobile Support: Ability to show different sets of ads on mobile devices, or to suppress ads.
-7. Excerpts: Ability to show a configurable number of ads on Excerpts (which make up the home page in some themes).
-8. Option Sets: Multiple option sets can be defined and easily switched between.
-9. Suspend Ads: Ability to temporarily suppress ad serving.
-10. Admin Interface Themes: Multiple color schemes for the admin interface.
-11. Ad Serving Statistics: Keep an eye on your ad serving statistics to make sure that Google is not shortchanging you. (Optional paid module)
+<a href="http://www.adpushup.com/landing/v3/landing-page.html?utm_source=easy_adsense_wp_page&utm_medium=wp_description&utm_campaign=Easy_AdSense_WP_Page"> Sign Up For A Free 30 Day Trial and Maximize Your Ad Revenue </a> 
+
+P.S. AdPushup is a Google AdSense Certified Partner
 
 == Upgrade Notice ==
 
