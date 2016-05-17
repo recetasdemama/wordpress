@@ -985,7 +985,7 @@ final class WP_Customize_Widgets {
 	 * @param array $sidebars_widgets List of widgets for the current sidebar.
 	 */
 	public function preview_sidebars_widgets( $sidebars_widgets ) {
-		$sidebars_widgets = get_option( 'sidebars_widgets' );
+		$sidebars_widgets = get_option( 'sidebars_widgets', array() );
 
 		unset( $sidebars_widgets['array_version'] );
 		return $sidebars_widgets;
