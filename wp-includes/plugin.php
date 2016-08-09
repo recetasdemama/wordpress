@@ -14,32 +14,25 @@
  * Also see the {@link https://codex.wordpress.org/Plugin_API Plugin API} for
  * more information and examples on how to use a lot of these functions.
  *
- * This file should have no external dependencies.
- *
  * @package WordPress
  * @subpackage Plugin
  * @since 1.5.0
  */
 
 // Initialize the filter globals.
-require( dirname( __FILE__ ) . '/class-wp-hook.php' );
+global $wp_filter, $wp_actions, $merged_filters, $wp_current_filter;
 
-/** @var WP_Hook[] $wp_filter */
-global $wp_filter, $wp_actions, $wp_current_filter;
-
-if ( $wp_filter ) {
-	$wp_filter = WP_Hook::build_preinitialized_hooks( $wp_filter );
-} else {
+if ( ! isset( $wp_filter ) )
 	$wp_filter = array();
-}
 
-if ( ! isset( $wp_actions ) ) {
+if ( ! isset( $wp_actions ) )
 	$wp_actions = array();
-}
 
-if ( ! isset( $wp_current_filter ) ) {
+if ( ! isset( $merged_filters ) )
+	$merged_filters = array();
+
+if ( ! isset( $wp_current_filter ) )
 	$wp_current_filter = array();
-}
 
 /**
  * Hook a function or method to a specific filter action.
@@ -94,6 +87,8 @@ if ( ! isset( $wp_current_filter ) ) {
  * @since 0.71
  *
  * @global array $wp_filter      A multidimensional array of all hooks and the callbacks hooked to them.
+ * @global array $merged_filters Tracks the tags that need to be merged for later. If the hook is added,
+ *                               it doesn't need to run through that process.
  *
  * @param string   $tag             The name of the filter to hook the $function_to_add callback to.
  * @param callable $function_to_add The callback to be run when the filter is applied.
@@ -106,11 +101,11 @@ if ( ! isset( $wp_current_filter ) ) {
  * @return true
  */
 function add_filter( $tag, $function_to_add, $priority = 10, $accepted_args = 1 ) {
-	global $wp_filter;
-	if ( ! isset( $wp_filter[ $tag ] ) ) {
-		$wp_filter[ $tag ] = new WP_Hook();
-	}
-	$wp_filter[ $tag ]->add_filter( $tag, $function_to_add, $priority, $accepted_args );
+	global $wp_filter, $merged_filters;
+
+	$idx = _wp_filter_build_unique_id($tag, $function_to_add, $priority);
+	$wp_filter[$tag][$priority][$idx] = array('function' => $function_to_add, 'accepted_args' => $accepted_args);
+	unset( $merged_filters[ $tag ] );
 	return true;
 }
 
@@ -130,14 +125,39 @@ function add_filter( $tag, $function_to_add, $priority = 10, $accepted_args = 1 
  *                   that evaluates to false (e.g.) 0, so use the === operator for testing the
  *                   return value.
  */
-function has_filter( $tag, $function_to_check = false ) {
-	global $wp_filter;
+function has_filter($tag, $function_to_check = false) {
+	// Don't reset the internal array pointer
+	$wp_filter = $GLOBALS['wp_filter'];
 
-	if ( ! isset( $wp_filter[ $tag ] ) ) {
-		return false;
+	$has = ! empty( $wp_filter[ $tag ] );
+
+	// Make sure at least one priority has a filter callback
+	if ( $has ) {
+		$exists = false;
+		foreach ( $wp_filter[ $tag ] as $callbacks ) {
+			if ( ! empty( $callbacks ) ) {
+				$exists = true;
+				break;
+			}
+		}
+
+		if ( ! $exists ) {
+			$has = false;
+		}
 	}
 
-	return $wp_filter[ $tag ]->has_filter( $tag, $function_to_check );
+	if ( false === $function_to_check || false === $has )
+		return $has;
+
+	if ( !$idx = _wp_filter_build_unique_id($tag, $function_to_check, false) )
+		return false;
+
+	foreach ( (array) array_keys($wp_filter[$tag]) as $priority ) {
+		if ( isset($wp_filter[$tag][$priority][$idx]) )
+			return $priority;
+	}
+
+	return false;
 }
 
 /**
@@ -168,6 +188,7 @@ function has_filter( $tag, $function_to_check = false ) {
  * @since 0.71
  *
  * @global array $wp_filter         Stores all of the filters.
+ * @global array $merged_filters    Merges the filter hooks using this function.
  * @global array $wp_current_filter Stores the list of current filters with the current one last.
  *
  * @param string $tag     The name of the filter hook.
@@ -176,40 +197,49 @@ function has_filter( $tag, $function_to_check = false ) {
  * @return mixed The filtered value after all hooked functions are applied to it.
  */
 function apply_filters( $tag, $value ) {
-	global $wp_filter, $wp_current_filter;
+	global $wp_filter, $merged_filters, $wp_current_filter;
 
 	$args = array();
 
 	// Do 'all' actions first.
-	if ( isset( $wp_filter['all'] ) ) {
+	if ( isset($wp_filter['all']) ) {
 		$wp_current_filter[] = $tag;
-		$args                = func_get_args();
-		_wp_call_all_hook( $args );
+		$args = func_get_args();
+		_wp_call_all_hook($args);
 	}
 
-	if ( ! isset( $wp_filter[ $tag ] ) ) {
-		if ( isset( $wp_filter['all'] ) ) {
-			array_pop( $wp_current_filter );
-		}
+	if ( !isset($wp_filter[$tag]) ) {
+		if ( isset($wp_filter['all']) )
+			array_pop($wp_current_filter);
 		return $value;
 	}
 
-	if ( ! isset( $wp_filter['all'] ) ) {
+	if ( !isset($wp_filter['all']) )
 		$wp_current_filter[] = $tag;
+
+	// Sort.
+	if ( !isset( $merged_filters[ $tag ] ) ) {
+		ksort($wp_filter[$tag]);
+		$merged_filters[ $tag ] = true;
 	}
 
-	if ( empty( $args ) ) {
+	reset( $wp_filter[ $tag ] );
+
+	if ( empty($args) )
 		$args = func_get_args();
-	}
 
-	// don't pass the tag name to WP_Hook
-	array_shift( $args );
+	do {
+		foreach ( (array) current($wp_filter[$tag]) as $the_ )
+			if ( !is_null($the_['function']) ){
+				$args[1] = $value;
+				$value = call_user_func_array($the_['function'], array_slice($args, 1, (int) $the_['accepted_args']));
+			}
 
-	$filtered = $wp_filter[ $tag ]->apply_filters( $value, $args );
+	} while ( next($wp_filter[$tag]) !== false );
 
 	array_pop( $wp_current_filter );
 
-	return $filtered;
+	return $value;
 }
 
 /**
@@ -221,38 +251,50 @@ function apply_filters( $tag, $value ) {
  * functions hooked to `$tag` are supplied using an array.
  *
  * @global array $wp_filter         Stores all of the filters
+ * @global array $merged_filters    Merges the filter hooks using this function.
  * @global array $wp_current_filter Stores the list of current filters with the current one last
  *
  * @param string $tag  The name of the filter hook.
  * @param array  $args The arguments supplied to the functions hooked to $tag.
  * @return mixed The filtered value after all hooked functions are applied to it.
  */
-function apply_filters_ref_array( $tag, $args ) {
-	global $wp_filter, $wp_current_filter;
+function apply_filters_ref_array($tag, $args) {
+	global $wp_filter, $merged_filters, $wp_current_filter;
 
 	// Do 'all' actions first
-	if ( isset( $wp_filter['all'] ) ) {
+	if ( isset($wp_filter['all']) ) {
 		$wp_current_filter[] = $tag;
-		$all_args            = func_get_args();
-		_wp_call_all_hook( $all_args );
+		$all_args = func_get_args();
+		_wp_call_all_hook($all_args);
 	}
 
-	if ( ! isset( $wp_filter[ $tag ] ) ) {
-		if ( isset( $wp_filter['all'] ) ) {
-			array_pop( $wp_current_filter );
-		}
+	if ( !isset($wp_filter[$tag]) ) {
+		if ( isset($wp_filter['all']) )
+			array_pop($wp_current_filter);
 		return $args[0];
 	}
 
-	if ( ! isset( $wp_filter['all'] ) ) {
+	if ( !isset($wp_filter['all']) )
 		$wp_current_filter[] = $tag;
+
+	// Sort
+	if ( !isset( $merged_filters[ $tag ] ) ) {
+		ksort($wp_filter[$tag]);
+		$merged_filters[ $tag ] = true;
 	}
 
-	$filtered = $wp_filter[ $tag ]->apply_filters( $args[0], $args );
+	reset( $wp_filter[ $tag ] );
+
+	do {
+		foreach ( (array) current($wp_filter[$tag]) as $the_ )
+			if ( !is_null($the_['function']) )
+				$args[0] = call_user_func_array($the_['function'], array_slice($args, 0, (int) $the_['accepted_args']));
+
+	} while ( next($wp_filter[$tag]) !== false );
 
 	array_pop( $wp_current_filter );
 
-	return $filtered;
+	return $args[0];
 }
 
 /**
@@ -269,6 +311,7 @@ function apply_filters_ref_array( $tag, $args ) {
  * @since 1.2.0
  *
  * @global array $wp_filter         Stores all of the filters
+ * @global array $merged_filters    Merges the filter hooks using this function.
  *
  * @param string   $tag                The filter hook to which the function to be removed is hooked.
  * @param callable $function_to_remove The name of the function which should be removed.
@@ -276,14 +319,19 @@ function apply_filters_ref_array( $tag, $args ) {
  * @return bool    Whether the function existed before it was removed.
  */
 function remove_filter( $tag, $function_to_remove, $priority = 10 ) {
-	global $wp_filter;
+	$function_to_remove = _wp_filter_build_unique_id( $tag, $function_to_remove, $priority );
 
-	$r = false;
-	if ( isset( $wp_filter[ $tag ] ) ) {
-		$r = $wp_filter[ $tag ]->remove_filter( $tag, $function_to_remove, $priority );
-		if ( ! $wp_filter[ $tag ]->callbacks ) {
-			unset( $wp_filter[ $tag ] );
+	$r = isset( $GLOBALS['wp_filter'][ $tag ][ $priority ][ $function_to_remove ] );
+
+	if ( true === $r ) {
+		unset( $GLOBALS['wp_filter'][ $tag ][ $priority ][ $function_to_remove ] );
+		if ( empty( $GLOBALS['wp_filter'][ $tag ][ $priority ] ) ) {
+			unset( $GLOBALS['wp_filter'][ $tag ][ $priority ] );
 		}
+		if ( empty( $GLOBALS['wp_filter'][ $tag ] ) ) {
+			$GLOBALS['wp_filter'][ $tag ] = array();
+		}
+		unset( $GLOBALS['merged_filters'][ $tag ] );
 	}
 
 	return $r;
@@ -294,21 +342,25 @@ function remove_filter( $tag, $function_to_remove, $priority = 10 ) {
  *
  * @since 2.7.0
  *
- * @global array $wp_filter  Stores all of the filters
+ * @global array $wp_filter         Stores all of the filters
+ * @global array $merged_filters    Merges the filter hooks using this function.
  *
  * @param string   $tag      The filter to remove hooks from.
  * @param int|bool $priority Optional. The priority number to remove. Default false.
  * @return true True when finished.
  */
 function remove_all_filters( $tag, $priority = false ) {
-	global $wp_filter;
+	global $wp_filter, $merged_filters;
 
-	if ( isset( $wp_filter[ $tag ] ) ) {
-		$wp_filter[ $tag ]->remove_all_filters( $priority );
-		if ( ! $wp_filter[ $tag ]->has_filters() ) {
-			unset( $wp_filter[ $tag ] );
+	if ( isset( $wp_filter[ $tag ]) ) {
+		if ( false === $priority ) {
+			$wp_filter[ $tag ] = array();
+		} elseif ( isset( $wp_filter[ $tag ][ $priority ] ) ) {
+			$wp_filter[ $tag ][ $priority ] = array();
 		}
 	}
+
+	unset( $merged_filters[ $tag ] );
 
 	return true;
 }
@@ -402,8 +454,8 @@ function doing_action( $action = null ) {
  * @param int      $accepted_args   Optional. The number of arguments the function accepts. Default 1.
  * @return true Will always return true.
  */
-function add_action( $tag, $function_to_add, $priority = 10, $accepted_args = 1 ) {
-	return add_filter( $tag, $function_to_add, $priority, $accepted_args );
+function add_action($tag, $function_to_add, $priority = 10, $accepted_args = 1) {
+	return add_filter($tag, $function_to_add, $priority, $accepted_args);
 }
 
 /**
@@ -419,52 +471,61 @@ function add_action( $tag, $function_to_add, $priority = 10, $accepted_args = 1 
  *
  * @global array $wp_filter         Stores all of the filters
  * @global array $wp_actions        Increments the amount of times action was triggered.
+ * @global array $merged_filters    Merges the filter hooks using this function.
  * @global array $wp_current_filter Stores the list of current filters with the current one last
  *
  * @param string $tag     The name of the action to be executed.
  * @param mixed  $arg,... Optional. Additional arguments which are passed on to the
  *                        functions hooked to the action. Default empty.
  */
-function do_action( $tag, $arg = '' ) {
-	global $wp_filter, $wp_actions, $wp_current_filter;
+function do_action($tag, $arg = '') {
+	global $wp_filter, $wp_actions, $merged_filters, $wp_current_filter;
 
-	if ( ! isset( $wp_actions[ $tag ] ) ) {
-		$wp_actions[ $tag ] = 1;
-	} else {
-		++$wp_actions[ $tag ];
-	}
+	if ( ! isset($wp_actions[$tag]) )
+		$wp_actions[$tag] = 1;
+	else
+		++$wp_actions[$tag];
 
 	// Do 'all' actions first
-	if ( isset( $wp_filter['all'] ) ) {
+	if ( isset($wp_filter['all']) ) {
 		$wp_current_filter[] = $tag;
-		$all_args            = func_get_args();
-		_wp_call_all_hook( $all_args );
+		$all_args = func_get_args();
+		_wp_call_all_hook($all_args);
 	}
 
-	if ( ! isset( $wp_filter[ $tag ] ) ) {
-		if ( isset( $wp_filter['all'] ) ) {
-			array_pop( $wp_current_filter );
-		}
+	if ( !isset($wp_filter[$tag]) ) {
+		if ( isset($wp_filter['all']) )
+			array_pop($wp_current_filter);
 		return;
 	}
 
-	if ( ! isset( $wp_filter['all'] ) ) {
+	if ( !isset($wp_filter['all']) )
 		$wp_current_filter[] = $tag;
-	}
 
 	$args = array();
-	if ( is_array( $arg ) && 1 == count( $arg ) && isset( $arg[0] ) && is_object( $arg[0] ) ) { // array(&$this)
+	if ( is_array($arg) && 1 == count($arg) && isset($arg[0]) && is_object($arg[0]) ) // array(&$this)
 		$args[] =& $arg[0];
-	} else {
+	else
 		$args[] = $arg;
-	}
-	for ( $a = 2, $num = func_num_args(); $a < $num; $a++ ) {
-		$args[] = func_get_arg( $a );
+	for ( $a = 2, $num = func_num_args(); $a < $num; $a++ )
+		$args[] = func_get_arg($a);
+
+	// Sort
+	if ( !isset( $merged_filters[ $tag ] ) ) {
+		ksort($wp_filter[$tag]);
+		$merged_filters[ $tag ] = true;
 	}
 
-	$wp_filter[ $tag ]->do_action( $args );
+	reset( $wp_filter[ $tag ] );
 
-	array_pop( $wp_current_filter );
+	do {
+		foreach ( (array) current($wp_filter[$tag]) as $the_ )
+			if ( !is_null($the_['function']) )
+				call_user_func_array($the_['function'], array_slice($args, 0, (int) $the_['accepted_args']));
+
+	} while ( next($wp_filter[$tag]) !== false );
+
+	array_pop($wp_current_filter);
 }
 
 /**
@@ -477,14 +538,13 @@ function do_action( $tag, $arg = '' ) {
  * @param string $tag The name of the action hook.
  * @return int The number of times action hook $tag is fired.
  */
-function did_action( $tag ) {
+function did_action($tag) {
 	global $wp_actions;
 
-	if ( ! isset( $wp_actions[ $tag ] ) ) {
+	if ( ! isset( $wp_actions[ $tag ] ) )
 		return 0;
-	}
 
-	return $wp_actions[ $tag ];
+	return $wp_actions[$tag];
 }
 
 /**
@@ -496,41 +556,52 @@ function did_action( $tag ) {
  *                  functions hooked to $tag< are supplied using an array.
  * @global array $wp_filter         Stores all of the filters
  * @global array $wp_actions        Increments the amount of times action was triggered.
+ * @global array $merged_filters    Merges the filter hooks using this function.
  * @global array $wp_current_filter Stores the list of current filters with the current one last
  *
  * @param string $tag  The name of the action to be executed.
  * @param array  $args The arguments supplied to the functions hooked to `$tag`.
  */
-function do_action_ref_array( $tag, $args ) {
-	global $wp_filter, $wp_actions, $wp_current_filter;
+function do_action_ref_array($tag, $args) {
+	global $wp_filter, $wp_actions, $merged_filters, $wp_current_filter;
 
-	if ( ! isset( $wp_actions[ $tag ] ) ) {
-		$wp_actions[ $tag ] = 1;
-	} else {
-		++$wp_actions[ $tag ];
-	}
+	if ( ! isset($wp_actions[$tag]) )
+		$wp_actions[$tag] = 1;
+	else
+		++$wp_actions[$tag];
 
 	// Do 'all' actions first
-	if ( isset( $wp_filter['all'] ) ) {
+	if ( isset($wp_filter['all']) ) {
 		$wp_current_filter[] = $tag;
-		$all_args            = func_get_args();
-		_wp_call_all_hook( $all_args );
+		$all_args = func_get_args();
+		_wp_call_all_hook($all_args);
 	}
 
-	if ( ! isset( $wp_filter[ $tag ] ) ) {
-		if ( isset( $wp_filter['all'] ) ) {
-			array_pop( $wp_current_filter );
-		}
+	if ( !isset($wp_filter[$tag]) ) {
+		if ( isset($wp_filter['all']) )
+			array_pop($wp_current_filter);
 		return;
 	}
 
-	if ( ! isset( $wp_filter['all'] ) ) {
+	if ( !isset($wp_filter['all']) )
 		$wp_current_filter[] = $tag;
+
+	// Sort
+	if ( !isset( $merged_filters[ $tag ] ) ) {
+		ksort($wp_filter[$tag]);
+		$merged_filters[ $tag ] = true;
 	}
 
-	$wp_filter[ $tag ]->do_action( $args );
+	reset( $wp_filter[ $tag ] );
 
-	array_pop( $wp_current_filter );
+	do {
+		foreach ( (array) current($wp_filter[$tag]) as $the_ )
+			if ( !is_null($the_['function']) )
+				call_user_func_array($the_['function'], array_slice($args, 0, (int) $the_['accepted_args']));
+
+	} while ( next($wp_filter[$tag]) !== false );
+
+	array_pop($wp_current_filter);
 }
 
 /**
@@ -549,8 +620,8 @@ function do_action_ref_array( $tag, $args ) {
  *                  that evaluates to false (e.g.) 0, so use the === operator for testing the
  *                  return value.
  */
-function has_action( $tag, $function_to_check = false ) {
-	return has_filter( $tag, $function_to_check );
+function has_action($tag, $function_to_check = false) {
+	return has_filter($tag, $function_to_check);
 }
 
 /**
@@ -580,8 +651,8 @@ function remove_action( $tag, $function_to_remove, $priority = 10 ) {
  * @param int|bool $priority The priority number to remove them from. Default false.
  * @return true True when finished.
  */
-function remove_all_actions( $tag, $priority = false ) {
-	return remove_all_filters( $tag, $priority );
+function remove_all_actions($tag, $priority = false) {
+	return remove_all_filters($tag, $priority);
 }
 
 /**
@@ -590,15 +661,6 @@ function remove_all_actions( $tag, $priority = false ) {
  * When a filter hook is deprecated, the apply_filters() call is replaced with
  * apply_filters_deprecated(), which triggers a deprecation notice and then fires
  * the original filter hook.
- *
- * Note: the value and extra arguments passed to the original apply_filters() call
- * must be passed here to `$args` as an array. For example:
- *
- *     // Old filter.
- *     return apply_filters( 'wpdocs_filter', $value, $extra_arg );
- *
- *     // Deprecated.
- *     return apply_filters_deprecated( 'wpdocs_filter', array( $value, $extra_arg ), '4.9', 'wpdocs_new_filter' );
  *
  * @since 4.6.0
  *
@@ -676,11 +738,11 @@ function plugin_basename( $file ) {
 		}
 	}
 
-	$plugin_dir    = wp_normalize_path( WP_PLUGIN_DIR );
+	$plugin_dir = wp_normalize_path( WP_PLUGIN_DIR );
 	$mu_plugin_dir = wp_normalize_path( WPMU_PLUGIN_DIR );
 
-	$file = preg_replace( '#^' . preg_quote( $plugin_dir, '#' ) . '/|^' . preg_quote( $mu_plugin_dir, '#' ) . '/#', '', $file ); // get relative path from plugins dir
-	$file = trim( $file, '/' );
+	$file = preg_replace('#^' . preg_quote($plugin_dir, '#') . '/|^' . preg_quote($mu_plugin_dir, '#') . '/#','',$file); // get relative path from plugins dir
+	$file = trim($file, '/');
 	return $file;
 }
 
@@ -707,11 +769,11 @@ function wp_register_plugin_realpath( $file ) {
 	// Normalize, but store as static to avoid recalculation of a constant value
 	static $wp_plugin_path = null, $wpmu_plugin_path = null;
 	if ( ! isset( $wp_plugin_path ) ) {
-		$wp_plugin_path   = wp_normalize_path( WP_PLUGIN_DIR );
+		$wp_plugin_path   = wp_normalize_path( WP_PLUGIN_DIR   );
 		$wpmu_plugin_path = wp_normalize_path( WPMU_PLUGIN_DIR );
 	}
 
-	$plugin_path     = wp_normalize_path( dirname( $file ) );
+	$plugin_path = wp_normalize_path( dirname( $file ) );
 	$plugin_realpath = wp_normalize_path( dirname( realpath( $file ) ) );
 
 	if ( $plugin_path === $wp_plugin_path || $plugin_path === $wpmu_plugin_path ) {
@@ -767,9 +829,9 @@ function plugin_dir_url( $file ) {
  * @param string   $file     The filename of the plugin including the path.
  * @param callable $function The function hooked to the 'activate_PLUGIN' action.
  */
-function register_activation_hook( $file, $function ) {
-	$file = plugin_basename( $file );
-	add_action( 'activate_' . $file, $function );
+function register_activation_hook($file, $function) {
+	$file = plugin_basename($file);
+	add_action('activate_' . $file, $function);
 }
 
 /**
@@ -790,9 +852,9 @@ function register_activation_hook( $file, $function ) {
  * @param string   $file     The filename of the plugin including the path.
  * @param callable $function The function hooked to the 'deactivate_PLUGIN' action.
  */
-function register_deactivation_hook( $file, $function ) {
-	$file = plugin_basename( $file );
-	add_action( 'deactivate_' . $file, $function );
+function register_deactivation_hook($file, $function) {
+	$file = plugin_basename($file);
+	add_action('deactivate_' . $file, $function);
 }
 
 /**
@@ -805,12 +867,12 @@ function register_deactivation_hook( $file, $function ) {
  * The plugin should not run arbitrary code outside of functions, when
  * registering the uninstall hook. In order to run using the hook, the plugin
  * will have to be included, which means that any code laying outside of a
- * function will be run during the uninstallation process. The plugin should not
- * hinder the uninstallation process.
+ * function will be run during the uninstall process. The plugin should not
+ * hinder the uninstall process.
  *
  * If the plugin can not be written without running code within the plugin, then
  * the plugin should create a file named 'uninstall.php' in the base plugin
- * folder. This file will be called, if it exists, during the uninstallation process
+ * folder. This file will be called, if it exists, during the uninstall process
  * bypassing the uninstall hook. The plugin, when using the 'uninstall.php'
  * should always check for the 'WP_UNINSTALL_PLUGIN' constant, before
  * executing.
@@ -832,10 +894,10 @@ function register_uninstall_hook( $file, $callback ) {
 	 * cases. Emphasis should be put on using the 'uninstall.php' way of
 	 * uninstalling the plugin.
 	 */
-	$uninstallable_plugins                             = (array) get_option( 'uninstall_plugins' );
-	$uninstallable_plugins[ plugin_basename( $file ) ] = $callback;
+	$uninstallable_plugins = (array) get_option('uninstall_plugins');
+	$uninstallable_plugins[plugin_basename($file)] = $callback;
 
-	update_option( 'uninstall_plugins', $uninstallable_plugins );
+	update_option('uninstall_plugins', $uninstallable_plugins);
 }
 
 /**
@@ -856,10 +918,16 @@ function register_uninstall_hook( $file, $callback ) {
  *
  * @param array $args The collected parameters from the hook that was called.
  */
-function _wp_call_all_hook( $args ) {
+function _wp_call_all_hook($args) {
 	global $wp_filter;
 
-	$wp_filter['all']->do_all_hook( $args );
+	reset( $wp_filter['all'] );
+	do {
+		foreach ( (array) current($wp_filter['all']) as $the_ )
+			if ( !is_null($the_['function']) )
+				call_user_func_array($the_['function'], $args);
+
+	} while ( next($wp_filter['all']) !== false );
 }
 
 /**
@@ -896,32 +964,30 @@ function _wp_call_all_hook( $args ) {
  *                      and $function is an object reference, and it does not already have
  *                      a unique id.
  */
-function _wp_filter_build_unique_id( $tag, $function, $priority ) {
+function _wp_filter_build_unique_id($tag, $function, $priority) {
 	global $wp_filter;
 	static $filter_id_count = 0;
 
-	if ( is_string( $function ) ) {
+	if ( is_string($function) )
 		return $function;
-	}
 
-	if ( is_object( $function ) ) {
+	if ( is_object($function) ) {
 		// Closures are currently implemented as objects
 		$function = array( $function, '' );
 	} else {
 		$function = (array) $function;
 	}
 
-	if ( is_object( $function[0] ) ) {
+	if (is_object($function[0]) ) {
 		// Object Class Calling
-		if ( function_exists( 'spl_object_hash' ) ) {
-			return spl_object_hash( $function[0] ) . $function[1];
+		if ( function_exists('spl_object_hash') ) {
+			return spl_object_hash($function[0]) . $function[1];
 		} else {
-			$obj_idx = get_class( $function[0] ) . $function[1];
-			if ( ! isset( $function[0]->wp_filter_id ) ) {
-				if ( false === $priority ) {
+			$obj_idx = get_class($function[0]).$function[1];
+			if ( !isset($function[0]->wp_filter_id) ) {
+				if ( false === $priority )
 					return false;
-				}
-				$obj_idx                  .= isset( $wp_filter[ $tag ][ $priority ] ) ? count( (array) $wp_filter[ $tag ][ $priority ] ) : $filter_id_count;
+				$obj_idx .= isset($wp_filter[$tag][$priority]) ? count((array)$wp_filter[$tag][$priority]) : $filter_id_count;
 				$function[0]->wp_filter_id = $filter_id_count;
 				++$filter_id_count;
 			} else {
@@ -933,5 +999,99 @@ function _wp_filter_build_unique_id( $tag, $function, $priority ) {
 	} elseif ( is_string( $function[0] ) ) {
 		// Static Calling
 		return $function[0] . '::' . $function[1];
+	}
+}
+
+/**
+ * Backs up global variables used for actions and filters.
+ *
+ * Prevents redefinition of these globals in advanced-cache.php from accidentally
+ * destroying existing data.
+ *
+ * @since 4.6.0
+ * @access private
+ *
+ * @global array $wp_filter         Stores all filters and actions.
+ * @global array $wp_actions        Stores the amount of times an action was triggered.
+ * @global array $merged_filters    Merges the filter hooks using this function.
+ * @global array $wp_current_filter Stores the list of current filters with the current one last.
+ * @staticvar array $backup_globals Backed up globals.
+ *
+ * @return array the staticvar from the first time it is set.
+ */
+function _backup_plugin_globals( $backup = true ) {
+	global $wp_filter, $wp_actions, $merged_filters, $wp_current_filter;
+
+	static $backup_globals = array();
+
+	if ( $backup ) {
+		$backup_globals = array(
+			'backup_wp_filter'         => $wp_filter,
+			'backup_wp_actions'        => $wp_actions,
+			'backup_merged_filters'    => $merged_filters,
+			'backup_wp_current_filter' => $wp_current_filter,
+		);
+
+		$wp_filter = $wp_actions = array();
+	}
+	return $backup_globals;
+}
+
+/**
+ * Safely restores backed up global variables used for actions and filters.
+ *
+ * @since 4.6.0
+ * @access private
+ *
+ * @global array $wp_filter         Stores all filters and actions.
+ * @global array $wp_actions        Stores the amount of times an action was triggered.
+ * @global array $merged_filters    Merges the filter hooks using this function.
+ * @global array $wp_current_filter Stores the list of current filters with the current one last.
+ * @staticvar array $backup_globals Backed up globals.
+ */
+function _restore_plugin_globals() {
+	global $wp_filter, $wp_actions, $merged_filters, $wp_current_filter;
+
+	$backup_globals = _backup_plugin_globals( false );
+
+	if ( empty( $wp_filter ) ) {
+		$wp_filter = $backup_globals['backup_wp_filter'];
+	} else {
+		$added_filters = $wp_filter;
+		$wp_filter = $backup_globals['backup_wp_filter'];
+
+		foreach ( $added_filters as $tag => $callback_groups ) {
+			// Loop through callback groups.
+			foreach ( $callback_groups as $priority => $callbacks ) {
+
+				// Loop through callbacks.
+				foreach ( $callbacks as $cb ) {
+					add_filter( $tag, $cb['function'], $priority, $cb['accepted_args'] );
+				}
+			}
+		}
+	}
+
+	if ( empty ( $wp_actions ) ) {
+		$wp_actions = $backup_globals['backup_wp_actions'];
+	} else {
+		$run_actions = $wp_actions;
+		$wp_actions = $backup_globals['backup_wp_actions'];
+
+		foreach( $run_actions as $action => $count ) {
+			if ( ! isset( $wp_actions[ $action ] ) ) {
+				$wp_actions[ $action ] = 0;
+			}
+
+			$wp_actions[ $action ] += $count;
+		}
+	}
+
+	if ( $merged_filters !== $backup_globals['backup_merged_filters'] ) {
+		$merged_filters = array_merge_recursive( $merged_filters, $backup_globals['backup_merged_filters'] );
+	}
+
+	if ( $wp_current_filter !== $backup_globals['backup_wp_current_filter'] ) {
+		$wp_current_filter = array_merge_recursive( $wp_current_filter, $backup_globals['backup_wp_current_filter'] );
 	}
 }
