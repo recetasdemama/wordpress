@@ -1,26 +1,26 @@
 === Social Media Feather - lightweight social media sharing and follow buttons ===
 Contributors: Synved
 Donate link: http://synved.com/wordpress-social-media-feather/
-Tags: shortcode, shortcodes, link, links, url, permalink, permalinks, time, icons, button, buttons, free, content, plugin, Share, sharing, social share, social sharing, page, pages, widget, CSS, list, media, profile, shortlinks, social, social media, Like, twitter, google, Facebook, Reddit, youtube, vimeo, tumblr, instagram, flickr, foursquare, pinterest, linkedin, social media buttons, bookmark, bookmarks, bookmarking, social links, image, edit, manage, mail, Post, posts, Style, seo, title, filter, follow, following, social following, social follow, Social Media Icons, Social Media Widget, social widget, retina, iOS, iphone, ipad, high resolution, sidebar
+Tags: social media, social sharing, Facebook, twitter, google, Reddit, youtube, instagram, pinterest, Like, Share, social media buttons, shortcode, button, sidebar
 Requires at least: 3.1
-Tested up to: 4.5
+Tested up to: 4.6
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Super lightweight, simple, nice, modern looking and effective social media sharing and following buttons and icons on your site quick and easy
+Lightweight, nice, modern looking and effective social media sharing and following buttons and icons - all your social media needs in 1 easy package!
 
 == Description ==
 
 [WordPress Social Media Feather](http://synved.com/wordpress-social-media-feather/ "Lightweight WordPress social sharing and following") is a super lightweight free social media WordPress plugin that allows you to quickly and painlessly add **social sharing and following** features to all your posts, pages and custom post types.
 
-The plugin supports adding of social buttons for sharing or following (that is, social buttons that link to your social network profiles pages). The social media buttons can be easily and automatically be added to all your posts, pages or any other **custom post types**.
+The plugin supports adding of social buttons for sharing or following (that is, social buttons that link to your social network profiles pages). The social media buttons can easily and automatically be added to all your posts, pages or any other **custom post types**.
 
 Check out this introductory tutorial on [how to install and get started with Social Media for WordPress](http://youtu.be/iJAq2nJi6BM) by a helpful user of Social Media Feather!
 
 https://www.youtube.com/watch?v=iJAq2nJi6BM
 
-Now the only social sharing and bookmarking plugin with full support for the **Retina and high resolution displays** as used in iPad 5 and other devices!
+Now the only social sharing and bookmarking plugin with full support for the **Retina and high resolution displays** as used in the iPad, iPhones and other devices!
 
 The primary goal behind the plugin is to provide very lightweight WordPress social sharing and following that doesn’t add any unnecessary burden to your site and especially on your users, so you can easily add share buttons and social profiles links to your posts and pages automatically and speedily.
 
@@ -174,6 +174,10 @@ Social Media Feather always try to communicate to Facebook the correct parameter
 
 This could be due to Facebook caching your page information. Go to [Facebook Debug Tools](https://developers.facebook.com/tools/debug/) and type in the URL to the post/page, then click "Debug". On the next screen that loads, now click on "Fetch new scraping information"; this should clear Facebook's cache of your page.
 
+= Only some or none of the social media buttons show up, what causes it? =
+
+If you have automatic display enabled or you're displaying the social media icons using other means, like shortcodes or widgets, but some or all the buttons are not showing up in your browser, but they do show up on a fresh install of a different browser, it is possible that some of your browser add-ons are blocking the icons. This is generally caused by ad-blocking software such as Adblock or Adblock Plus. Please add your site in the exception list for these add-ons and your social icons should show up again.
+
 = When clicking on any share button, I'm getting an error of "The requested content cannot be loaded. Please try again later." How do I fix it? =
 This is not caused by our plugin but by a lightbox library you are using. This could either be loaded by your theme or one of your other plugins. If you're using Easy Fancybox, please install their [development version](https://downloads.wordpress.org/plugin/easy-fancybox.zip).
 
@@ -199,6 +203,9 @@ margin-left: 10px;
 7. This shows the available social sharing and following widgets and their settings 
 
 == Changelog ==
+
+= 1.7.11 =
+* Adjusted some text and README descriptions
 
 = 1.7.10 =
 * Use HTTPs by default for Facebook/Twitter follows
