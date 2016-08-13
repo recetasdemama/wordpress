@@ -1,7 +1,7 @@
 <?php defined( 'ABSPATH' ) or exit; ?>
 <div class="wrap" id="nsu-admin">
 
-<?php include_once NSU_PLUGIN_DIR . 'includes/views/parts/navigation.php'; ?>
+    <?php include dirname( __FILE__ ) . '/parts/navigation.php'; ?>
 
    <h2>Newsletter Sign-Up :: Mailinglist Settings</h2>
    <?php settings_errors(); ?>  
@@ -107,7 +107,7 @@
     </div>
 
 
-    <?php include_once NSU_PLUGIN_DIR . 'includes/views/parts/sidebar.php'; ?>
+    <?php include dirname( __FILE__ ) . '/parts/sidebar.php'; ?>
 
 </div>
 <br style="clear:both;" />

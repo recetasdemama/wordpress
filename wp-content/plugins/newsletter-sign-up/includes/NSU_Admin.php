@@ -47,7 +47,7 @@ if (!class_exists('NSU_Admin')) {
         {
             ?>
             <div class="updated">
-             <p><strong>Newsletter Sign-Up Notice:</strong> You are using MailChimp, great! Consider switching to <a href="http://dannyvankooten.com/wordpress-plugins/mailchimp-for-wordpress/">MailChimp for WordPress</a>, you will <strong>love</strong> it. 
+             <p><strong>Newsletter Sign-Up Notice:</strong> You are using MailChimp, great! Please consider switching to our improved <a href="https://mc4wp.com/">MailChimp for WordPress</a> plugin.
                 It can be downloaded from the WordPress repository <a href="https://wordpress.org/plugins/mailchimp-for-wp/">here</a>. | <a href="?nsu-hide-mc4wp-notice=1">Hide Notice</a></p>
             </div>
             <?php
@@ -116,7 +116,7 @@ if (!class_exists('NSU_Admin')) {
                 }
             }
 
-            require_once NSU_PLUGIN_DIR . 'includes/views/dashboard.php';
+            require_once NSU_PLUGIN_DIR . '/includes/views/dashboard.php';
         }
         
         /**
@@ -125,7 +125,7 @@ if (!class_exists('NSU_Admin')) {
         public function options_page_checkbox_settings() {
             $tab = 'checkbox-settings';
             $opts = $this->options['checkbox'];
-            require_once NSU_PLUGIN_DIR . 'includes/views/checkbox_settings.php';
+            require_once NSU_PLUGIN_DIR . '/includes/views/checkbox_settings.php';
         }
 
         /**
@@ -135,7 +135,7 @@ if (!class_exists('NSU_Admin')) {
             $tab = 'form-settings';
             $opts = $this->options['form'];
             $opts['mailinglist'] = $this->options['mailinglist'];
-            require_once NSU_PLUGIN_DIR . 'includes/views/form_settings.php';
+            require_once NSU_PLUGIN_DIR . '/includes/views/form_settings.php';
         }
 
         /**
@@ -282,6 +282,7 @@ if (!class_exists('NSU_Admin')) {
         /**
          * Validate the submitted options
          * @param array $options The submitted options
+         * @return array
          */
         public function validate_options($options) {
             return $options;
@@ -298,7 +299,6 @@ if (!class_exists('NSU_Admin')) {
 
             $options['name_required'] = (isset($options['name_required'])) ? 1 : 0;
             $options['wpautop'] = (isset($options['wpautop'])) ? 1 : 0;
-            $options['use_html5'] = (isset($options['use_html5'])) ? 1 : 0;
             $options['load_form_css'] = (isset($options['load_form_css'])) ? 1 : 0;
             
             return $options;

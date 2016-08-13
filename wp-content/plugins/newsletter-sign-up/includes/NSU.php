@@ -24,13 +24,13 @@ class NSU {
 			if ( is_admin() ) {
 
 				// backend only
-				require_once NSU_PLUGIN_DIR . 'includes/NSU_Admin.php';
+				require_once NSU_PLUGIN_DIR . '/includes/NSU_Admin.php';
 				new NSU_Admin();
 
 			} else {
 
 				// frontend only
-				require_once NSU_PLUGIN_DIR . 'includes/functions.php';
+				require_once NSU_PLUGIN_DIR . '/includes/functions.php';
 
 				add_action( 'wp_enqueue_scripts', array( $this, 'load_stylesheets' ) );
 				add_action( 'login_enqueue_scripts',  array( $this, 'load_stylesheets' ) );
@@ -41,7 +41,7 @@ class NSU {
 
 	public static function checkbox() {
 		if ( !self::$checkbox ) {
-			require_once NSU_PLUGIN_DIR .'includes/NSU_Checkbox.php';
+			require_once NSU_PLUGIN_DIR .'/includes/NSU_Checkbox.php';
 			self::$checkbox = new NSU_Checkbox;
 		}
 
@@ -50,7 +50,7 @@ class NSU {
 
 	public static function form() {
 		if ( !self::$form ) {
-			require_once NSU_PLUGIN_DIR . 'includes/NSU_Form.php';
+			require_once NSU_PLUGIN_DIR . '/includes/NSU_Form.php';
 			self::$form = new NSU_Form;
 		}
 
@@ -68,7 +68,7 @@ class NSU {
 			$keys = array( 'form', 'mailinglist', 'checkbox' );
 
 			$defaults = array(
-				'form' => array( 'load_form_css' => 0, 'use_html5' => 1, 'submit_button' => 'Sign up',
+				'form' => array( 'load_form_css' => 0, 'submit_button' => 'Sign up',
 					'name_label' => 'Name:', 'email_label' => "Email:", 'email_default_value' => 'Your emailaddress..', 'name_required' => 0, 'name_default_value' => 'Your name..', 'wpautop' => 0,
 					'text_after_signup' => 'Thanks for signing up to our newsletter. Please check your inbox to confirm your email address.', 'redirect_to' => '',
 					'text_empty_name' => 'Please fill in the name field.', 'text_empty_email' => 'Please fill in the email field.', 'text_invalid_email' => 'Please enter a valid email address.'
@@ -95,18 +95,16 @@ class NSU {
 
 	/**
 	 * Registers the Newsletter Sign-Up Widget
-	 *
-	 * @return type
 	 */
 	public function register_widget() {
-		require_once NSU_PLUGIN_DIR . 'includes/NewsletterSignUpWidget.php';
-		return register_widget( 'NewsletterSignUpWidget' );
+		require_once NSU_PLUGIN_DIR . '/includes/NewsletterSignUpWidget.php';
+		register_widget( 'NewsletterSignUpWidget' );
 	}
 
 	/**
 	 * Factory method for NewsletterSignUp class. Only instantiate once.
 	 *
-	 * @return NewsletterSignUp Instance of Newsletter Sign-Up class
+	 * @return NSU Instance of Newsletter Sign-Up class
 	 */
 	public static function instance() {
 		if ( !self::$instance ) self::$instance = new NSU();
@@ -161,10 +159,6 @@ class NSU {
 
 				$result = wp_remote_post( $url );
 
-				if ( isset( $_POST['_nsu_debug'] ) || isset( $_GET['_nsu_debug'] ) ) {
-					var_dump( $result ); die();
-				}
-
 				break;
 
 				/* Send data using the MailChimp API */
@@ -211,11 +205,7 @@ class NSU {
 					'https://'.substr( $opts['mc_api_key'], -3 ).'.api.mailchimp.com/1.3/?output=php&method=listSubscribe',
 					array( 'body' => json_encode( $request ) )
 				);
-
-				if ( isset( $_POST['_nsu_debug'] ) || isset( $_GET['_nsu_debug'] ) ) {
-					var_dump( $result ); die();
-				}
-
+				
 				break;
 
 			}
@@ -256,10 +246,6 @@ class NSU {
 				array( 'body' => $post_data )
 			);
 
-			if ( isset( $_POST['_nsu_debug'] ) || isset( $_GET['_nsu_debug'] ) ) {
-				var_dump( $result ); die();
-			}
-
 		}
 
 		// store a cookie, if preferred by site owner
@@ -282,6 +268,7 @@ class NSU {
 	 * Returns array with additional data names as key, values as value.
 	 *
 	 * @param array   $args, the normal form data (name, email, list variables)
+	 * @return array
 	 */
 	function add_additional_data( $args = array() ) {
 		$opts = $this->options['mailinglist'];

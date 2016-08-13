@@ -1,10 +1,10 @@
 === Newsletter Sign-Up ===
 Contributors: DvanKooten
 Donate link: https://dannyvankooten.com/donate/
-Tags: newsletter,sign-up,mailchimp,aweber,newsletter signup,checkbox,ymlp,email,phplist,icontact,mailinglist,checkbox,form widget,widget,newsletter widget,subscribe widget,form shortcode,mailchimp api
+Tags: newsletter, sign-up, mailchimp, aweber, ymlp, phplist, icontact, newsletter widget, subscribe widget
 Requires at least: 3.6
-Tested up to: 4.1.1
-Stable tag: 2.0.5
+Tested up to: 4.5.2
+Stable tag: 2.0.6
 License: GPL2
 
 Integrate your WordPress site with 3rd-party newsletter services like Aweber and YMLP. Adds various sign-up methods to your site.
@@ -14,7 +14,6 @@ Integrate your WordPress site with 3rd-party newsletter services like Aweber and
 = Newsletter Sign-Up =
 
 This plugin adds various sign-up methods to your WordPress website, like sign-up checkboxes in your comment form and a sign-up form to show in posts, pages or widget areas.
-
 
 > **MailChimp user?**
 >
@@ -35,7 +34,6 @@ This plugin works with *almost all* third-party email marketing services includi
 **More information**
 
 * [MailChimp for WordPress plugin](https://mc4wp.com/)
-* [Newsletter Sign-Up for WordPress](https://dannyvankooten.com/wordpress-plugins/newsletter-sign-up/)
 * Check out more [WordPress plugins](https://dannyvankooten.com/wordpress-plugins/) by Danny van Kooten
 * Follow [@DannyvanKooten](https://twitter.com/DannyvanKooten) on Twitter
 
@@ -51,9 +49,9 @@ You can set your own messages and even choose to redirect the visitor to a certa
 
 == Installation ==
 
-1. Upload the contents of newsletter-sign-up.zip to your plugins directory.
+1. Upload the contents of `newsletter-sign-up.zip` to your plugins directory.
 1. Activate the plugin
-1. Specify your newsletter service settings. For more info head over to: [Newsletter Sign-Up for WordPress](https://dannyvankooten.com/wordpress-plugins/newsletter-sign-up/)
+1. Specify your newsletter service settings.
 1. That's all. You're done!
 
 == Frequently Asked Questions ==
@@ -93,6 +91,10 @@ For more questions and answers go have a look at the [Newsletter Sign-Up](https:
 3. The sign-up checkbox in the Twenty Eleven theme
 
 == Changelog ==
+
+= 2.0.6 - June 20, 2016 =
+
+Minor maintenance round. Removed obsolete HTML5 option, as 99.9% of browsers support this now.
 
 = 2.0.5 - February 19, 2015 =
 

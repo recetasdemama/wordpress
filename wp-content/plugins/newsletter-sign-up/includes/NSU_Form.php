@@ -121,49 +121,34 @@ class NSU_Form {
 				}
 
 				$ed['value'] = str_replace( "%%IP%%", $_SERVER['REMOTE_ADDR'], $ed['value'] );
-				$additional_fields .= "<input type=\"hidden\" name=\"{$ed['name']}\" value=\"{$ed['value']}\" />";
+				$additional_fields .= sprintf( '<input type="hidden" name="%s" value="%s" />', esc_attr( $ed['name'] ), esc_attr( $ed['value'] ) );
 			}
 		}
 
 		$email_label = __( $opts['form']['email_label'], 'nsu' );
 		$name_label  = __( $opts['form']['name_label'], 'nsu' );
 
-		if ( $opts['form']['use_html5'] ) {
-			$email_type = 'email';
-			$email_atts = 'placeholder="' . esc_attr( $opts['form']['email_default_value'] ) . '" required';
-			$name_atts  = 'placeholder="' . esc_attr( $opts['form']['name_default_value'] ) . '" ';
+		$email_type = 'email';
+		$email_atts = 'placeholder="' . esc_attr( $opts['form']['email_default_value'] ) . '" required';
+		$name_atts  = 'placeholder="' . esc_attr( $opts['form']['name_default_value'] ) . '" ';
 
-			if ( $opts['form']['name_required'] ) {
-				$name_atts .= 'required ';
-			}
-
-		} else {
-			$email_type  = 'text';
-			$email_value = $opts['form']['email_default_value'];
-			$email_atts  = 'value="' . esc_attr( $email_value ) . '"';
-			$name_value  = $opts['form']['name_default_value'];
-			$name_atts   = 'value="' . esc_attr( $name_value ) . '"';
+		if ( $opts['form']['name_required'] ) {
+			$name_atts .= 'required ';
 		}
 
 		$submit_button = $opts['form']['submit_button'];
 
 		$text_after_signup = $opts['form']['text_after_signup'];
 		$text_after_signup = ( $opts['form']['wpautop'] == 1 ) ? wpautop( wptexturize( $text_after_signup ) ) : $text_after_signup;
-
-
+		
 		// check if form was not submitted or contains error
 		if ( ! isset( $_POST['nsu_submit'] ) || count( $errors ) > 0 ) {
-
 
 			$output .= '<form class="nsu-form" id="nsu-form-' . esc_attr( $formno ) .'" action="' . esc_attr( $form_action ) . '" method="post">';
 
 			if ( $opts['mailinglist']['subscribe_with_name'] == 1 ) {
 				$output .= '<p><label for="nsu-name-'. esc_attr( $formno ) . '">'. esc_html( $name_label ) . '</label>';
 				$output .= '<input class="nsu-field" id="nsu-name-"' . $formno .'" type="text" name="'. esc_attr( $name_id ) .'" ' . $name_atts;
-
-				if ( ! $opts['form']['use_html5'] ) {
-					$output .= "onblur=\"if(!this.value) this.value = '$name_value';\" onfocus=\"if(this.value == '$name_value') this.value=''\" ";
-				}
 
 				$output .= "/>";
 
@@ -174,9 +159,6 @@ class NSU_Form {
 			}
 
 			$output .= "<p><label for=\"nsu-email-$formno\">$email_label</label><input class=\"nsu-field\" id=\"nsu-email-$formno\" type=\"$email_type\" name=\"$email_id\" $email_atts ";
-			if ( ! $opts['form']['use_html5'] ) {
-				$output .= "onblur=\"if(!this.value) this.value = '$email_value';\" onfocus=\"if(this.value == '$email_value') this.value = ''\" ";
-			}
 			$output .= "/>";
 			if ( isset( $errors['email-field'] ) ) {
 				$output .= '<span class="nsu-error error notice">' . $errors['email-field'] . '</span>';
@@ -184,7 +166,7 @@ class NSU_Form {
 			$output .= "</p>";
 			$output .= $additional_fields;
 			$output .= '<textarea name="nsu_robocop" style="display: none;"></textarea>';
-			$output .= "<p><input type=\"submit\" id=\"nsu-submit-$formno\" class=\"nsu-submit\" name=\"nsu_submit\" value=\"$submit_button\" /></p>";
+			$output .= sprintf( '<p><input type="submit" id="nsu-submit-%s" class="nsu-submit" name="nsu_submit" value="%s" /></p>', $formno, esc_attr( $submit_button ) );
 			$output .= "</form>";
 
 		} else { // form has been submitted
