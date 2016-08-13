@@ -3,8 +3,8 @@ Contributors: dfactory
 Donate link: http://www.dfactory.eu/
 Tags: image, images, picture, photo, watermark, watermarking, protection, image protection, image security, plugin
 Requires at least: 3.5
-Tested up to: 4.5
-Stable tag: 1.5.3.1
+Tested up to: 4.5.2
+Stable tag: 1.5.6
 License: MIT License
 License URI: http://opensource.org/licenses/MIT
 
@@ -35,15 +35,6 @@ For more information, check out plugin page at [dFactory](http://www.dfactory.eu
 * Disable image protection for logged-in users
 * .pot file for translations included
 
-= Translations: =
-
-* Arabic - by Hassan Hisham
-* Chinese - by [xiaoyaole](http://www.luoxiao123.cn/)
-* German - by Matthias Siebler
-* Hungarian - by Meszaros Tamas
-* Polish - by Bartosz Arendt
-* Russian - by [Sly](http://wpguru.ru)
-
 == Installation ==
 
 1. Install Image Watermark either via the WordPress.org plugin directory, or by uploading the files to your server
@@ -62,7 +53,19 @@ No questions yet.
 
 == Changelog ==
 
-= 1.5.3.1 =
+= 1.5.6 =
+* New: PHP image processing library option, if more than one available.
+* Fix: Manual / Media library watermarking not working.
+* Fix: Image sizes not being generated proparly in GD library.
+
+= 1.5.5 =
+* Fix: Determine AJAX frontend or backend request
+* Tweak: Remove Polish and Russian translations, in favor of GlotPress
+
+= 1.5.4 =
+* Fix: Use of undefined constant DOING_AJAX
+
+= 1.5.3 =
 * New: ImageMagic support
 
 = 1.5.2 =
@@ -154,5 +157,7 @@ Initial release
 
 == Upgrade Notice ==
 
-= 1.5.3.1 =
-* New: ImageMagic support
+= 1.5.6 =
+* New: PHP image processing library option, if more than one available.
+* Fix: Manual / Media library watermarking not working.
+* Fix: Image sizes not being generated proparly in GD library.

@@ -2,7 +2,7 @@
 /*
 Plugin Name: Image Watermark
 Description: Image Watermark allows you to automatically watermark images uploaded to the WordPress Media Library and bulk watermark previously uploaded images.
-Version: 1.5.3
+Version: 1.5.6
 Author: dFactory
 Author URI: http://www.dfactory.eu/
 Plugin URI: http://www.dfactory.eu/plugins/image-watermark/
@@ -12,7 +12,7 @@ Text Domain: image-watermark
 Domain Path: /languages
 
 Image Watermark
-Copyright (C) 2013-2015, Digital Factory - info@digitalfactory.pl
+Copyright (C) 2013-2016, Digital Factory - info@digitalfactory.pl
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -32,7 +32,7 @@ define( 'IMAGE_WATERMARK_PATH', plugin_dir_path( __FILE__ ) );
  * Image Watermark class.
  *
  * @class Image_Watermark
- * @version	1.5.3
+ * @version	1.5.6
  */
 final class Image_Watermark {
 
@@ -48,11 +48,13 @@ final class Image_Watermark {
 		'image/pjpeg',
 		'image/png'
 	);
+	public $extensions;
 	public $defaults = array(
 		'options'	 => array(
 			'watermark_on'		 => array(),
 			'watermark_cpt_on'	 => array( 'everywhere' ),
 			'watermark_image'	 => array(
+				'extension'				=> '',
 				'url'					=> 0,
 				'width'					=> 80,
 				'plugin_off'			=> 0,
@@ -76,7 +78,7 @@ final class Image_Watermark {
 				'forlogged'		 => 0,
 			),
 		),
-		'version'	 => '1.5.3'
+		'version' => '1.5.6'
 	);
 	public $options = array();
 
@@ -132,9 +134,8 @@ final class Image_Watermark {
 	 */
 	public function deactivate_watermark() {
 		// remove options from database?
-		if ( $this->options['image_watermark_image']['deactivation_delete'] ) {
+		if ( $this->options['watermark_image']['deactivation_delete'] )
 			delete_option( 'image_watermark_options' );
-		}
 	}
 
 	/**
@@ -265,10 +266,29 @@ final class Image_Watermark {
 	 * @return	void
 	 */
 	public function check_extensions() {
-		if ( $this->check_imagick() )
-			$this->extension = 'imagick';
-		elseif ( $this->check_gd() )
-			$this->extension = 'gd';
+		$ext = null;
+
+		if ( $this->check_imagick() ) {
+			$this->extensions['imagick'] = 'ImageMagick';
+			$ext = 'imagick';
+		}
+
+		if ( $this->check_gd() ) {
+			$this->extensions['gd'] = 'GD';
+
+			if ( is_null( $ext ) )
+				$ext = 'gd';
+		}
+
+		if ( isset( $this->options['watermark_image']['extension'] ) ) {
+			if ( $this->options['watermark_image']['extension'] === 'imagick' && isset( $this->extensions['imagick'] ) )
+				$this->extension = 'imagick';
+			elseif ( $this->options['watermark_image']['extension'] === 'gd' && isset( $this->extensions['gd'] ) )
+				$this->extension = 'gd';
+			else
+				$this->extension = $ext;
+		} else
+			$this->extension = $ext;
 	}
 
 	/**
@@ -280,21 +300,39 @@ final class Image_Watermark {
 	public function handle_upload_files( $file ) {
 		// is extension available?
 		if ( $this->extension ) {
+			// determine ajax frontend or backend request
+			$script_filename = isset( $_SERVER['SCRIPT_FILENAME'] ) ? $_SERVER['SCRIPT_FILENAME'] : '';
+
+			// try to figure out if frontend AJAX request... if we are DOING_AJAX; let's look closer
+			if ( ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+				// from wp-includes/functions.php, wp_get_referer() function.
+				// required to fix: https://core.trac.wordpress.org/ticket/25294
+				$ref = '';
+				if ( ! empty( $_REQUEST['_wp_http_referer'] ) )
+					$ref = wp_unslash( $_REQUEST['_wp_http_referer'] );
+				elseif ( ! empty( $_SERVER['HTTP_REFERER'] ) )
+					$ref = wp_unslash( $_SERVER['HTTP_REFERER'] );
+
+				// if referer does not contain admin URL and we are using the admin-ajax.php endpoint, this is likely a frontend AJAX request
+				if ( ( ( strpos( $ref, admin_url() ) === false ) && ( basename( $script_filename ) === 'admin-ajax.php' ) ) )
+					$this->is_admin = false;
+				else
+					$this->is_admin = true;
+			// not an AJAX request, simple here
+			} else {
+				if ( is_admin() )
+					$this->is_admin = true;
+				else
+					$this->is_admin = false;
+			}
+
 			// admin
-			if ( is_admin() && ! ( defined( 'DOING_AJAX' && DOING_AJAX ) ) ) {
-
-				$this->is_admin = true;
-
-				// apply watermark if backend is active and watermark image is set
+			if ( $this->is_admin === true ) {
 				if ( $this->options['watermark_image']['plugin_off'] == 1 && $this->options['watermark_image']['url'] != 0 && in_array( $file['type'], $this->allowed_mime_types ) ) {
 					add_filter( 'wp_generate_attachment_metadata', array( $this, 'apply_watermark' ), 10, 2 );
-				}	
+				}
+			// frontend
 			} else {
-
-				// frontend
-				$this->is_admin = false;
-
-				// apply watermark if frontend is active and watermark image is set
 				if ( $this->options['watermark_image']['frontend_active'] == 1 && $this->options['watermark_image']['url'] != 0 && in_array( $file['type'], $this->allowed_mime_types ) ) {
 					add_filter( 'wp_generate_attachment_metadata', array( $this, 'apply_watermark' ), 10, 2 );
 				}
@@ -310,8 +348,7 @@ final class Image_Watermark {
 	public function apply_watermark_bulk_action() {
 		global $pagenow;
 
-		if ( $pagenow == 'upload.php' && $this->extension) {
-
+		if ( $pagenow == 'upload.php' && $this->extension ) {
 			$wp_list_table = _get_list_table( 'WP_Media_List_Table' );
 
 			// only if manual watermarking is turned on and image watermark is set
@@ -334,6 +371,7 @@ final class Image_Watermark {
 
 				// do we have selected attachments?
 				if ( $post_ids ) {
+
 					$watermarked = $skipped = 0;
 
 					foreach ( $post_ids as $post_id ) {
@@ -341,7 +379,7 @@ final class Image_Watermark {
 
 						// is this really an image?
 						if ( in_array( get_post_mime_type( $post_id ), $this->allowed_mime_types ) && is_array( $data ) ) {
-							$this->apply_watermark( $data, 'manual' );
+							$this->apply_watermark( $data, $post_id, 'manual' );
 							$watermarked ++;
 						} else
 							$skipped ++;
@@ -408,12 +446,10 @@ final class Image_Watermark {
 		}
 	}
 
-	
-
 	/**
 	 * Check whether ImageMagick extension is available.
 	 *
-	 * @return	boolean		True if extension is available.
+	 * @return	boolean		True if extension is available
 	 */
 	public function check_imagick() {
 		// check Imagick's extension and classes
@@ -438,7 +474,7 @@ final class Image_Watermark {
 	/**
 	 * Check whether GD extension is available.
 	 *
-	 * @return	boolean		True if extension is available.
+	 * @return	boolean		True if extension is available
 	 */
 	public function check_gd( $args = array() ) {
 		// check extension
@@ -455,12 +491,20 @@ final class Image_Watermark {
 	 * @param	int|string	$attachment_id	Attachment ID or 'manual'
 	 * @return	array
 	 */
-	public function apply_watermark( $data, $attachment_id ) {
+	public function apply_watermark( $data, $attachment_id, $method = '' ) {
 		$post = get_post( (int) $attachment_id );
 		$post_id = ( ! empty( $post ) ? (int) $post->post_parent : 0 );
 
 		// something went wrong or is it automatic mode?
-		if ( $attachment_id !== 'manual' && ( $this->is_admin === true && ! ( ( isset( $this->options['watermark_cpt_on'][0] ) && $this->options['watermark_cpt_on'][0] === 'everywhere') || ( $post_id > 0 && in_array( get_post_type( $post_id ), array_keys( $this->options['watermark_cpt_on'] ) ) === true) ) ) )
+		if ( $method !== 'manual'
+			&& (
+				$this->is_admin === true 
+				&& ! ( 
+					( isset( $this->options['watermark_cpt_on'][0] ) && $this->options['watermark_cpt_on'][0] === 'everywhere' ) 
+					|| ( $post_id > 0 && in_array( get_post_type( $post_id ), array_keys( $this->options['watermark_cpt_on'] ) ) === true ) 
+					) 
+				) 
+			)
 			return $data;
 
 		if ( apply_filters( 'iw_watermark_display', $attachment_id ) === false )
@@ -472,6 +516,7 @@ final class Image_Watermark {
 		if ( getimagesize( $upload_dir['basedir'] . DIRECTORY_SEPARATOR . $data['file'] ) !== false ) {
 			// loop through active image sizes
 			foreach ( $this->options['watermark_on'] as $image_size => $active_size ) {
+				
 				if ( $active_size === 1 ) {
 					switch ( $image_size ) {
 						case 'full':
@@ -574,7 +619,7 @@ final class Image_Watermark {
 		// gd extension
 		} else {
 			// get image resource
-			$image = load_image_to_edit( $attachment_id, $mime['type'], $image_size );
+			$image = $this->get_image_resource( $image_path, $mime['type'] );
 
 			if ( $image !== false ) {
 				// add watermark image to image
@@ -591,6 +636,38 @@ final class Image_Watermark {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get image resource accordingly to mimetype.
+	 *
+	 * @param	string $filepath
+	 * @param	string $mime_type
+	 * @return	resource
+	 */
+	private function get_image_resource( $filepath, $mime_type ) {
+		switch ( $mime_type ) {
+			case 'image/jpeg':
+			case 'image/pjpeg':
+				$image = imagecreatefromjpeg( $filepath );
+				break;
+
+			case 'image/png':
+				$image = imagecreatefrompng( $filepath );
+
+				imagefilledrectangle( $image, 0, 0, imagesx( $image ), imagesy( $image ), imagecolorallocatealpha( $image, 255, 255, 255, 127 ) );
+				break;
+
+			default:
+				$image = false;
+		}
+
+		if ( is_resource( $image ) ) {
+			imagealphablending( $image, false );
+			imagesavealpha( $image, true );
+		}
+
+		return $image;
 	}
 
 	/**
