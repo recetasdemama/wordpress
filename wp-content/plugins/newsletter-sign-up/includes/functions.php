@@ -20,8 +20,8 @@ if(!function_exists('nsu_form')) {
 
 /* Backwards Compatibility */
 if(!function_exists('nsu_signup_form')) {
-	function nsu_signup_form()
-	{
+	function nsu_signup_form() {
+		_deprecated_function( __FUNCTION__, '2.0', 'nsu_form' );
 		nsu_form();
 	}
 }

@@ -1,8 +1,7 @@
 <?php defined( 'ABSPATH' ) or exit; ?>
 <tr valign="top">
-	<th colspan="2" style="background: lightskyblue; padding: 20px;">
-		As you're using MailChimp, I highly recommend switching to my newer plugin:
-		<a href="https://wordpress.org/plugins/mailchimp-for-wp/">MailChimp for WordPress</a>.
+	<th colspan="2" style="background: white; border-left: 10px solid lightskyblue; padding: 20px;">
+		As you're using MailChimp, I highly recommend switching to our improved <a href="https://wordpress.org/plugins/mailchimp-for-wp/">MailChimp for WordPress</a> plugin.
 		You'll be up and running (again) in just a few minutes.
 	</th>
 </tr>

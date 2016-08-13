@@ -1,7 +1,7 @@
 <?php defined( 'ABSPATH' ) or exit; ?>
 <div class="wrap" id="nsu-admin">
 
-    <?php include_once 'parts/navigation.php'; ?>
+    <?php include dirname( __FILE__ ) . '/parts/navigation.php'; ?>
 
     <div id="nsu-main">
 
@@ -58,11 +58,6 @@
                 <td><input type="checkbox" id="ns_load_form_styles" name="nsu_form[load_form_css]" value="1" <?php if($opts['load_form_css'] == 1) echo 'checked'; ?> /></td>
                 <td><small>Check this to load some default form CSS styles.</small></td>
             </tr>
-            <tr valign="top">
-                <th scope="row"><label for="nsu_use_html_5">Use HTML 5?</label></th>
-                <td><input type="checkbox" id="nsu_use_html_5" name="nsu_form[use_html5]" value="1" <?php checked($opts['use_html5'], 1); ?> /></td>
-                <td><small>Use HTML5 fields and attributes? (recommended)</small></td>
-            </tr>
         </table>
         
         <?php submit_button(); ?>
@@ -89,6 +84,6 @@
     </form>
 </div>
 
-<?php require 'parts/sidebar.php'; ?>
+<?php include dirname( __FILE__ ) . '/parts/sidebar.php'; ?>
 
 </div>

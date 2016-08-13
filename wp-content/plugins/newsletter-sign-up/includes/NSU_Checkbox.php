@@ -7,6 +7,9 @@ class NSU_Checkbox {
 	 */
 	private $showed_checkbox = false;
 
+	/** @var array */
+	private $options;
+
 	public function __construct() {
 
 		$options = NSU::instance()->get_options();
@@ -132,8 +135,8 @@ class NSU_Checkbox {
 	 *
 	 * @param int   $blog_id The id of the new blow
 	 * @param int   $user_id The ID of the new user
-	 * @param       $a       No idea, seriously.
-	 * @param       $b       No idea, seriously.
+	 * @param mixed $a       No idea, seriously.
+	 * @param mixed $b       No idea, seriously.
 	 * @param array $meta    The meta values that belong to this user, holds the value of our 'newsletter-sign-up' checkbox.
 	 */
 	public function grab_email_from_ms_blog_signup( $blog_id, $user_id, $a, $b, $meta ) {
@@ -183,8 +186,10 @@ class NSU_Checkbox {
 	/**
 	 * Grab the emailadress and name from comment and then send it to mailinglist.
 	 *
-	 * @param int    $cid     : the ID of the comment
-	 * @param object $comment : the comment object, optionally
+	 * @param int    $cid    the ID of the comment
+	 * @param string $comment_approved the comment object, optionally
+	 *
+	 * @return bool
 	 */
 	public function grab_email_from_comment( $cid, $comment_approved = '' ) {
 
