@@ -1,6 +1,6 @@
 <?php
 /**
- * Displays header media
+ * Displays header image
  *
  * @package WordPress
  * @subpackage Twenty_Seventeen
@@ -11,9 +11,11 @@
 ?>
 <div class="custom-header">
 
-		<div class="custom-header-media">
+	<?php if ( has_custom_header() ) : ?>
+		<div class="custom-header-image">
 			<?php the_custom_header_markup(); ?>
 		</div>
+	<?php endif; ?>
 
 	<?php get_template_part( 'template-parts/header/site', 'branding' ); ?>
 
