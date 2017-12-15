@@ -64,6 +64,7 @@ function synved_option_page_cb($id, $name, $item)
 	$title = synved_option_item_title($item);
 	$tip = synved_option_item_tip($item);
 	$role = synved_option_item_role($item);
+	$style = synved_option_item_style($item);
 	
 	if (!current_user_can($role))
 	{
@@ -73,9 +74,19 @@ function synved_option_page_cb($id, $name, $item)
 	if ($title === null)
 	{
 		$title = $label;
-	}	
+	}
+	
+	$class = 'wrap';
+	
+	if ($style != null)
+	{
+		foreach ($style as $style_name)
+		{
+			$class .= ' ' . 'synved-option-style-' . $style_name;
+		}
+	}
 ?>
-	<div class="wrap">
+	<div class="<?php echo esc_attr($class); ?>">
 		<div class="icon32" id="icon-options-general"><br/></div>
 		<h2><?php echo $title; ?></h2>
 		<p><?php echo $tip; ?></p>
@@ -119,6 +130,16 @@ function synved_option_page_cb($id, $name, $item)
 		</p>
 		</form>
 	</div>
+
+    <script type="text/javascript">
+        const SYNVED_DISABLE_FEATURE_URL = '<?php echo admin_url('options-general.php?page=synved_social_settings&accept-terms=no'); ?>';
+        const SYNVED_ENABLE_FEATURE_URL = '<?php echo admin_url('options-general.php?page=synved_social_settings&accept-terms=yes'); ?>';
+
+        jQuery(document).ready(function () {
+            synved_switcher.init(<?php echo synved_option_get('synved_social', 'accepted_sharethis_terms'); ?>);
+        });
+    </script>
+
 <?php
 }
 

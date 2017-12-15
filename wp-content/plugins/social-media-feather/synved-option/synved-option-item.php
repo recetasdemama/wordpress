@@ -722,7 +722,7 @@ function synved_option_item_sanitize_value($id, $name, $value, array $item = nul
 	{
 		$item = synved_option_item($id, $name);
 	}
-	
+
 	if ($item == null)
 	{
 		return null;
@@ -741,7 +741,7 @@ function synved_option_item_sanitize_value($id, $name, $value, array $item = nul
 	
 	$value = synved_option_item_sanitize_value_basic($item, $value, $default);
 	$is_valid = true;
-	
+
 	if ($set != null)
 	{
 		if (is_array($value))
@@ -771,7 +771,7 @@ function synved_option_item_sanitize_value($id, $name, $value, array $item = nul
 			}
 		}
 	}
-	
+
 	if ($is_valid)
 	{
 		if ($sanitize != null)
