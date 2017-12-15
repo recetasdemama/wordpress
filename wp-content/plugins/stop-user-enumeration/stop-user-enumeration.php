@@ -1,12 +1,14 @@
 <?php
 /*
 Plugin Name: Stop User Enumeration
-Plugin URI: http://fullworks.net/wordpress-plugins/stop-user-enumeration/
+Plugin URI: https://fullworks.net/products/stop-user-enumeration/
 Description: User enumeration is a technique used by hackers to get your login name if you are using permalinks. This plugin stops that.
-Version: 1.3.4
+Version: 1.3.14
 Author: Fullworks Digital Ltd
-Author URI: http://fullworks.net
-License: GPLv2 or later
+Text Domain: stop-user-enumeration
+Domain Path: /languages
+Author URI: https://fullworks.net/
+License: GPLv2 or later.
 */
 
 /*
@@ -24,22 +26,11 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-
-if ( ! is_admin() && isset($_SERVER['REQUEST_URI'])){
-      if(preg_match('/(wp-comments-post)/', $_SERVER['REQUEST_URI']) === 0 && !empty($_REQUEST['author']) ) {
-            openlog('wordpress('.$_SERVER['HTTP_HOST'].')',LOG_NDELAY|LOG_PID,LOG_AUTH);
-     		syslog(LOG_INFO,"Attempted user enumeration from {$_SERVER['REMOTE_ADDR']}");
-     		closelog();
-     		wp_die('forbidden');
-      }
+// don't allow running on less than php 5.3 but handle gracefully - no alerts
+if (!defined('PHP_VERSION_ID')) {
+    $version = explode('.', PHP_VERSION);
+	define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
 }
-
-add_action('plugin_row_meta', 'sue_plugin_row_meta', 10, 2 );
-function sue_plugin_row_meta( $links, $file = '' ){
-    if( false !== strpos($file , '/stop-user-enumeration.php') ){
-        $links[] = '<a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4EMTVFMKXRRYY"><strong>Please Donate (even 50 cents)</strong></a>';
-      }
-    return $links;
+if (PHP_VERSION_ID >= 50300 ) {
+	require_once(plugin_dir_path( __FILE__ ).'bootstrap.php');
 }
-
-?>
