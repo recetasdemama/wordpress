@@ -31,6 +31,17 @@ jQuery(document).on( 'click', '.woo-upgrade-notice', function() {
 
 })
 
+jQuery(document).on( 'click', '.sitemap_max_urls_notice', function() {
+
+    jQuery.ajax({
+        url: ajaxurl,
+        data: {
+            action: 'aioseo_dismiss_sitemap_max_url_notice'
+        }
+    })
+
+})
+
 
 function aioseop_ajax_edit_meta_form( post_id, meta, nonce ) {
 	var uform = jQuery('#aioseop_'+meta+'_' + post_id);
@@ -44,7 +55,7 @@ function aioseop_ajax_edit_meta_form( post_id, meta, nonce ) {
 	input += '<img src="' + aioseopadmin.imgUrl+'delete.png" border="0" alt="" title="'+meta+'" /></a>';
 	input += '</label>';
 	uform.html( input );
-	uform.attr( "class", "aioseop_mpc_admin_meta_options editing" );
+	uform.attr( "class", "aioseop_mpc_admin_meta_options aio_editing" );
 	jQuery('#aioseop_'+meta+'_cancel_' + post_id).click(function() {
 		uform.html( element );
 		uform.attr( "class", "aioseop_mpc_admin_meta_options" );
@@ -63,7 +74,7 @@ function handle_post_meta( p, t, m, n ) {
 		loading += '</label><div style="float:left">Please wait…</div>';
 		jQuery("div#aioseop_"+m+"_"+p).fadeIn('fast', function() {
 			var aioseop_sack = new sack(aioseopadmin.requestUrl);
-			aioseop_sack.execute = 1; 
+			aioseop_sack.execute = 1;
 			aioseop_sack.method = 'POST';
 			aioseop_sack.setVar( "action", "aioseop_ajax_save_meta");
 			aioseop_sack.setVar( "post_id", p );
@@ -76,6 +87,6 @@ function handle_post_meta( p, t, m, n ) {
 		})
 		jQuery("div#aioseop_"+m+"_"+p).html(loading);
 		jQuery("div#aioseop_"+m+"_"+p).attr( "class", "aioseop_mpc_admin_meta_options" );
-		
+
 	})
 }
