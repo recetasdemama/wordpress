@@ -22,9 +22,8 @@ class Ga_Sharethis {
 	 */
 	public static function create_sharethis_options( $api_client ) {
 		$data = array();
-		$parsed_url = parse_url( get_option( 'siteurl' ) );
 		if ( Ga_Helper::should_create_sharethis_property() ) {
-			$domain				 = $parsed_url['host'] . ( !empty( $parsed_url['path'] ) ? $parsed_url['path'] : '' );
+			$domain				 = parse_url( get_site_url(), PHP_URL_HOST );
 			$query_params		 = array( 'domain' => $domain );
 			$response			 = $api_client->call( 'ga_api_create_sharethis_property', array(
 				$query_params
