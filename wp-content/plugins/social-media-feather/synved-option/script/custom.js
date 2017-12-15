@@ -117,3 +117,40 @@ jQuery(document).ready(function() {
 	});
 });
 
+
+(function ($) {
+    /**
+     * Handles "disable all features" switch button
+     * @type {{init: synved_switcher.init}}
+     */
+    synved_switcher = {
+        init: function (state) {
+            var checkbox = $("#synved-disable");
+
+            if (state) {
+                checkbox.prop('checked', 'checked');
+            } else {
+                checkbox.removeProp('checked');
+            }
+
+            $("#synved-slider").on("click", function (e) {
+
+                checkbox = $("#synved-disable");
+                if (checkbox[0].checked) {
+                    if (confirm('This will decline ShareThis Terms of Service, please confirm.')) {
+                        window.location.href = SYNVED_DISABLE_FEATURE_URL;
+                    } else {
+                        var int = setInterval(function(){
+                            if (!checkbox[0].checked) {
+                                checkbox[0].checked = true;
+                                clearInterval(int);
+                            }
+                        }, 10);
+                    }
+                } else { // disable
+                    window.location.href = SYNVED_ENABLE_FEATURE_URL;
+                }
+            });
+        }
+    };
+})(jQuery);

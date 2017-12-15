@@ -2,6 +2,8 @@
 
 function synved_connect_sponsor_list($filter = null)
 {
+	global $synved_connect;
+	
 	$sponsor_list = array(
 		'wordpress-themes-1' => array(
 			'type' => 'credit',
@@ -40,67 +42,76 @@ function synved_connect_sponsor_list($filter = null)
 		)
 	);
 	
-	$feed = fetch_feed('http://feeds.feedburner.com/_SynvedConnectList?format=xml');
-	
-	if (!is_wp_error($feed))
+	if (isset($synved_connect['sponsor-list']))
 	{
-		$maxitems = $feed->get_item_quantity();
-    $feed_items = $feed->get_items(0, $maxitems);
-    $feed_list = array();
-    
-    if ($maxitems > 0)
-    {
-    	foreach ($feed_items as $feed_item)
-    	{
-	  		$id = $feed_item->get_id();
-	  		$label = $feed_item->get_title();
-	  		$tip = $feed_item->get_description();
-	  		$link = $feed_item->get_permalink();
-	  		$text = $feed_item->get_content();
-	  		
-	  		$id_parts = array();
-	  		parse_str(parse_url($id, PHP_URL_QUERY), $id_parts);
-	  		$id = $id_parts['guid'];
-		  	
-    		$feed_categories = $feed_item->get_categories();
-    		$type = null;
-    		
-    		if ($feed_categories != null)
-    		{
-    			$category_tag = 'synved-connect-type-';
-    			
-    			foreach ($feed_categories as $feed_category)
-    			{
-    				$feed_category = $feed_category->get_label();
-    				
-    				if (substr($feed_category, 0, strlen($category_tag)) == $category_tag)
-    				{
-    					$type = substr($feed_category, strlen($category_tag));
-    					
-    					break;
-    				}
-    			}
-    		}
-    		
-    		if ($type != null && $id != null)
-    		{
-		  		$feed_list[$id] = array(
-						'type' => $type,
-						'label' => $label,
-						'tip' => $tip,
-						'link' => $link,
-						'text' => $text
-		  		);
-    		}
-    	}
-    }
-    
-    if ($feed_list != null)
-    {
-    	$sponsor_list = $feed_list;
-    }
+		$sponsor_list = $synved_connect['sponsor-list'];
 	}
-
+	else
+	{
+		$feed = fetch_feed('http://feeds.feedburner.com/_SynvedConnectList?format=xml');
+	
+		if (!is_wp_error($feed))
+		{
+			$maxitems = $feed->get_item_quantity();
+		  $feed_items = $feed->get_items(0, $maxitems);
+		  $feed_list = array();
+		  
+		  if ($maxitems > 0)
+		  {
+		  	foreach ($feed_items as $feed_item)
+		  	{
+					$id = $feed_item->get_id();
+					$label = $feed_item->get_title();
+					$tip = $feed_item->get_description();
+					$link = $feed_item->get_permalink();
+					$text = $feed_item->get_content();
+					
+					$id_parts = array();
+					parse_str(parse_url($id, PHP_URL_QUERY), $id_parts);
+					$id = $id_parts['guid'];
+					
+		  		$feed_categories = $feed_item->get_categories();
+		  		$type = null;
+		  		
+		  		if ($feed_categories != null)
+		  		{
+		  			$category_tag = 'synved-connect-type-';
+		  			
+		  			foreach ($feed_categories as $feed_category)
+		  			{
+		  				$feed_category = $feed_category->get_label();
+		  				
+		  				if (substr($feed_category, 0, strlen($category_tag)) == $category_tag)
+		  				{
+		  					$type = substr($feed_category, strlen($category_tag));
+		  					
+		  					break;
+		  				}
+		  			}
+		  		}
+		  		
+		  		if ($type != null && $id != null)
+		  		{
+						$feed_list[$id] = array(
+							'type' => $type,
+							'label' => $label,
+							'tip' => $tip,
+							'link' => $link,
+							'text' => $text
+						);
+		  		}
+		  	}
+		  }
+		  
+		  if ($feed_list != null)
+		  {
+		  	$sponsor_list = $feed_list;
+		  }
+		}
+	
+		$synved_connect['sponsor-list'] = $sponsor_list;		
+	}
+	
 	if ($filter != null)
 	{
 		$final_list = array();

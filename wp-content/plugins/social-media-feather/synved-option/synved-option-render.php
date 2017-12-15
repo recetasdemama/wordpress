@@ -51,7 +51,6 @@ function synved_option_render_section($page, $section)
 		$id = null;
 		$name = null;
 		$item = null;
-		$class_list = array();
 		
 		if ($callback == 'synved_option_call_array' && $args[0] == 'synved_option_setting_cb')
 		{
@@ -59,49 +58,59 @@ function synved_option_render_section($page, $section)
 			$id = $extra_args[0];
 			$name = $extra_args[1];
 			$item = $extra_args[2];
-			
-			if ($item != null)
+		}
+		
+		if ($item == null)
+			continue;
+		
+		$type = synved_option_item_type($item);
+		$hidden = synved_option_item_hidden($item);
+		$style = synved_option_item_style($item);
+		
+		$class_list = array();
+		$class_list[] = 'synved-option-type-' . $type;
+		
+		if ($style != null)
+		{
+			foreach ($style as $style_name)
 			{
-				$type = synved_option_item_type($item);
-				$style = synved_option_item_style($item);
-				
-				$class_list[] = 'synved-option-type-' . $type;
-				
-				if ($style != null)
+				$class_list[] = 'synved-option-style-' . $style_name;
+
+				// XXX exception
+				if ($style_name == 'addon-important')
 				{
-					foreach ($style as $style_name)
+					if ($type == 'addon')
 					{
-						$class_list[] = 'synved-option-style-' . $style_name;
-	
-						// XXX exception
-						if ($style_name == 'addon-important')
+						if (synved_option_item_addon_is_installed($item))
 						{
-							if ($type == 'addon')
-							{
-								if (synved_option_item_addon_is_installed($item))
-								{
-									$class_list[] = 'synved-option-style-' . $style_name . '-installed';
-								}
-							}
+							$class_list[] = 'synved-option-style-' . $style_name . '-installed';
 						}
-						else if ($style_name == 'group')
-						{
-							if ($index > 0)
-							{
-								$class_list[] = 'synved-option-style-' . $style_name . '-active';
-							}
-						}
+					}
+				}
+				else if ($style_name == 'group')
+				{
+					if ($index > 0)
+					{
+						$class_list[] = 'synved-option-style-' . $style_name . '-active';
 					}
 				}
 			}
 		}
+	
+		$class = null;
+		$css = null;
 		
 		if ($class_list != null)
 		{
-			$class_list = ' class="' . implode(' ', $class_list) . '"';
+			$class = ' class="' . implode(' ', $class_list) . '"';
 		}
 		
-		echo '<tr valign="top"' . $class_list . '>';
+		if ($hidden)
+		{
+			$css = ' style="display: none;"';
+		}
+		
+		echo '<tr valign="top"' . $class . $css . '>';
 		
 		if (!empty($field['args']['label_for']))
 			echo '<th scope="row"><label for="' . $field['args']['label_for'] . '">' . $field['title'] . '</label></th>';
@@ -112,10 +121,6 @@ function synved_option_render_section($page, $section)
 		if ($item != null)
 		{
 			synved_option_render_item($id, $name, $item, true);
-		}
-		else
-		{
-			call_user_func($callback, $args);
 		}
 		
 		echo '</td>';

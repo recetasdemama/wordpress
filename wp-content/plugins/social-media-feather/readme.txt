@@ -1,36 +1,25 @@
-=== Social Media Feather - lightweight social media sharing and follow buttons ===
-Contributors: Synved
-Donate link: http://synved.com/wordpress-social-media-feather/
-Tags: social media, social sharing, Facebook, twitter, google, Reddit, youtube, instagram, pinterest, Like, Share, social media buttons, shortcode, button, sidebar
+=== Social Media Feather | social media sharing ===
+Contributors: socialmediafeather
+Tags: social media, social sharing, social buttons, Facebook, Share, Like, twitter, google, Reddit, youtube, instagram, pinterest, social media buttons, button, shortcode, sidebar, sharing buttons, follow buttons
 Requires at least: 3.1
-Tested up to: 4.6
-Stable tag: trunk
+Tested up to: 4.7
+Stable tag: 1.8.4
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Lightweight, nice, modern looking and effective social media sharing and following buttons and icons - all your social media needs in 1 easy package!
+Lightweight, modern looking and effective social media sharing and profile buttons and icons. All your social media needs in 1 easy package!
 
 == Description ==
 
-[WordPress Social Media Feather](http://synved.com/wordpress-social-media-feather/ "Lightweight WordPress social sharing and following") is a super lightweight free social media WordPress plugin that allows you to quickly and painlessly add **social sharing and following** features to all your posts, pages and custom post types.
+[WordPress Social Media Feather](http://socialmediafeather.com/ "Lightweight WordPress social sharing and following") is a lightweight free social media WordPress plugin that allows you to quickly and painlessly add social sharing and following features to all your posts, pages and custom post types.
 
 The plugin supports adding of social buttons for sharing or following (that is, social buttons that link to your social network profiles pages). The social media buttons can easily and automatically be added to all your posts, pages or any other **custom post types**.
 
-Check out this introductory tutorial on [how to install and get started with Social Media for WordPress](http://youtu.be/iJAq2nJi6BM) by a helpful user of Social Media Feather!
+One of the few social sharing and bookmarking plugin with full support for the **Retina and high resolution displays** as used in the iPad, iPhones and other devices!
 
-https://www.youtube.com/watch?v=iJAq2nJi6BM
+What sets WordPress Social Media Feather aside from the plethora of other social sharing and following WordPress plugins is its focus on simplicity, performance and social sharing impact. Social share buttons and links to your social pages are fast to setup with automatic display or social widgets.
 
-Now the only social sharing and bookmarking plugin with full support for the **Retina and high resolution displays** as used in the iPad, iPhones and other devices!
-
-The primary goal behind the plugin is to provide very lightweight WordPress social sharing and following that doesn’t add any unnecessary burden to your site and especially on your users, so you can easily add share buttons and social profiles links to your posts and pages automatically and speedily.
-
-What sets WordPress Social Media Feather aside from the plethora of other social sharing and following WordPress plugins is its focus on simplicity, performance and unobtrusive impact. Social share buttons and links to your social pages are fast to setup with automatic display or social widgets.
-
-In order to achieve higher performance the plugin makes no use of JavaScript and as a consequence it’s **really fast** while still providing all the social media functionality you might need, like very professional social share buttons with high quality icons.
-
-By keeping load times at a minimum, you ensure that all the social sharing aspects of your site don’t interfere with those visitors who just want to access the content but are not interested in sharing on social media platforms.
-
-On the other hand, given the widespread focus on WordPress social media integration, your site will still provide social bookmarks and share buttons to improve visibility of your posts and content and improve your overall global reach on social platforms.
+Given the widespread focus on WordPress social media integration, your site will still provide social bookmarks and share buttons to improve visibility of your posts and content and improve your overall global reach on social platforms.
 
 The **WordPress social media sharing** offered by the plugin includes all major social sharing buttons providers like Facebook, Twitter, Google+, reddit, Pinterest, tumblr, Linkedin and even e-mail.
 
@@ -52,12 +41,11 @@ You can disable automatic rendering of social icons for specific posts by using 
 * Each social provider can be enabled or disabled
 * Ability to select what services each provider will be exposed for
 * Full customization for titles and URLs for each provider
-* Super lightweight social sharing and following
 * Fast unobtrusive social bookmarks for your site
 * Comes with a default modern icon set
-* For further customization more [social icons skins](http://synved.com/product/feather-extra-social-icons/ "Add 8 extra social icon skins to the Social Media Feather plugin!") are available
-* Available skins can be customized with cool effects like [fading and greying out](http://synved.com/product/feather-grey-fade/ "Customize any of the available social icon skins with 2 cool effects!") social icons
-* If you like them you can get [social sharing counters](http://synved.com/product/feather-light-prompt/ "Nice lightweight social sharing counters using the Light Prompt addon") that load dynamically, only when necessary, thus not weighing in on visitors who don't use them
+* For further customization more [social icons skins](http://socialmediafeather.com/products/extra-social-icons/ "Add 8 extra social icon skins to the Social Media Feather plugin!") are available. Free from the version 1.8.2!
+* Available skins can be customized with cool effects like [fading and greying out](http://socialmediafeather.com/products/grey-fade-effect/ "Customize any of the available social icon skins with 2 cool effects!") social icons
+* If you like them you can get [social sharing counters](http://socialmediafeather.com/products/light-prompt/ "Nice lightweight social sharing counters using the Light Prompt addon") that load dynamically, only when necessary, thus not weighing in on visitors who don't use them
 
 = Example Shortcodes =
 
@@ -110,13 +98,12 @@ For following buttons you can use:
 
 = Related Links: =
 
-* [WordPress Social Media Plugin Official Page](http://synved.com/wordpress-social-media-feather/ "WordPress Social Media Feather – lightweight WordPress social sharing and following")
-* [Extra Social Icons Skins](http://synved.com/product/feather-extra-social-icons/ "Add 8 extra social icon skins to the Social Media Feather plugin!")
-* [Grey Fade addon that can grey out and fade out any social icons set](http://synved.com/product/feather-grey-fade/ "Customize any of the available social icon skins with 2 cool effects!")
-* [Light Prompt that adds counts for social shares](http://synved.com/product/feather-light-prompt/ "Add counters for social shares using Light Prompt")
-* [Our own site](http://synved.com/) where you can see social sharing and following in action
-* [Stripefolio theme demo](http://wpdemo.synved.com/stripefolio/) where you can see some of the social sharing and following features in action
-* [The free Stripefolio WordPress portfolio theme](http://synved.com/stripefolio-free-wordpress-portfolio-theme/ "A free WordPress theme that serves as a readable blog and a full-screen portfolio showcase") the Official page for the theme in the above demo link
+* [WordPress Social Media Plugin Official Page](http://socialmediafeather.com/ "WordPress Social Media Feather � lightweight WordPress social sharing and following")
+* [Extra Social Icons Skins](http://socialmediafeather.com/products/extra-social-icons/ "Add 8 extra social icon skins to the Social Media Feather plugin!")
+* [Grey Fade addon that can grey out and fade out any social icons set](http://socialmediafeather.com/products/grey-fade-effect/ "Customize any of the available social icon skins with 2 cool effects!")
+* [Light Prompt that adds counts for social shares](http://socialmediafeather.com/products/light-prompt/ "Add counters for social shares using Light Prompt")
+
+By downloading and installing this plugin you are agreeing to the <a href="http://socialmediafeather.com/privacy/" target="_blank">Privacy Policy</a> and <a href="http://socialmediafeather.com/privacy/" target="_blank">Terms of Service</a>.
 
 == Installation ==
 
@@ -129,7 +116,7 @@ For following buttons you can use:
 
 = How can I see the social icons in action? =
 
-Have a look at [our site](http://synved.com/) or the [Stripefolio portfolio theme demo](http://wpdemo.synved.com/stripefolio/) where you can see the social sharing and following features in action
+Have a look at [our site](http://socialmediafeather.com/) or where you can see the social sharing and following features in action
 
 = How do I disable rendering of sharing / bookmarking buttons on a specific post/page? =
 
@@ -156,15 +143,15 @@ Go to Settings -> Social Media and under "Automatic Display" uncheck "Display Sh
 
 = How do I show a set of custom sharing buttons on my homepage or about page? =
 
-You can simply edit the page in question and add a [shortcode](https://codex.wordpress.org/Shortcode) like the following `[feather_share url="http://www.example.org"]`, then replace `http://www.example.org` with the URL to your site. See the next FAQ as well for adding an image. You can also install our free [WordPress Shortcodes](https://wordpress.org/plugins/synved-shortcodes/) plugin that lets you add shortcodes more intuitively by providing built-in documentation for parameters.
+You can simply edit the page in question and add a [shortcode](https://codex.wordpress.org/Shortcode) like the following `[feather_share url="http://www.example.org"]`, then replace `http://www.example.org` with the URL to your site. See the next FAQ as well for adding an image.
 
 = How do I specify a custom image for my sharing buttons shortcode? =
 
-Just edit your [shortcode](https://codex.wordpress.org/Shortcode) so it looks like this `[feather_share url="http://www.example.org" image="http://www.example.org/image.jpg"]`, remember to substitute `http://www.example.org` with the URL to your site and the same goes for the JPEG URL. 
+Just edit your [shortcode](https://codex.wordpress.org/Shortcode) so it looks like this `[feather_share url="http://www.example.org" image="http://www.example.org/image.jpg"]`, remember to substitute `http://www.example.org` with the URL to your site and the same goes for the JPEG URL.
 
 = How do I add a set of custom social network profile icons on my homepage or about page? =
 
-Just edit the page contents and insert another [shortcode](https://codex.wordpress.org/Shortcode) like this `[feather_follow]`. You should consider installing our free [WordPress Shortcodes](https://wordpress.org/plugins/synved-shortcodes/) plugin that makes adding shortcodes more intuitive by showing detailed descriptions for all arguments.
+Just edit the page contents and insert another [shortcode](https://codex.wordpress.org/Shortcode) like this `[feather_follow]`.
 
 = Facebook is not showing the correct title/description/thumbnail, what to I do? =
 
@@ -196,13 +183,35 @@ margin-left: 10px;
 
 1. An example of how the sharing or following buttons appear in the front-end at 64 pixel resolution
 2. An example of how the share or follow icons appear in the front-end at 24 pixel resolution
-3. An example of how the following or sharing links appear in the front-end using the [Extra Social Icons addon](http://synved.com/product/feather-extra-social-icons/ "Add 8 extra social icon skins to the Social Media Feather plugin!")
-4. Showing how using the [Grey Fade addon](http://synved.com/product/feather-grey-fade/ "Customize any of the available social icon skins with 2 cool effects!") transforms the sharing or following buttons in the front-end
+3. An example of how the following or sharing links appear in the front-end using the [Extra Social Icons addon](http://socialmediafeather.com/products/extra-social-icons/ "Add 8 extra social icon skins to the Social Media Feather plugin!")
+4. Showing how using the [Grey Fade addon](http://socialmediafeather.com/products/grey-fade-effect/ "Customize any of the available social icon skins with 2 cool effects!") transforms the sharing or following buttons in the front-end
 5. A demo of how social media providers can be customized in the back-end
 6. An view of some of the settings that can be customized in Social Media the back-end
-7. This shows the available social sharing and following widgets and their settings 
+7. This shows the available social sharing and following widgets and their settings
 
 == Changelog ==
+
+= 1.8.4 =
+* Added option to decline terms of service after having accepted
+
+= 1.8.3 =
+* Minor design improvements
+
+= 1.8.2 =
+* NEW: 6 icon styles which were previously available as a $15 add on are now included for FREE!
+* Removed NEWS dashboard widget
+
+= 1.8.1 =
+* Fixes for old versions of PHP
+
+= 1.8 =
+* Added support for "Facebook Insights"
+* Improved admin interface
+* Updated terms of service and privacy policy
+
+= 1.7.12 =
+* Performance improvements for Dashboard loading
+* Added "message" parameter to share shortcode
 
 = 1.7.11 =
 * Adjusted some text and README descriptions
@@ -216,7 +225,7 @@ margin-left: 10px;
 
 = 1.7.8 =
 * Disable credit link by default
- 
+
 = 1.7.7 =
 * Fixed addon installer's path calculation for rare cases
 
@@ -301,7 +310,7 @@ margin-left: 10px;
 * Minor adjustments
 
 = 1.5.9 =
-* Fix for RSS feeds displaying double resolution images 
+* Fix for RSS feeds displaying double resolution images
 * Minor adjustments
 
 = 1.5.8 =
@@ -400,4 +409,3 @@ margin-left: 10px;
 
 = 1.0 =
 * First public release.
-
