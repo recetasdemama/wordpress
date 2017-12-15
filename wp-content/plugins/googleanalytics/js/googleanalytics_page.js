@@ -10,7 +10,6 @@ const GA_MODAL_CLOSE_ID = 'ga_close';
 const GA_MODAL_BTN_CLOSE_ID = 'ga_btn_close';
 const GA_GOOGLE_AUTH_BTN_ID = 'ga_authorize_with_google_button';
 const GA_SAVE_ACCESS_CODE_BTN_ID = 'ga_save_access_code';
-const GA_AUTHENTICATION_CODE_ERROR = 'That looks like your Google Analytics Tracking ID. Please enter the authentication token in this space. See here for <a href="https://cl.ly/1y1N1A3h0s1t" target="_blank">a walkthrough</a> of how to do it.';
 
 (function ($) {
 
@@ -35,24 +34,10 @@ const GA_AUTHENTICATION_CODE_ERROR = 'That looks like your Google Analytics Trac
             e.target.disabled = 'disabled';
             ga_loader.show();
             const ac_tmp = $('#' + GA_ACCESS_CODE_TMP_ID).val();
-            if (ga_popup.validateCode(e, ac_tmp)) {
+            if (ac_tmp) {
                 $('#' + GA_ACCESS_CODE_ID).val(ac_tmp);
                 $('#' + GA_FORM_ID).submit();
             }
-        },
-        validateCode: function (e, code) {
-            if (!code){
-                ga_loader.hide();
-                $('#' + GA_SAVE_ACCESS_CODE_BTN_ID).removeAttr('disabled');
-                return false;
-            }
-            else if (code.substring(0, 2) == 'UA'){
-                $('#ga_code_error').show().html(GA_AUTHENTICATION_CODE_ERROR);
-                ga_loader.hide();
-                $('#' + GA_SAVE_ACCESS_CODE_BTN_ID).removeAttr('disabled');
-                return false;
-            }
-            return true;
         }
     };
 
@@ -70,30 +55,25 @@ const GA_AUTHENTICATION_CODE_ERROR = 'That looks like your Google Analytics Trac
         click: function (selector, callback) {
             $(selector).live('click', callback);
         },
-        codeManuallyCallback: function (features_enabled) {
-            var checkbox = $('#ga_enter_code_manually');
-            if ( features_enabled ) {
-                if ( checkbox.is(':checked') ) {
-                    if (confirm('Warning: If you enter your Tracking ID manually, Analytics statistics will not be shown.')) {
-                        setTimeout(function () {
-                            $('#ga_authorize_with_google_button').attr('disabled','disabled').next().show();
-                            $('#ga_account_selector').attr('disabled', 'disabled');
-                        $('#ga_manually_wrapper').show();
-                        }, 350);
+        codeManuallyCallback: function (terms_accepted) {
+            const button_disabled = $('#ga_authorize_with_google_button').attr('disabled');
+            const selector_disabled = $('#ga_account_selector').attr('disabled');
+            if (terms_accepted) {
+                if (button_disabled) {
+                    $('#ga_authorize_with_google_button').removeAttr('disabled').next().hide();
+                } else {
+                    $('#ga_authorize_with_google_button').attr('disabled',
+                        'disabled').next().show();
+                }
 
-                    } else {
-                        setTimeout(function () {
-                            checkbox.removeProp('checked');
-                        }, 350);
-                    }
-                } else { // disable
-                    setTimeout(function () {
-                        $('#ga_authorize_with_google_button').removeAttr('disabled').next().hide();
-                        $('#ga_account_selector').removeAttr('disabled');
-                        $('#ga_manually_wrapper').hide();
-                    }, 350);
+                if (selector_disabled) {
+                    $('#ga_account_selector').removeAttr('disabled');
+                } else {
+                    $('#ga_account_selector').attr('disabled', 'disabled');
                 }
             }
+
+            $('#ga_manually_wrapper').toggle();
         },
         initModalEvents: function () {
             $('#' + GA_GOOGLE_AUTH_BTN_ID).on('click', function () {
