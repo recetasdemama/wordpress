@@ -3,19 +3,33 @@
 /**
  * @package All-in-One-SEO-Pack
  */
+
+/**
+ * Class aiosp_common
+ *
+ * These are commonly used functions that can be pulled from anywhere.
+ * (or in some cases they're functions waiting for a home)
+ */
 class aiosp_common {
 
 	/**
 	 * aiosp_common constructor.
 	 *
-	 * These are commonly used functions that can be pulled from anywhere.
-	 * (or in some cases they're functions waiting for a home)
-	 *
 	 */
 	function __construct() {
-		//construct
+
 	}
 
+	/**
+	 * Clears WP Engine cache.
+	 */
+	static function clear_wpe_cache() {
+		if ( class_exists( 'WpeCommon' ) ) {
+			WpeCommon::purge_memcached();
+			WpeCommon::clear_maxcdn_cache();
+			WpeCommon::purge_varnish_cache();
+		}
+	}
 
 	/**
 	 * @param null $p
@@ -52,7 +66,7 @@ class aiosp_common {
 	 *
 	 * @return string
 	 */
-	static function get_upgrade_hyperlink( $location = '', $title = '', $anchor = '', $target = '', $class = '', $id = '' ) {
+	static function get_upgrade_hyperlink( $location = '', $title = '', $anchor = '', $target = '', $class = '', $id = 'aio-pro-update' ) {
 
 		$affiliate_id = '';
 
@@ -60,7 +74,7 @@ class aiosp_common {
 		$affiliate_id = apply_filters( 'aiosp_aff_id', $affiliate_id );
 
 		//build URL
-		$url = 'http://semperplugins.com/plugins/all-in-one-seo-pack-pro-version/';
+		$url = 'https://semperplugins.com/all-in-one-seo-pack-pro-version/';
 		if ( $location ) {
 			$url .= '?loc=' . $location;
 		}
@@ -76,12 +90,34 @@ class aiosp_common {
 		if ( $title ) {
 			$hyperlink .= "title=\"$title\" ";
 		}
+		if ( $id ) {
+			$hyperlink .= "id=\"$id\" ";
+		}
+
 		$hyperlink .= "href=\"$url\">$anchor</a>";
 
 		return $hyperlink;
 	}
 
+	/**
+	 * Gets the upgrade to Pro version URL.
+	 */
 	static function get_upgrade_url() {
 		//put build URL stuff in here
 	}
+
+	/**
+	 * Check whether a url is relative and if it is, make it absolute.
+	 *
+	 * @param string $url URL to check.
+	 *
+	 * @return string
+	 */
+	static function absolutize_url( $url ) {
+		if ( strpos( $url, 'http' ) !== 0 && strpos( $url, '//' ) !== 0 && $url != '/' ) {
+			$url = home_url( $url );
+		}
+		return $url;
+	}
+
 }
