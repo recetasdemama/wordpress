@@ -2344,7 +2344,7 @@
 				return;
 			}
 
-			if ( 'undefined' === typeof message.action ) {
+			if ( ! message || 'undefined' === typeof message.action ) {
 				return;
 			}
 
