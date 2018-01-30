@@ -1,14 +1,16 @@
-/*globals window, document, jQuery, _, Backbone, _wpmejsSettings */
+/* global _wpmejsSettings, MediaElementPlayer */
 
 (function ($, _, Backbone) {
-	"use strict";
+	'use strict';
+
+	/** @namespace wp */
+	window.wp = window.wp || {};
 
 	var WPPlaylistView = Backbone.View.extend({
 		initialize : function (options) {
 			this.index = 0;
 			this.settings = {};
-			this.compatMode = $( 'body' ).hasClass( 'wp-admin' ) && $( '#content_ifr' ).length;
-			this.data = options.metadata || $.parseJSON( this.$('script').html() );
+			this.data = options.metadata || $.parseJSON( this.$('script.wp-playlist-script').html() );
 			this.playerNode = this.$( this.data.type );
 
 			this.tracks = new Backbone.Collection( this.data.tracks );
@@ -27,14 +29,12 @@
 				this.renderTracks();
 			}
 
-			if ( this.isCompatibleSrc() ) {
-				this.playerNode.attr( 'src', this.current.get( 'src' ) );
-			}
+			this.playerNode.attr( 'src', this.current.get( 'src' ) );
 
 			_.bindAll( this, 'bindPlayer', 'bindResetPlayer', 'setPlayer', 'ended', 'clickTrack' );
 
 			if ( ! _.isUndefined( window._wpmejsSettings ) ) {
-				this.settings.pluginPath = _wpmejsSettings.pluginPath;
+				this.settings = _.clone( _wpmejsSettings );
 			}
 			this.settings.success = this.bindPlayer;
 			this.setPlayer();
@@ -47,25 +47,7 @@
 
 		bindResetPlayer : function (mejs) {
 			this.bindPlayer( mejs );
-			if ( this.isCompatibleSrc() ) {
-				this.playCurrentSrc();
-			}
-		},
-
-		isCompatibleSrc: function () {
-			var testNode;
-
-			if ( this.compatMode ) {
-				testNode = $( '<span><source type="' + this.current.get( 'type' ) + '" /></span>' );
-
-				if ( ! wp.media.mixin.isCompatible( testNode ) ) {
-					this.playerNode.removeAttr( 'src' );
-					this.playerNode.removeAttr( 'poster' );
-					return;
-				}
-			}
-
-			return true;
+			this.playCurrentSrc();
 		},
 
 		setPlayer: function (force) {
@@ -76,9 +58,7 @@
 			}
 
 			if (force) {
-				if ( this.isCompatibleSrc() ) {
-					this.playerNode.attr( 'src', this.current.get( 'src' ) );
-				}
+				this.playerNode.attr( 'src', this.current.get( 'src' ) );
 				this.settings.success = this.bindResetPlayer;
 			}
 
@@ -145,8 +125,7 @@
 				this.next();
 			} else {
 				this.index = 0;
-				this.current = this.tracks.at( this.index );
-				this.loadCurrent();
+				this.setCurrent();
 			}
 		},
 
@@ -168,7 +147,7 @@
 
 			if ( last !== current ) {
 				this.setPlayer( true );
-			} else if ( this.isCompatibleSrc() ) {
+			} else {
 				this.playerNode.attr( 'src', this.current.get( 'src' ) );
 				this.playCurrentSrc();
 			}
@@ -188,13 +167,32 @@
 		}
 	});
 
-    $(document).ready(function () {
-		if ( ! $( 'body' ).hasClass( 'wp-admin' ) || $( 'body' ).hasClass( 'about-php' ) ) {
-			$('.wp-playlist').each(function () {
-				return new WPPlaylistView({ el: this });
-			});
-		}
-    });
+	/**
+	 * Initialize media playlists in the document.
+	 *
+	 * Only initializes new playlists not previously-initialized.
+	 *
+	 * @since 4.9.3
+	 * @returns {void}
+	 */
+	function initialize() {
+		$( '.wp-playlist:not(:has(.mejs-container))' ).each( function() {
+			new WPPlaylistView( { el: this } );
+		} );
+	}
+
+	/**
+	 * Expose the API publicly on window.wp.playlist.
+	 *
+	 * @namespace wp.playlist
+	 * @since 4.9.3
+	 * @type {object}
+	 */
+	window.wp.playlist = {
+		initialize: initialize
+	};
+
+	$( document ).ready( initialize );
 
 	window.WPPlaylistView = WPPlaylistView;
 
