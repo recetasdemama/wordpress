@@ -1,7 +1,3 @@
-/**
- * @output wp-includes/js/wp-api.js
- */
-
 (function( window, undefined ) {
 
 	'use strict';
@@ -145,7 +141,7 @@
 	wp.api.utils.getRootUrl = function() {
 		return window.location.origin ?
 			window.location.origin + '/' :
-			window.location.protocol + '//' + window.location.host + '/';
+			window.location.protocol + '/' + window.location.host + '/';
 	};
 
 	/**
@@ -852,7 +848,7 @@
 					model.unset( 'slug' );
 				}
 
-				if ( _.isFunction( model.nonce ) && ! _.isEmpty( model.nonce() ) ) {
+				if ( _.isFunction( model.nonce ) && ! _.isUndefined( model.nonce() ) && ! _.isNull( model.nonce() ) ) {
 					beforeSend = options.beforeSend;
 
 					// @todo enable option for jsonp endpoints
@@ -996,7 +992,7 @@
 
 				options = options || {};
 
-				if ( _.isFunction( model.nonce ) && ! _.isEmpty( model.nonce() ) ) {
+				if ( _.isFunction( model.nonce ) && ! _.isUndefined( model.nonce() ) && ! _.isNull( model.nonce() ) ) {
 					beforeSend = options.beforeSend;
 
 					// Include the nonce with requests.
@@ -1175,7 +1171,7 @@
 					 * have to retrieve it again for this session. Then, construct the models and collections based
 					 * on the schema model data.
 					 *
-					 * @ignore
+					 * @callback
 					 */
 					success: function( newSchemaModel ) {
 
@@ -1494,7 +1490,6 @@
 	 * Initialize the wp-api, optionally passing the API root.
 	 *
 	 * @param {object} [args]
-	 * @param {string} [args.nonce] The nonce. Optional, defaults to wpApiSettings.nonce.
 	 * @param {string} [args.apiRoot] The api root. Optional, defaults to wpApiSettings.root.
 	 * @param {string} [args.versionString] The version string. Optional, defaults to wpApiSettings.root.
 	 * @param {object} [args.schema] The schema. Optional, will be fetched from API if not provided.
@@ -1503,7 +1498,7 @@
 		var endpoint, attributes = {}, deferred, promise;
 
 		args                      = args || {};
-		attributes.nonce          = _.isString( args.nonce ) ? args.nonce : ( wpApiSettings.nonce || '' );
+		attributes.nonce          = args.nonce || wpApiSettings.nonce || '';
 		attributes.apiRoot        = args.apiRoot || wpApiSettings.root || '/wp-json';
 		attributes.versionString  = args.versionString || wpApiSettings.versionString || 'wp/v2/';
 		attributes.schema         = args.schema || null;
