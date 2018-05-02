@@ -49,7 +49,6 @@ p {
 }
 
 .login .message,
-.login .success,
 .login #login_error {
 	border-left: 4px solid #00a0d2;
 	padding: 12px;
@@ -57,10 +56,6 @@ p {
 	margin-bottom: 20px;
 	background-color: #fff;
 	box-shadow: 0 1px 1px 0 rgba(0,0,0,0.1);
-}
-
-.login .success {
-	border-left-color: #46b450;
 }
 
 .login #login_error {
@@ -79,22 +74,22 @@ p {
 }
 
 .login .password-input-wrapper {
-	display: table;
+    display: table;
 }
 
 .login .input.password-input {
-	display: table-cell;
-	margin: 0;
+    display: table-cell;
+    margin: 0;
 }
 
 .login .pw-weak {
-	margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 .login .button.button-secondary {
-	display: table-cell;
-	border-radius: 0;
-	vertical-align: middle;
+    display: table-cell;
+    border-radius: 0;
+    vertical-align: middle;
 }
 
 .login form {
@@ -202,7 +197,9 @@ p {
 .login .privacy-policy-page-link {
 	text-align: center;
 	width: 100%;
-	margin: 5em 0 2em;
+	position: absolute;
+	bottom: 20px;
+	left: 0;
 }
 
 .login form .input,
@@ -263,13 +260,20 @@ body.interim-login {
 	width: device-width;
 }
 
-@media screen and (max-height: 550px) {
+@media ( max-height: 600px ) {
+	.login .privacy-policy-page-link {
+		position: relative;
+		margin: 60px 0 20px 0;
+	}
+}
+
+@media screen and ( max-height: 550px ) {
 	#login {
 		padding: 20px 0;
 	}
 }
 
-@media screen and (max-width: 782px) {
+@media screen and ( max-width: 782px ) {
 	.interim-login input[type=checkbox] {
 		height: 16px;
 		width: 16px;
