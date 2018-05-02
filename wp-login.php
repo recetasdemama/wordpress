@@ -745,7 +745,7 @@ break;
 
 case 'confirmaction' :
 	if ( ! isset( $_GET['request_id'] ) ) {
-		wp_die( __( 'Invalid request' ) );
+		wp_die( __( 'Invalid request.' ) );
 	}
 
 	$request_id = (int) $_GET['request_id'];
