@@ -98,8 +98,7 @@ textarea,
 .site-footer .site-title,
 .site-footer .site-title:after,
 .widecolumn label,
-.widecolumn .mu_register label,
-.site-footer span[role=separator] {
+.widecolumn .mu_register label {
 	font-family: Arial, Tahoma, sans-serif;
 }
 
@@ -407,6 +406,16 @@ body:not(.search-results) .entry-summary .alignleft {
 .comment-form .comment-form-cookies-consent label {
 	font-family: Arial, Tahoma, sans-serif;
 }
+
+/**
+ * 8.4 - Footer
+ */
+
+.site-footer .site-title:after {
+	padding-right: 0.538461538em;
+	padding-left: 0.307692308em;
+}
+
 
 /**
  * 9.0 - Multisites
