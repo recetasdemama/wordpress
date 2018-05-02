@@ -1,9 +1,3 @@
-/**
- * Generates the XHTML Friends Network 'rel' string from the inputs.
- *
- * @deprecated 3.5.0
- * @output wp-admin/js/xfn.js
- */
 jQuery( document ).ready(function( $ ) {
 	$( '#link_rel' ).prop( 'readonly', true );
 	$( '#linkxfndiv input' ).bind( 'click keyup', function() {
@@ -23,257 +17,122 @@ jQuery( document ).ready(function( $ ) {
 });
 
 // Privacy request action handling
+
 jQuery( document ).ready( function( $ ) {
 	var strings = window.privacyToolsL10n || {};
 
-	function setActionState( $action, state ) {
+	function set_action_state( $action, state ) {
 		$action.children().hide();
 		$action.children( '.' + state ).show();
 	}
 
 	function clearResultsAfterRow( $requestRow ) {
-		$requestRow.removeClass( 'has-request-results' );
-
 		if ( $requestRow.next().hasClass( 'request-results' ) ) {
 			$requestRow.next().remove();
 		}
 	}
 
 	function appendResultsAfterRow( $requestRow, classes, summaryMessage, additionalMessages ) {
-		var itemList = '',
-			resultRowClasses = 'request-results';
-
 		clearResultsAfterRow( $requestRow );
-
 		if ( additionalMessages.length ) {
-			$.each( additionalMessages, function( index, value ) {
-				itemList = itemList + '<li>' + value + '</li>';
-			});
-			itemList = '<ul>' + itemList + '</ul>';
-		}
-
-		$requestRow.addClass( 'has-request-results' );
-
-		if ( $requestRow.hasClass( 'status-request-confirmed' ) ) {
-			resultRowClasses = resultRowClasses + ' status-request-confirmed';
-		}
-
-		if ( $requestRow.hasClass( 'status-request-failed' ) ) {
-			resultRowClasses = resultRowClasses + ' status-request-failed';
+			// TODO - render additionalMessages after the summaryMessage
 		}
 
 		$requestRow.after( function() {
-			return '<tr class="' + resultRowClasses + '"><th colspan="5">' +
-				'<div class="notice inline notice-alt ' + classes + '">' +
-				'<p>' + summaryMessage + '</p>' +
-				itemList +
-				'</div>' +
-				'</td>' +
-				'</tr>';
-		});
+			return '<tr class="request-results"><td colspan="5"><div class="notice inline notice-alt ' + classes + '"><p>' +
+				summaryMessage +
+				'</p></div></td></tr>';
+		} );
 	}
 
-	$( '.export-personal-data-handle' ).click( function( event ) {
-
-		var $this          = $( this ),
-			$action        = $this.parents( '.export-personal-data' ),
-			$requestRow    = $this.parents( 'tr' ),
-			requestID      = $action.data( 'request-id' ),
-			nonce          = $action.data( 'nonce' ),
-			exportersCount = $action.data( 'exporters-count' ),
-			sendAsEmail    = $action.data( 'send-as-email' ) ? true : false;
-
+	$( '.remove_personal_data a' ).click( function( event ) {
 		event.preventDefault();
 		event.stopPropagation();
 
-		$action.blur();
-		clearResultsAfterRow( $requestRow );
+		var $this         = $( this );
+		var $action       = $this.parents( '.remove_personal_data' );
+		var $requestRow   = $this.parents( 'tr' );
+		var requestID     = $action.data( 'request-id' );
+		var nonce         = $action.data( 'nonce' );
+		var erasersCount  = $action.data( 'erasers-count' );
 
-		function onExportDoneSuccess( zipUrl ) {
-			setActionState( $action, 'export-personal-data-success' );
-			if ( 'undefined' !== typeof zipUrl ) {
-				window.location = zipUrl;
-			} else if ( ! sendAsEmail ) {
-				onExportFailure( strings.noExportFile );
-			}
-		}
-
-		function onExportFailure( errorMessage ) {
-			setActionState( $action, 'export-personal-data-failed' );
-			if ( errorMessage ) {
-				appendResultsAfterRow( $requestRow, 'notice-error', strings.exportError, [ errorMessage ] );
-			}
-		}
-
-		function doNextExport( exporterIndex, pageIndex ) {
-			$.ajax(
-				{
-					url: window.ajaxurl,
-					data: {
-						action: 'wp-privacy-export-personal-data',
-						exporter: exporterIndex,
-						id: requestID,
-						page: pageIndex,
-						security: nonce,
-						sendAsEmail: sendAsEmail
-					},
-					method: 'post'
-				}
-			).done( function( response ) {
-				var responseData = response.data;
-
-				if ( ! response.success ) {
-
-					// e.g. invalid request ID
-					onExportFailure( response.data );
-					return;
-				}
-
-				if ( ! responseData.done ) {
-					setTimeout( doNextExport( exporterIndex, pageIndex + 1 ) );
-				} else {
-					if ( exporterIndex < exportersCount ) {
-						setTimeout( doNextExport( exporterIndex + 1, 1 ) );
-					} else {
-						onExportDoneSuccess( responseData.url );
-					}
-				}
-			}).fail( function( jqxhr, textStatus, error ) {
-
-				// e.g. Nonce failure
-				onExportFailure( error );
-			});
-		}
-
-		// And now, let's begin
-		setActionState( $action, 'export-personal-data-processing' );
-		doNextExport( 1, 1 );
-	});
-
-	$( '.remove-personal-data-handle' ).click( function( event ) {
-
-		var $this         = $( this ),
-			$action       = $this.parents( '.remove-personal-data' ),
-			$requestRow   = $this.parents( 'tr' ),
-			requestID     = $action.data( 'request-id' ),
-			nonce         = $action.data( 'nonce' ),
-			erasersCount  = $action.data( 'erasers-count' ),
-			hasRemoved    = false,
-			hasRetained   = false,
-			messages      = [];
-
-		event.stopPropagation();
+		var removedCount  = 0;
+		var retainedCount = 0;
+		var messages      = [];
 
 		$action.blur();
 		clearResultsAfterRow( $requestRow );
 
-		function onErasureDoneSuccess() {
+		function on_erasure_done_success() {
+			set_action_state( $action, 'remove_personal_data_idle' );
 			var summaryMessage = strings.noDataFound;
 			var classes = 'notice-success';
-
-			setActionState( $action, 'remove-personal-data-idle' );
-
-			if ( false === hasRemoved ) {
-				if ( false === hasRetained ) {
+			if ( 0 == removedCount ) {
+				if ( 0 == retainedCount ) {
 					summaryMessage = strings.noDataFound;
 				} else {
 					summaryMessage = strings.noneRemoved;
 					classes = 'notice-warning';
 				}
 			} else {
-				if ( false === hasRetained ) {
+				if ( 0 == retainedCount ) {
 					summaryMessage = strings.foundAndRemoved;
 				} else {
 					summaryMessage = strings.someNotRemoved;
 					classes = 'notice-warning';
 				}
 			}
-			appendResultsAfterRow( $requestRow, 'notice-success', summaryMessage, messages );
+			appendResultsAfterRow( $requestRow, 'notice-success', summaryMessage, [] );
 		}
 
-		function onErasureFailure() {
-			setActionState( $action, 'remove-personal-data-failed' );
-			appendResultsAfterRow( $requestRow, 'notice-error', strings.removalError, [] );
+		function on_erasure_failure( textStatus, error ) {
+			set_action_state( $action, 'remove_personal_data_failed' );
+			appendResultsAfterRow( $requestRow, 'notice-error', strings.anErrorOccurred, [] );
 		}
 
-		function doNextErasure( eraserIndex, pageIndex ) {
-			$.ajax({
-				url: window.ajaxurl,
+		function do_next_erasure( eraserIndex, pageIndex ) {
+			$.ajax( {
+				url: ajaxurl,
 				data: {
 					action: 'wp-privacy-erase-personal-data',
 					eraser: eraserIndex,
 					id: requestID,
 					page: pageIndex,
-					security: nonce
+					security: nonce,
 				},
 				method: 'post'
-			}).done( function( response ) {
-				var responseData = response.data;
-
+			} ).done( function( response ) {
 				if ( ! response.success ) {
-					onErasureFailure();
+					on_erasure_failure( 'error', response.data );
 					return;
 				}
-				if ( responseData.items_removed ) {
-					hasRemoved = hasRemoved || responseData.items_removed;
+				var responseData = response.data;
+				if ( responseData.num_items_removed ) {
+					removedCount += responseData.num_items_removed;
 				}
-				if ( responseData.items_retained ) {
-					hasRetained = hasRetained || responseData.items_retained;
+				if ( responseData.num_items_retained ) {
+					retainedCount += responseData.num_items_removed;
 				}
 				if ( responseData.messages ) {
 					messages = messages.concat( responseData.messages );
 				}
 				if ( ! responseData.done ) {
-					setTimeout( doNextErasure( eraserIndex, pageIndex + 1 ) );
+					setTimeout( do_next_erasure( eraserIndex, pageIndex + 1 ) );
 				} else {
 					if ( eraserIndex < erasersCount ) {
-						setTimeout( doNextErasure( eraserIndex + 1, 1 ) );
+						setTimeout( do_next_erasure( eraserIndex + 1, 1 ) );
 					} else {
-						onErasureDoneSuccess();
+						on_erasure_done_success();
 					}
 				}
-			}).fail( function() {
-				onErasureFailure();
-			});
+			} ).fail( function( jqxhr, textStatus, error ) {
+				on_erasure_failure( textStatus, error );
+			} );
 		}
 
 		// And now, let's begin
-		setActionState( $action, 'remove-personal-data-processing' );
+		set_action_state( $action, 'remove_personal_data_processing' );
 
-		doNextErasure( 1, 1 );
-	});
-});
-
-( function( $ ) {
-
-	// Privacy policy page, copy button.
-	$( document ).on( 'click', function( event ) {
-		var $target = $( event.target );
-		var $parent, $container, range;
-
-		if ( $target.is( 'button.privacy-text-copy' ) ) {
-			$parent = $target.parent().parent();
-			$container = $parent.find( 'div.wp-suggested-text' );
-
-			if ( ! $container.length ) {
-				$container = $parent.find( 'div.policy-text' );
-			}
-
-			if ( $container.length ) {
-				try {
-					window.getSelection().removeAllRanges();
-					range = document.createRange();
-					$container.addClass( 'hide-privacy-policy-tutorial' );
-
-					range.selectNodeContents( $container[0] );
-					window.getSelection().addRange( range );
-					document.execCommand( 'copy' );
-
-					$container.removeClass( 'hide-privacy-policy-tutorial' );
-					window.getSelection().removeAllRanges();
-				} catch ( er ) {}
-			}
-		}
-	});
-
-} ( jQuery ) );
+		do_next_erasure( 1, 1 );
+	} )
+} );
