@@ -51,7 +51,6 @@ add_action( 'load-tools_page_export_personal_data', '_wp_privacy_requests_screen
 add_action( 'load-tools_page_remove_personal_data', '_wp_privacy_requests_screen_options' );
 
 // Privacy tools
-add_action( 'account_action_failed', '_wp_privacy_account_request_failed' );
 add_action( 'admin_menu', '_wp_privacy_hook_requests_page' );
 
 // Prerendering.
