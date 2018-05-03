@@ -2822,7 +2822,7 @@ function wp_handle_comment_submission( $comment_data ) {
  * @return array $exporters An array of personal data exporters.
  */
 function wp_register_comment_personal_data_exporter( $exporters ) {
-	$exporters[] = array(
+	$exporters['wordpress-comments'] = array(
 		'exporter_friendly_name' => __( 'WordPress Comments' ),
 		'callback'               => 'wp_comments_personal_data_exporter',
 	);
@@ -2927,7 +2927,7 @@ function wp_comments_personal_data_exporter( $email_address, $page = 1 ) {
  * @return array $erasers An array of personal data erasers.
  */
 function wp_register_comment_personal_data_eraser( $erasers ) {
-	$erasers[] = array(
+	$erasers['wordpress-comments'] = array(
 		'eraser_friendly_name' => __( 'WordPress Comments' ),
 		'callback'             => 'wp_comments_personal_data_eraser',
 	);
@@ -3035,4 +3035,3 @@ function wp_comments_personal_data_eraser( $email_address, $page = 1 ) {
 		'done'           => $done,
 	);
 }
-
