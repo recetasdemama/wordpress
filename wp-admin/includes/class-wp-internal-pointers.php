@@ -24,6 +24,8 @@ final class WP_Internal_Pointers {
 	 * Individual pointers (e.g. wp390_widgets) can be disabled using the following:
 	 *     remove_action( 'admin_print_footer_scripts', array( 'WP_Internal_Pointers', 'pointer_wp390_widgets' ) );
 	 *
+	 * @static
+	 *
 	 * @param string $hook_suffix The current admin page.
 	 */
 	public static function enqueue_scripts( $hook_suffix ) {
@@ -45,9 +47,8 @@ final class WP_Internal_Pointers {
 		);
 
 		// Check if screen related pointer is registered
-		if ( empty( $registered_pointers[ $hook_suffix ] ) ) {
+		if ( empty( $registered_pointers[ $hook_suffix ] ) )
 			return;
-		}
 
 		$pointers = (array) $registered_pointers[ $hook_suffix ];
 
@@ -79,9 +80,8 @@ final class WP_Internal_Pointers {
 		foreach ( array_diff( $pointers, $dismissed ) as $pointer ) {
 			if ( isset( $caps_required[ $pointer ] ) ) {
 				foreach ( $caps_required[ $pointer ] as $cap ) {
-					if ( ! current_user_can( $cap ) ) {
+					if ( ! current_user_can( $cap ) )
 						continue 2;
-					}
 				}
 			}
 
@@ -90,9 +90,8 @@ final class WP_Internal_Pointers {
 			$got_pointers = true;
 		}
 
-		if ( ! $got_pointers ) {
+		if ( ! $got_pointers )
 			return;
-		}
 
 		// Add pointers script and style to queue
 		wp_enqueue_style( 'wp-pointer' );
@@ -104,14 +103,15 @@ final class WP_Internal_Pointers {
 	 *
 	 * @since 3.3.0
 	 *
+	 * @static
+	 *
 	 * @param string $pointer_id The pointer ID.
 	 * @param string $selector The HTML elements, on which the pointer should be attached.
 	 * @param array  $args Arguments to be passed to the pointer JS (see wp-pointer.js).
 	 */
 	private static function print_js( $pointer_id, $selector, $args ) {
-		if ( empty( $pointer_id ) || empty( $selector ) || empty( $args ) || empty( $args['content'] ) ) {
+		if ( empty( $pointer_id ) || empty( $selector ) || empty( $args ) || empty( $args['content'] ) )
 			return;
-		}
 
 		?>
 		<script type="text/javascript">
@@ -161,29 +161,29 @@ final class WP_Internal_Pointers {
 	 * @since 4.9.6
 	 */
 	public static function pointer_wp496_privacy() {
-		$content  = '<h3>' . __( 'Personal Data and Privacy' ) . '</h3>';
-		$content .= '<h4>' . __( 'Personal Data Export and Erasure' ) . '</h4>';
-		$content .= '<p>' . __( 'New <strong>Tools</strong> have been added to help you with personal data export and erasure requests.' ) . '</p>';
+		$content  = '<h3>' . __( 'Privacy and Personal Data' ) . '</h3>';
 		$content .= '<h4>' . __( 'Privacy Policy' ) . '</h4>';
 		$content .= '<p>' . __( 'Create or select your site&#8217;s privacy policy page under <strong>Settings &gt; Privacy</strong> to keep your users informed and aware.' ) . '</p>';
+		$content .= '<h4>' . __( 'Personal Data Export and Erasure' ) . '</h4>';
+		$content .= '<p>' . __( 'New <strong>Tools</strong> have been added to help you with personal data export and erasure requests.' ) . '</p>';
 
 		if ( is_rtl() ) {
 			$position = array(
 				'edge'  => 'right',
-				'align' => 'bottom',
+				'align' => 'left',
+				'at'    => 'left+40',
 			);
 		} else {
 			$position = array(
 				'edge'  => 'left',
-				'align' => 'bottom',
+				'align' => 'right',
+				'at'    => 'right-40 bottom'
 			);
 		}
 
 		$js_args = array(
-			'content'      => $content,
-			'position'     => $position,
-			'pointerClass' => 'wp-pointer arrow-bottom',
-			'pointerWidth' => 420,
+			'content'  => $content,
+			'position' => $position,
 		);
 		self::print_js( 'wp496_privacy', '#menu-tools', $js_args );
 	}
@@ -193,9 +193,11 @@ final class WP_Internal_Pointers {
 	 *
 	 * @since 3.3.0
 	 *
+	 * @static
+	 *
 	 * @param int $user_id User ID.
 	 */
 	public static function dismiss_pointers_for_new_users( $user_id ) {
-		add_user_meta( $user_id, 'dismissed_wp_pointers', 'wp496_privacy' );
+		add_user_meta( $user_id, 'dismissed_wp_pointers', '' );
 	}
 }
