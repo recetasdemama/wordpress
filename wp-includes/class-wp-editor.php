@@ -1069,8 +1069,16 @@ final class _WP_Editors {
 		if ( ! isset($concatenate_scripts) )
 			script_concat_settings();
 
-		$compressed = $compress_scripts && $concatenate_scripts && isset($_SERVER['HTTP_ACCEPT_ENCODING'])
-			&& false !== stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip');
+		$has_custom_theme = false;
+		foreach ( self::$mce_settings as $init ) {
+			if ( ! empty( $init['theme_url'] ) ) {
+				$has_custom_theme = true;
+				break;
+			}
+		}
+
+		$compressed = $compress_scripts && $concatenate_scripts && isset( $_SERVER['HTTP_ACCEPT_ENCODING'] )
+			&& false !== stripos( $_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip' ) && ! $has_custom_theme;
 
 		$mceInit = $qtInit = '';
 		if ( $tmce_on ) {
