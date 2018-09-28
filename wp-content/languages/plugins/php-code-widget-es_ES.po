@@ -1,0 +1,48 @@
+# Translation of Plugins - PHP Code Widget - Stable (latest release) in Spanish (Spain)
+# This file is distributed under the same license as the Plugins - PHP Code Widget - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2018-08-22 06:07:15+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.4.0-alpha\n"
+"Language: es\n"
+"Project-Id-Version: Plugins - PHP Code Widget - Stable (latest release)\n"
+
+#. Author URI of the plugin/theme
+msgid "http://ottodestruct.com"
+msgstr "http://ottodestruct.com"
+
+#. Author of the plugin/theme
+msgid "Otto"
+msgstr "Otto"
+
+#. Description of the plugin/theme
+msgid "Like the Text widget, but it will take PHP code as well. Heavily derived from the Text widget code in WordPress."
+msgstr "Como el widget de texto, pero también acepta código PHP. Construido a partir deo widget de texto de WorPress."
+
+#. Plugin URI of the plugin/theme
+msgid "http://ottopress.com/wordpress-plugins/php-code-widget/"
+msgstr "http://ottopress.com/wordpress-plugins/php-code-widget/"
+
+#. Plugin Name of the plugin/theme
+msgid "PHP Code Widget"
+msgstr "PHP Code Widget"
+
+#: execphp.php:57
+msgid "Automatically add paragraphs."
+msgstr "Añade párrafos automáticamente."
+
+#: execphp.php:52
+msgid "Title:"
+msgstr "Título:"
+
+#: execphp.php:17
+msgid "PHP Code"
+msgstr "Código PHP"
+
+#: execphp.php:15
+msgid "Arbitrary text, HTML, or PHP Code"
+msgstr "Texto arbitrario, HTML o código PHP"
