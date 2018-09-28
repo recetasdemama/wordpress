@@ -215,11 +215,14 @@ if ( ! class_exists( 'EWWWIO_Background_Process' ) ) {
 
 			$key = $wpdb->esc_like( $this->identifier . '_batch_' ) . '%';
 
-			$count = $wpdb->get_var( $wpdb->prepare( "
-				SELECT COUNT(*)
-				FROM $wpdb->options
-				WHERE option_name LIKE %s AND option_value != ''
-			", $key ) );
+			$count = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*)
+					FROM $wpdb->options
+					WHERE option_name LIKE %s AND option_value != ''",
+					$key
+				)
+			);
 
 			return ( $count > 0 ) ? false : true;
 		}
@@ -459,7 +462,7 @@ if ( ! class_exists( 'EWWWIO_Background_Process' ) ) {
 			$interval = apply_filters( $this->identifier . '_cron_interval', 5 );
 
 			if ( property_exists( $this, 'cron_interval' ) ) {
-				$interval = apply_filters( $this->identifier . '_cron_interval', $this->cron_interval_identifier );
+				$interval = apply_filters( $this->identifier . '_cron_interval', $this->cron_interval );
 			}
 
 			// Adds every 5 minutes to the existing schedules.
