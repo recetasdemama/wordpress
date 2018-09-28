@@ -4,8 +4,8 @@ Tags: User Enumeration, Security, WPSCAN, fail2ban,
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4EMTVFMKXRRYY
 Requires at least: 3.4
 Requires PHP: 5.3
-Tested up to: 4.9
-Stable tag: 1.3.14
+Tested up to: 4.9.8
+Stable tag: 1.3.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,6 +25,8 @@ Since WordPress 4.5 user data can also be obtained by API calls without logging 
 plugin will restrict and log that too.
 
 
+
+
 == Installation ==
 
 1. Upload `plugin-name.php` to the `/wp-content/plugins/` directory
@@ -38,8 +40,7 @@ Are you logged in?  This plugin won't do anything for logged in users, it only w
 = Are there any settings? =
 Yes, but the default ones are fine for most cases
 = This doesn't work with PHP 5.2! =
-This plugin does not support PHP 5.2. PHP 5.2 is very old and you really need to sort out your hosting, running version of software way past its supported end of life
-is a security risk.
+This plugin does not support PHP 5.2. PHP 5.2 is very old and you really need to sort out your hosting, running version of software way past its supported end of life is a security risk.
 = Will it work on Multisite? =
 Yes
 = Why don't I just block with .htaccess =
@@ -59,6 +60,14 @@ No, the plugin automatically detects [Fullworks Firewall](https://wordpress.org/
 
 
 == Changelog ==
+= 1.3.17 =
+* changed settings page to stop random metaboxes
+
+= 1.3.16 =
+* Reworked settings page
+
+= 1.3.15 =
+* fix to ensure scripts not enqueued unless required
 
 = 1.3.14 =
 * fix double plugin header
@@ -111,5 +120,7 @@ Fix PHP error
 * Added detection and suppression of REST API calls to user data
 * Added settings page to allow REST API calls or stop system logging as required
 * Added code to remove numbers from comment authors, and setting to turn that off
+
+[](http://coderisk.com/wp/plugin/stop-user-enumeration/RIPS-1o0cni0Kbq)
 
 

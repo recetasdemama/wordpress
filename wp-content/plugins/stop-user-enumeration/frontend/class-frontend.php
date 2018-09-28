@@ -37,7 +37,7 @@ class FrontEnd {
 	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+		$this->version     = $version;
 
 	}
 
@@ -66,7 +66,7 @@ class FrontEnd {
 	}
 
 	public function only_allow_logged_in_rest_access_to_users( $access ) {
-		if ( Core::sue_get_option( 'stop_rest_user','on' ) == 'on' ) {
+		if ( 'on' === Core::sue_get_option( 'stop_rest_user', 'off' ) ) {
 			if ( ( preg_match( '/users/', $_SERVER['REQUEST_URI'] ) !== 0 ) || ( isset( $_REQUEST['rest_route'] ) && ( preg_match( '/users/', $_REQUEST['rest_route'] ) !== 0 ) ) ) {
 				if ( ! is_user_logged_in() ) {
 					$this->sue_log();
@@ -84,11 +84,11 @@ class FrontEnd {
 	}
 
 	private function sue_log() {
-		$ip=sanitize_text_field( $_SERVER['REMOTE_ADDR'] );
-		if (is_plugin_active('fullworks-firewall/fullworks-firewall.php')){
+		$ip = sanitize_text_field( $_SERVER['REMOTE_ADDR'] );
+		if ( is_plugin_active( 'fullworks-firewall/fullworks-firewall.php' ) ) {
 			do_action( 'fullworks_security_block_ip', $ip, 1, 'stop-user-enumeration' );
 		}
-		if  ( Core::sue_get_option( 'log_auth','on' ) == 'on' ) {
+		if ( 'on' === Core::sue_get_option( 'log_auth', 'off' ) ) {
 			openlog( 'wordpress(' . sanitize_text_field( $_SERVER['HTTP_HOST'] ) . ')', LOG_NDELAY | LOG_PID, LOG_AUTH );
 			syslog( LOG_INFO, "Attempted user enumeration from " . $ip );
 			closelog();

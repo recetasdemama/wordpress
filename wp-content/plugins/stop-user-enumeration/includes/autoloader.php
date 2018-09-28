@@ -19,7 +19,7 @@ function fullworks_Stop_User_Enumeration_autoload( $class_name ) {
 
 	// Do a reverse loop through $file_parts to build the path to the file.
 	$namespace = '';
-	for ( $i = count( $file_parts ) - 1; $i > 0; $i-- ) {
+	for ( $i = count( $file_parts ) - 1; $i > 0; $i -- ) {
 
 		// Read the current component of the file part.
 		$current = strtolower( $file_parts[ $i ] );
@@ -50,7 +50,7 @@ function fullworks_Stop_User_Enumeration_autoload( $class_name ) {
 	}
 
 	// Now build a path to the file using mapping to the file location.
-	$filepath  = trailingslashit( dirname( dirname( __FILE__ ) ) . $namespace );
+	$filepath = trailingslashit( dirname( dirname( __FILE__ ) ) . $namespace );
 	$filepath .= $file_name;
 
 	// If the file exists in the specified path, then include it.
@@ -58,6 +58,6 @@ function fullworks_Stop_User_Enumeration_autoload( $class_name ) {
 		include_once( $filepath );
 	} else {
 		// changed to be translatable
-		wp_die(sprintf(__('The system file attempting to be loaded at %1$s does not exist.','fullworks-firewall'),esc_html($filepath)) );
+		wp_die( sprintf( __( 'The system file attempting to be loaded at %1$s does not exist.', 'stop-user-enumeration' ), esc_html( $filepath ) ) );
 	}
 }
