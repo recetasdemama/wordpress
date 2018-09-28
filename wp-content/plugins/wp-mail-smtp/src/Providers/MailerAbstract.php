@@ -105,12 +105,16 @@ abstract class MailerAbstract implements MailerInterface {
 			)
 		);
 		$this->set_subject( $this->phpmailer->Subject );
-		$this->set_content(
-			array(
-				'html' => $this->phpmailer->Body,
-				'text' => $this->phpmailer->AltBody,
-			)
-		);
+		if ( $this->phpmailer->ContentType === 'text/html' ) {
+			$this->set_content(
+				array(
+					'text' => $this->phpmailer->AltBody,
+					'html' => $this->phpmailer->Body,
+				)
+			);
+		} else {
+			$this->set_content( $this->phpmailer->Body );
+		}
 		$this->set_return_path( $this->phpmailer->From );
 		$this->set_reply_to( $this->phpmailer->getReplyToAddresses() );
 
@@ -144,7 +148,7 @@ abstract class MailerAbstract implements MailerInterface {
 	 * @internal param array $params
 	 */
 	protected function set_body_param( $param ) {
-		$this->body = $this->array_merge_recursive( $this->body, $param );
+		$this->body = Options::array_merge_recursive( $this->body, $param );
 	}
 
 	/**
@@ -221,7 +225,7 @@ abstract class MailerAbstract implements MailerInterface {
 	 */
 	public function send() {
 
-		$params = $this->array_merge_recursive( $this->get_default_params(), array(
+		$params = Options::array_merge_recursive( $this->get_default_params(), array(
 			'headers' => $this->get_headers(),
 			'body'    => $this->get_body(),
 		) );
@@ -287,8 +291,17 @@ abstract class MailerAbstract implements MailerInterface {
 			$error = $this->get_response_error();
 
 			if ( ! empty( $error ) ) {
-				Debug::set( $error );
+				// Add mailer to the beginning and save to display later.
+				Debug::set(
+					'Mailer: ' . esc_html( wp_mail_smtp()->get_providers()->get_options( $this->mailer )->get_title() ) . "\r\n" .
+					$error
+				);
 			}
+		}
+
+		// Clear debug messages if email is successfully sent.
+		if ( $is_sent ) {
+			Debug::clear();
 		}
 
 		return apply_filters( 'wp_mail_smtp_providers_mailer_is_email_sent', $is_sent );
@@ -329,56 +342,7 @@ abstract class MailerAbstract implements MailerInterface {
 	}
 
 	/**
-	 * Merge recursively, including a proper substitution of values in sub-arrays when keys are the same.
-	 * It's more like array_merge() and array_merge_recursive() combined.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return array
-	 */
-	protected function array_merge_recursive() {
-
-		$arrays = func_get_args();
-
-		if ( count( $arrays ) < 2 ) {
-			return isset( $arrays[0] ) ? $arrays[0] : array();
-		}
-
-		$merged = array();
-
-		while ( $arrays ) {
-			$array = array_shift( $arrays );
-
-			if ( ! is_array( $array ) ) {
-				return array();
-			}
-
-			if ( empty( $array ) ) {
-				continue;
-			}
-
-			foreach ( $array as $key => $value ) {
-				if ( is_string( $key ) ) {
-					if (
-						is_array( $value ) &&
-						array_key_exists( $key, $merged ) &&
-						is_array( $merged[ $key ] )
-					) {
-						$merged[ $key ] = call_user_func( __FUNCTION__, $merged[ $key ], $value );
-					} else {
-						$merged[ $key ] = $value;
-					}
-				} else {
-					$merged[] = $value;
-				}
-			}
-		}
-
-		return $merged;
-	}
-
-	/**
-	 * This method is relevant to SMTP, Pepipost and Mail.
+	 * This method is relevant to SMTP and Pepipost.
 	 * All other custom mailers should override it with own information.
 	 *
 	 * @since 1.2.0
@@ -392,7 +356,7 @@ abstract class MailerAbstract implements MailerInterface {
 
 		// Mail mailer has nothing to return.
 		if ( $this->options->is_mailer_smtp() ) {
-			$smtp_text[] = '<strong>ErrorInfo:</strong> ' . make_clickable( $phpmailer->ErrorInfo );
+			$smtp_text[] = '<strong>ErrorInfo:</strong> ' . make_clickable( wp_strip_all_tags( $phpmailer->ErrorInfo ) );
 			$smtp_text[] = '<strong>Host:</strong> ' . $phpmailer->Host;
 			$smtp_text[] = '<strong>Port:</strong> ' . $phpmailer->Port;
 			$smtp_text[] = '<strong>SMTPSecure:</strong> ' . Debug::pvar( $phpmailer->SMTPSecure );
@@ -408,6 +372,12 @@ abstract class MailerAbstract implements MailerInterface {
 		if ( function_exists( 'apache_get_modules' ) ) {
 			$modules     = apache_get_modules();
 			$smtp_text[] = '<strong>Apache.mod_security:</strong> ' . ( in_array( 'mod_security', $modules, true ) || in_array( 'mod_security2', $modules, true ) ? 'Yes' : 'No' );
+		}
+		if ( function_exists( 'selinux_is_enabled' ) ) {
+			$smtp_text[] = '<strong>OS.SELinux:</strong> ' . ( selinux_is_enabled() ? 'Yes' : 'No' );
+		}
+		if ( function_exists( 'grsecurity_is_enabled' ) ) {
+			$smtp_text[] = '<strong>OS.grsecurity:</strong> ' . ( grsecurity_is_enabled() ? 'Yes' : 'No' );
 		}
 
 		return implode( '<br>', $smtp_text );

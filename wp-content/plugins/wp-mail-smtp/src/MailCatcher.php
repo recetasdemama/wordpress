@@ -16,6 +16,18 @@ if ( ! class_exists( 'PHPMailer', false ) ) {
 class MailCatcher extends \PHPMailer {
 
 	/**
+	 * Callback Action function name.
+	 *
+	 * The function that handles the result of the send email action.
+	 * It is called out by send() for each email sent.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @var string
+	 */
+	public $action_function = '\WPMailSMTP\Processor::send_callback';
+
+	/**
 	 * Modify the default send() behaviour.
 	 * For those mailers, that relies on PHPMailer class - call it directly.
 	 * For others - init the correct provider and process it.
@@ -28,27 +40,30 @@ class MailCatcher extends \PHPMailer {
 	 */
 	public function send() {
 
-		$options = new Options();
-		$mailer  = $options->get( 'mail', 'mailer' );
+		$options     = new Options();
+		$mail_mailer = $options->get( 'mail', 'mailer' );
 
 		// Define a custom header, that will be used in Gmail/SMTP mailers.
-		$this->XMailer = 'WPMailSMTP/Mailer/' . $mailer . ' ' . WPMS_PLUGIN_VER;
+		$this->XMailer = 'WPMailSMTP/Mailer/' . sanitize_key( $mail_mailer ) . ' ' . WPMS_PLUGIN_VER;
 
 		// Use the default PHPMailer, as we inject our settings there for certain providers.
 		if (
-			$mailer === 'mail' ||
-			$mailer === 'smtp' ||
-			$mailer === 'pepipost'
+			$mail_mailer === 'mail' ||
+			$mail_mailer === 'smtp' ||
+			$mail_mailer === 'pepipost'
 		) {
 			return parent::send();
 		}
+
+		// We need this so that the \PHPMailer class will correctly prepare all the headers.
+		$this->Mailer = 'mail';
 
 		// Prepare everything (including the message) for sending.
 		if ( ! $this->preSend() ) {
 			return false;
 		}
 
-		$mailer = wp_mail_smtp()->get_providers()->get_mailer( $mailer, $this );
+		$mailer = wp_mail_smtp()->get_providers()->get_mailer( $mail_mailer, $this );
 
 		if ( ! $mailer ) {
 			return false;
