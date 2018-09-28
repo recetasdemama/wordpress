@@ -21,6 +21,8 @@ class Options {
 			'from_email',
 			'mailer',
 			'return_path',
+			'from_name_force',
+			'from_email_force',
 		),
 		'smtp'     => array(
 			'host',
@@ -68,6 +70,7 @@ class Options {
 
 	/**
 	 * Init the Options class.
+	 * TODO: add a flag to process without retrieving const values.
 	 *
 	 * @since 1.0.0
 	 */
@@ -99,6 +102,30 @@ class Options {
 		}
 
 		return $instance;
+	}
+
+	/**
+	 * Default options that are saved on plugin activation.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return array
+	 */
+	public static function get_defaults() {
+
+		return array(
+			'mail' => array(
+				'from_email'       => get_option( 'admin_email' ),
+				'from_name'        => get_bloginfo( 'name' ),
+				'mailer'           => 'mail',
+				'return_path'      => false,
+				'from_email_force' => false,
+				'from_name_force'  => false,
+			),
+			'smtp' => array(
+				'autotls' => true,
+			),
+		);
 	}
 
 	/**
@@ -188,7 +215,16 @@ class Options {
 				$value = $this->postprocess_key_defaults( $group, $key );
 			}
 		} else {
-			$value = $this->postprocess_key_defaults( $group, $key );
+			// check on maps
+			if ( isset( self::$map[ $group ] ) && in_array( $key, self::$map[ $group ] ) ) {
+				$value = $this->get_const_value( $group, $key, false );
+			} else {
+				$value = $this->postprocess_key_defaults( $group, $key );
+			}
+		}
+
+		if ( is_string( $value ) ) {
+			$value = stripslashes( $value );
 		}
 
 		return apply_filters( 'wp_mail_smtp_options_get', $value, $group, $key );
@@ -210,6 +246,8 @@ class Options {
 		$value = '';
 
 		switch ( $key ) {
+			case 'from_email_force':
+			case 'from_name_force':
 			case 'return_path':
 				$value = $group === 'mail' ? false : true;
 				break;
@@ -264,7 +302,14 @@ class Options {
 						/** @noinspection PhpUndefinedConstantInspection */
 						return $this->is_const_defined( $group, $key ) ? WPMS_MAILER : $value;
 					case 'return_path':
-						return $this->is_const_defined( $group, $key ) ? true : $value;
+						/** @noinspection PhpUndefinedConstantInspection */
+						return $this->is_const_defined( $group, $key ) ? WPMS_SET_RETURN_PATH : $value;
+					case 'from_name_force':
+						/** @noinspection PhpUndefinedConstantInspection */
+						return $this->is_const_defined( $group, $key ) ? WPMS_MAIL_FROM_NAME_FORCE : $value;
+					case 'from_email_force':
+						/** @noinspection PhpUndefinedConstantInspection */
+						return $this->is_const_defined( $group, $key ) ? WPMS_MAIL_FROM_FORCE : $value;
 				}
 
 				break;
@@ -380,6 +425,10 @@ class Options {
 						return defined( 'WPMS_MAILER' ) && WPMS_MAILER;
 					case 'return_path':
 						return defined( 'WPMS_SET_RETURN_PATH' ) && ( WPMS_SET_RETURN_PATH === 'true' || WPMS_SET_RETURN_PATH === true );
+					case 'from_name_force':
+						return defined( 'WPMS_MAIL_FROM_NAME_FORCE' ) && ( WPMS_MAIL_FROM_NAME_FORCE === 'true' || WPMS_MAIL_FROM_NAME_FORCE === true );
+					case 'from_email_force':
+						return defined( 'WPMS_MAIL_FROM_FORCE' ) && ( WPMS_MAIL_FROM_FORCE === 'true' || WPMS_MAIL_FROM_FORCE === true );
 				}
 
 				break;
@@ -440,10 +489,12 @@ class Options {
 	 * Set plugin options, all at once.
 	 *
 	 * @since 1.0.0
+	 * @since 1.3.0 Added $once argument to save option only if they don't exist already.
 	 *
-	 * @param array $options Data to save.
+	 * @param array $options Plugin options to save.
+	 * @param bool $once Whether to update existing options or to add these options only once.
 	 */
-	public function set( $options ) {
+	public function set( $options, $once = false ) {
 
 		foreach ( (array) $options as $group => $keys ) {
 			foreach ( $keys as $key_name => $key_value ) {
@@ -452,7 +503,7 @@ class Options {
 						switch ( $key_name ) {
 							case 'from_name':
 							case 'mailer':
-								$options[ $group ][ $key_name ] = $this->get_const_value( $group, $key_name, sanitize_text_field( $options[ $group ][ $key_name ] ) );
+								$options[ $group ][ $key_name ] = $this->get_const_value( $group, $key_name, wp_strip_all_tags( $options[ $group ][ $key_name ], true ) );
 								break;
 							case 'from_email':
 								if ( filter_var( $options[ $group ][ $key_name ], FILTER_VALIDATE_EMAIL ) ) {
@@ -460,6 +511,8 @@ class Options {
 								}
 								break;
 							case 'return_path':
+							case 'from_name_force':
+							case 'from_email_force':
 								$options[ $group ][ $key_name ] = $this->get_const_value( $group, $key_name, (bool) $options[ $group ][ $key_name ] );
 								break;
 						}
@@ -468,6 +521,7 @@ class Options {
 					case 'general':
 						switch ( $key_name ) {
 							case 'am_notifications_hidden':
+							case 'uninstall':
 								$options[ $group ][ $key_name ] = (bool) $options[ $group ][ $key_name ];
 								break;
 						}
@@ -486,13 +540,13 @@ class Options {
 				switch ( $key_name ) {
 					case 'host':
 					case 'user':
-						$options[ $mailer ][ $key_name ] = $this->get_const_value( $mailer, $key_name, sanitize_text_field( $options[ $mailer ][ $key_name ] ) );
+						$options[ $mailer ][ $key_name ] = $this->get_const_value( $mailer, $key_name, wp_strip_all_tags( $options[ $mailer ][ $key_name ], true ) );
 						break;
 					case 'port':
 						$options[ $mailer ][ $key_name ] = $this->get_const_value( $mailer, $key_name, intval( $options[ $mailer ][ $key_name ] ) );
 						break;
 					case 'encryption':
-						$options[ $mailer ][ $key_name ] = $this->get_const_value( $mailer, $key_name, sanitize_text_field( $options[ $mailer ][ $key_name ] ) );
+						$options[ $mailer ][ $key_name ] = $this->get_const_value( $mailer, $key_name, wp_strip_all_tags( $options[ $mailer ][ $key_name ], true ) );
 						break;
 					case 'auth':
 					case 'autotls':
@@ -508,8 +562,14 @@ class Options {
 					case 'client_secret':
 					case 'auth_code':
 					case 'access_token':
+						if ( is_string( $options[ $mailer ][ $key_name ] ) ) {
+							$value = trim( $options[ $mailer ][ $key_name ] );
+						} else {
+							$value = $options[ $mailer ][ $key_name ];
+						}
+
 						// Do not process as they may contain certain special characters, but allow to be overwritten using constants.
-						$options[ $mailer ][ $key_name ] = $this->get_const_value( $mailer, $key_name, $options[ $mailer ][ $key_name ] );
+						$options[ $mailer ][ $key_name ] = $this->get_const_value( $mailer, $key_name, $value );
 						break;
 				}
 			}
@@ -517,10 +577,64 @@ class Options {
 
 		$options = apply_filters( 'wp_mail_smtp_options_set', $options );
 
-		update_option( self::META_KEY, $options );
+		// Whether to update existing options or to add these options only once if they don't exist yet.
+		if ( $once ) {
+			add_option( self::META_KEY, $options, '', 'no' ); // Do not autoload these options.
+		} else {
+			update_option( self::META_KEY, $options, 'no' );
+		}
 
 		// Now we need to re-cache values.
 		$this->populate_options();
+	}
+
+	/**
+	 * Merge recursively, including a proper substitution of values in sub-arrays when keys are the same.
+	 * It's more like array_merge() and array_merge_recursive() combined.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array
+	 */
+	public static function array_merge_recursive() {
+
+		$arrays = func_get_args();
+
+		if ( count( $arrays ) < 2 ) {
+			return isset( $arrays[0] ) ? $arrays[0] : array();
+		}
+
+		$merged = array();
+
+		while ( $arrays ) {
+			$array = array_shift( $arrays );
+
+			if ( ! is_array( $array ) ) {
+				return array();
+			}
+
+			if ( empty( $array ) ) {
+				continue;
+			}
+
+			foreach ( $array as $key => $value ) {
+				if ( is_string( $key ) ) {
+					if (
+						is_array( $value ) &&
+						array_key_exists( $key, $merged ) &&
+						is_array( $merged[ $key ] )
+					) {
+						$merged[ $key ] = call_user_func( __METHOD__, $merged[ $key ], $value );
+					} else {
+						$merged[ $key ] = $value;
+					}
+				} else {
+					$merged[] = $value;
+				}
+			}
+		}
+
+		return $merged;
 	}
 
 	/**
