@@ -37,9 +37,14 @@
 
 <h3 class="wp-people-group">&#x1f31f;<?php _e( 'Recent Rockstar Contributors', 'all-in-one-seo-pack' ); ?>&#x1f31f;</h3>
 	<ul class="wp-people-group " id="wp-people-group-rockstars">
-		<li><?php /* translators: '%1$s' and '%2$s' are used as placeholders and turn the text in between into a clickable link */
-			printf( __('Want to see your name and picture here as a community developer? %1$sClick here%2$s to open an issue on GitHub to report a bug, request a feature or find an issue and submit code!', 'all-in-one-seo-pack'),
-				 '<a href="https://github.com/semperfiwebdesign/all-in-one-seo-pack" target="_blank">', '</a>'); ?>
+		<li>
+		<?php
+		/* translators: '%1$s' and '%2$s' are used as placeholders and turn the text in between into a clickable link */
+			printf(
+				__( 'Want to see your name and picture here as a community developer? %1$sClick here%2$s to open an issue on GitHub to report a bug, request a feature or find an issue and submit code!', 'all-in-one-seo-pack' ),
+				'<a href="https://github.com/semperfiwebdesign/all-in-one-seo-pack" target="_blank">', '</a>'
+			);
+				?>
 		</li>
 	<li class="wp-person" id="wp-person-dougalcampbell">
 		<a class="web" target="_blank" href="https://profiles.wordpress.org/dougal/"><img alt="" class="gravatar" src="https://www.gravatar.com/avatar/81717a172b6918071fbea1a52483294b?s=60">
@@ -53,10 +58,42 @@
 		<a class="web" target="_blank" href="https://profiles.wordpress.org/rozroz/"><img alt="" class="gravatar" src="https://secure.gravatar.com/avatar/5a4758faa5ba6fc1322bdfb0f6ebcf56c?s=60">
 			Ashish Ravi</a>
 	</li>
-    <li class="wp-person" id="rozroz">
-        <a class="web" target="_blank" href="https://profiles.wordpress.org/yummy-wp/"><img alt="" class="gravatar" src="https://avatars0.githubusercontent.com/u/22232968?v=3&s=460">
-            Stanislav Samoilenko</a>
+	<li class="wp-person" id="rozroz">
+		<a class="web" target="_blank" href="https://profiles.wordpress.org/yummy-wp/"><img alt="" class="gravatar" src="https://avatars0.githubusercontent.com/u/22232968?v=3&s=460">
+			Stanislav Samoilenko</a>
+	</li>
+	<li class="wp-person" id="EkoJR">
+	<a class="web" target="_blank" href="https://profiles.wordpress.org/EkoJR/"><img alt="" class="gravatar" src="https://secure.gravatar.com/avatar/bb4c78fe944b58bd5f127d836500c30a?s=200&d=mm&r=g">
+			Stanislav Samoilenko</a>
+	</li>
+    <li class="wp-person" id="webaware">
+    <a class="web" target="_blank" href="https://profiles.wordpress.org/webaware/"><img alt="" class="gravatar" src="https://secure.gravatar.com/avatar/aee800bc3644d9ebfa33c1ed9df5d958?s=200&d=mm&r=g">
+        Ross McKay</a>
     </li>
+        <li class="wp-person" id="adamsilverstein">
+            <a class="web" target="_blank" href="https://profiles.wordpress.org/adamsilverstein/"><img alt=""
+                                                                                                       class="gravatar"
+                                                                                                       src="https://secure.gravatar.com/avatar/fddbd6c3e1c3d971aa732b9346aeb433?s=200&d=mm&r=g">
+                Adam Silverstein</a>
+        </li>
+        <li class="wp-person" id="vschettino">
+            <a class="web" target="_blank" href="https://github.com/vschettino/"><img alt=""
+                                                                                                       class="gravatar"
+                                                                                                       src="https://avatars2.githubusercontent.com/u/7289698?s=460&v=4">
+                Vinicius Schettino</a>
+        </li>
+        <li class="wp-person" id="vschettino">
+            <a class="web" target="_blank" href="https://github.com/srdjan-jcc"><img alt=""
+                                                                                      class="gravatar"
+                                                                                      src="https://avatars2.githubusercontent.com/u/3109112?s=460&v=4">
+                Srdjan Jocic</a>
+        </li>
+        <li class="wp-person" id="vschettino">
+            <a class="web" target="_blank" href="https://profiles.wordpress.org/soulseekah/"><img alt=""
+                                                                                      class="gravatar"
+                                                                                      src="https://avatars0.githubusercontent.com/u/685880?s=460&v=4">
+                Gennady Kovshenin</a>
+        </li>
 </ul>
 
 <h3 class="wp-people-group dashicons-before dashicons-translation"><?php printf( _e( 'Translation contributors and translation editors', 'all-in-one-seo-pack' ), '1.2' ); ?></h3>
