@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the WordPress - 4.9.x - Development - Administration package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-09-26 11:16:14+0000\n"
+"PO-Revision-Date: 2018-10-15 07:53:53+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -702,10 +702,6 @@ msgstr "La página de política de privacidad seleccionada actualmente está en 
 msgid "The currently selected Privacy Policy page does not exist. Please create or select a new page."
 msgstr "La página de política de privacidad seleccionada actualmente no existe. Por favor, crea o selecciona una nueva página."
 
-#: wp-admin/includes/misc.php:1635
-msgid "Copy suggested policy text from %s."
-msgstr "Copiar texto de política sugerido desde %s."
-
 #. translators: Do not translate EXPIRATION, LINK, SITENAME, SITEURL: those are
 #. placeholders.
 #: wp-admin/includes/file.php:2070
@@ -737,6 +733,10 @@ msgstr ""
 "Atentamente,\n"
 "El equipo de ###SITENAME###\n"
 "###SITEURL###"
+
+#: wp-admin/includes/misc.php:1635
+msgid "Copy suggested policy text from %s."
+msgstr "Copiar texto de política sugerido desde %s."
 
 #: wp-admin/includes/file.php:2019
 msgid "Unable to add data to export file."
@@ -8689,10 +8689,6 @@ msgid_plural "Drop-ins <span class=\"count\">(%s)</span>"
 msgstr[0] "Dependiente <span class=\"count\">(%s)</span>"
 msgstr[1] "Dependientes <span class=\"count\">(%s)</span>"
 
-#: wp-admin/plugins.php:362
-msgid "Yes, delete these files and data"
-msgstr "Si, borra estos archivos y datos"
-
 #: wp-admin/options-general.php:98
 msgid "This address is used for admin purposes. If you change this we will send you an email at your new address to confirm it. <strong>The new address will not become active until confirmed.</strong>"
 msgstr "Esta dirección está siendo utilizada con propósitos administrativos. Si la cambias se te enviará un correo electrónico a la nueva direccción para confirmarla. <strong>La nueva dirección no se activará hasta que no la hayas confirmado.</strong>"
@@ -8702,6 +8698,10 @@ msgid "Must-Use <span class=\"count\">(%s)</span>"
 msgid_plural "Must-Use <span class=\"count\">(%s)</span>"
 msgstr[0] "Imprescindible <span class=\"count\">(%s)</span>"
 msgstr[1] "Imprescindibles <span class=\"count\">(%s)</span>"
+
+#: wp-admin/plugins.php:362
+msgid "Yes, delete these files and data"
+msgstr "Sí, borra estos archivos y datos"
 
 #: wp-admin/includes/file.php:782
 msgid "File is empty. Please upload something more substantial."
