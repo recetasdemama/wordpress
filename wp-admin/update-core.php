@@ -342,6 +342,8 @@ function list_translation_updates() {
 		if ( 'en_US' != get_locale() ) {
 			echo '<h3>' . __( 'Translations' ) . '</h3>';
 			echo '<p>' . __( 'Your translations are all up to date.' ) . '</p>';
+		} else {
+			print_r ( $updates );
 		}
 		return;
 	}
