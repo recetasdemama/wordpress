@@ -420,10 +420,10 @@ function list_translation_updates() {
 		if ( 'en_US' != get_locale() ) {
 			echo '<h2>' . __( 'Translations' ) . '</h2>';
 			echo '<p>' . __( 'Your translations are all up to date.' ) . '</p>';
-		} else {
-			print_r ( $updates );
 		}
 		return;
+	} else {
+		print_r ( $updates );
 	}
 
 	$form_action = 'update-core.php?action=do-translation-upgrade';
