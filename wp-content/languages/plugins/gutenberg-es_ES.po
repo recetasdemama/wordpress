@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Gutenberg - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-10-17 15:03:07+0000\n"
+"PO-Revision-Date: 2018-10-18 09:12:26+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -40,10 +40,6 @@ msgstr "Pega la URL o escribe para buscar"
 #: languages/gutenberg-translations.php:1749
 msgid "Terms"
 msgstr "Términos"
-
-#: languages/gutenberg-translations.php:1670
-msgid "Your post will be published at the specified date and time."
-msgstr "Tu entrada será publicada a la fecha y hora establecidas."
 
 #: languages/gutenberg-translations.php:1667
 msgid "Are you ready to schedule?"
@@ -83,7 +79,11 @@ msgstr "Otro usuario tiene ahora el control de edición de esta entrada. No te p
 #. translators: 'post' is generic and may be of any type (post, page, etc.).
 #: languages/gutenberg-translations.php:1553
 msgid "%s now has editing control of this post. Don't worry, your changes up to this moment have been saved"
-msgstr "%s tiene ahora el control de edición de esta entrada. No te preocupes, se han cambiado tus cambios hasta este momento."
+msgstr "%s tiene ahora el control de edición de esta entrada. No te preocupes, se han guardado tus cambios hasta este momento."
+
+#: languages/gutenberg-translations.php:1670
+msgid "Your post will be published at the specified date and time."
+msgstr "Tu entrada será publicada en la fecha y hora establecidas."
 
 #: languages/gutenberg-translations.php:1549
 msgid "Avatar"
@@ -169,10 +169,6 @@ msgstr "Ajustes de medios"
 msgid "Content is fixed size."
 msgstr "Contenido de tamaño fijo."
 
-#: languages/gutenberg-translations.php:233
-msgid "Videos and other content automatically resizes."
-msgstr "Los videos y otro contenido se redimensionan automáticamente."
-
 #: languages/gutenberg-translations.php:214
 msgid "Overlay Color"
 msgstr "Color de superposición"
@@ -189,6 +185,10 @@ msgstr "Insertar medio"
 #: gutenberg.php:273
 msgid "Export &#8220;%s&#8221; as JSON"
 msgstr "Exportar &#8220;%s&#8221; como JSON"
+
+#: languages/gutenberg-translations.php:233
+msgid "Videos and other content automatically resizes."
+msgstr "Los vídeos y otro contenido se redimensionan automáticamente."
 
 #: languages/gutenberg-translations.php:2002
 msgid "Invalid Reusable Block JSON file"
