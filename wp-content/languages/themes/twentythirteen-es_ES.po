@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Themes - Twenty Thirteen package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-11-06 22:31:01+0000\n"
+"PO-Revision-Date: 2019-02-22 09:15:57+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -11,13 +11,63 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: Themes - Twenty Thirteen\n"
 
-#. Description of the plugin/theme
+#. Description of the theme
 msgid "The 2013 theme for WordPress takes us back to the blog, featuring a full range of post formats, each displayed beautifully in their own unique way. Design details abound, starting with a vibrant color scheme and matching header images, beautiful typography and icons, and a flexible layout that looks great on any device, big or small."
 msgstr "El tema 2013 para WordPress se remonta al clásico esquema de blog, destacando un amplio rango de tipos de entrada, desplegando cada uno de ellos de una manera hermosa y única. El diseño abunda en detalles, comenzando por la paleta de colores vibrantes e imágenes de cabecera correspondientes, continuando con una hermosa mezcla de tipografías e iconos y finalizando con un esquema totalmente flexible que permite visualizar el sitio perfectamente desde cualquier dispositivo, pequeño o grande."
 
-#. Theme Name of the plugin/theme
+#. Theme Name of the theme
 msgid "Twenty Thirteen"
 msgstr "Twenty Thirteen"
+
+#. translators: %s: The post title.
+#: comments.php:29
+msgctxt "comments title"
+msgid "One thought on &ldquo;%s&rdquo;"
+msgstr "Un comentario en &ldquo;%s&rdquo;"
+
+#: functions.php:146
+msgid "Off-white"
+msgstr "Blanco roto"
+
+#: functions.php:141
+msgid "Beige"
+msgstr "Beige"
+
+#: functions.php:136
+msgid "Light Brown"
+msgstr "Marrón claro"
+
+#: functions.php:131
+msgid "Medium Brown"
+msgstr "Marrón medio"
+
+#: functions.php:126
+msgid "Dark Brown"
+msgstr "Marrón oscuro"
+
+#: functions.php:121
+msgid "White"
+msgstr "Blanco"
+
+#: functions.php:116
+msgid "Yellow"
+msgstr "Amarillo"
+
+#: functions.php:111
+msgid "Light Orange"
+msgstr "Naranja claro"
+
+#: functions.php:106
+msgid "Medium Orange"
+msgstr "Naranja medio"
+
+#: functions.php:101
+msgid "Red"
+msgstr "Rojo"
+
+#: functions.php:96
+msgid "Dark Gray"
+msgstr "Gris oscuro"
 
 #: taxonomy-post_format.php:23
 msgid "%s Archives"
@@ -46,7 +96,7 @@ msgctxt "header image description"
 msgid "Circle"
 msgstr "Círculo"
 
-#: inc/back-compat.php:37 inc/back-compat.php:48 inc/back-compat.php:62
+#: inc/back-compat.php:37 inc/back-compat.php:48 inc/back-compat.php:64
 msgid "Twenty Thirteen requires at least WordPress version 3.6. You are running version %s. Please upgrade and try again."
 msgstr "Twenty Thirteen requiere al menos la versión 3.6 de WordPress. Estás utilizando la versión %s. Por favor, actualiza e inténtalo de nuevo."
 
@@ -78,90 +128,91 @@ msgstr "Saltar al contenido"
 msgid "Menu"
 msgstr "Menú"
 
-#: functions.php:433
+#: functions.php:525
 msgid "Permalink to %s"
 msgstr "Enlace permanente a %s"
 
-#: functions.php:425
+#: functions.php:517
 msgctxt "1: post format name. 2: date"
 msgid "%1$s on %2$s"
 msgstr "%1$s en %2$s"
 
-#: functions.php:405
+#: functions.php:497
 msgid "View all posts by %s"
 msgstr "Ver todas las entradas de %s"
 
 #. Translators: used between list items, there is a space after the comma.
-#: functions.php:389 functions.php:395
+#: functions.php:481 functions.php:487
 msgid ", "
 msgstr ", "
 
-#: functions.php:381
+#: functions.php:473
 msgid "Sticky"
 msgstr "Fija"
 
-#: functions.php:363
+#: functions.php:455
 msgctxt "Next post link"
 msgid "%title <span class=\"meta-nav\">&rarr;</span>"
 msgstr "%title <span class=\"meta-nav\">&rarr;</span>"
 
-#: functions.php:362
+#: functions.php:454
 msgctxt "Previous post link"
 msgid "<span class=\"meta-nav\">&larr;</span> %title"
 msgstr "<span class=\"meta-nav\">&larr;</span> %title"
 
-#: functions.php:359
+#: functions.php:451
 msgid "Post navigation"
 msgstr "Navegación de entradas"
 
-#: functions.php:332
+#: functions.php:424
 msgid "Newer posts <span class=\"meta-nav\">&rarr;</span>"
 msgstr "Entradas más nuevas <span class=\"meta-nav\">&rarr;</span>"
 
-#: functions.php:328
+#: functions.php:420
 msgid "<span class=\"meta-nav\">&larr;</span> Older posts"
 msgstr "<span class=\"meta-nav\">&larr;</span> Entradas más antiguas"
 
-#: functions.php:324
+#: functions.php:416
 msgid "Posts navigation"
 msgstr "Ir a las entradas"
 
-#: functions.php:299
+#: functions.php:391
 msgid "Appears on posts and pages in the sidebar."
 msgstr "Aparece en páginas y artículos en la barra lateral"
 
-#: functions.php:297
+#: functions.php:389
 msgid "Secondary Widget Area"
 msgstr "Área secundaria de widgets"
 
-#: functions.php:287
+#: functions.php:379
 msgid "Appears in the footer section of the site."
 msgstr "Aparece en la sección de pie de página del sitio."
 
-#: functions.php:285
+#: functions.php:377
 msgid "Main Widget Area"
 msgstr "Zona principal de Widgets"
 
-#: functions.php:270
+#: functions.php:362
 msgid "Page %s"
 msgstr "Página %s"
 
-#. Translators: If there are characters in your language that are not supported
-#. by Bitter, translate this to 'off'. Do not translate into your own language.
-#: functions.php:155
+#. Translators: If there are characters in your language that are not *
+#. supported by Bitter, translate this to 'off'. Do not translate into your *
+#. own language.
+#: functions.php:231
 msgctxt "Bitter font: on or off"
 msgid "on"
 msgstr "on"
 
-#. Translators: If there are characters in your language that are not supported
-#. by Source Sans Pro, translate this to 'off'. Do not translate into your own
-#. language.
-#: functions.php:149
+#. Translators: If there are characters in your language that are not *
+#. supported by Source Sans Pro, translate this to 'off'. Do not translate *
+#. into your own language.
+#: functions.php:225
 msgctxt "Source Sans Pro font: on or off"
 msgid "on"
 msgstr "activa"
 
-#: functions.php:115
+#: functions.php:191
 msgid "Navigation Menu"
 msgstr "Menú de Navegación"
 
@@ -185,64 +236,65 @@ msgstr "¿Preparado para publicar tu primera entrada? <a href=\"%1$s\">Empieza a
 msgid "Nothing Found"
 msgstr "No se ha encontrado nada"
 
-#: content-gallery.php:52 content-image.php:48 content-quote.php:38
-#: content-video.php:48 content.php:65
+#: content-gallery.php:52 content-video.php:48 content-image.php:48
+#: content-quote.php:38 content.php:65
 msgid "View all % comments"
 msgstr "Ver todos los % comentarios"
 
-#: content-gallery.php:52 content-image.php:48 content-quote.php:38
-#: content-video.php:48 content.php:65
+#: content-gallery.php:52 content-video.php:48 content-image.php:48
+#: content-quote.php:38 content.php:65
 msgid "One comment so far"
 msgstr "Un comentario por ahora"
 
-#: content-gallery.php:52 content-image.php:48 content-quote.php:38
-#: content-video.php:48 content.php:65
+#: content-gallery.php:52 content-video.php:48 content-image.php:48
+#: content-quote.php:38 content.php:65
 msgid "Leave a comment"
 msgstr "Deja un comentario"
 
-#: content-aside.php:36 content-aside.php:44 content-audio.php:47
-#: content-chat.php:45 content-gallery.php:55 content-image.php:51
-#: content-link.php:19 content-quote.php:41 content-status.php:35
-#: content-video.php:51 content.php:31 image.php:54 page.php:51
+#: content-gallery.php:55 content-aside.php:36 content-aside.php:44
+#: content-status.php:35 content-video.php:51 content-image.php:51
+#: content-link.php:19 content-audio.php:47 content-quote.php:41 image.php:54
+#: content-chat.php:45 content.php:31 page.php:51
 msgid "Edit"
 msgstr "Editar"
 
-#: content-aside.php:24 content-audio.php:35 content-chat.php:34
-#: content-gallery.php:35 content-image.php:34 content-link.php:35
-#: content-quote.php:24 content-status.php:24 content-video.php:34
-#: content.php:52 image.php:83 page.php:41
+#: content-gallery.php:35 content-aside.php:24 content-status.php:24
+#: content-video.php:34 content-image.php:34 content-link.php:35
+#: content-audio.php:35 content-quote.php:24 image.php:83 content-chat.php:34
+#: content.php:52 page.php:41
 msgid "Pages:"
 msgstr "Páginas:"
 
 #. translators: %s: Name of current post
-#: content-aside.php:17 content-audio.php:28 content-chat.php:27
-#: content-gallery.php:28 content-image.php:27 content-link.php:28
-#: content-quote.php:17 content-status.php:17 content-video.php:27
-#: content.php:45 functions.php:547
+#: content-gallery.php:28 content-aside.php:17 content-status.php:17
+#: content-video.php:27 content-image.php:27 content-link.php:28
+#: content-audio.php:28 content-quote.php:17 functions.php:639
+#: content-chat.php:27 content.php:45
 msgid "Continue reading %s <span class=\"meta-nav\">&rarr;</span>"
 msgstr "Seguir leyendo %s <span class=\"meta-nav\">&rarr;</span>"
 
-#: comments.php:57
+#: comments.php:67
 msgid "Comments are closed."
 msgstr "Los comentarios están cerrados."
 
-#: comments.php:52
+#: comments.php:62
 msgid "Newer Comments &rarr;"
 msgstr "Comentarios más recientes &rarr;"
 
-#: comments.php:51
+#: comments.php:61
 msgid "&larr; Older Comments"
 msgstr "&larr; Comentarios más antiguos"
 
-#: comments.php:50
+#: comments.php:60
 msgid "Comment navigation"
 msgstr "Navegación de comentarios"
 
-#: comments.php:27
+#. translators: %1$s: The number of comments. %2$s: The post title.
+#: comments.php:35
 msgctxt "comments title"
-msgid "One thought on &ldquo;%2$s&rdquo;"
+msgid "%1$s thought on &ldquo;%2$s&rdquo;"
 msgid_plural "%1$s thoughts on &ldquo;%2$s&rdquo;"
-msgstr[0] "Un comentario en &ldquo;%2$s&rdquo;"
+msgstr[0] "%1$s comentario en &ldquo;%2$s&rdquo;"
 msgstr[1] "%1$s comentarios en &ldquo;%2$s&rdquo;"
 
 #: category.php:19
@@ -299,16 +351,15 @@ msgstr "Esto es algo embarazoso, ¿verdad?"
 msgid "Not Found"
 msgstr "No encontrado"
 
-#. #-#-#-#-#  twentythirteen.pot (Twenty Thirteen 2.4)  #-#-#-#-#
-#. Author URI of the plugin/theme
+#. Author URI of the theme
 #: footer.php:24
 msgid "https://wordpress.org/"
 msgstr "https://es.wordpress.org/"
 
-#. Author of the plugin/theme
+#. Author of the theme
 msgid "the WordPress team"
 msgstr "el equipo de WordPress"
 
-#. Theme URI of the plugin/theme
+#. Theme URI of the theme
 msgid "https://wordpress.org/themes/twentythirteen/"
 msgstr "https://wordpress.org/themes/twentythirteen/"
