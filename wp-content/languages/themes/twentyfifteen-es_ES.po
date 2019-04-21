@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Themes - Twenty Fifteen package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-12-07 01:01:42+0000\n"
+"PO-Revision-Date: 2019-04-16 18:47:29+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -227,12 +227,12 @@ msgstr "on"
 #: functions.php:303
 msgctxt "Noto Serif font: on or off"
 msgid "on"
-msgstr "activa"
+msgstr "on"
 
 #: functions.php:295
 msgctxt "Noto Sans font: on or off"
 msgid "on"
-msgstr "activa"
+msgstr "on"
 
 #: functions.php:268
 msgid "Add widgets here to appear in your sidebar."
