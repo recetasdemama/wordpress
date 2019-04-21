@@ -132,7 +132,7 @@ if ( ! class_exists( 'EWWW_Nextcellent' ) ) {
 		 * @param string $filename The name of the file generated.
 		 */
 		function ewww_ngg_image_save( $filename ) {
-			ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+			ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 			global $ewww_defer;
 			global $ewww_image;
 			if ( file_exists( $filename ) ) {
@@ -146,7 +146,7 @@ if ( ! class_exists( 'EWWW_Nextcellent' ) ) {
 				ewww_image_optimizer( $filename );
 			}
 			ewww_image_optimizer_debug_log();
-			ewwwio_memory( __FUNCTION__ );
+			ewwwio_memory( __METHOD__ );
 		}
 
 		/**
@@ -288,7 +288,7 @@ if ( ! class_exists( 'EWWW_Nextcellent' ) ) {
 		 */
 		function ewww_manage_image_custom_column( $column_name, $id, $return = false ) {
 			// Once we've found our custom column.
-			if ( 'ewww_image_optimizer' == $column_name ) {
+			if ( 'ewww_image_optimizer' === $column_name ) {
 				// Need this file to work with metadata.
 				require_once( WP_CONTENT_DIR . '/plugins/nextcellent-gallery-nextgen-legacy/lib/meta.php' );
 				// Get the metadata for the image.
@@ -490,17 +490,17 @@ if ( ! class_exists( 'EWWW_Nextcellent' ) ) {
 		 * @param string $hook The hook identifier for the current page.
 		 */
 		function ewww_ngg_bulk_script( $hook ) {
-			ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+			ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 			$i18ngg = strtolower( __( 'Galleries', 'nggallery' ) );
 			ewwwio_debug_message( "i18n string for galleries: $i18ngg" );
 			// Make sure we are on a legitimate page and that we have the proper POST variables if necessary.
-			if ( $i18ngg . '_page_ewww-ngg-bulk' != $hook && $i18ngg . '_page_nggallery-manage-gallery' != $hook ) {
+			if ( $i18ngg . '_page_ewww-ngg-bulk' !== $hook && $i18ngg . '_page_nggallery-manage-gallery' !== $hook ) {
 				return;
 			}
-			if ( $i18ngg . '_page_nggallery-manage-gallery' == $hook && ( empty( $_REQUEST['bulkaction'] ) || 'bulk_optimize' != $_REQUEST['bulkaction'] ) ) {
+			if ( $i18ngg . '_page_nggallery-manage-gallery' === $hook && ( empty( $_REQUEST['bulkaction'] ) || 'bulk_optimize' !== $_REQUEST['bulkaction'] ) ) {
 				return;
 			}
-			if ( $i18ngg . '_page_nggallery-manage-gallery' == $hook && ( empty( $_REQUEST['doaction'] ) || ! is_array( $_REQUEST['doaction'] ) ) ) {
+			if ( $i18ngg . '_page_nggallery-manage-gallery' === $hook && ( empty( $_REQUEST['doaction'] ) || ! is_array( $_REQUEST['doaction'] ) ) ) {
 				return;
 			}
 			$images = null;
@@ -513,7 +513,7 @@ if ( ! class_exists( 'EWWW_Nextcellent' ) ) {
 			// If we've been given a bulk action to perform.
 			if ( ! empty( $_REQUEST['doaction'] ) ) {
 				// If we are optimizing a specific group of images.
-				if ( 'manage-images' == $_REQUEST['page'] && 'bulk_optimize' == $_REQUEST['bulkaction'] ) {
+				if ( 'manage-images' === $_REQUEST['page'] && 'bulk_optimize' === $_REQUEST['bulkaction'] ) {
 					ewwwio_debug_message( 'optimizing a group of images' );
 					check_admin_referer( 'ngg_updategallery' );
 					// Reset the resume status, not allowed here.
@@ -522,7 +522,7 @@ if ( ! class_exists( 'EWWW_Nextcellent' ) ) {
 					$images = array_map( 'intval', $_REQUEST['doaction'] );
 				}
 				// If we are optimizing a specific group of galleries.
-				if ( 'manage-galleries' == $_REQUEST['page'] && 'bulk_optimize' == $_REQUEST['bulkaction'] ) {
+				if ( 'manage-galleries' === $_REQUEST['page'] && 'bulk_optimize' === $_REQUEST['bulkaction'] ) {
 					ewwwio_debug_message( 'optimizing a group of galleries' );
 					check_admin_referer( 'ngg_bulkgallery' );
 					global $nggdb;
@@ -547,7 +547,7 @@ if ( ! class_exists( 'EWWW_Nextcellent' ) ) {
 				// Get the list of attachment IDs from the db.
 				$images = get_option( 'ewww_image_optimizer_bulk_ngg_attachments' );
 				// Otherwise, if we are on the standard bulk page, get all the images in the db.
-			} elseif ( $hook == $i18ngg . '_page_ewww-ngg-bulk' ) {
+			} elseif ( $hook === $i18ngg . '_page_ewww-ngg-bulk' ) {
 				ewwwio_debug_message( 'starting from scratch, grabbing all the images' );
 				global $wpdb;
 				$images = $wpdb->get_col( "SELECT pid FROM $wpdb->nggpictures ORDER BY sortorder ASC" );
@@ -729,7 +729,7 @@ if ( ! class_exists( 'EWWW_Nextcellent' ) ) {
 		 * @param string $hook The hook value for the current page.
 		 */
 		function ewww_ngg_manual_actions_script( $hook ) {
-			if ( 'galleries_page_nggallery-manage' != $hook ) {
+			if ( 'galleries_page_nggallery-manage' !== $hook ) {
 				return;
 			}
 			if ( ! current_user_can( apply_filters( 'ewww_image_optimizer_manual_permissions', '' ) ) ) {

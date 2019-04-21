@@ -122,7 +122,7 @@ class EWWW_Image {
 			$ewwwdb = $wpdb;
 		}
 		$ewwwdb->flush();
-		if ( $path && ( is_file( $path ) || 0 === strpos( $path, 's3://' ) ) ) {
+		if ( $path && ( is_file( $path ) || ewww_image_optimizer_stream_wrapped( $path ) ) ) {
 			ewwwio_debug_message( "creating EWWW_Image with $path" );
 			$new_image = ewww_image_optimizer_find_already_optimized( $path );
 			if ( ! $new_image ) {
@@ -130,12 +130,12 @@ class EWWW_Image {
 				$this->orig_size = filesize( $path );
 				$this->gallery   = $gallery;
 				if ( $id ) {
-					$this->attachment_id = $id;
+					$this->attachment_id = (int) $id;
 				}
 				return;
 			} elseif ( is_array( $new_image ) ) {
 				if ( $id && empty( $new_image['attachment_id'] ) ) {
-					$new_image['attachment_id'] = $id;
+					$new_image['attachment_id'] = (int) $id;
 				}
 				if ( $gallery && empty( $new_image['gallery'] ) ) {
 					$new_image['gallery'] = $gallery;
@@ -174,13 +174,14 @@ class EWWW_Image {
 		}
 		$this->id            = $new_image['id'];
 		$this->file          = ewww_image_optimizer_absolutize_path( $new_image['path'] );
-		$this->attachment_id = $new_image['attachment_id'];
-		$this->opt_size      = $new_image['image_size'];
-		$this->orig_size     = $new_image['orig_size'];
+		$this->attachment_id = (int) $new_image['attachment_id'];
+		$this->opt_size      = (int) $new_image['image_size'];
+		$this->orig_size     = (int) $new_image['orig_size'];
 		$this->resize        = $new_image['resize'];
 		$this->converted     = ewww_image_optimizer_absolutize_path( $new_image['converted'] );
 		$this->gallery       = ( empty( $gallery ) ? $new_image['gallery'] : $gallery );
 		$this->backup        = $new_image['backup'];
+		$this->level         = (int) $new_image['level'];
 		$this->record        = $new_image;
 	}
 
@@ -190,7 +191,7 @@ class EWWW_Image {
 	 * @param array $meta The attachment metadata.
 	 */
 	public function update_converted_attachment( $meta ) {
-		ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+		ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 		$this->url = wp_get_attachment_url( $this->attachment_id );
 		if ( ewww_image_optimizer_function_exists( 'print_r' ) ) {
 			ewwwio_debug_message( print_r( $this, true ) );
@@ -232,7 +233,7 @@ class EWWW_Image {
 	 * @return array $meta The updated attachment metadata.
 	 */
 	public function convert_sizes( $meta ) {
-		ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+		ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 
 		global $wpdb;
 		if ( strpos( $wpdb->charset, 'utf8' ) === false ) {
@@ -244,7 +245,7 @@ class EWWW_Image {
 		$sizes_queried = $ewwwdb->get_results( "SELECT * FROM $ewwwdb->ewwwio_images WHERE attachment_id = $this->attachment_id AND resize <> 'full' AND resize <> ''", ARRAY_A );
 		/* ewwwio_debug_message( 'found some images in the db: ' . count( $sizes_queried ) ); */
 		$sizes = array();
-		if ( 'ims_image' == get_post_type( $this->attachment_id ) ) {
+		if ( 'ims_image' === get_post_type( $this->attachment_id ) ) {
 			$base_dir = trailingslashit( dirname( $this->file ) ) . '_resized/';
 		} else {
 			$base_dir = trailingslashit( dirname( $this->file ) );
@@ -305,7 +306,7 @@ class EWWW_Image {
 					if ( empty( $done['height'] ) || empty( $done['width'] ) ) {
 						continue;
 					}
-					if ( $data['height'] == $done['height'] && $data['width'] == $done['width'] ) {
+					if ( $data['height'] === $done['height'] && $data['width'] === $done['width'] ) {
 						continue( 2 );
 					}
 				}
@@ -401,7 +402,7 @@ class EWWW_Image {
 	 * @return array $meta The updated attachment metadata.
 	 */
 	private function restore_sizes( $meta ) {
-		ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+		ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 
 		global $wpdb;
 		if ( strpos( $wpdb->charset, 'utf8' ) === false ) {
@@ -440,7 +441,7 @@ class EWWW_Image {
 				// Look for any 'duplicate' sizes that have the same dimensions as the current queried size.
 				if ( isset( $meta['sizes'] ) && ewww_image_optimizer_iterable( $meta['sizes'] ) ) {
 					foreach ( $meta['sizes'] as $size => $data ) {
-						if ( $meta['sizes'][ $size_queried['resize'] ]['height'] == $data['height'] && $meta['sizes'][ $size_queried['resize'] ]['width'] == $data['width'] ) {
+						if ( $meta['sizes'][ $size_queried['resize'] ]['height'] === $data['height'] && $meta['sizes'][ $size_queried['resize'] ]['width'] === $data['width'] ) {
 							$meta['sizes'][ $size ]['file']      = $meta['sizes'][ $size_queried['resize'] ]['file'];
 							$meta['sizes'][ $size ]['mime-type'] = $meta['sizes'][ $size_queried['resize'] ]['mime-type'];
 						}
@@ -460,7 +461,7 @@ class EWWW_Image {
 	 * @param string $file The name of the non-retina file.
 	 */
 	private function convert_retina( $file ) {
-		ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+		ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 		$retina_path = ewww_image_optimizer_hidpi_optimize( $file, true );
 		if ( ! $retina_path ) {
 			return;
@@ -482,7 +483,7 @@ class EWWW_Image {
 	 * @return string The name of the new file.
 	 */
 	public function convert( $file, $replace_url = true, $check_size = false ) {
-		ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+		ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 		if ( empty( $file ) ) {
 			ewwwio_debug_message( 'no file provided to convert' );
 			return false;
@@ -539,17 +540,17 @@ class EWWW_Image {
 				}
 				ewwwio_debug_message( "converted PNG size: $png_size" );
 				// If the PNG exists, and we didn't end up with an empty file.
-				if ( ! $check_size && $png_size && is_file( $newfile ) && ewww_image_optimizer_mimetype( $newfile, 'i' ) == 'image/png' ) {
+				if ( ! $check_size && $png_size && is_file( $newfile ) && ewww_image_optimizer_mimetype( $newfile, 'i' ) === 'image/png' ) {
 					ewwwio_debug_message( 'JPG to PNG successful' );
 					// Check to see if the user wants the originals deleted.
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_delete_originals' ) == true ) {
+					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_delete_originals' ) ) {
 						// Delete the original JPG.
 						unlink( $file );
 					}
-				} elseif ( $check_size && is_file( $newfile ) && $png_size < ewww_image_optimizer_filesize( $file ) && ewww_image_optimizer_mimetype( $newfile, 'i' ) == 'image/png' ) {
+				} elseif ( $check_size && is_file( $newfile ) && $png_size < ewww_image_optimizer_filesize( $file ) && ewww_image_optimizer_mimetype( $newfile, 'i' ) === 'image/png' ) {
 					ewwwio_debug_message( 'JPG to PNG successful, after comparing size' );
 					// Check to see if the user wants the originals deleted.
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_delete_originals' ) == true ) {
+					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_delete_originals' ) ) {
 						// Delete the original JPG.
 						unlink( $file );
 					}
@@ -644,17 +645,17 @@ class EWWW_Image {
 				}
 				ewwwio_debug_message( "converted JPG size: $jpg_size" );
 				// If the new JPG is smaller than the original PNG.
-				if ( ! $check_size && $jpg_size && is_file( $newfile ) && ewww_image_optimizer_mimetype( $newfile, 'i' ) == 'image/jpeg' ) {
+				if ( ! $check_size && $jpg_size && is_file( $newfile ) && ewww_image_optimizer_mimetype( $newfile, 'i' ) === 'image/jpeg' ) {
 					ewwwio_debug_message( 'JPG to PNG successful' );
 					// If the user wants originals delted after a conversion.
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_delete_originals' ) == true ) {
+					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_delete_originals' ) ) {
 						// Delete the original PNG.
 						unlink( $file );
 					}
-				} elseif ( $check_size && is_file( $newfile ) && $jpg_size < ewww_image_optimizer_filesize( $file ) && ewww_image_optimizer_mimetype( $newfile, 'i' ) == 'image/jpeg' ) {
+				} elseif ( $check_size && is_file( $newfile ) && $jpg_size < ewww_image_optimizer_filesize( $file ) && ewww_image_optimizer_mimetype( $newfile, 'i' ) === 'image/jpeg' ) {
 					ewwwio_debug_message( 'PNG to JPG successful, after comparing size' );
 					// If the user wants originals delted after a conversion.
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_delete_originals' ) == true ) {
+					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_delete_originals' ) ) {
 						// Delete the original PNG.
 						unlink( $file );
 					}
@@ -700,17 +701,17 @@ class EWWW_Image {
 				}
 				ewwwio_debug_message( "converted PNG size: $png_size" );
 				// If the PNG exists, and we didn't end up with an empty file.
-				if ( ! $check_size && $png_size && is_file( $newfile ) && ewww_image_optimizer_mimetype( $newfile, 'i' ) == 'image/png' ) {
+				if ( ! $check_size && $png_size && is_file( $newfile ) && ewww_image_optimizer_mimetype( $newfile, 'i' ) === 'image/png' ) {
 					ewwwio_debug_message( 'GIF to PNG successful' );
 					// Check to see if the user wants the originals deleted.
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_delete_originals' ) == true ) {
+					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_delete_originals' ) ) {
 						// Delete the original JPG.
 						unlink( $file );
 					}
-				} elseif ( $check_size && is_file( $newfile ) && $png_size < ewww_image_optimizer_filesize( $file ) && ewww_image_optimizer_mimetype( $newfile, 'i' ) == 'image/png' ) {
+				} elseif ( $check_size && is_file( $newfile ) && $png_size < ewww_image_optimizer_filesize( $file ) && ewww_image_optimizer_mimetype( $newfile, 'i' ) === 'image/png' ) {
 					ewwwio_debug_message( 'GIF to PNG successful, after comparing size' );
 					// Check to see if the user wants the originals deleted.
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_delete_originals' ) == true ) {
+					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_delete_originals' ) ) {
 						// Delete the original JPG.
 						unlink( $file );
 					}
@@ -771,7 +772,7 @@ class EWWW_Image {
 			$suffix = '-' . $filenum;
 		}
 		// All done, let's reconstruct the filename.
-		ewwwio_memory( __FUNCTION__ );
+		ewwwio_memory( __METHOD__ );
 		$this->increment = $filenum;
 		return $filename . $suffix . $dimensions . $hidpi_suffix . $fileext;
 	}
@@ -785,7 +786,7 @@ class EWWW_Image {
 	 * @param string $old_path Optional. The url to the old version of the image.
 	 */
 	public function replace_url( $new_path = '', $old_path = '' ) {
-		ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+		ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 
 		$new = ( empty( $new_path ) ? $this->file : $new_path );
 		$old = ( empty( $old_path ) ? $this->converted : $old_path );
@@ -801,7 +802,7 @@ class EWWW_Image {
 		// Construct the new guid based on the filename from the attachment metadata.
 		ewwwio_debug_message( "old guid: $old_guid" );
 		ewwwio_debug_message( "new guid: $guid" );
-		if ( substr( $old_guid, -1 ) == '/' || substr( $guid, -1 ) == '/' ) {
+		if ( substr( $old_guid, -1 ) === '/' || substr( $guid, -1 ) === '/' ) {
 			ewwwio_debug_message( 'could not obtain full url for current and previous image, bailing' );
 			return;
 		}
@@ -941,7 +942,7 @@ class EWWW_Image {
 	 * @return int The number of seconds expected to compress the current image.
 	 */
 	public function time_estimate() {
-		ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+		ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 		$time       = 0;
 		$type       = ewww_image_optimizer_quick_mimetype( $this->file );
 		$image_size = ( empty( $this->opt_size ) ? $this->orig_size : $this->opt_size );
@@ -958,37 +959,37 @@ class EWWW_Image {
 					$time += 20;
 				} elseif ( $image_size > 5000000 ) { // greater than 5MB.
 					$time += 10;
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) == 40 ) {
+					if ( 40 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) ) {
 						$time += 25;
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) == 30 ) {
+					} elseif ( 30 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) ) {
 						$time += 7;
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) == 20 ) {
+					} elseif ( 20 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) ) {
 						$time += 2;
 					}
 				} elseif ( $image_size > 1000000 ) { // greater than 1MB.
 					$time += 5;
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) == 40 ) {
+					if ( 40 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) ) {
 						if ( $image_size > 2000000 ) { // greater than 2MB.
 							$time += 15;
 						} else {
 							$time += 11;
 						}
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) == 30 ) {
+					} elseif ( 30 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) ) {
 						$time += 6;
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) == 20 ) {
+					} elseif ( 20 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) ) {
 						$time += 2;
 					}
 				} else {
 					$time++;
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) == 40 ) {
+					if ( 40 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) ) {
 						if ( $image_size > 200000 ) { // greater than 200k.
 							$time += 11;
 						} else {
 							$time += 5;
 						}
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) == 30 ) {
+					} elseif ( 30 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) ) {
 						$time += 3;
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) == 20 ) {
+					} elseif ( 20 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) ) {
 						$time += 3;
 					}
 				} // End if().
@@ -1001,53 +1002,53 @@ class EWWW_Image {
 					$time += 35;
 				} elseif ( $image_size > 1000000 ) { // greater than 1MB.
 					$time += 15;
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 50 ) {
+					if ( 50 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						$time += 8;
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 40 ) {
+					} elseif ( 40 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						/* $time++; */
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 30 ) {
+					} elseif ( 30 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						$time += 10;
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 20 ) {
+					} elseif ( 20 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						$time++;
 					}
 				} elseif ( $image_size > 500000 ) { // greater than 500kb.
 					$time += 7;
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 50 ) {
+					if ( 50 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						$time += 5;
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 40 ) {
+					} elseif ( 40 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						/* $time++; */
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 30 ) {
+					} elseif ( 30 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						$time += 8;
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 20 ) {
+					} elseif ( 20 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						$time++;
 					}
 				} elseif ( $image_size > 100000 ) { // greater than 100kb.
 					$time += 4;
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 50 ) {
+					if ( 50 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						$time += 5;
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 40 ) {
+					} elseif ( 40 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						/* $time++; */
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 30 ) {
+					} elseif ( 30 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						$time += 9;
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 20 ) {
+					} elseif ( 20 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						$time++;
 					}
 				} else {
 					$time++;
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 50 ) {
+					if ( 50 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						$time += 2;
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 40 ) {
+					} elseif ( 40 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						$time ++;
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 30 ) {
+					} elseif ( 30 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						$time += 3;
-					} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) == 20 ) {
+					} elseif ( 20 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_level' ) ) {
 						$time++;
 					}
 				} // End if().
 				break;
 			case 'image/gif':
 				$time++;
-				if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_gif_level' ) == 10 && ewww_image_optimizer_get_option( 'ewww_image_optimizer_cloud_key' ) ) {
+				if ( 10 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_gif_level' ) && ewww_image_optimizer_get_option( 'ewww_image_optimizer_cloud_key' ) ) {
 					$time++;
 				}
 				if ( $image_size > 1000000 ) { // greater than 1MB.
@@ -1060,22 +1061,22 @@ class EWWW_Image {
 				}
 				if ( $image_size > 25000000 ) { // greater than 25MB.
 					$time += 20;
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_pdf_level' ) == 20 ) {
+					if ( 20 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_pdf_level' ) ) {
 						$time += 16;
 					}
 				} elseif ( $image_size > 10000000 ) { // greater than 10MB.
 					$time += 10;
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_pdf_level' ) == 20 ) {
+					if ( 20 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_pdf_level' ) ) {
 						$time += 20;
 					}
 				} elseif ( $image_size > 4000000 ) { // greater than 4MB.
 					$time += 3;
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_pdf_level' ) == 20 ) {
+					if ( 20 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_pdf_level' ) ) {
 						$time += 12;
 					}
 				} elseif ( $image_size > 1000000 ) { // greater than 1MB.
 					$time++;
-					if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_pdf_level' ) == 20 ) {
+					if ( 20 === (int) ewww_image_optimizer_get_option( 'ewww_image_optimizer_pdf_level' ) ) {
 						$time += 10;
 					}
 				}

@@ -15,22 +15,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 class EWWWIO_Page_Parser {
 
 	/**
+	 * Allowed image extensions.
+	 *
+	 * @access private
+	 * @var array $extensions
+	 */
+	protected $extensions = array(
+		'gif',
+		'jpg',
+		'jpeg',
+		'jpe',
+		'png',
+	);
+
+	/**
 	 * Match all images and any relevant <a> tags in a block of HTML.
+	 *
+	 * The hyperlinks param implies that the src attribute is required, but not the other way around.
 	 *
 	 * @param string $content Some HTML.
 	 * @param bool   $hyperlinks Default true. Should we include encasing hyperlinks in our search.
+	 * @param bool   $src_required Default true. Should we look only for images with src attributes.
 	 * @return array An array of $images matches, where $images[0] is
 	 *         an array of full matches, and the link_url, img_tag,
 	 *         and img_url keys are arrays of those matches.
 	 */
-	function get_images_from_html( $content, $hyperlinks = true ) {
-		ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+	function get_images_from_html( $content, $hyperlinks = true, $src_required = true ) {
+		ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 		$images = array();
 
+		$unquoted_pattern = '';
+		$search_pattern   = '#(?P<img_tag><img\s[^>]*?>)#is';
 		if ( $hyperlinks ) {
-			$search_pattern = '#(?:<a[^>]+?href\s*=\s*["\'](?P<link_url>[^\s]+?)["\'][^>]*?>\s*)?(?P<img_tag><img[^>]*?\s+?src\s*=\s*["\'](?P<img_url>[^\s]+?)["\'].*?>){1}(?:\s*</a>)?#is';
-		} else {
-			$search_pattern = '#(?P<img_tag><img[^>]*?\s+?src\s*=\s*["\'](?P<img_url>[^\s]+?)["\'].*?>)#is';
+			$search_pattern   = '#(?:<figure[^>]*?\s+?class\s*=\s*["\'](?P<figure_class>[\w\s-]+?)["\'][^>]*?>\s*)?(?:<a[^>]*?\s+?href\s*=\s*["\'](?P<link_url>[^\s]+?)["\'][^>]*?>\s*)?(?P<img_tag><img[^>]*?\s+?src\s*=\s*["\'](?P<img_url>[^\s]+?)["\'][^>]*?>){1}(?:\s*</a>)?#is';
+			$unquoted_pattern = '#(?:<figure[^>]*?\s+?class\s*=\s*(?P<figure_class>[\w-]+)[^>]*?>\s*)?(?:<a[^>]*?\s+?href\s*=\s*(?P<link_url>[^"\'][^\s>]+)[^>]*?>\s*)?(?P<img_tag><img[^>]*?\s+?src\s*=\s*(?P<img_url>[^"\'][^\s>]+)[^>]*?>){1}(?:\s*</a>)?#is';
+		} elseif ( $src_required ) {
+			$search_pattern   = '#(?P<img_tag><img[^>]*?\s+?src\s*=\s*["\'](?P<img_url>[^\s]+?)["\'][^>]*?>)#is';
+			$unquoted_pattern = '#(?P<img_tag><img[^>]*?\s+?src\s*=\s*(?P<img_url>[^"\'][^\s>]+)[^>]*?>)#is';
 		}
 		if ( preg_match_all( $search_pattern, $content, $images ) ) {
 			foreach ( $images as $key => $unused ) {
@@ -39,9 +60,24 @@ class EWWWIO_Page_Parser {
 					unset( $images[ $key ] );
 				}
 			}
-			return $images;
 		}
-		return array();
+		ewwwio_debug_message( 'trying unquoted pattern' );
+		if ( $unquoted_pattern && preg_match_all( $unquoted_pattern, $content, $unquoted_images ) ) {
+			foreach ( $unquoted_images as $key => $unused ) {
+				// Simplify the output as much as possible.
+				if ( is_numeric( $key ) && $key > 0 ) {
+					unset( $unquoted_images[ $key ] );
+				}
+			}
+		}
+		if ( ! empty( $images ) && ! empty( $unquoted_images ) ) {
+			$images = array_merge_recursive( $images, $unquoted_images );
+			if ( ! empty( $images[0] ) && ! empty( $images[1] ) ) {
+				$images[0] = array_merge( $images[0], $images[1] );
+				unset( $images[1] );
+			}
+		}
+		return $images;
 	}
 
 	/**
@@ -53,10 +89,10 @@ class EWWWIO_Page_Parser {
 	 *         and img_url keys are arrays of those matches.
 	 */
 	function get_noscript_images_from_html( $content ) {
-		ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+		ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 		$images = array();
 
-		if ( preg_match_all( '#(?P<noscript_tag><noscript[^>]*?>\s*)(?P<img_tag><img[^>]*?\s+?src\s*=\s*["\'](?P<img_url>[^\s]+?)["\'].*?>){1}(?:\s*</noscript>)?#is', $content, $images ) ) {
+		if ( preg_match_all( '#(?P<noscript_tag><noscript[^>]*?>\s*)(?P<img_tag><img[^>]*?\s+?src\s*=\s*["\'](?P<img_url>[^\s]+?)["\'][^>]*?>){1}(?:\s*</noscript>)?#is', $content, $images ) ) {
 			foreach ( $images as $key => $unused ) {
 				// Simplify the output as much as possible, mostly for confirming test results.
 				if ( is_numeric( $key ) && $key > 0 ) {
@@ -75,7 +111,7 @@ class EWWWIO_Page_Parser {
 	 * @return array An array of $pictures matches, containing full elements with ending tags.
 	 */
 	function get_picture_tags_from_html( $content ) {
-		ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+		ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 		$pictures = array();
 		if ( preg_match_all( '#(?:<picture[^>]*?>\s*)(?:<source[^>]*?>)+(?:.*?</picture>)?#is', $content, $pictures ) ) {
 			return $pictures[0];
@@ -91,11 +127,11 @@ class EWWWIO_Page_Parser {
 	 * @return array An array of $elements.
 	 */
 	function get_elements_from_html( $content, $tag_name ) {
-		ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+		ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 		if ( ! ctype_alpha( $tag_name ) ) {
 			return array();
 		}
-		if ( preg_match_all( '#<' . $tag_name . '[^>]+?>#is', $content, $elements ) ) {
+		if ( preg_match_all( '#<' . $tag_name . '\s[^>]+?>#is', $content, $elements ) ) {
 			return $elements[0];
 		}
 		return array();
@@ -108,7 +144,7 @@ class EWWWIO_Page_Parser {
 	 * @return array An array consisting of width and height.
 	 */
 	function get_dimensions_from_filename( $src ) {
-		ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+		ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 		$width_height_string = array();
 		ewwwio_debug_message( "looking for dimensions in $src" );
 		if ( preg_match( '#-(\d+)x(\d+)(@2x)?\.(?:' . implode( '|', $this->extensions ) . '){1}(?:\?.+)?$#i', $src, $width_height_string ) ) {
@@ -128,6 +164,24 @@ class EWWWIO_Page_Parser {
 	}
 
 	/**
+	 * Get the width from an image element.
+	 *
+	 * @param string $img The full image element.
+	 * @return string The width found or an empty string.
+	 */
+	public function get_img_width( $img ) {
+		$width = $this->get_attribute( $img, 'width' );
+		// Then check for an inline max-width directive.
+		$style = $this->get_attribute( $img, 'style' );
+		if ( $style && preg_match( '#max-width:\s?(\d+)px#', $style, $max_width_string ) ) {
+			if ( $max_width_string[1] && ( ! $width || $max_width_string[1] < $width ) ) {
+				$width = $max_width_string[1];
+			}
+		}
+		return $width;
+	}
+
+	/**
 	 * Get an attribute from an HTML element.
 	 *
 	 * @param string $element The HTML element to parse.
@@ -135,15 +189,31 @@ class EWWWIO_Page_Parser {
 	 * @return string The value of the attribute, or an empty string if not found.
 	 */
 	function get_attribute( $element, $name ) {
-		if ( preg_match( '#' . $name . '\s*=\s*(["\'])([^\1]+?)\1#is', $element, $attr_matches ) ) {
+		// Don't forget, back references cannot be used in character classes.
+		if ( preg_match( '#[\s]' . $name . '\s*=\s*(["\'])([^"\']+?)\1#is', $element, $attr_matches ) ) {
 			if ( ! empty( $attr_matches[2] ) ) {
 				return $attr_matches[2];
 			}
 		}
-		// If there were not any matches with quotes, look for unquoted attributes, no spaces allowed.
-		if ( preg_match( '#' . $name . '\s*=\s*([^\s]+?)#is', $element, $attr_matches ) ) {
+		// If there were not any matches with quotes, look for unquoted attributes, no spaces or quotes allowed.
+		if ( preg_match( '#[\s]' . $name . '\s*=\s*([^"\'][^\s>]+)#is', $element, $attr_matches ) ) {
 			if ( ! empty( $attr_matches[1] ) ) {
 				return $attr_matches[1];
+			}
+		}
+		return '';
+	}
+
+	/**
+	 * Get a CSS background-image URL.
+	 *
+	 * @param string $attribute An element's style attribute. Do not pass a full HTML element.
+	 * @return string The URL from the background/background-image property.
+	 */
+	function get_background_image_url( $attribute ) {
+		if ( ( false !== strpos( $attribute, 'background:' ) || false !== strpos( $attribute, 'background-image:' ) ) && false !== strpos( $attribute, 'url(' ) ) {
+			if ( preg_match( '#url\(([^)]+)\)#', $attribute, $prop_match ) ) {
+				return trim( $prop_match[1], "'\"\t\n\r " );
 			}
 		}
 		return '';
@@ -158,13 +228,18 @@ class EWWWIO_Page_Parser {
 	 * @param bool   $replace Default false. True to replace, false to append.
 	 */
 	function set_attribute( &$element, $name, $value, $replace = false ) {
+		if ( 'class' === $name ) {
+			$element = preg_replace( "#\s$name\s+[^=]#", ' ', $element );
+		}
+		$value = trim( $value );
 		if ( $replace ) {
-			$new_element = preg_replace( '#' . $name . '\s*=\s*(["\'])([^\1]+?)\1#is', "$name=$1$value$1", $element );
+			// Don't forget, back references cannot be used in character classes.
+			$new_element = preg_replace( '#\s' . $name . '\s*=\s*(["\'])[^"\']*?\1#is', " $name=$1$value$1", $element );
 			if ( strpos( $new_element, "$name=" ) ) {
 				$element = $new_element;
 				return;
 			}
-			$element = preg_replace( '#' . $name . '\s*=\s*([^\s]+?)#is', '', $element );
+			$element = preg_replace( '#\s' . $name . '\s*=\s*[^"\'][^\s>]+#is', ' ', $element );
 		}
 		$closing = ' />';
 		if ( false === strpos( $element, '/>' ) ) {
@@ -184,8 +259,25 @@ class EWWWIO_Page_Parser {
 	 * @param string $name The name of the attribute to remove.
 	 */
 	function remove_attribute( &$element, $name ) {
-		$element = preg_replace( '#' . $name . '\s*=\s*(["\'])([^\1]+?)\1#is', '', $element );
-		$element = preg_replace( '#' . $name . '\s*=\s*([^\s]+?)#is', '', $element );
+		// Don't forget, back references cannot be used in character classes.
+		$element = preg_replace( '#\s' . $name . '\s*=\s*(["\'])[^"\']+?\1#is', ' ', $element );
+		$element = preg_replace( '#\s' . $name . '\s*=\s*[^"\'][^\s>]+#is', ' ', $element );
+	}
+
+	/**
+	 * Remove the background image URL from a style attribute.
+	 *
+	 * @param string $attribute The element's style attribute to modify.
+	 * @return string The style attribute with any image url removed.
+	 */
+	function remove_background_image( $attribute ) {
+		if ( false !== strpos( $attribute, 'background:' ) && false !== strpos( $attribute, 'url(' ) ) {
+			$attribute = preg_replace( '#\s?url\([^)]+\)#', '', $attribute );
+		}
+		if ( false !== strpos( $attribute, 'background-image:' ) && false !== strpos( $attribute, 'url(' ) ) {
+			$attribute = preg_replace( '#background-image:\s*url\([^)]+\);?#', '', $attribute );
+		}
+		return $attribute;
 	}
 
 	/**
