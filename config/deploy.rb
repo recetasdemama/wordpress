@@ -1,0 +1,1 @@
+# Configuration of each service is done in the lib folder
