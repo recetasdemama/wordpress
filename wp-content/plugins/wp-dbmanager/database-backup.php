@@ -38,28 +38,28 @@ if(!empty($_POST['do'])) {
 				}
 			}
 			$gzip = isset( $_POST['gzip'] ) ? (int) $_POST['gzip'] : 0;
-
+			$backup['filename'] = $backup['date'] . '_-_' . DB_NAME . '.sql';
 			if ( $gzip === 1 ) {
-				$backup['filename'] = $backup['date'].'_-_'.DB_NAME.'.sql.gz';
-				$backup['filepath'] = $backup['path'].'/'.$backup['filename'];
+				$backup['filename'] .= '.gz';
+				$backup['filepath'] = $backup['path'] . '/' . $backup['filename'];
 				do_action( 'wp_dbmanager_before_escapeshellcmd' );
 				$backup['command'] = $brace . escapeshellcmd( $backup['mysqldumppath'] ) . $brace . ' --force --host=' . escapeshellarg( $backup['host'] ) . ' --user=' . escapeshellarg( DB_USER ) . ' --password=' . escapeshellarg( DB_PASSWORD ) . $backup['port'] . $backup['sock'] . $backup['charset'] . ' --add-drop-table --skip-lock-tables ' . DB_NAME . ' | gzip > ' . $brace . escapeshellcmd( $backup['filepath'] ) . $brace;
 			} else {
-				$backup['filename'] = $backup['date'].'_-_'.DB_NAME.'.sql';
-				$backup['filepath'] = $backup['path'].'/'.$backup['filename'];
+				$backup['filepath'] = $backup['path'] . '/' . $backup['filename'];
 				do_action( 'wp_dbmanager_before_escapeshellcmd' );
 				$backup['command'] = $brace . escapeshellcmd( $backup['mysqldumppath'] ) . $brace . ' --force --host=' . escapeshellarg( $backup['host'] ) . ' --user=' . escapeshellarg( DB_USER ) . ' --password=' . escapeshellarg( DB_PASSWORD ) . $backup['port'] . $backup['sock'] . $backup['charset'] . ' --add-drop-table --skip-lock-tables ' . DB_NAME . ' > ' . $brace . escapeshellcmd( $backup['filepath'] ) . $brace;
 			}
 			$error = execute_backup( $backup['command'] );
-			if(!is_writable( $backup['path'] ) ) {
+			if ( ! is_writable( $backup['path'] ) ) {
 				$text = '<p style="color: red;">'.sprintf(__('Database Failed To Backup On \'%s\'. Backup Folder Not Writable.', 'wp-dbmanager'), $current_date).'</p>';
-			} elseif( is_file( $backup['filepath'] ) && filesize( $backup['filepath'] ) === 0 ) {
+			} elseif ( is_file( $backup['filepath'] ) && filesize( $backup['filepath'] ) === 0 ) {
 				$text = '<p style="color: red;">'.sprintf(__('Database Failed To Backup On \'%s\'. Backup File Size Is 0KB.', 'wp-dbmanager'), $current_date).'</p>';
-			} elseif( ! is_file( $backup['filepath'] ) ) {
+			} elseif ( ! is_file( $backup['filepath'] ) ) {
 				$text = '<p style="color: red;">'.sprintf(__('Database Failed To Backup On \'%s\'. Invalid Backup File Path.', 'wp-dbmanager'), $current_date).'</p>';
-			} elseif( $error ) {
+			} elseif ( $error ) {
 				$text = '<p style="color: red;">'.sprintf(__('Database Failed To Backup On \'%s\'.', 'wp-dbmanager'), $current_date).'</p>';
 			} else {
+				rename( $backup['filepath'], $backup['path'] . '/' . md5_file( $backup['filepath'] ) . '_-_' . $backup['filename'] );
 				$text = '<p style="color: green;">'.sprintf(__('Database Backed Up Successfully On \'%s\'.', 'wp-dbmanager'), $current_date).'</p>';
 			}
 			break;
