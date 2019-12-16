@@ -2,8 +2,8 @@
 Contributors: socialmediafeather
 Tags: social media, social sharing, social buttons, Facebook, Share, Like, twitter, google, Reddit, youtube, instagram, pinterest, social media buttons, button, shortcode, sidebar, sharing buttons, follow buttons
 Requires at least: 3.1
-Tested up to: 4.7
-Stable tag: 1.8.4
+Tested up to: 5.2.2
+Stable tag: 1.9.4
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -190,6 +190,11 @@ margin-left: 10px;
 7. This shows the available social sharing and following widgets and their settings
 
 == Changelog ==
+
+= 1.9.4 =
+* Removed deprecated function "create_function".
+* Utilizing WP Settings API.
+* WP 5+ compatability tests.
 
 = 1.8.4 =
 * Added option to decline terms of service after having accepted

@@ -108,7 +108,7 @@ function synved_social_provider_settings()
 
 $terms_accepted = synved_option_get('synved_social', 'accepted_sharethis_terms');
 
-$synved_social_options    = array(
+$synved_social_options = array(
 'settings' => array(
 	'label' => 'Social Media',
 	'title' => 'Social Media Feather',
@@ -144,11 +144,6 @@ $synved_social_options    = array(
 					'default' => __('Hey check this out', 'social-media-feather'), 'label' => __('Default Message', 'social-media-feather'),
 					'tip' => __('Specify the default message to use when sharing content, this is what gets replaced into the %%message%% variable', 'social-media-feather')
 				),
-//				'accepted_sharethis_terms' => array(
-//					'default' => false, 'label' => __('Extra Features', 'social-media-feather'),
-//					'tip' => __('Allows extra social features provided using JavaScript by accepting <a href="http://socialmediafeather.com/privacy">the terms</a>.', 'social-media-feather'),
-//					'hidden' => true
-//				),
 				'hide_sharethis_terms' => array(
 					'default' => false, 'label' => __('Hide Extra Features Prompt', 'social-media-feather'),
 					'tip' => __('Don\'t prompt for extra features.', 'social-media-feather'),

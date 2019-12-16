@@ -219,10 +219,6 @@ function synved_social_service_provider_list($context, $raw = false)
 				'link' => 'https://twitter.com/intent/tweet?url=%%url%%&text=%%message%%',
 				'title' => __('Share on Twitter'),
 			),
-			'google_plus' => array(
-				'link' => 'https://plus.google.com/share?url=%%url%%',
-				'title' => __('Share on Google+'),
-			),
 			'reddit' => array(
 				'link' => 'http://www.reddit.com/submit?url=%%url%%&title=%%title%%',
 				'title' => __('Share on Reddit'),
@@ -256,10 +252,6 @@ function synved_social_service_provider_list($context, $raw = false)
 			'twitter' => array(
 				'link' => 'https://twitter.com/twitter',
 				'title' => __('Follow us on Twitter'),
-			),
-			'google_plus' => array(
-				'link' => 'http://plus.google.com/needlessly_long_google_plus_id',
-				'title' => __('Follow us on Google+'),
 			),
 			'pinterest' => array(
 				'link' => 'http://pinterest.com/MyUserName/',

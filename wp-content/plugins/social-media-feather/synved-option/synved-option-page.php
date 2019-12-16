@@ -94,7 +94,7 @@ function synved_option_page_cb($id, $name, $item)
 		<?php settings_fields($group); ?>
 		<?php 
 			$page_slug = synved_option_page_slug($id, $name, $item);
-			synved_option_render_page($page_slug);
+			do_settings_sections( $page_slug );
 		?>
 		<p class="submit">
 			<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />
@@ -146,7 +146,10 @@ function synved_option_page_cb($id, $name, $item)
 function synved_option_page_add($id, $name, $item)
 {
 	global $synved_option_list;
-	
+
+	define('SYNVEDOPTION', $id);
+	define('SYNVEDNAME', $name);
+
 	$type = synved_option_item_type($item);
 
 	if ($type == 'options-page')
@@ -162,13 +165,19 @@ function synved_option_page_add($id, $name, $item)
 		}
 		
 		$page_slug = $id . '_' . $name;
-		
-		$addfunc = 'add_' . /* */ 'subm' . 'enu_page';
-		$page = $addfunc($parent, $label, $label, $role, $page_slug, create_function('', 'return synved_option_page_cb(\'' . $id . '\', \'' . $name . '\', synved_option_item_find(\'' . $id . '\', \'' . $name . '\'));'));
+
+		$page = add_submenu_page(
+			$parent,
+			$label,
+			$label,
+			$role,
+			$page_slug,
+			function($name){ return synved_option_page_cb(SYNVEDOPTION, SYNVEDNAME, synved_option_item_find(SYNVEDOPTION, SYNVEDNAME) ); }
+			);
 		
 		$synved_option_list[$id]['pages'][$name]['wp-page-slug'] = $page_slug;
 		$synved_option_list[$id]['pages'][$name]['wp-page'] = $page;
-		
+
 		return $page;
 	}
 	
