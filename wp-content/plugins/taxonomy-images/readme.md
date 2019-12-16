@@ -175,7 +175,7 @@ $terms = apply_filters( 'taxonomy-images-get-terms', '' );
 if ( ! empty( $terms ) ) {
 	print '<ul>';
 	foreach ( (array) $terms as $term ) {
-		print '<li><a href="' . esc_url( get_term_link( $term, $term->taxonomy ) ) . '">' . wp_get_attachment_image( $term->image_id, 'detail' ) . '</li>';
+		print '<li><a href="' . esc_url( get_term_link( $term, $term->taxonomy ) ) . '">' . wp_get_attachment_image( $term->image_id, 'detail' ) . '</a></li>';
 	}
 	print '</ul>';
 }
@@ -220,6 +220,12 @@ Installation
 
 Upgrade Notice
 --------------
+
+### 1.0
+Fixed full image size sometimes not being returned. Prepare plugin structure for term meta compatibility.
+
+### 0.9.7
+Remove use of deprecated `image_resize` function. Bump minimum WordPress version to 3.5.
 
 ### 0.9.6
 Fixed issue where if no terms have images but 'having_images' is false, nothing would be returned (props Matt).

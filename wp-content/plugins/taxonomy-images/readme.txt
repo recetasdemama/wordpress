@@ -2,9 +2,9 @@
 Contributors:         mfields, husobj, jamiemchale
 Donate link:          https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QSYTTQZBRKQVE
 Tags:                 taxonomy, tag, category, term, image, upload, media
-Requires at least:    3.4
-Tested up to:         4.5
-Stable tag:           0.9.6
+Requires at least:    3.5
+Tested up to:         5.2.1
+Stable tag:           1.0
 License:              GPLv2 or later
 License URI:          http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -163,7 +163,7 @@ $terms = apply_filters( 'taxonomy-images-get-terms', '' );
 if ( ! empty( $terms ) ) {
 	print '<ul>';
 	foreach ( (array) $terms as $term ) {
-		print '<li><a href="' . esc_url( get_term_link( $term, $term->taxonomy ) ) . '">' . wp_get_attachment_image( $term->image_id, 'detail' ) . '</li>';
+		print '<li><a href="' . esc_url( get_term_link( $term, $term->taxonomy ) ) . '">' . wp_get_attachment_image( $term->image_id, 'detail' ) . '</a></li>';
 	}
 	print '</ul>';
 }
@@ -209,6 +209,12 @@ The original author of this plugin, Michael Fields, released a handful of plugin
 
 == Upgrade Notice ==
 
+= 1.0 =
+Fixed full image size sometimes not being returned. Prepare plugin structure for term meta compatibility.
+
+= 0.9.7 =
+Remove use of deprecated `image_resize` function. Bump minimum WordPress version to 3.5.
+
 = 0.9.6 =
 Fixed issue where if no terms have images but 'having_images' is false, nothing would be returned (props Matt).
 
@@ -237,6 +243,17 @@ Major and minor bug fixes tested with WordPress 3.6.
 Complete rewrite. Better everything. Many bug fixes.
 
 == Changelog ==
+
+= Unreleased =
+
+= 1.0 =
+* __BUGFIX:__ Fixed full image size sometimes not being returned.
+* __UPDATE:__ Control, blank and default images moves to `images` folder.
+* __UPDATE:__ Prepare plugin structure for term meta compatibility.
+
+= 0.9.7 =
+* __UPDATE:__ Remove use of deprecated `image_resize` function.
+* __UPDATE:__ Bump minimum WordPress version to 3.5.
 
 = 0.9.6 =
 * __BUGFIX:__ Fix issue where if no terms have images but 'having_images' is false, nothing would be returned (props Matt).
