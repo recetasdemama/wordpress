@@ -1,3 +1,107 @@
+= 5.1.2 =
+* added: disable native lazy-load attributes with EWWWIO_DISABLE_NATIVE_LAZY
+* added: ability to choose LQIP or blank placeholders for lazy load
+* changed: renaming ExactDN as Easy IO
+* changed: default to blank placeholders with Easy IO
+* changed: regenerated images are automatically re-optimized after running Image Regenerate & Select Crop plugin
+* fixed: low-quality placeholders sometimes had larger dimensions than necessary
+* fixed: database records and .webp images are not removed when Image Regenerate & Select Crop plugin deletes a thumbnail
+* fixed: path traversal protection preventing normal files from optimizing
+* fixed: Slider Revolution dummy.png not properly handled by Easy IO
+
+= 5.1.1 =
+* fixed: no optimization when escapeshellarg() is disabled
+* fixed: warning thrown by implode() when JS WebP is enabled with no WebP URLs
+
+= 5.1.0 =
+* added: WebP-only mode for Bulk Optimizer
+* added: JS WebP Rewriting for pull-mode CDNs via WebP URLS without Force WebP
+* added: JS WebP Rewriting zero-conf for WP Offload Media
+* added: force lossy PNG to WebP conversion with EWWW_IMAGE_OPTIMIZER_LOSSY_PNG2WEBP override (set to true)
+* changed: bulk optimizer runs wp_update_attachment_metadata() in separate request to avoid timeouts
+* fixed: WebP warning regarding missing modules displayed even if green WebP test image is working
+* fixed: Nextgen bulk actions not working
+* fixed: unable to regenerate existing thumbnails with Image Regenerate & Select Crop plugin
+* updated: WebP (cwebp) binary to version 1.0.3
+* updated: Pngquant binary to version 2.12.5
+* updated: cwebp requires Mac OS X 10.14
+* updated: FreeBSD 10 is EOL, version 11 is the supported/tested version
+
+= 5.0.0 =
+* added: use native lazy load attributes to supplement lazy loader and make placeholders more efficient
+* added: GCS sub-folder rewriting with ExactDN for cleaner URLs
+* added: option to optimize original versions of scaled images for WP 5.3
+* added: ability to erase optimization history from Tools page
+* changed: define EWWWIO_WPLR_AUTO (any value) to enable auto-optimize on images from WP/LR Sync
+* changed: thumbnails could be converted even if original was not
+* changed: Show Optimized Images table moved to Tools menu
+* fixed: full-size image optimization not deferred if scaled by WP 5.3
+* fixed: data-width and data-height attributes missing when JS WebP active
+* security: rewrote escapeshellarg() wrapper to be more secure
+
+= 4.9.3 =
+* fixed: ExactDN incorrectly scales Elementor background images rather than cropping
+* fixed: ExactDN cannot work with Divi/Elementor background images due to use of external CSS files
+* fixed: JS WebP rewriting picture tags that already have WebP markup in Force WebP mode
+* fixed: JS WebP incorrectly parses GIF/SVG images in Force WebP mode
+* fixed: JS WebP does not support lazy load + infinite scroll
+* fixed: Lazy Load auto-scaling breaks if background image is enclosed in encoded quotes
+* fixed: GRAND FlaGallery integration broken by hook suffix change
+
+= 4.9.2 =
+* fixed: generating lazy load PNG placeholders with large heights causes 500 errors
+* fixed: error when importing media via WordPress Importer plugin
+* fixed: error with WP/LR Sync
+
+= 4.9.1 =
+* fixed: error on settings screen when JS WebP is enabled
+
+= 4.9.0 =
+* added: Lazy Load background image support for section elements
+* added: ExactDN background image support for li,span, and section elements
+* added: lazysizes print plugin, enable via EWWW_IMAGE_OPTIMIZER_LAZY_PRINT constant
+* added: compatibility with upcoming Easy Image Optimizer
+* changed: automatic compression disabled during WP/LR Sync with admin notice
+* changed: Lazy Load PNG placeholders capped at 1920px wide to prevent errors
+* changed: use ExactDN, when active, for Lazy Load PNG placeholders
+* changed: EWWW_MEMORY_LIMIT renamed to EIO_MEMORY_LIMIT for setting plugin memory limit
+* fixed: WebP test image not refreshing after inserting .htaccess rules
+* fixed: errors when manually adding lazysizes script
+
+= 4.8.1 =
+* added: Lazy Load background image support added for span elements
+* changed: constrain by height for background images that are taller than they are wide
+* changed: debug.log moved to more suitable location
+* fix: Lazy Load breaks when an image has an empty class attribute
+* fix: regression that caused jpegtran and pngout tests to fail on Windows
+* fix: writing to debug.log causes errors
+
+= 4.8.0 =
+* added: ability to resize images outside media library via scheduled or bulk optimization
+* added: compatibility with WP Stateless for GSC
+* added: use ewww_image_optimizer_autoconvert_threshold filter to modify conversion threshold (default of 300kb)
+* changed: Lazy Load without ExactDN uses blank PNG placeholders for better srcset auto-sizing
+* changed: API backups taken prior to resizing/scaling rather than just before compression
+* changed: ExactDN + Lazy Load uses scaling rather than cropping by default
+* changed: prevent NextGEN backup images from being optimized
+* fixed: bulk optimizer not resuming when non-media library images remain in queue
+* fixed: notices when a user-selected admin theme is unavailable
+* fixed: privacy policy function triggers notices in WP-CLI
+* fixed: background-image attributes with single-quotes now supported by ExactDN, Lazy Load, and JS WebP
+* fixed: background-image attributes getting extra arguments with lazy load
+* fixed: On multi-site installs, site admins could add folders to optimize outside of the uploads folder
+* fixed: LQIP with SVG files results in duplicate requests
+* fixed: image optimization results in media library report file missing when using WP Stateless
+* fixed: plugin checking for 'nice' on Windows servers
+
+= 4.7.4 =
+* fixed: ExactDN modifies Autoptimize CDN setting even when Include All Resources is disabled
+* fixed: noscript elements with newlines being parsed incorrectly by Lazy Load and JS WebP
+* fixed: Lazy Load parsing breaking img elements in script blocks
+* fixed: Lazy Load and JS WebP bail when SVGs are wrapped in XML tags
+* fixed: ExactDN mixes x and w srcset descriptors
+* fixed: page parsers (ExactDN, Lazy, JS WebP) still fail to process some img elements that have unquoted src attributes
+
 = 4.7.3 =
 * added: disable WebP script block on certain pages by defining EWWW_IMAGE_OPTIMIZER_NO_JS as true
 * changed: use SVG inline image placeholder if width and height are known when LQIP is disabled or ExactDN is not available
@@ -1214,9 +1318,9 @@ You can find more information about overriding options in the [Documentation](ht
 * prevent tool checks and cloud verification from firing on every page load, yikes...
 
 = 1.6.1 =
-*fixed: temporary jpgs were not being deleted (leftovers from testing for last release)
-*fixed: jpgs would not be converted to pngs if jpgs had already been optimized
-*fixed: cloud service not converting gif to png
+* fixed: temporary jpgs were not being deleted (leftovers from testing for last release)
+* fixed: jpgs would not be converted to pngs if jpgs had already been optimized
+* fixed: cloud service not converting gif to png
 
 = 1.6.0 =
 * Cloud Optimization option (BETA: get your free API key at http://www.exactlywww.com/cloud/)

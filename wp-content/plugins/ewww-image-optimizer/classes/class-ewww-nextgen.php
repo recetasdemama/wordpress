@@ -114,7 +114,7 @@ if ( ! class_exists( 'EWWW_Nextgen' ) ) {
 		function maybe_get_more_sizes( $sizes, $meta ) {
 			if ( 2 === count( $sizes ) && ewww_image_optimizer_iterable( $meta ) ) {
 				foreach ( $meta as $meta_key => $meta_val ) {
-					if ( is_array( $meta_val ) && isset( $meta_val['width'] ) ) {
+					if ( 'backup' !== $meta_key && is_array( $meta_val ) && isset( $meta_val['width'] ) ) {
 						$sizes[] = $meta_key;
 					}
 				}
@@ -193,6 +193,9 @@ if ( ! class_exists( 'EWWW_Nextgen' ) ) {
 						$full_size = true;
 					} else {
 						$full_size = false;
+					}
+					if ( 'backup' === $size ) {
+						continue;
 					}
 					// Get the absolute path.
 					$file_path = $storage->get_image_abspath( $image, $size );
@@ -487,6 +490,8 @@ if ( ! class_exists( 'EWWW_Nextgen' ) ) {
 						foreach ( $sizes as $size ) {
 							if ( 'full' === $size ) {
 								$full_size = true;
+							} elseif ( 'backup' === $size ) {
+								continue;
 							} else {
 								$file_path = $storage->get_image_abspath( $image, $size );
 								$full_size = false;
@@ -583,7 +588,7 @@ if ( ! class_exists( 'EWWW_Nextgen' ) ) {
 		/**
 		 * Output the html for the bulk optimize page.
 		 *
-		 * @global string $ewww_debug In-memory debug log.
+		 * @global string $eio_debug In-memory debug log.
 		 */
 		function ewww_ngg_bulk_preview() {
 			if ( ! empty( $_REQUEST['doaction'] ) ) {
@@ -658,7 +663,7 @@ if ( ! class_exists( 'EWWW_Nextgen' ) ) {
 			<p class="ewww-bulk-info"><?php echo $selected_images_text; ?><br />
 			<?php esc_html_e( 'Previously optimized images will be skipped by default.', 'ewww-image-optimizer' ); ?></p>
 				<form id="ewww-bulk-start" class="ewww-bulk-form" method="post" action="">
-						<input type="submit" class="button-secondary action" value="<?php echo $button_text; ?>" />
+						<input type="submit" class="button-primary action" value="<?php echo $button_text; ?>" />
 				</form>
 			<?php
 			// If there is a previous bulk operation to resume, give the user the option to reset the resume flag.
@@ -674,8 +679,8 @@ if ( ! class_exists( 'EWWW_Nextgen' ) ) {
 			}
 			echo '</div></div>';
 			if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_debug' ) ) {
-				global $ewww_debug;
-				echo '<p><strong>' . esc_html__( 'Debugging Information', 'ewww-image-optimizer' ) . ':</strong></p><div style="border:1px solid #e5e5e5;background:#fff;overflow:auto;height:300px;width:800px;">' . $ewww_debug . '</div>';
+				global $eio_debug;
+				echo '<p><strong>' . esc_html__( 'Debugging Information', 'ewww-image-optimizer' ) . ':</strong></p><div style="border:1px solid #e5e5e5;background:#fff;overflow:auto;height:300px;width:800px;">' . $eio_debug . '</div>';
 			}
 			return;
 		}
@@ -907,7 +912,9 @@ if ( ! class_exists( 'EWWW_Nextgen' ) ) {
 			$sizes = $this->maybe_get_more_sizes( $sizes, $image->meta_data );
 			if ( ewww_image_optimizer_iterable( $sizes ) ) {
 				foreach ( $sizes as $size ) {
-					if ( 'full' === $size ) {
+					if ( 'backup' === $size ) {
+						continue;
+					} elseif ( 'full' === $size ) {
 						/* Translators: %s: The compression results/savings */
 						$output['results'] .= sprintf( esc_html__( 'Full size - %s', 'ewww-image-optimizer' ) . '<br>', esc_html( $image->meta_data['ewww_image_optimizer'] ) );
 					} elseif ( 'thumbnail' === $size ) {
@@ -982,21 +989,25 @@ if ( ! class_exists( 'EWWW_Nextgen' ) ) {
 		function ewww_ngg_bulk_action_handler() {
 			ewwwio_debug_message( '<b>' . __METHOD__ . '()</b>' );
 			// If the requested page is blank, or not a bulk_optimize, do nothing.
-			if ( empty( $_REQUEST['page'] ) || empty( $_REQUEST['bulkaction'] ) || 'bulk_optimize' !== $_REQUEST['bulkaction'] ) {
+			if ( empty( $_REQUEST['nggpage'] ) || empty( $_REQUEST['bulkaction'] ) || 'bulk_optimize' !== $_REQUEST['bulkaction'] ) {
 				return;
 			}
 			// If there is no media to optimize, do nothing.
 			if ( empty( $_REQUEST['doaction'] ) || ! is_array( $_REQUEST['doaction'] ) ) {
 				return;
 			}
-			// If the requested page does not matche, do nothing.
-			if ( 'manage-galleries' !== $_REQUEST['page'] && 'manage-images' !== $_REQUEST['page'] ) {
+			// If the requested page does not match, do nothing.
+			if ( 'manage-galleries' !== $_REQUEST['nggpage'] && 'manage-images' !== $_REQUEST['nggpage'] ) {
 				return;
 			}
 
 			$type = 'images';
-			if ( 'manage-galleries' === $_REQUEST['page'] ) {
+			if ( 'manage-galleries' === $_REQUEST['nggpage'] ) {
 				$type = 'galleries';
+			}
+			if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'ngg_bulkgallery' ) ) {
+				ewwwio_ob_clean();
+				wp_die( esc_html__( 'Access token has expired, please reload the page.', 'ewww-image-optimizer' ) );
 			}
 			wp_redirect(
 				add_query_arg(
