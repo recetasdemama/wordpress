@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Google XML Sitemaps - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2016-04-24 20:15:38+0000\n"
+"PO-Revision-Date: 2019-10-02 23:11:58+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,7 +33,7 @@ msgstr "Google XML Sitemaps"
 
 #: sitemap.php:95
 msgid "Unfortunately this release of Google XML Sitemaps requires at least PHP %4$s. You are using PHP %2$s, which is out-dated and insecure. Please ask your web host to update your PHP installation or go to <a href=\"%1$s\">active plugins</a> and deactivate the Google XML Sitemaps plugin to hide this message. You can download an older version of this plugin from the <a href=\"%3$s\">plugin website</a>."
-msgstr "Desafortunadamente esta versión de Google XML Sitemaps requiere al menos PHP %4$s. Estás usando PHP %2$s que es anticuado e inseguro. Por favor, consulta a tu proveedor de alojamiento web para actualizar su instalación de PHP o ve a <a href=\"%1$s\">plugins activos</a> y desactiva el plugin de Google XML Sitemaps para ocultar este mensaje. Puedes descargar una versión anterior de este plugin desde <a href=\"%3$s\">la web del plugin</a>."
+msgstr "Desafortunadamente esta versión de Google XML Sitemaps necesita, al menos, PHP %4$s. Estás usando PHP %2$s, que es anticuado e inseguro. Por favor, consulta a tu proveedor de alojamiento web para actualizar su instalación de PHP o ve a los <a href=\"%1$s\">plugins activos</a> y desactiva el plugin Google XML Sitemaps para ocultar este mensaje. Puedes descargar una versión anterior de este plugin desde <a href=\"%3$s\">la web del plugin</a>."
 
 #: sitemap.php:95
 msgid "Your PHP version is too old for XML Sitemaps."
@@ -41,19 +41,19 @@ msgstr "Tu versión de PHP es demasiado antigua para Sitemaps XML."
 
 #: sitemap.php:85
 msgid "Unfortunately this release of Google XML Sitemaps requires at least WordPress %4$s. You are using Wordpress %2$s, which is out-dated and insecure. Please upgrade or go to <a href=\"%1$s\">active plugins</a> and deactivate the Google XML Sitemaps plugin to hide this message. You can download an older version of this plugin from the <a href=\"%3$s\">plugin website</a>."
-msgstr "Desafortunadamente esta versión de Google XML Sitemaps para WordPress requiere al menos %4$s. Estás usando WordPress %2$s, que es anticuado e inseguro. Por favor, actualízala o ve a <a href=\"%1$s\">plugins activos</a> y desactivar el plugin de Google XML Sitemaps para ocultar este mensaje. Puedes descargar una versión anterior de este plugin desde <a href=\"%3$s\">la web del plugin</a>."
+msgstr "Desafortunadamente esta versión de Google XML Sitemaps necesita, al menos, la versión %4$s de WordPress. Estás usando WordPress %2$s, que es anticuado e inseguro. Por favor, actualízalo o ve a los <a href=\"%1$s\">plugins activos</a> y desactiva el plugin Google XML Sitemaps para ocultar este mensaje. Puedes descargar una versión anterior de este plugin desde <a href=\"%3$s\">la web del plugin</a>."
 
 #: sitemap.php:85
 msgid "Your WordPress version is too old for XML Sitemaps."
-msgstr "Tu versión de WordPress es demasiado antigua para usar sitemaps XML."
+msgstr "Tu versión de WordPress es demasiado antigua para usar mapas del sitio XML."
 
 #: sitemap-ui.php:1269
 msgid "Reset options"
-msgstr "Reestablecer configuración"
+msgstr "Restablecer opciones"
 
 #: sitemap-ui.php:1268
 msgid "Update options"
-msgstr "Grabar cambios"
+msgstr "Actualizar opciones"
 
 #: sitemap-ui.php:1243
 msgid "Archives"
@@ -61,11 +61,11 @@ msgstr "Archivos"
 
 #: sitemap-ui.php:1225
 msgid "Minimum post priority (Even if auto calculation is enabled)"
-msgstr "Prioridad mínima para artículos (Incluso aunque el cálculo automático esté activo)"
+msgstr "Prioridad mínima para artículos (incluso si el cálculo automático está activado)"
 
 #: sitemap-ui.php:1219
 msgid "Posts (If auto calculation is disabled)"
-msgstr "Artículos (Si el cálculo automático está deshabilitado)"
+msgstr "Entradas (si el cálculo automático está desactivado)"
 
 #: sitemap-ui.php:1208
 msgid "Priorities"
@@ -81,11 +81,11 @@ msgstr "Páginas de etiquetas"
 
 #: sitemap-ui.php:1186
 msgid "Older archives (Changes only if you edit an old post)"
-msgstr "Archivos obsoletos (Sólo cambia si edita un artículo antiguo)"
+msgstr "Archivos obsoletos (solo cambia si editas una entrada antigua)"
 
 #: sitemap-ui.php:1180
 msgid "The current archive of this month (Should be the same like your homepage)"
-msgstr "El archivo de este mes (Debe ser igual al de su página principal)"
+msgstr "El archivo actual de este mes (debería ser el mismo que el de tu página de inicio)"
 
 #: sitemap-ui.php:1174 sitemap-ui.php:1237
 msgid "Categories"
@@ -97,15 +97,15 @@ msgstr "Páginas estáticas"
 
 #: sitemap-ui.php:1162
 msgid "Posts"
-msgstr "Artículos"
+msgstr "Entradas"
 
 #: sitemap-ui.php:1156 sitemap-ui.php:1213
 msgid "Homepage"
-msgstr "Página principal"
+msgstr "Página de inicio"
 
 #: sitemap-ui.php:1150
 msgid "Please note that the value of this tag is considered a hint and not a command. Even though search engine crawlers consider this information when making decisions, they may crawl pages marked \"hourly\" less frequently than that, and they may crawl pages marked \"yearly\" more frequently than that. It is also likely that crawlers will periodically crawl pages marked \"never\" so that they can handle unexpected changes to those pages."
-msgstr "Por favor, tenga en cuenta que el valor de esta etiqueta es considerado como un consejo, no como una orden. Incluso aunque los rastreadores tengan en cuenta esto a la hora de decidir, puede que rastreen páginas marcadas como \"cada hora\" con menos frecuencia que la indicada, y puede que rastreen páginas marcadas como \"anualmente\" con más frecuencia que esta. También podría ocurrir que los rastreadores revisen periódicamente páginas marcadas como \"nunca\" por si ha habido cambios inesperados en dichas páginas."
+msgstr "Por favor, ten en cuenta que el valor de esta etiqueta es considerado como un consejo, no una orden. Incluso aunque los rastreadores tengan en cuenta esto a la hora de decidir, puede que rastreen páginas marcadas como «cada hora» con menos frecuencia que la indicada, y puede que rastreen páginas marcadas como «anualmente» con más frecuencia que esta. También podría ocurrir que los rastreadores revisen periódicamente páginas marcadas como «nunca» por si ha habido cambios inesperados en dichas páginas."
 
 #: sitemap-ui.php:1146
 msgid "Change frequencies"
@@ -117,15 +117,15 @@ msgstr "¡Los artículos anidados no se excluirán automáticamente!"
 
 #: sitemap-ui.php:1138
 msgid "List of IDs, separated by comma"
-msgstr "Indique los ID, separados por coma"
+msgstr "Lista de IDs, separados por coma"
 
 #: sitemap-ui.php:1138
 msgid "Exclude the following posts or pages:"
-msgstr "Excluir los siguientes artículos o páginas:"
+msgstr "Excluir las siguientes entradas o páginas:"
 
 #: sitemap-ui.php:1136
 msgid "Exclude posts"
-msgstr "Artículos excluidos"
+msgstr "Entradas excluidas"
 
 #: sitemap-ui.php:1128
 msgid "Excluded categories"
@@ -137,7 +137,7 @@ msgstr "Elementos excluidos"
 
 #: sitemap-ui.php:1119
 msgid "This is highly recommended and helps the search engines to know when your content has changed. This option affects <i>all</i> sitemap entries."
-msgstr "Altamente recomendado, ya que ayuda a los buscadores a saber cuando ha cambiado el contenido. Esta opción afecta a <i>todas</i> las entradas del sitemap."
+msgstr "Altamente recomendado, ya que ayuda a los buscadores a saber cuando ha cambiado el contenido. Esta opción afecta a <i>todas</i> las entradas del mapa del sitio."
 
 #: sitemap-ui.php:1117
 msgid "Include the last modification time."
@@ -153,7 +153,7 @@ msgstr "Incluir tipo de entrada personalizada %s"
 
 #: sitemap-ui.php:1089
 msgid "Custom post types"
-msgstr "Tipos de entradas personalizadas"
+msgstr "Tipos de contenido personalizado"
 
 #: sitemap-ui.php:1071
 msgid "Include taxonomy pages for %s"
@@ -185,11 +185,11 @@ msgstr "Incluir páginas estáticas"
 
 #: sitemap-ui.php:1015
 msgid "Include posts"
-msgstr "Incluir artículos"
+msgstr "Incluir entradas"
 
 #: sitemap-ui.php:1009
 msgid "Include homepage"
-msgstr "Incluir página principal"
+msgstr "Incluir página de inicio"
 
 #: sitemap-ui.php:1004
 msgid "WordPress standard content"
@@ -197,11 +197,11 @@ msgstr "Contenido estándar de WordPress"
 
 #: sitemap-ui.php:1003
 msgid "Sitemap Content"
-msgstr "Contenido del sitemap"
+msgstr "Contenido del mapa del sitio"
 
 #: sitemap-ui.php:992
 msgid "All posts will have the same priority which is defined in &quot;Priorities&quot;"
-msgstr "Todos los artículos tendrán la misma prioridad según se haya definido en &quot;prioridades&quot;"
+msgstr "Todas las entradas tendrán la misma prioridad según se haya definido en «Prioridades»"
 
 #: sitemap-ui.php:992
 msgid "Do not use automatic priority calculation"
@@ -209,11 +209,11 @@ msgstr "No utilizar el cálculo de prioridad automático"
 
 #: sitemap-ui.php:990
 msgid "Please select how the priority of each post should be calculated:"
-msgstr "Por favor, seleccione como se calculará la prioridad de cada artículo:"
+msgstr "Por favor, selecciona cómo se calculará la prioridad de cada entrada:"
 
 #: sitemap-ui.php:988
 msgid "Post Priority"
-msgstr "Prioridad del artículo"
+msgstr "Prioridad de la entrada"
 
 #: sitemap-ui.php:982
 msgid "Add new page"
@@ -233,7 +233,7 @@ msgstr "Frecuencia de cambios"
 
 #: sitemap-ui.php:936
 msgid "Enter the date of the last change as YYYY-MM-DD (2005-12-31 for example) (optional)."
-msgstr "Introduzca la fecha del último cambio como AAAA-MM-DD (por ejemplo: 2005-12-31) (opcional)."
+msgstr "Introduce la fecha del último cambio como AAAA-MM-DD (por ejemplo 2005-12-31) (opcional)."
 
 #: sitemap-ui.php:935 sitemap-ui.php:971
 msgid "Last Changed"
@@ -241,7 +241,7 @@ msgstr "Últimos cambios"
 
 #: sitemap-ui.php:933
 msgid "Choose the priority of the page relative to the other pages. For example, your homepage might have a higher priority than your imprint."
-msgstr "Escoja la prioridad relativa de la página comparándola con la de las otras páginas. Por ejemplo, su página de inicio debe tener una mayor prioridad que sus datos personales."
+msgstr "Elige la prioridad de la página en relación con las demás páginas. Por ejemplo, tu página de inicio puede tener mayor prioridad que tu página de impresión."
 
 #: sitemap-ui.php:932 sitemap-ui.php:969
 msgid "Priority"
@@ -249,7 +249,7 @@ msgstr "Prioridad"
 
 #: sitemap-ui.php:930
 msgid "Enter the URL to the page. Examples: http://www.foo.com/index.html or www.foo.com/home "
-msgstr "URL de la página. Ejemplos: http://www.foo.com/index.html o www.foo.com/home"
+msgstr "Introduce la URL de la página. Ejemplos: http://www.foo.com/index.html o www.foo.com/home"
 
 #: sitemap-ui.php:929 sitemap-ui.php:968
 msgid "URL to the page"
@@ -257,7 +257,7 @@ msgstr "URL de la página"
 
 #: sitemap-ui.php:927
 msgid "If your blog is in a subdirectory and you want to add pages which are NOT in the blog directory or beneath, you MUST place your sitemap file in the root directory (Look at the &quot;Location of your sitemap file&quot; section on this page)!"
-msgstr "¡Si su blog está en un subdirectorio y quiere añadir páginas que NO están en el directorio de su blog o por debajo del mismo, DEBE colocar su fichero sitemap en el directorio raíz (Mire la sección \"Localización de su fichero sitemap\" en esta página)!"
+msgstr "¡Si tu blog está en un subdirectorio y quieres añadir páginas que NO están en el directorio de tu blog o por debajo del mismo, DEBES colocar tu archivo del mapa del sitio en el directorio raíz (mira la sección «Localización de tu archivo del mapa del sitio» en esta página)!"
 
 #: sitemap-ui.php:926 sitemap-ui.php:1140 sitemap-ui.php:1149
 msgid "Note"
@@ -265,7 +265,7 @@ msgstr "Nota"
 
 #: sitemap-ui.php:924
 msgid "Here you can specify files or URLs which should be included in the sitemap, but do not belong to your Blog/WordPress.<br />For example, if your domain is www.foo.com and your blog is located on www.foo.com/blog you might want to include your homepage at www.foo.com"
-msgstr "Aquí puede especificar los ficheros o URLs que deben incluirse en el sitemap, pero que no pertenecen a su blog/WordPress.<br />Por ejemplo: si su dominio es www.foo.com y su blog está en www.foo.com/blog, quizás quiera incluir su página de inicio de www.foo.com"
+msgstr "Aquí puedes especificar los archivos o URLs que deben incluirse en el mapa del sitio, pero que no pertenecen a tu blog/WordPress.<br />Por ejemplo, si tu dominio es www.foo.com y tu blog está en www.foo.com/blog, quizás quieras incluir tu página de inicio en www.foo.com"
 
 #: sitemap-ui.php:921
 msgid "Additional pages"
@@ -281,23 +281,23 @@ msgstr "(El módulo requerido PHP XSL no está instalado)"
 
 #: sitemap-ui.php:906
 msgid "Include sitemap in HTML format"
-msgstr "Incluya sitemap en formato HTML"
+msgstr "Incluye el mapa del sitio en formato HTML"
 
 #: sitemap-ui.php:901
 msgid "Use this if your blog is in a sub-directory, but you want the sitemap be located in the root. Requires .htaccess modification."
-msgstr "Usa esto si tu blog está en un subdirectorio pero quieres que el sitemap esté en la raíz. Requiere modificar .htaccess."
+msgstr "Usa esto si tu blog está en un subdirectorio pero quieres que el mapa del sitio esté en la raíz. Requiere modificar el archivo .htaccess."
 
 #: sitemap-ui.php:900
 msgid "Override the base URL of the sitemap:"
-msgstr "Anular la URL base del sitemap:"
+msgstr "Omitir la URL base del mapa del sitio:"
 
 #: sitemap-ui.php:897
 msgid "Use default"
-msgstr "Utilizar el predeterminado"
+msgstr "Usar por defecto"
 
 #: sitemap-ui.php:897
 msgid "Full or relative URL to your .xsl file"
-msgstr "URL completa o relativa hacia su fichero .xsl"
+msgstr "URL completa o relativa hacia tu archivo .xsl"
 
 #: sitemap-ui.php:896
 msgid "Include a XSLT stylesheet:"
@@ -305,15 +305,15 @@ msgstr "Incluir una hoja de estilos XSLT"
 
 #: sitemap-ui.php:892
 msgid "Disable this option if you get garbled content or encoding errors in your sitemap."
-msgstr "Desactiva esta opción si obtienes errores de contenido o de codificación ilegibles en tu sitemap."
+msgstr "Desactiva esta opción si obtienes errores de contenido o de codificación ilegibles en tu mapa del sitio."
 
 #: sitemap-ui.php:890
 msgid "Try to automatically compress the sitemap if the requesting client supports it."
-msgstr "Intentar comprimir automáticamente el sitemap si el cliente lo soporta."
+msgstr "Intentar comprimir automáticamente el mapa del sitio si el cliente que lo solicita es compatible."
 
 #: sitemap-ui.php:885
 msgid "in seconds, e.g. \"60\" or \"0\" for unlimited"
-msgstr "en segundos, ej.: \"60\" o \"0\" para ilimitado"
+msgstr "en segundos, p. ej. «60» o «0» para ilimitado"
 
 #: sitemap-ui.php:885
 msgid "Try to increase the execution time limit to:"
@@ -321,7 +321,7 @@ msgstr "Tratar de incrementar el límite de tiempo de ejecución a:"
 
 #: sitemap-ui.php:882
 msgid "e.g. \"4M\", \"16M\""
-msgstr "ej.: \"4M\", \"16M\""
+msgstr "p.ej. «4M», «16M»"
 
 #: sitemap-ui.php:882
 msgid "Try to increase the memory limit to:"
@@ -337,23 +337,23 @@ msgstr "Se utiliza el archivo robots.txt virtual generado por WordPress. ¡NO de
 
 #: sitemap-ui.php:871
 msgid "Add sitemap URL to the virtual robots.txt file."
-msgstr "Añadir la URL del sitemap al archivo robots.txt virtual"
+msgstr "Añadir la URL del mapa del sitio al archivo robots.txt virtual."
 
 #: sitemap-ui.php:866
 msgid "No registration required, but you can join the <a href=\"%s\">Bing Webmaster Tools</a> to check crawling statistics."
-msgstr "No es necesario registrarse, pero puede unirse a las <a href=\"%s\">herramientas de Bing para webmasters</a> para revisar sus estadísticas."
+msgstr "No es obligatorio registrarse, pero puedes unirte a las <a href=\"%s\">herramientas de Bing para webmasters</a> para revisar tus estadísticas."
 
 #: sitemap-ui.php:865
 msgid "Notify Bing (formerly MSN Live Search) about updates of your Blog"
-msgstr "Notificar a Bing (anteriormente MSN Live Search) sobre cambios en su blog"
+msgstr "Avisar a Bing (anteriormente MSN Live Search) de las actualizaciones de tu blog"
 
 #: sitemap-ui.php:861
 msgid "No registration required, but you can join the <a href=\"%s\">Google Webmaster Tools</a> to check crawling statistics."
-msgstr "No es necesario registrarse, pero puede unirse a las <a href=\"%s\">herramientas de Google para webmasters</a> para revisar sus estadísticas."
+msgstr "No es obligatorio registrarse, pero puedes unirte a las <a href=\"%s\">herramientas de Google para webmasters</a> para revisar tus estadísticas."
 
 #: sitemap-ui.php:860
 msgid "Notify Google about updates of your Blog"
-msgstr "Notificar a Google sobre cambios en su blog"
+msgstr "Avisar a Google acerca de las actualizaciones de tu blog"
 
 #: sitemap-ui.php:856 sitemap-ui.php:879 sitemap-ui.php:901 sitemap-ui.php:913
 msgid "Learn more"
@@ -361,7 +361,7 @@ msgstr "Más información"
 
 #: sitemap-ui.php:856
 msgid "Update notification:"
-msgstr "Notificación de actualización"
+msgstr "Aviso de actualización"
 
 #: sitemap-ui.php:854
 msgid "Basic Options"
@@ -369,7 +369,7 @@ msgstr "Opciones básicas"
 
 #: sitemap-ui.php:838
 msgid "Since you are using Nginx as your web-server, please configure the following rewrite rules in case you get 404 Not Found errors for your sitemap:"
-msgstr "Ya que estás utilizando Nginx como tu servidor web, por favor, configura las siguientes reglas de reescritura en el caso de que recibas un error 404 No Encontrado para tu sitemap:"
+msgstr "Ya que estás utilizando Nginx como tu servidor web, por favor, configura las siguientes reglas de reescritura en el caso de que recibas un error «404 No Encontrado» para tu mapa del sitio:"
 
 #: sitemap-ui.php:837
 msgid "Webserver Configuration"
@@ -377,11 +377,11 @@ msgstr "Configuración del servidor web"
 
 #: sitemap-ui.php:829
 msgid "If you like the plugin, please <a target=\"_blank\" href=\"%s\">rate it 5 stars</a> or <a href=\"%s\">donate</a> via PayPal! I'm supporting this plugin since over 9 years! Thanks a lot! :)"
-msgstr "¡Si te gusta el plugin, por favor <a target=\"_blank\" href=\"%s\">vota 5 estrellas</a> o <a href=\"%s\">dona</a> a través de PayPal! ¡Estoy trabajando en este plugin más de 9 años ya! ¡Muchas gracias! :)"
+msgstr "¡Si te gusta el plugin, por favor <a target=\"_blank\" href=\"%s\">valóralo con 5 estrellas</a> o <a href=\"%s\">dona</a> a través de PayPal! ¡Ya llevo trabajando en este plugin más de 9 años! ¡Muchas gracias! :)"
 
 #: sitemap-ui.php:825
 msgid "If you encounter any problems with your sitemap you can use the <a href=\"%d\">debug function</a> to get more information."
-msgstr "Si tienes algún problema con tu sitemap puedes utilizar la <a href=\"%d\">función de depuración</a> para obtener más información."
+msgstr "Si tienes algún problema con tu mapa del sitio puedes utilizar la <a href=\"%d\">función de depuración</a> para obtener más información."
 
 #: sitemap-ui.php:813
 msgid "There was a problem while notifying %name%. <a href=\"%s\" target=\"_blank\">View result</a>"
@@ -393,7 +393,7 @@ msgstr "Se tardó %time% segundos en notificar %name%, quizás querías desactiv
 
 #: sitemap-ui.php:807
 msgid "%s was <b>successfully notified</b> about changes."
-msgstr "%s fue <b>notificado exitósamente</b> sobre los cambios."
+msgstr "%s ha sido <b>notificado correctamente</b> acerca de los cambios."
 
 #: sitemap-ui.php:798
 msgid "Search engines haven't been notified yet. Write a post to let them know about your sitemap."
@@ -405,7 +405,7 @@ msgstr "La URL para tu sitemap es: <a href=\"%s\">%s</a>."
 
 #: sitemap-ui.php:792
 msgid "There is still a sitemap.xml or sitemap.xml.gz file in your blog directory. Please delete them as no static files are used anymore or <a href=\"%s\">try to delete them automatically</a>."
-msgstr "Todavía hay un sitemap.xml o archivo sitemap.xml.gz en el directorio de tu blog. Por favor, eliminalos ya que no se usan archivos estáticos o <a href=\"%s\">intenta eliminarlos</a> automáticamente."
+msgstr "Todavía hay un archivo sitemap.xml o sitemap.xml.gz en el directorio de tu blog. Por favor, elimínalos ya que ya no se usan archivos estáticos o <a href=\"%s\">intenta eliminarlos automáticamente</a>."
 
 #: sitemap-ui.php:781
 msgid "Enable"
@@ -417,7 +417,7 @@ msgstr "Los temas de soporte han sido desactivados. Actívalos para ver informac
 
 #: sitemap-ui.php:778
 msgid "No support topics available or an error occurred while fetching them."
-msgstr "No hay temas de soporte disponible o hay un error al recuperarlos."
+msgstr "No hay temas de soporte disponibles o se ha producido un error al recuperarlos"
 
 #: sitemap-ui.php:760
 msgid "Disable"
@@ -437,7 +437,7 @@ msgstr "Los motores de búsqueda aún no han sido avisados"
 
 #: sitemap-ui.php:725
 msgid "Thanks for your support!"
-msgstr "¡Gracias por su colaboración!"
+msgstr "¡Gracias por tu ayuda!"
 
 #: sitemap-ui.php:722
 msgid "Hide this list"
@@ -461,35 +461,35 @@ msgstr "FAQ oficial de Sitemaps"
 
 #: sitemap-ui.php:712
 msgid "Sitemaps Protocol"
-msgstr "Protocolo sitemap"
+msgstr "Protocolo del mapa del sitio"
 
 #: sitemap-ui.php:710
 msgid "Webmaster Center Blog"
-msgstr "El blog del Webmaster"
+msgstr "Central del blog del webmaster"
 
 #: sitemap-ui.php:707
 msgid "Search Blog"
-msgstr "Blog del buscador"
+msgstr "Buscador del blog"
 
 #: sitemap-ui.php:705
 msgid "Webmaster Blog"
-msgstr "El blog del Webmaster"
+msgstr "Blog del webmaster"
 
 #: sitemap-ui.php:704 sitemap-ui.php:709
 msgid "Webmaster Tools"
-msgstr "Herramientas para Webmasters"
+msgstr "Herramientas del webmaster"
 
 #: sitemap-ui.php:703
 msgid "Sitemap Resources:"
-msgstr "Recursos sobre sitemap:"
+msgstr "Recursos del mapa del sitio:"
 
 #: sitemap-ui.php:700
 msgid "translator_url"
-msgstr "http://equipajedemano.info"
+msgstr "https://make.wordpress.org/polyglots/teams/?locale=es_ES"
 
 #: sitemap-ui.php:700
 msgid "translator_name"
-msgstr "Traducido por: Omi"
+msgstr "Traducido por: WordPress España"
 
 #: sitemap-ui.php:699
 msgid "My Amazon Wish List"
@@ -497,11 +497,11 @@ msgstr "Mi lista de deseos en Amazon"
 
 #: sitemap-ui.php:698
 msgid "Donate with PayPal"
-msgstr "Donar usando PayPal"
+msgstr "Donar mediante PayPal"
 
 #: sitemap-ui.php:696
 msgid "Report a Bug"
-msgstr "Comunicar un fallo"
+msgstr "Informar de un fallo"
 
 #: sitemap-ui.php:695
 msgid "Support Forum"
@@ -521,7 +521,7 @@ msgstr "Solicitar nuevas características"
 
 #: sitemap-ui.php:691
 msgid "Plugin Homepage"
-msgstr "Web principal del plugin"
+msgstr "Página de inicio del plugin"
 
 #: sitemap-ui.php:690
 msgid "About this Plugin:"
@@ -537,11 +537,11 @@ msgstr "No mostrar esto más"
 
 #: sitemap-ui.php:526
 msgid "Thanks for using this plugin! You've installed this plugin some time ago. If it works and your are satisfied, why not <a href=\"%s\">rate it</a> and <a href=\"%s\">recommend it</a> to others? :-)"
-msgstr "¡Gracias por utilizar este plugin! Ya ha pasado algún tiempo desde que lo instaló. Si todo funciona correctamente y está satisfecho con su rendimiento, ¿qué tal si <a href=\"%s\">vota por el</a> y <a href=\"%s\">se lo recomienda </a>a otros? :-)"
+msgstr "¡Gracias por utilizar este plugin! Has instalado este plugin hace un tiempo. Si funciona y estás satisfecho, ¿por qué no <a href=\"%s\">lo valoras</a> y <a href=\"%s\">lo recomiendas</a> a otros? :-)"
 
 #: sitemap-ui.php:519
 msgid "No thanks, please don't bug me anymore!"
-msgstr "No gracias. ¡No me moleste más por favor!"
+msgstr "¡No, gracias, por favor, no me molestes más!"
 
 #: sitemap-ui.php:519
 msgid "Sure, but I already did!"
@@ -549,7 +549,7 @@ msgstr "Claro, ¡pero ya lo hice!"
 
 #: sitemap-ui.php:519
 msgid "Thanks for using this plugin! You've installed this plugin over a month ago. If it works and you are satisfied with the results, isn't it worth at least a few dollar? <a href=\"%s\">Donations</a> help me to continue support and development of this <i>free</i> software! <a href=\"%s\">Sure, no problem!</a>"
-msgstr "¡Gracias por utilizar este plugin! Ha pasado más de un mes desde que lo instaló. Si funciona bien y está contento con los resultados, ¿no merece la pena donar aunque sea un euro? Las <a href=\"%s\">donaciones</a> me ayudan a seguir ofreciendo soporte y desarrollo para este software <i>gratuito</i> <a href=\"%s\">Claro, ¡sin problemas!</a>"
+msgstr "¡Gracias por utilizar este plugin! Has instalado este plugin hace más de un mes. Si funciona y estás satisfecho con los resultados, ¿no vale al menos unos pocos dólares? ¡Las <a href=\"%s\">donaciones</a> me ayudan a continuar apoyando y desarrollando este software <i>gratuito</i>! <a href=\"%s\">Claro, ¡sin problema!</a>"
 
 #: sitemap-ui.php:513
 msgid "Hide this notice"
@@ -557,7 +557,7 @@ msgstr "Ocultar esta notificación"
 
 #: sitemap-ui.php:513
 msgid "Thank you very much for your donation. You help me to continue support and development of this plugin and other free software!"
-msgstr "Muchas gracias por su donación. ¡Su ayuda me permite seguir ofreciendo soporte y desarrollo para este plugin y para otros programas gratuitos!"
+msgstr "Muchas gracias por tu donación. Tu ayuda me permite seguir ofreciendo soporte y desarrollo para este plugin y para ¡otros programas gratuitos!"
 
 #: sitemap-ui.php:470
 msgid "Ping was executed, please see below for the result."
@@ -569,7 +569,7 @@ msgstr "¡Hecho!"
 
 #: sitemap-ui.php:431
 msgid "The plugin is notifying the selected search engines about your main sitemap and all sub-sitemaps. This might take a minute or two."
-msgstr "El plugin está notificando a los motores de búsqueda seleccionados sobre tu sitemap principal y todos los sub-sitemaps. Esto puede tardar un minuto o dos."
+msgstr "El plugin está notificando a los motores de búsqueda seleccionados sobre tu mapa del sitio principal y todos los submapas del sitio. Esto puede tardar un minuto o dos."
 
 #: sitemap-ui.php:430
 msgid "Notify Search Engines about all sitemaps"
@@ -581,7 +581,7 @@ msgstr "Los viejos archivos fueron borrados con éxito."
 
 #: sitemap-ui.php:391
 msgid "The old files could NOT be deleted. Please use an FTP program and delete them by yourself."
-msgstr "Los viejos archivos no se pudieron borrar. Utiliza un programa de FTP y eliminalos tú mismo."
+msgstr "Los archivos antiguos NO se han podido borrar. Utiliza un programa de FTP y elimínalos tú mismo."
 
 #: sitemap-ui.php:381
 msgid "The default configuration was restored."
@@ -605,11 +605,11 @@ msgstr "Configuración actualizada"
 
 #: sitemap-ui.php:181 sitemap-ui.php:671
 msgid "XML Sitemap Generator for WordPress"
-msgstr "XML Sitemap Generator para WordPress"
+msgstr "Generador de mapas de sitios XML para WordPress"
 
 #: sitemap-loader.php:236
 msgid "Donate"
-msgstr "Dona"
+msgstr "Donar"
 
 #: sitemap-loader.php:235
 msgid "Support"
@@ -621,15 +621,15 @@ msgstr "FAQ"
 
 #: sitemap-loader.php:233
 msgid "Settings"
-msgstr "Configuraciones"
+msgstr "Ajustes"
 
 #: sitemap-loader.php:206
 msgid "XML-Sitemap"
-msgstr "Sitemap XML"
+msgstr "Mapa del sitio XML"
 
 #: sitemap-loader.php:206
 msgid "XML-Sitemap Generator"
-msgstr "XML-Sitemap Generator"
+msgstr "Generador del mapa del sitio XML"
 
 #: sitemap-core.php:784
 msgid "Never"
