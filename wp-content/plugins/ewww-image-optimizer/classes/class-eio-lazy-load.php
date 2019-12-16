@@ -300,7 +300,10 @@ if ( ! class_exists( 'EIO_Lazy_Load' ) ) {
 						} else {
 							$this->set_attribute( $image, 'src', $placeholder_src, true );
 						}
-						if ( ! defined( 'EWWWIO_DISABLE_NATIVE_LAZY' ) || ! EWWWIO_DISABLE_NATIVE_LAZY ) {
+						if (
+							( ! defined( 'EWWWIO_DISABLE_NATIVE_LAZY' ) || ! EWWWIO_DISABLE_NATIVE_LAZY ) &&
+							( ! defined( 'EASYIO_DISABLE_NATIVE_LAZY' ) || ! EASYIO_DISABLE_NATIVE_LAZY )
+						) {
 							$this->set_attribute( $image, 'loading', 'lazy' );
 						}
 						$this->set_attribute( $image, 'class', $this->get_attribute( $image, 'class' ) . ' lazyload', true );
@@ -531,6 +534,11 @@ if ( ! class_exists( 'EIO_Lazy_Load' ) ) {
 			}
 			$height = min( $height, 1920 );
 
+			$memory_required = 5 * $height * $width;
+			if ( function_exists( 'ewwwio_check_memory_available' ) && ! ewwwio_check_memory_available( $memory_required + 500000 ) ) {
+				return $this->placeholder_src;
+			}
+
 			$piip_path = $this->piip_folder . 'placeholder-' . $width . 'x' . $height . '.png';
 			if ( $this->parsing_exactdn ) {
 				global $exactdn;
@@ -570,20 +578,6 @@ if ( ! class_exists( 'EIO_Lazy_Load' ) ) {
 		}
 
 		/**
-		 * Check if LQIP should be used, but allow filters to alter the option.
-		 *
-		 * @param bool $use_lqip Whether LL should use low-quality image placeholders.
-		 * @return bool True to use LQIP, false to skip them.
-		 */
-		function maybe_lqip( $use_lqip ) {
-			// TODO: Remove me!
-			if ( $this->get_option( $this->prefix . 'use_lqip' ) ) {
-				return true;
-			}
-			return $use_lqip;
-		}
-
-		/**
 		 * Check if PIIP should be used, but allow filters to alter the option.
 		 *
 		 * @param bool $use_piip Whether LL should use PNG inline image placeholders.
@@ -594,6 +588,9 @@ if ( ! class_exists( 'EIO_Lazy_Load' ) ) {
 				return false;
 			}
 			if ( defined( 'EASYIO_USE_PIIP' ) && ! EASYIO_USE_PIIP ) {
+				return false;
+			}
+			if ( function_exists( 'ewwwio_check_memory_available' ) && ! ewwwio_check_memory_available( 15000000 ) ) {
 				return false;
 			}
 			return $use_piip;
@@ -620,13 +617,6 @@ if ( ! class_exists( 'EIO_Lazy_Load' ) ) {
 		 */
 		function no_js_css() {
 			echo '<noscript><style>.lazyload[data-src]{display:none !important;}</style></noscript>';
-			if ( ! $this->get_option( $this->prefix . 'use_lqip' ) ) {
-				$lazy_bg_style = (string) apply_filters(
-					'eio_lazy_load_gradient',
-					'<style>.lazyload,.lazyloading{background: rgb(187,187,187);background: linear-gradient(180deg, rgba(187,187,187,1) 0%, rgba(255,255,255,1) 100%);}</style>'
-				);
-				echo $lazy_bg_style;
-			}
 		}
 
 		/**

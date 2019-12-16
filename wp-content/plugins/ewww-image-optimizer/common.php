@@ -17,11 +17,12 @@
 // TODO: use this: https://codex.wordpress.org/AJAX_in_Plugins#The_post-load_JavaScript_Event .
 // TODO: can some of the bulk "fallbacks" be implemented for async processing?
 // TODO: check to see if we can use PHP and WP core is_countable functions.
+// TODO: make sure all settings (like lazy load) are in usage reporting.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'EWWW_IMAGE_OPTIMIZER_VERSION', '512.0' );
+define( 'EWWW_IMAGE_OPTIMIZER_VERSION', '513.0' );
 
 // Initialize a couple globals.
 $eio_debug  = '';
@@ -145,6 +146,8 @@ add_action( 'admin_action_ewww_image_optimizer_manual_cloud_restore', 'ewww_imag
 add_action( 'admin_action_ewww_image_optimizer_manual_convert', 'ewww_image_optimizer_manual' );
 // Cleanup routine when an attachment is deleted.
 add_action( 'delete_attachment', 'ewww_image_optimizer_delete' );
+// Cleanup db records when Enable Media Replace replaces a file.
+add_action( 'wp_handle_replace', 'ewww_image_optimizer_media_replace' );
 // Cleanup db records when Image Regenerate & Select Crop deletes a file.
 add_action( 'sirsc_image_file_deleted', 'ewww_image_optimizer_file_deleted', 10, 2 );
 // Adds the EWWW IO pages to the admin menu.
@@ -3238,14 +3241,13 @@ function ewww_image_optimizer_delete( $id ) {
 	$meta = wp_get_attachment_metadata( $id );
 	// If the attachment has an original file set.
 	if ( ! empty( $meta['orig_file'] ) ) {
-		unset( $rows );
 		// Get the filepath from the metadata.
 		$file_path = $meta['orig_file'];
 		// Get the base filename.
 		$filename = basename( $file_path );
 		// Delete any residual webp versions.
-		$webpfile    = $filename . '.webp';
-		$webpfileold = preg_replace( '/\.\w+$/', '.webp', $filename );
+		$webpfile    = $file_path . '.webp';
+		$webpfileold = preg_replace( '/\.\w+$/', '.webp', $file_path );
 		if ( ewwwio_is_file( $webpfile ) ) {
 			unlink( $webpfile );
 		}
@@ -3261,21 +3263,21 @@ function ewww_image_optimizer_delete( $id ) {
 			$ewwwdb->delete( $ewwwdb->ewwwio_images, array( 'path' => ewww_image_optimizer_relativize_path( $file_path ) ) );
 		}
 	}
+	list( $file_path, $upload_path ) = ewww_image_optimizer_attachment_path( $meta, $id );
 	// If the attachment has an original file set.
 	if ( ! empty( $meta['original_image'] ) ) {
-		unset( $rows );
-		// Get the filepath from the metadata.
-		$file_path = $meta['original_image'];
-		// Get the base filename.
-		$filename = basename( $file_path );
+		// One way or another, $file_path is now set, and we can get the base folder name.
+		$base_dir = dirname( $file_path ) . '/';
+		// Get the original filename from the metadata.
+		$orig_path = $base_dir . basename( $meta['original_image'] );
 		// Delete any residual webp versions.
-		$webpfile = $filename . '.webp';
+		$webpfile = $orig_path . '.webp';
 		if ( ewwwio_is_file( $webpfile ) ) {
 			unlink( $webpfile );
 		}
+		$ewwwdb->delete( $ewwwdb->ewwwio_images, array( 'path' => ewww_image_optimizer_relativize_path( $orig_path ) ) );
 	}
 	// Remove the regular image from the ewwwio_images tables.
-	list( $file_path, $upload_path ) = ewww_image_optimizer_attachment_path( $meta, $id );
 	$ewwwdb->delete( $ewwwdb->ewwwio_images, array( 'path' => ewww_image_optimizer_relativize_path( $file_path ) ) );
 	// Resized versions, so we can continue.
 	if ( isset( $meta['sizes'] ) && ewww_image_optimizer_iterable( $meta['sizes'] ) ) {
@@ -3358,6 +3360,108 @@ function ewww_image_optimizer_file_deleted( $id, $file ) {
 	}
 	if ( ewwwio_is_file( $file . '.webp' ) ) {
 		unlink( $file . '.webp' );
+	}
+}
+
+/**
+ * Cleans records from database when an image is being replaced.
+ *
+ * @param array $image An array with the attachment/image ID.
+ */
+function ewww_image_optimizer_media_replace( $image ) {
+	ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+	global $wpdb;
+	if ( strpos( $wpdb->charset, 'utf8' ) === false ) {
+		ewww_image_optimizer_db_init();
+		global $ewwwdb;
+	} else {
+		$ewwwdb = $wpdb;
+	}
+	$id = (int) $image['post_id'];
+	// Finds non-meta images to remove from disk, and from db, as well as converted originals.
+	$optimized_images = $ewwwdb->get_results( "SELECT path,converted FROM $ewwwdb->ewwwio_images WHERE attachment_id = $id AND gallery = 'media'", ARRAY_A );
+	if ( $optimized_images ) {
+		if ( ewww_image_optimizer_iterable( $optimized_images ) ) {
+			foreach ( $optimized_images as $image ) {
+				if ( ! empty( $image['path'] ) ) {
+					$image['path'] = ewww_image_optimizer_absolutize_path( $image['path'] );
+				}
+				if ( strpos( $image['path'], WP_CONTENT_DIR ) === false ) {
+					continue;
+				}
+				if ( ! empty( $image['path'] ) ) {
+					if ( ewwwio_is_file( $image['path'] . '.webp' ) ) {
+						unlink( $image['path'] . '.webp' );
+					}
+				}
+				if ( ! empty( $image['converted'] ) ) {
+					$image['converted'] = ewww_image_optimizer_absolutize_path( $image['converted'] );
+				}
+				if ( ! empty( $image['converted'] ) && ewwwio_is_file( $image['converted'] ) ) {
+					unlink( $image['converted'] );
+					if ( ewwwio_is_file( $image['converted'] . '.webp' ) ) {
+						unlink( $image['converted'] . '.webp' );
+					}
+				}
+			}
+		}
+		$ewwwdb->delete( $ewwwdb->ewwwio_images, array( 'attachment_id' => $id ) );
+	}
+	// Retrieve the image metadata.
+	$meta = wp_get_attachment_metadata( $id );
+	// If the attachment has an original file set.
+	if ( ! empty( $meta['orig_file'] ) ) {
+		// Get the filepath from the metadata.
+		$file_path = $meta['orig_file'];
+
+		$webpfile    = $file_path . '.webp';
+		$webpfileold = preg_replace( '/\.\w+$/', '.webp', $file_path );
+		if ( ewwwio_is_file( $webpfile ) ) {
+			unlink( $webpfile );
+		}
+		if ( ewwwio_is_file( $webpfileold ) ) {
+			unlink( $webpfileold );
+		}
+		$ewwwdb->delete( $ewwwdb->ewwwio_images, array( 'path' => ewww_image_optimizer_relativize_path( $file_path ) ) );
+	}
+	list( $file_path, $upload_path ) = ewww_image_optimizer_attachment_path( $meta, $id );
+	// If the attachment has an original file set.
+	if ( ! empty( $meta['original_image'] ) ) {
+		// One way or another, $file_path is now set, and we can get the base folder name.
+		$base_dir = dirname( $file_path ) . '/';
+		// Get the original filename from the metadata.
+		$orig_path = $base_dir . basename( $meta['original_image'] );
+		// Delete any residual webp versions.
+		$webpfile = $orig_path . '.webp';
+		if ( ewwwio_is_file( $webpfile ) ) {
+			unlink( $webpfile );
+		}
+		$ewwwdb->delete( $ewwwdb->ewwwio_images, array( 'path' => ewww_image_optimizer_relativize_path( $orig_path ) ) );
+	}
+	// Remove the regular image from the ewwwio_images tables.
+	$ewwwdb->delete( $ewwwdb->ewwwio_images, array( 'path' => ewww_image_optimizer_relativize_path( $file_path ) ) );
+	// Resized versions, so we can continue.
+	if ( isset( $meta['sizes'] ) && ewww_image_optimizer_iterable( $meta['sizes'] ) ) {
+		// One way or another, $file_path is now set, and we can get the base folder name.
+		$base_dir = dirname( $file_path ) . '/';
+		foreach ( $meta['sizes'] as $size => $data ) {
+			// Delete any residual webp versions.
+			$webpfile    = $base_dir . $data['file'] . '.webp';
+			$webpfileold = preg_replace( '/\.\w+$/', '.webp', $base_dir . $data['file'] );
+			if ( ewwwio_is_file( $webpfile ) ) {
+				unlink( $webpfile );
+			}
+			if ( ewwwio_is_file( $webpfileold ) ) {
+				unlink( $webpfileold );
+			}
+			$ewwwdb->delete( $ewwwdb->ewwwio_images, array( 'path' => ewww_image_optimizer_relativize_path( $base_dir . $data['file'] ) ) );
+			// If the original resize is set, and still exists.
+			if ( ! empty( $data['orig_file'] ) ) {
+				// Retrieve the filename from the metadata.
+				$filename = $data['orig_file'];
+				$ewwwdb->delete( $ewwwdb->ewwwio_images, array( 'path' => ewww_image_optimizer_relativize( $base_dir . $data['orig_file'] ) ) );
+			}
+		}
 	}
 }
 
@@ -4485,7 +4589,7 @@ function ewww_image_optimizer_update_table( $attachment, $opt_size, $orig_size, 
 			$updates['level'] = $ewww_image->level;
 		}
 		$updates['orig_size'] = $orig_size;
-		$updates['updated']   = date( 'Y-m-d H:i:s' );
+		$updates['updated']   = gmdate( 'Y-m-d H:i:s' );
 		$ewwwdb->insert( $ewwwdb->ewwwio_images, $updates );
 	} else {
 		if ( is_array( $already_optimized ) && empty( $already_optimized['orig_size'] ) ) {
@@ -8361,6 +8465,7 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 		}
 		$disable_level = "disabled='disabled'";
 	}
+	$exactdn_enabled = false;
 	if ( class_exists( 'Jetpack_Photon' ) && Jetpack::is_module_active( 'photon' ) && ewww_image_optimizer_get_option( 'ewww_image_optimizer_exactdn' ) ) {
 		$status_notices .= '<p><b>Easy IO:</b> <span style="color: red">' . esc_html__( 'Inactive, please disable the Image Performance option on the Jetpack Dashboard.', 'ewww-image-optimizer' ) . '</span></p>';
 	} elseif ( get_option( 'easyio_exactdn' ) ) {
@@ -8387,6 +8492,7 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 			} elseif ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_level' ) < 30 ) {
 				$compress_recommendations[] = esc_html__( 'Enable premium compression.', 'ewww-image-optimizer' ) . ewwwio_help_link( 'https://docs.ewww.io/article/47-getting-more-from-exactdn', '59de6631042863379ddc953c' );
 			}
+			$exactdn_enabled = true;
 		} elseif ( $exactdn->get_exactdn_domain() && $exactdn->get_exactdn_option( 'verified' ) ) {
 			$status_notices .= '<span style="color: orange; font-weight: bolder">' . esc_html__( 'Temporarily disabled.', 'ewww-image-optimizer' ) . ' </span>';
 		} elseif ( $exactdn->get_exactdn_domain() && $exactdn->get_exactdn_option( 'suspended' ) ) {
@@ -8414,6 +8520,15 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 		delete_site_option( 'ewww_image_optimizer_exactdn_verified' );
 		delete_site_option( 'ewww_image_optimizer_exactdn_validation' );
 		delete_site_option( 'ewww_image_optimizer_exactdn_suspended' );
+	}
+	if ( $exactdn_enabled && ! ewww_image_optimizer_get_option( 'ewww_image_optimizer_cloud_key' ) ) {
+		$output[] = "<script type='text/javascript'>\n" .
+			'var exactdn_enabled = true;' . "\n" .
+			"</script>\n";
+	} else {
+		$output[] = "<script type='text/javascript'>\n" .
+			'var exactdn_enabled = false;' . "\n" .
+			"</script>\n";
 	}
 	if (
 		ewww_image_optimizer_get_option( 'ewww_image_optimizer_maxmediawidth' ) ||
@@ -8640,15 +8755,15 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 	if ( ( 'network-multisite' !== $network || ! get_site_option( 'ewww_image_optimizer_allow_multisite_override' ) ) && // Display tabs so long as this isn't the network admin OR single-site override is disabled.
 		! ( 'network-singlesite' === $network && ! get_site_option( 'ewww_image_optimizer_allow_multisite_override' ) ) ) { // Also make sure that this isn't single site without override mode.
 		$output[] = "<ul class='ewww-tab-nav'>\n" .
-			"<li class='ewww-tab ewww-general-nav'><span class='ewww-tab-hidden'>" . esc_html__( 'Basic', 'ewww-image-optimizer' ) . "</span></li>\n" .
-			( get_option( 'easyio_exactdn' ) ? '' : "<li class='ewww-tab ewww-exactdn-nav'><span class='ewww-tab-hidden'>" . esc_html__( 'Easy Mode', 'ewww-image-optimizer' ) . "</span></li>\n" ) .
-			"<li class='ewww-tab ewww-optimization-nav'><span class='ewww-tab-hidden'>" . esc_html__( 'Advanced', 'ewww-image-optimizer' ) . "</span></li>\n" .
-			"<li class='ewww-tab ewww-resize-nav'><span class='ewww-tab-hidden'>" . esc_html__( 'Resize', 'ewww-image-optimizer' ) . "</span></li>\n" .
-			"<li class='ewww-tab ewww-conversion-nav'><span class='ewww-tab-hidden'>" . esc_html__( 'Convert', 'ewww-image-optimizer' ) . "</span></li>\n" .
-			"<li class='ewww-tab ewww-webp-nav'><span class='ewww-tab-hidden'>" . esc_html__( 'WebP', 'ewww-image-optimizer' ) . "</span></li>\n" .
-			"<li class='ewww-tab ewww-overrides-nav'><span class='ewww-tab-hidden'><a href='https://docs.ewww.io/article/40-override-options' target='_blank'><span class='ewww-tab-hidden'>" . esc_html__( 'Overrides', 'ewww-image-optimizer' ) . "</a></span></li>\n" .
-			"<li class='ewww-tab ewww-support-nav'><span class='ewww-tab-hidden'>" . esc_html__( 'Support', 'ewww-image-optimizer' ) . "</span></li>\n" .
-			"<li class='ewww-tab ewww-contribute-nav'><span class='ewww-tab-hidden'>" . esc_html__( 'Contribute', 'ewww-image-optimizer' ) . "</span></li>\n" .
+			"<li class='ewww-tab ewww-general-nav'><span>" . esc_html__( 'Basic', 'ewww-image-optimizer' ) . "</span></li>\n" .
+			( get_option( 'easyio_exactdn' ) ? '' : "<li class='ewww-tab ewww-exactdn-nav'><span>" . esc_html__( 'Easy Mode', 'ewww-image-optimizer' ) . "</span></li>\n" ) .
+			"<li class='ewww-tab ewww-optimization-nav'><span>" . esc_html__( 'Advanced', 'ewww-image-optimizer' ) . "</span></li>\n" .
+			"<li class='ewww-tab ewww-resize-nav'><span>" . esc_html__( 'Resize', 'ewww-image-optimizer' ) . "</span></li>\n" .
+			"<li class='ewww-tab ewww-conversion-nav'><span>" . esc_html__( 'Convert', 'ewww-image-optimizer' ) . "</span></li>\n" .
+			"<li class='ewww-tab ewww-webp-nav'><span>" . esc_html__( 'WebP', 'ewww-image-optimizer' ) . "</span></li>\n" .
+			"<li class='ewww-tab ewww-overrides-nav'><span><a href='https://docs.ewww.io/article/40-override-options' target='_blank'><span class='ewww-tab-hidden'>" . esc_html__( 'Overrides', 'ewww-image-optimizer' ) . "</a></span></li>\n" .
+			"<li class='ewww-tab ewww-support-nav'><span>" . esc_html__( 'Support', 'ewww-image-optimizer' ) . "</span></li>\n" .
+			"<li class='ewww-tab ewww-contribute-nav'><span>" . esc_html__( 'Contribute', 'ewww-image-optimizer' ) . "</span></li>\n" .
 		"</ul>\n";
 	}
 	if ( 'network-multisite' === $network ) {
@@ -8669,6 +8784,9 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 	}
 	$output[] = "<div id='ewww-general-settings'>\n";
 	$output[] = '<noscript><h2>' . esc_html__( 'Basic', 'ewww-image-optimizer' ) . '</h2></noscript>';
+	if ( $exactdn_enabled && ! ewww_image_optimizer_get_option( 'ewww_image_optimizer_cloud_key' ) ) {
+		$output[] = '<p>' . esc_html__( 'Easy IO copies your images to our CDN for optimization and does not affect the local images stored on your server. The Basic settings are not necessary for performance while Easy IO is active, but can help you to save server storage space.', 'ewww-image-optimizer' ) . "</p>\n";
+	}
 	$output[] = "<table class='form-table'>\n";
 	if ( is_multisite() ) {
 		if ( is_plugin_active_for_network( EWWW_IMAGE_OPTIMIZER_PLUGIN_FILE_REL ) ) {
@@ -8761,10 +8879,10 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 	}
 	$output[] = "</table>\n</div>\n";
 	$output[] = "<div id='ewww-exactdn-settings'>\n";
-	$output[] = "<table class='form-table'>\n";
 	$output[] = '<noscript><h2>' . esc_html__( 'Easy Mode', 'ewww-image-optimizer' ) . '</h2></noscript>';
 	$output[] = '<p>' . esc_html__( 'Having problems? Try disabling Lazy Load and Include All Resources. Finally, disable Easy IO if problems remain.', 'ewww-image-optimizer' ) . "<br>\n" .
 		"<a class='ewww-docs-root' href='https://ewww.io/contact-us/'>" . esc_html__( 'Then, let us know so we can find a fix for the problem.', 'ewww-image-optimizer' ) . "</a></p>\n";
+	$output[] = "<table class='form-table'>\n";
 	$output[] = "<tr class='$network_class'><th scope='row'><label for='ewww_image_optimizer_exactdn'>" . esc_html__( 'Easy IO', 'ewww-image-optimizer' ) .
 		'</label>' . ewwwio_help_link( 'https://docs.ewww.io/article/44-introduction-to-exactdn', '59bc5ad6042863033a1ce370,5c0042892c7d3a31944e88a4' ) . "</th><td><input type='checkbox' id='ewww_image_optimizer_exactdn' name='ewww_image_optimizer_exactdn' value='true' " .
 		( ewww_image_optimizer_get_option( 'ewww_image_optimizer_exactdn' ) ? "checked='true'" : '' ) . ' /> ' .
@@ -9552,7 +9670,7 @@ function ewww_image_optimizer_debug_log() {
 	if ( ! empty( $eio_debug ) && empty( $ewwwio_temp_debug ) && ewww_image_optimizer_get_option( 'ewww_image_optimizer_debug' ) && is_writable( WP_CONTENT_DIR . '/ewww/' ) ) {
 		$memory_limit = ewwwio_memory_limit();
 		clearstatcache();
-		$timestamp = date( 'Y-m-d H:i:s' ) . "\n";
+		$timestamp = gmdate( 'Y-m-d H:i:s' ) . "\n";
 		if ( ! file_exists( $debug_log ) ) {
 			touch( $debug_log );
 		} else {
@@ -9912,7 +10030,7 @@ function ewwwio_memory( $function ) {
 function ewwwio_memory_output() {
 	if ( WP_DEBUG ) {
 		global $ewww_memory;
-		$timestamp = date( 'y-m-d h:i:s.u' ) . '  ';
+		$timestamp = gmdate( 'y-m-d h:i:s.u' ) . '  ';
 		if ( ! file_exists( EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'memory.log' ) ) {
 			touch( EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'memory.log' );
 		}
